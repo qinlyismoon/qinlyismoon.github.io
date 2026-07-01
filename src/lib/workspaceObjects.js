@@ -1,0 +1,77 @@
+import { PORTFOLIO_LINKS } from "./links";
+import {
+  BOOKS_MAX_H,
+  CALENDAR_HEIGHT,
+  DESK_CENTER,
+  DESK_LEFT,
+  DESK_SURFACE_Y,
+  LAMP_HEIGHT,
+  LAMP_ORIGIN_X,
+  MONITOR_TOTAL_H,
+  MONITOR_TOTAL_W,
+  MUG_HEIGHT,
+  SHELF_LEFT_Y,
+  SHELF_RIGHT_Y,
+} from "./deskLayout";
+
+export const WORKSPACE_OBJECTS = [
+  {
+    id: "books",
+    labelKey: "books",
+    ariaLabelKey: "books",
+    href: PORTFOLIO_LINKS.ux,
+    transform: `translate(88, ${SHELF_LEFT_Y - BOOKS_MAX_H})`,
+    labelOffset: { x: 2, y: -6 },
+  },
+  {
+    id: "clock",
+    labelKey: "clock",
+    ariaLabelKey: "clockAria",
+    hideLabel: true,
+    transform: `translate(198, ${SHELF_LEFT_Y - 78})`,
+    tooltipOffset: { x: 84, y: 12 },
+  },
+  {
+    id: "speaker",
+    labelKey: "speaker",
+    action: "music",
+    transform: `translate(530, ${SHELF_RIGHT_Y - 76})`,
+    labelOffset: { x: 2, y: -6 },
+  },
+  {
+    id: "calendar",
+    labelKey: "calendar",
+    href: "#activities",
+    transform: `translate(628, ${SHELF_RIGHT_Y - CALENDAR_HEIGHT})`,
+    labelOffset: { x: 2, y: -6 },
+  },
+  {
+    id: "camera",
+    labelKey: "camera",
+    href: PORTFOLIO_LINKS.rednote,
+    transform: `translate(720, ${SHELF_RIGHT_Y - 58})`,
+    labelOffset: { x: 4, y: -6 },
+  },
+  {
+    id: "lamp",
+    labelKey: "lamp",
+    action: "lamp",
+    transform: `translate(${LAMP_ORIGIN_X}, ${DESK_SURFACE_Y - LAMP_HEIGHT})`,
+    labelOffset: { x: 8, y: -10 },
+  },
+  {
+    id: "monitor",
+    labelKey: "monitor",
+    href: PORTFOLIO_LINKS.portfolio,
+    transform: `translate(${DESK_CENTER - MONITOR_TOTAL_W / 2}, ${DESK_SURFACE_Y - MONITOR_TOTAL_H})`,
+    labelOffset: { x: MONITOR_TOTAL_W / 2 - 20, y: -10 },
+  },
+  {
+    id: "mug",
+    action: "mug",
+    ariaLabelKey: "mugAria",
+    hideLabel: true,
+    transform: `translate(${DESK_CENTER + MONITOR_TOTAL_W / 2 + 22}, ${DESK_SURFACE_Y - MUG_HEIGHT})`,
+    tooltipOffset: { x: 66, y: -16 },
+  },
+];
