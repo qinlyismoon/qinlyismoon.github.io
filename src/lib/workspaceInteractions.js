@@ -16,7 +16,7 @@ export const OBJECT_HOVER_ORIGIN = {
 };
 
 /** No lift/scale on hover — label and drop-shadow only. */
-export const OBJECT_NO_HOVER = new Set(["lamp", "books"]);
+export const OBJECT_NO_HOVER = new Set(["lamp", "books", "window"]);
 
 export const CAMERA_FLASH_MS = 380;
 export const MUG_STIR_MS = 1500;

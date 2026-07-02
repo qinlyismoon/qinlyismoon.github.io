@@ -506,6 +506,16 @@ body {
   --tooltip-shadow: 2px 5px 16px rgba(0, 0, 0, 0.24), 1px 2px 6px rgba(0, 0, 0, 0.14);
 }
 
+.workspace-tooltip--plant .workspace-tooltip__body {
+  max-width: 118px;
+  width: auto;
+}
+
+.workspace-tooltip--plant .workspace-tooltip__line {
+  white-space: normal;
+  line-height: 1.35;
+}
+
 /* Tooltip text — darker than hover labels for legibility on the bubble */
 .workspace-tooltip__line {
   margin: 0;

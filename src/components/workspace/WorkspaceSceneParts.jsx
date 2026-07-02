@@ -25,6 +25,7 @@ import {
   LEG_LEFT,
   LEG_RIGHT,
   LEG_WIDTH,
+  ROOM_WINDOW,
   SHELF_LEFT_W,
   SHELF_LEFT_X,
   SHELF_LEFT_Y,
@@ -294,6 +295,10 @@ export function SceneDefs({ c }) {
       <linearGradient id="screenBreath" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.08" />
         <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+      </linearGradient>
+      <linearGradient id="roomWindowSky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor={c.windowSky} />
+        <stop offset="100%" stopColor={c.windowSkyDeep} />
       </linearGradient>
     </defs>
   );
@@ -707,6 +712,100 @@ function WireGridPanel({ c, isLampOn }) {
         highlight={highlight}
         clipXs={cameraClipXs}
       />
+    </g>
+  );
+}
+
+/** Right-wall window — single-layer frame, sky view. */
+export function RoomWindow({ c }) {
+  const { x, y, width, height, frame, sill } = ROOM_WINDOW;
+  const innerX = x + frame;
+  const innerY = y + frame;
+  const innerW = width - frame * 2;
+  const innerH = height - frame - sill;
+
+  return (
+    <g className="workspace-room-window" aria-hidden="true">
+      <defs>
+        <clipPath id="room-window-view">
+          <rect x={innerX} y={innerY} width={innerW} height={innerH} rx="1.5" />
+        </clipPath>
+      </defs>
+
+      <rect x={x} y={y} width={width} height={height} rx="4" fill={c.windowFrame} />
+
+      <g clipPath="url(#room-window-view)">
+        <rect x={innerX} y={innerY} width={innerW} height={innerH} fill="url(#roomWindowSky)" />
+
+        <ellipse
+          cx={innerX + innerW * 0.34}
+          cy={innerY + innerH * 0.22}
+          rx={innerW * 0.2}
+          ry={innerH * 0.055}
+          fill={c.windowCloud}
+        />
+        <ellipse
+          cx={innerX + innerW * 0.62}
+          cy={innerY + innerH * 0.16}
+          rx={innerW * 0.16}
+          ry={innerH * 0.042}
+          fill={c.windowCloud}
+          opacity="0.82"
+        />
+        <ellipse
+          cx={innerX + innerW * 0.5}
+          cy={innerY + innerH * 0.24}
+          rx={innerW * 0.11}
+          ry={innerH * 0.034}
+          fill={c.windowCloud}
+          opacity="0.7"
+        />
+
+        <ellipse
+          cx={innerX + innerW * 0.22}
+          cy={innerY + innerH - 18}
+          rx={34}
+          ry={26}
+          fill={c.plantDeep}
+        />
+        <ellipse
+          cx={innerX + innerW * 0.22}
+          cy={innerY + innerH - 30}
+          rx={24}
+          ry={20}
+          fill={c.plant}
+        />
+        <ellipse
+          cx={innerX + innerW * 0.58}
+          cy={innerY + innerH - 14}
+          rx={40}
+          ry={30}
+          fill={c.plantMuted}
+        />
+        <ellipse
+          cx={innerX + innerW * 0.58}
+          cy={innerY + innerH - 28}
+          rx={28}
+          ry={22}
+          fill={c.plantLight}
+        />
+        <ellipse
+          cx={innerX + innerW * 0.84}
+          cy={innerY + innerH - 10}
+          rx={30}
+          ry={24}
+          fill={c.plantDeep}
+          opacity="0.88"
+        />
+        <ellipse
+          cx={innerX + innerW * 0.84}
+          cy={innerY + innerH - 24}
+          rx={20}
+          ry={17}
+          fill={c.plant}
+          opacity="0.9"
+        />
+      </g>
     </g>
   );
 }

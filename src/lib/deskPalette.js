@@ -2,6 +2,10 @@ export function getDeskPalette(isDarkMode) {
   if (isDarkMode) {
     return {
       bg: "#1C1916",
+      windowFrame: "#3D4F58",
+      windowSky: "#3A4A52",
+      windowSkyDeep: "#2E3C44",
+      windowCloud: "rgba(220, 228, 232, 0.35)",
       wood: "#6E5642",
       woodDark: "#544032",
       woodLight: "#826652",
@@ -86,6 +90,10 @@ export function getDeskPalette(isDarkMode) {
 
   return {
     bg: "#FAF6EE",
+    windowFrame: "#4E6472",
+    windowSky: "#C5DDF0",
+    windowSkyDeep: "#B0D0E8",
+    windowCloud: "rgba(255, 252, 247, 0.92)",
     wood: "#C4956A",
     woodDark: "#A87B52",
     woodLight: "#D4A87A",

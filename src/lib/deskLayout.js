@@ -1,4 +1,19 @@
 /** Desk geometry — right edge is the anchor; tabletop overhangs its supports. */
+export const WORKSPACE_CANVAS_WIDTH = 900;
+
+/** Shift desk + wall decor — tuned so the plant tooltip fits on the left. */
+export const SCENE_CONTENT_SHIFT_X = -136;
+
+/** Right-wall window — sits right of the wire grid with a clear gap. */
+export const ROOM_WINDOW = {
+  x: 750,
+  y: 64,
+  width: 200,
+  height: 286,
+  frame: 7,
+  sill: 8,
+};
+
 export const DESK_SURFACE_Y = 382;
 export const DESK_BOTTOM = 548;
 
@@ -19,7 +34,7 @@ export const LEG_LEFT = LEG_RIGHT - LEG_WIDTH;
 
 export const SHELF_LEFT_Y = 120;
 export const SHELF_RIGHT_Y = 118;
-export const SHELF_LEFT_X = 218;
+export const SHELF_LEFT_X = 209;
 export const SHELF_LEFT_GAP = 12;
 
 export const PLANT_WIDTH = 86;
@@ -43,7 +58,7 @@ export const MUG_HEIGHT = 78;
 
 /** Wire grid — portrait wall-mounted metal organizer. */
 export const WIRE_GRID_W = 196;
-export const WIRE_GRID_X = 666;
+export const WIRE_GRID_X = 612;
 export const WIRE_GRID_TOP = 44;
 export const WIRE_GRID_BOTTOM = 234;
 

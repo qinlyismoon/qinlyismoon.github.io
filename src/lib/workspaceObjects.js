@@ -37,7 +37,7 @@ export const WORKSPACE_OBJECTS = [
     ariaLabelKey: "plantAria",
     hideLabel: true,
     transform: `translate(${PLANT_SHELF_X}, ${SHELF_LEFT_Y - PLANT_SHELF_CONTACT_Y})`,
-    tooltipOffset: { x: -8, y: 28 },
+    tooltipOffset: { x: 4, y: 18 },
     tooltipAlign: "end",
     hitBounds: { x: -4, y: -6, width: PLANT_WIDTH + 12, height: PLANT_HEIGHT },
   },

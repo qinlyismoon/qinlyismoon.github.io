@@ -47,7 +47,7 @@ const WORKSPACE_SCENE_HEIGHT = 620;
  * Tweak these instead of moving individual objects.
  */
 const WORKSPACE_CAMERA_ZOOM = 1.13;
-const WORKSPACE_CAMERA_FOCUS_X = 505;
+const WORKSPACE_CAMERA_FOCUS_X = 428;
 /** Trim empty wall above the monitor; shelf and pegboard remain visible. */
 const WORKSPACE_CAMERA_CROP_TOP = 44;
 

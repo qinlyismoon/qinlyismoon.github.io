@@ -37,6 +37,7 @@ const WORKSPACE_COPY = {
       musicAria: "Desk speaker, play or pause music",
       mugAria: "Matcha latte",
       plantAria: "Trailing plant on shelf",
+      windowAria: "Window, nature sounds on hover",
     },
   },
   zh: {
@@ -56,6 +57,7 @@ const WORKSPACE_COPY = {
       musicAria: "桌面音箱，播放或暂停音乐",
       mugAria: "抹茶拿铁",
       plantAria: "搁板上的垂吊绿植",
+      windowAria: "窗户，悬停播放自然声",
     },
   },
 };

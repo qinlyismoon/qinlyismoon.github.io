@@ -2,10 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSettings } from "../../context/AppSettingsContext";
 import { usePageTransition } from "../../context/PageTransitionContext";
+import { SCENE_CONTENT_SHIFT_X, ROOM_WINDOW } from "../../lib/deskLayout";
 import { WORKSPACE_ASPECT, WORKSPACE_SCENE_OFFSET_Y, WORKSPACE_VIEWBOX } from "../../lib/animations";
 import { getDeskPalette } from "../../lib/deskPalette";
 import { CAMERA_FLASH_MS, MUG_STIR_AUDIO_MS, MUG_STIR_MS, PLANT_WATERING_MS } from "../../lib/workspaceInteractions";
-import { WORKSPACE_SOUNDS, soundSrc } from "../../lib/sounds";
+import { WORKSPACE_SOUNDS, NATURE_SOUND_VOLUME, soundSrc } from "../../lib/sounds";
 import WorkspaceMugTooltip from "./WorkspaceMugTooltip";
 import WorkspaceClockTooltip from "./WorkspaceClockTooltip";
 import WorkspacePlantTooltip from "./WorkspacePlantTooltip";
@@ -16,6 +17,7 @@ import { useYouTubeMusic } from "../../hooks/useYouTubeMusic";
 import {
   LampLightLayer,
   PhoebeDeskScene,
+  RoomWindow,
   renderDeskObject,
   SceneDefs,
 } from "./WorkspaceSceneParts";
@@ -39,6 +41,7 @@ export default function InteractiveWorkspace({
   const cameraShutterRef = useRef(null);
   const clockTickRef = useRef(null);
   const plantDropsRef = useRef(null);
+  const natureRef = useRef(null);
   const mugStirTimerRef = useRef(null);
   const matchaStirStopTimerRef = useRef(null);
   const plantWaterTimerRef = useRef(null);
@@ -156,6 +159,24 @@ export default function InteractiveWorkspace({
     playLoopingSound(clockTickRef);
   }, [isMuted, playLoopingSound]);
 
+  const stopNatureSound = useCallback(() => {
+    const audio = natureRef.current;
+    if (!audio) return;
+
+    audio.pause();
+    audio.currentTime = 0;
+  }, []);
+
+  const playNatureSound = useCallback(() => {
+    if (isMuted) return;
+    const audio = natureRef.current;
+    if (!audio) return;
+
+    audio.currentTime = 0;
+    audio.volume = NATURE_SOUND_VOLUME;
+    playLoopingSound(natureRef);
+  }, [isMuted, playLoopingSound]);
+
   const stopPlantDrops = useCallback(() => {
     window.clearTimeout(plantDropsStopTimerRef.current);
     const audio = plantDropsRef.current;
@@ -184,19 +205,21 @@ export default function InteractiveWorkspace({
       stopMatchaStir();
       stopClockTick();
       stopPlantDrops();
+      stopNatureSound();
     }
-  }, [isMuted, stopMatchaStir, stopClockTick, stopPlantDrops]);
+  }, [isMuted, stopMatchaStir, stopClockTick, stopPlantDrops, stopNatureSound]);
 
   useEffect(() => () => {
     pauseSound(matchaStirRef);
     stopClockTick();
     stopPlantDrops();
+    stopNatureSound();
     window.clearTimeout(mugStirTimerRef.current);
     window.clearTimeout(matchaStirStopTimerRef.current);
     window.clearTimeout(plantWaterTimerRef.current);
     window.clearTimeout(plantSwayTimerRef.current);
     window.clearTimeout(plantGrowTimerRef.current);
-  }, [pauseSound, stopClockTick, stopPlantDrops]);
+  }, [pauseSound, stopClockTick, stopPlantDrops, stopNatureSound]);
 
   const handleMugHoverChange = useCallback(
     (hovered) => {
@@ -228,6 +251,18 @@ export default function InteractiveWorkspace({
     [stopPlantDrops]
   );
 
+  const handleWindowHoverChange = useCallback(
+    (hovered) => {
+      if (hovered) {
+        playNatureSound();
+        return;
+      }
+
+      stopNatureSound();
+    },
+    [playNatureSound, stopNatureSound]
+  );
+
   const toggleMusic = () => {
     setIsMusicPlaying((playing) => !playing);
   };
@@ -248,7 +283,7 @@ export default function InteractiveWorkspace({
   );
 
   const handleActivate = ({ id, action, href, event }) => {
-    if (id === "clock") return;
+    if (id === "clock" || id === "window") return;
 
     if (action === "lamp") {
       onLampToggle();
@@ -364,6 +399,12 @@ export default function InteractiveWorkspace({
         preload="auto"
         src={soundSrc(WORKSPACE_SOUNDS.plantDrops)}
       />
+      <audio
+        ref={natureRef}
+        preload="auto"
+        src={soundSrc(WORKSPACE_SOUNDS.nature)}
+        loop
+      />
 
       <svg
         className="workspace-scene__svg"
@@ -374,6 +415,18 @@ export default function InteractiveWorkspace({
       >
         <SceneDefs c={palette} />
         <g transform={`translate(0, ${WORKSPACE_SCENE_OFFSET_Y})`}>
+          <RoomWindow c={palette} />
+          <WorkspaceObject
+            id="window"
+            ariaLabel={copy.objects.windowAria}
+            transform={`translate(${ROOM_WINDOW.x}, ${ROOM_WINDOW.y})`}
+            hitBounds={{ x: 0, y: 0, width: ROOM_WINDOW.width, height: ROOM_WINDOW.height }}
+            hideLabel
+            onHoverChange={handleWindowHoverChange}
+          >
+            {() => null}
+          </WorkspaceObject>
+          <g transform={`translate(${SCENE_CONTENT_SHIFT_X}, 0)`}>
           <PhoebeDeskScene palette={palette} isLampOn={isLampOn} />
 
           {WORKSPACE_OBJECTS.filter((object) => object.id !== "lamp").map((object) => (
@@ -468,6 +521,7 @@ export default function InteractiveWorkspace({
             }
           </WorkspaceObject>
           ))}
+          </g>
         </g>
       </svg>
     </div>
