@@ -99,7 +99,7 @@ function getHoverAnimation(id) {
   };
 }
 
-function AdaptiveTooltipForeignObject({ x, y, children }) {
+function AdaptiveTooltipForeignObject({ x, y, align = "start", children }) {
   const measureRef = useRef(null);
   const [size, setSize] = useState({ width: 1, height: 1 });
 
@@ -120,8 +120,10 @@ function AdaptiveTooltipForeignObject({ x, y, children }) {
     return () => observer.disconnect();
   }, [children]);
 
+  const foX = align === "end" ? x - size.width : x;
+
   return (
-    <foreignObject x={x} y={y} width={size.width} height={size.height} overflow="visible">
+    <foreignObject x={foX} y={y} width={size.width} height={size.height} overflow="visible">
       <div ref={measureRef} xmlns="http://www.w3.org/1999/xhtml" className="workspace-tooltip-measure">
         {children}
       </div>
@@ -139,6 +141,7 @@ export default function WorkspaceObject({
   transform,
   labelOffset = { x: 24, y: -8 },
   tooltipOffset = { x: 66, y: -16 },
+  tooltipAlign = "start",
   hideLabel = false,
   hitBounds,
   isLampOn,
@@ -149,7 +152,7 @@ export default function WorkspaceObject({
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const isToggle = action === "lamp" || action === "music";
-  const isInteractiveOnly = action === "mug";
+  const isInteractiveOnly = action === "mug" || action === "plant";
   const isLink = Boolean(href) && !isToggle && !isInteractiveOnly;
   const isExternal = isLink && /^https?:\/\//.test(href);
   const isPressed =
@@ -289,7 +292,7 @@ export default function WorkspaceObject({
           }}
           transition={{ duration: 0.3, ease: EASE_CALM }}
         >
-          <AdaptiveTooltipForeignObject x={tooltipOffset.x} y={tooltipOffset.y}>
+          <AdaptiveTooltipForeignObject x={tooltipOffset.x} y={tooltipOffset.y} align={tooltipAlign}>
             {tooltip}
           </AdaptiveTooltipForeignObject>
         </motion.g>

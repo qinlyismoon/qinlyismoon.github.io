@@ -6,7 +6,7 @@ const HOME_COPY = {
     ux: "UX Research",
     vibeCoding: "Vibe Coding Paradise",
     expand: "Expand",
-    peelCornerLabel: "Open workspace",
+    peelCornerLabel: "Open Phoebe's Desk",
   },
   zh: {
     titleTop: "珑月正在制作、",
@@ -15,13 +15,13 @@ const HOME_COPY = {
     ux: "用户研究",
     vibeCoding: "Vibe Coding Paradise",
     expand: "展开",
-    peelCornerLabel: "打开工作区",
+    peelCornerLabel: "打开 Phoebe's Desk",
   },
 };
 
 const WORKSPACE_COPY = {
   en: {
-    closeLabel: "Close workspace",
+    closeLabel: "Close Phoebe's Desk",
     sceneLabel: "Phoebe's Desk — interactive creative workspace",
     objects: {
       books: "MFA Thesis Research",
@@ -32,13 +32,15 @@ const WORKSPACE_COPY = {
       clock: "Timeline",
       clockAria: "Wall clock, US Eastern Time",
       camera: "Photography",
-      calendar: "Current Work",
-      speaker: "Music",
+      musicPlay: "Play",
+      musicPause: "Pause",
+      musicAria: "Desk speaker, play or pause music",
       mugAria: "Matcha latte",
+      plantAria: "Trailing plant on shelf",
     },
   },
   zh: {
-    closeLabel: "关闭详情页",
+    closeLabel: "关闭 Phoebe's Desk",
     sceneLabel: "Phoebe 的工作台 — 交互式创作空间",
     objects: {
       books: "艺术硕士论文",
@@ -49,12 +51,30 @@ const WORKSPACE_COPY = {
       clock: "历程",
       clockAria: "挂钟，美东时间",
       camera: "摄影",
-      calendar: "近期工作",
-      speaker: "音乐",
+      musicPlay: "播放",
+      musicPause: "暂停",
+      musicAria: "桌面音箱，播放或暂停音乐",
       mugAria: "抹茶拿铁",
+      plantAria: "搁板上的垂吊绿植",
     },
   },
 };
+
+/** Plant hover tooltip — one language at a time. */
+export const PLANT_TOOLTIP_CONTENT = {
+  en: ["Click to water it.", "Watch it grow a little each time."],
+  zh: ["点击给它浇水。", "每次浇水它都会长大一点。"],
+};
+
+export const PLANT_TOOLTIP_MAX_CONTENT = {
+  en: ["It’s fully grown.", "No more watering needed."],
+  zh: ["它已经长到最大了。", "不需要再浇水啦。"],
+};
+
+export function getPlantTooltipCopy(language, { isMaxed = false } = {}) {
+  const content = isMaxed ? PLANT_TOOLTIP_MAX_CONTENT : PLANT_TOOLTIP_CONTENT;
+  return content[language] ?? content.en;
+}
 
 /** Mug hover tooltip — one language at a time, keyed like other copy. */
 export const MUG_TOOLTIP_CONTENT = {

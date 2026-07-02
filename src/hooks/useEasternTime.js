@@ -43,6 +43,40 @@ export function useEasternTimeZoneAbbr() {
   return abbr;
 }
 
+function easternLocale(language) {
+  return language === "zh" ? "zh-CN" : "en-US";
+}
+
+export function formatEasternDate(language = "en") {
+  return new Intl.DateTimeFormat(easternLocale(language), {
+    timeZone: EASTERN_TZ,
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(new Date());
+}
+
+export function formatEasternDateLine(language = "en") {
+  const date = formatEasternDate(language);
+  return language === "zh" ? `今天是${date}。` : `Today is ${date}.`;
+}
+
+export function formatEasternClockTooltipLine(language = "en") {
+  const locale = easternLocale(language);
+  const time = new Intl.DateTimeFormat(locale, {
+    timeZone: EASTERN_TZ,
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: language !== "zh",
+  }).format(new Date());
+  const abbr = formatEasternTimeZoneAbbr();
+
+  return language === "zh"
+    ? `现在是美东时间 ${time}（${abbr}）。`
+    : `It's ${time} in US Eastern Time (${abbr}).`;
+}
+
 export function formatEasternTime() {
   return new Intl.DateTimeFormat("en-US", {
     timeZone: EASTERN_TZ,
@@ -63,6 +97,32 @@ export function useEasternTimeLabel() {
   }, []);
 
   return time;
+}
+
+export function useEasternDateLine(language = "en") {
+  const [line, setLine] = useState(() => formatEasternDateLine(language));
+
+  useEffect(() => {
+    const tick = () => setLine(formatEasternDateLine(language));
+    tick();
+    const intervalId = window.setInterval(tick, 60_000);
+    return () => window.clearInterval(intervalId);
+  }, [language]);
+
+  return line;
+}
+
+export function useEasternClockTooltipLine(language = "en") {
+  const [line, setLine] = useState(() => formatEasternClockTooltipLine(language));
+
+  useEffect(() => {
+    const tick = () => setLine(formatEasternClockTooltipLine(language));
+    tick();
+    const intervalId = window.setInterval(tick, 1000);
+    return () => window.clearInterval(intervalId);
+  }, [language]);
+
+  return line;
 }
 
 export function useEasternHandAngles() {

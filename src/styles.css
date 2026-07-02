@@ -278,70 +278,37 @@ body {
   padding: 0;
   margin: 0;
   cursor: inherit;
-  /* Folded underside below the crease — peek above shows workspace through */
-  clip-path: polygon(0 0, 0 100%, 100% 100%);
+  background: transparent;
   transform-origin: 0 0;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    inset -3px 4px 10px rgba(0, 0, 0, 0.1);
   pointer-events: auto;
-  transition: box-shadow 0.38s ease;
+}
+
+.paper-corner__fill {
+  position: absolute;
+  inset: 0;
+  /* Single flat triangle — folded card corner */
+  clip-path: polygon(0 0, 0 100%, 100% 100%);
+  filter: drop-shadow(1px 2px 3px rgba(0, 0, 0, 0.07));
+  transition: filter 0.38s ease;
+  pointer-events: none;
 }
 
 .paper-corner__flap:disabled {
   cursor: default;
-  transition: box-shadow 0.38s ease, opacity 0s;
+  transition: opacity 0s;
 }
 
-.paper-corner__flap:hover:not(:disabled) {
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    inset -4px 6px 14px rgba(0, 0, 0, 0.13);
-}
-
-.paper-corner__flap::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    at 0% 100%,
-    rgba(0, 0, 0, 0.14) 0%,
-    rgba(255, 255, 255, 0.08) 40%,
-    rgba(255, 255, 255, 0.22) 100%
-  );
-  pointer-events: none;
-}
-
-.paper-corner__flap::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 142%;
-  height: 4px;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.12) 0%,
-    rgba(0, 0, 0, 0.05) 45%,
-    transparent 100%
-  );
-  transform: rotate(45deg);
-  transform-origin: top left;
-  pointer-events: none;
+.paper-corner__flap:hover:not(:disabled) .paper-corner__fill {
+  filter: drop-shadow(1px 3px 4px rgba(0, 0, 0, 0.09));
 }
 
 .paper-corner__crease {
   position: absolute;
   top: 0;
   left: 0;
-  width: 142%;
-  height: 1.5px;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.2) 0%,
-    rgba(255, 255, 255, 0.5) 48%,
-    rgba(255, 255, 255, 0.15) 100%
-  );
+  width: 141.42%;
+  height: 1px;
+  background: var(--paper-crease, rgba(0, 0, 0, 0.1));
   transform: rotate(45deg);
   transform-origin: top left;
   pointer-events: none;
@@ -399,6 +366,17 @@ body {
   display: flex;
   --object-hover-shadow: drop-shadow(0 8px 16px rgba(72, 58, 42, 0.09));
   --object-focus-shadow: drop-shadow(0 8px 14px rgba(72, 58, 42, 0.07));
+}
+
+.workspace-youtube-player {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .workspace-scene__svg {
@@ -476,6 +454,18 @@ body {
 .workspace-object__hit#workspace-hit-lamp:hover .workspace-object__shape,
 .workspace-object__hit#workspace-hit-lamp[data-hovered] .workspace-object__shape {
   filter: none;
+}
+
+.workspace-object__hit#workspace-hit-plant:hover .workspace-object__shape,
+.workspace-object__hit#workspace-hit-plant[data-hovered] .workspace-object__shape {
+  filter: drop-shadow(2px 4px 5px rgba(92, 62, 34, 0.14))
+    drop-shadow(1px 2px 3px rgba(92, 62, 34, 0.1));
+}
+
+[data-theme="dark"] .workspace-object__hit#workspace-hit-plant:hover .workspace-object__shape,
+[data-theme="dark"] .workspace-object__hit#workspace-hit-plant[data-hovered] .workspace-object__shape {
+  filter: drop-shadow(2px 5px 6px rgba(0, 0, 0, 0.22))
+    drop-shadow(1px 2px 4px rgba(0, 0, 0, 0.14));
 }
 
 .workspace-object__tooltip {

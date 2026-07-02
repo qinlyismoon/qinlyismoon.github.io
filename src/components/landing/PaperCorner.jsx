@@ -1,9 +1,15 @@
 import { motion } from "framer-motion";
 import { paperCornerHover } from "../../lib/animations";
 
-const flapBack = {
-  light: "rgba(214, 214, 214, 0.82)",
-  dark: "rgba(52, 52, 54, 0.85)",
+const flapTheme = {
+  light: {
+    fill: "rgba(237, 237, 235, 0.92)",
+    crease: "rgba(0, 0, 0, 0.1)",
+  },
+  dark: {
+    fill: "rgba(56, 56, 58, 0.9)",
+    crease: "rgba(0, 0, 0, 0.26)",
+  },
 };
 
 export default function PaperCorner({
@@ -38,11 +44,18 @@ export default function PaperCorner({
         }
         whileTap={isPeeling ? undefined : { scale: 0.998 }}
         style={{
-          background: isDarkMode ? flapBack.dark : flapBack.light,
           opacity: isPeeling ? 0 : 1,
           pointerEvents: isPeeling ? "none" : "auto",
         }}
       >
+        <span
+          className="paper-corner__fill"
+          aria-hidden="true"
+          style={{
+            background: isDarkMode ? flapTheme.dark.fill : flapTheme.light.fill,
+            "--paper-crease": isDarkMode ? flapTheme.dark.crease : flapTheme.light.crease,
+          }}
+        />
         <span className="paper-corner__crease" aria-hidden="true" />
       </motion.button>
     </motion.div>

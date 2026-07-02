@@ -9,6 +9,7 @@ import instagramIcon from "../assets/instagram.png";
 import { useAppSettings } from "../context/AppSettingsContext";
 import { useSound } from "../hooks/useSound";
 import { getHomeCopy } from "../lib/copy";
+import { PORTFOLIO_LINKS } from "../lib/links";
 import { getThemeColors } from "../lib/theme";
 import SettingsControlBar from "./shared/SettingsControlBar";
 
@@ -491,7 +492,7 @@ export default function FolderAvatar() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => window.open("https://cooked-mind-ec6.notion.site/Phoebe-s-Research-projects-32c7fb6b97a580e88088e0da2abf1883?source=copy_link", "_blank", "noopener,noreferrer")}
+                    onClick={() => window.open(PORTFOLIO_LINKS.ux, "_blank", "noopener,noreferrer")}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.color = themeColors.mutedText;
                     }}

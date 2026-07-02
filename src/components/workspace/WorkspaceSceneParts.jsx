@@ -1,10 +1,16 @@
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useEasternHandAngles } from "../../hooks/useEasternTime";
+import { PlantShape } from "./PlantShape";
 import {
   CABINET_LEFT,
   CABINET_RIGHT,
   CABINET_WIDTH,
+  STICKY_NOTE_X,
+  STICKY_NOTE_Y,
+  CAMERA_HANG_X,
+  CAMERA_HANG_Y,
+  CAMERA_REST_BOTTOM,
   DESK_BOTTOM,
   DESK_CENTER,
   DESK_LEFT,
@@ -19,12 +25,24 @@ import {
   LEG_LEFT,
   LEG_RIGHT,
   LEG_WIDTH,
-  PLANT_BASE_X,
   SHELF_LEFT_W,
   SHELF_LEFT_X,
   SHELF_LEFT_Y,
-  SHELF_RIGHT_Y,
+  SPEAKER_HANG_X,
+  SPEAKER_HANG_Y,
+  SPEAKER_PANEL_X,
+  SPEAKER_PANEL_Y,
+  SPEAKER_PANEL_W,
+  CAMERA_PANEL_X,
+  CAMERA_PANEL_Y,
+  CAMERA_PANEL_W,
+  GRID_SHELF_H,
+  WIRE_GRID_X,
+  WIRE_GRID_W,
+  WIRE_GRID_TOP,
+  WIRE_GRID_BOTTOM,
   MONITOR_TOTAL_H,
+  BOOKS_MAX_H,
 } from "../../lib/deskLayout";
 import {
   buildLampBeam,
@@ -156,7 +174,7 @@ function mugLiquidRxAt(y) {
 
 const MUG_INNER_CLIP_PATH = mugInnerSilhouette(MUG_CX);
 
-const BOOKS_SHELF_Y = 78;
+const BOOKS_CONTACT_Y = BOOKS_MAX_H;
 
 const BOOK_SPECS = [
   { x: 0, y: 28, w: 15, h: 50, fill: "coralDeep", spine: "coralLight", accent: "coral" },
@@ -269,10 +287,6 @@ export function SceneDefs({ c }) {
         <stop offset="0%" stopColor={c.white} />
         <stop offset="100%" stopColor={c.cream} stopOpacity="0.55" />
       </linearGradient>
-      <linearGradient id="plantLeaf" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor={c.plantLight} />
-        <stop offset="100%" stopColor={c.plant} />
-      </linearGradient>
       <radialGradient id="lensGlare" cx="50%" cy="50%" r="50%">
         <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.65" />
         <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
@@ -285,8 +299,8 @@ export function SceneDefs({ c }) {
   );
 }
 
-function ContactShadow({ cx, cy, rx = 18, ry = 3.5, color }) {
-  return <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={color} />;
+function ContactShadow({ cx, cy, rx = 18, ry = 3.5, color, opacity = 1 }) {
+  return <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={color} opacity={opacity} />;
 }
 
 function DeskWarmGlow({ cx, cy, rx, ry, fill = "url(#lampWarmLight)", opacity = 0.32 }) {
@@ -521,115 +535,183 @@ function FlatDeskIllustration({ c, top, under, floor }) {
   );
 }
 
-function PlantLeaf({ d, fill, opacity = 1, stroke, strokeWidth = 0 }) {
-  return (
-    <path
-      d={d}
-      fill={fill}
-      opacity={opacity}
-      stroke={stroke}
-      strokeWidth={strokeWidth}
-      strokeLinecap="round"
-    />
-  );
+/** Soft drop shadow — light from upper-left, shadow falls down-right. */
+function WallShadow({ cx, cy, rx, ry, color, opacity = 0.55 }) {
+  return <ellipse cx={cx + 2.5} cy={cy + 3} rx={rx} ry={ry} fill={color} opacity={opacity} />;
 }
 
-function FloorPlant({ c }) {
-  const floor = DESK_BOTTOM;
-  const x = PLANT_BASE_X;
-  const potTop = floor - 44;
+/** Continuous rounded-rect path for bent metal wire. */
+function roundedWireRectPath(ix, iy, iw, ih, r) {
+  return `M ${ix + r} ${iy} H ${ix + iw - r} Q ${ix + iw} ${iy} ${ix + iw} ${iy + r} V ${iy + ih - r} Q ${ix + iw} ${iy + ih} ${ix + iw - r} ${iy + ih} H ${ix + r} Q ${ix} ${iy + ih} ${ix} ${iy + ih - r} V ${iy + r} Q ${ix} ${iy} ${ix + r} ${iy} Z`;
+}
 
+/** Visible metal rod for the wire grid. */
+function MetalRod({ x1, y1, x2, y2, metal, highlight, thickness = 2.2 }) {
   return (
-    <g aria-hidden="true">
-      <ContactShadow cx={x} cy={floor + 2} rx={30} ry={4.5} color={c.softShadow} />
-
-      {/* Back leaves */}
-      <PlantLeaf
-        d={`M${x - 6} ${potTop - 8} C${x - 34} ${potTop - 48} ${x - 52} ${potTop - 118} ${x - 28} ${potTop - 196}
-           C${x - 18} ${potTop - 148} ${x - 8} ${potTop - 92} ${x - 6} ${potTop - 8} Z`}
-        fill={c.plantDeep}
-        opacity="0.72"
-      />
-      <PlantLeaf
-        d={`M${x + 10} ${potTop - 6} C${x + 38} ${potTop - 62} ${x + 48} ${potTop - 138} ${x + 22} ${potTop - 210}
-           C${x + 12} ${potTop - 156} ${x + 8} ${potTop - 98} ${x + 10} ${potTop - 6} Z`}
-        fill={c.plantMuted}
-        opacity="0.68"
-      />
-
-      {/* Pot */}
-      <ellipse cx={x} cy={potTop + 34} rx={27} ry={6.5} fill={c.woodDark} opacity="0.32" />
-      <path
-        d={`M${x - 24} ${potTop + 30}
-           Q${x - 26} ${potTop + 8} ${x - 18} ${potTop}
-           H${x + 18}
-           Q${x + 26} ${potTop + 8} ${x + 24} ${potTop + 30}
-           Q${x + 20} ${potTop + 36} ${x} ${potTop + 36}
-           Q${x - 20} ${potTop + 36} ${x - 24} ${potTop + 30} Z`}
-        fill={c.coralDeep}
-        opacity="0.62"
-      />
-      <ellipse cx={x} cy={potTop + 1} rx={19} ry={5} fill={c.coral} opacity="0.42" />
-      <ellipse cx={x} cy={potTop + 3} rx={15} ry={3.5} fill={c.woodDark} opacity="0.35" />
-
-      {/* Mid stems */}
-      <path
-        d={`M${x - 4} ${potTop + 2} Q${x - 8} ${potTop - 70} ${x - 2} ${potTop - 148}`}
-        stroke={c.plantDeep}
-        strokeWidth="3"
+    <g>
+      <line
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
+        stroke={metal}
+        strokeWidth={thickness}
         strokeLinecap="round"
-        fill="none"
-        opacity="0.55"
       />
-      <path
-        d={`M${x + 6} ${potTop + 2} Q${x + 12} ${potTop - 82} ${x + 4} ${potTop - 168}`}
-        stroke={c.plantDeep}
-        strokeWidth="2.8"
+      <line
+        x1={x1}
+        y1={y1 - 0.35}
+        x2={x2}
+        y2={y2 - 0.35}
+        stroke={highlight}
+        strokeWidth={thickness * 0.3}
         strokeLinecap="round"
-        fill="none"
         opacity="0.5"
-      />
-
-      {/* Front leaves — Bird of Paradise / Kentia style */}
-      <PlantLeaf
-        d={`M${x - 2} ${potTop - 4} C${x - 26} ${potTop - 54} ${x - 18} ${potTop - 132} ${x + 8} ${potTop - 188}
-           C${x + 16} ${potTop - 132} ${x + 14} ${potTop - 72} ${x - 2} ${potTop - 4} Z`}
-        fill="url(#plantLeaf)"
-        opacity="0.92"
-      />
-      <PlantLeaf
-        d={`M${x + 4} ${potTop - 2} C${x + 30} ${potTop - 58} ${x + 36} ${potTop - 126} ${x + 14} ${potTop - 176}
-           C${x + 6} ${potTop - 118} ${x + 2} ${potTop - 64} ${x + 4} ${potTop - 2} Z`}
-        fill={c.plant}
-        opacity="0.88"
-      />
-      <PlantLeaf
-        d={`M${x} ${potTop - 6} C${x - 8} ${potTop - 88} ${x + 18} ${potTop - 152} ${x + 28} ${potTop - 228}
-           C${x + 20} ${potTop - 168} ${x + 10} ${potTop - 108} ${x} ${potTop - 6} Z`}
-        fill={c.plantLight}
-        opacity="0.78"
-      />
-
-      {/* Leaf vein accents */}
-      <path
-        d={`M${x + 6} ${potTop - 24} Q${x + 10} ${potTop - 96} ${x + 12} ${potTop - 168}`}
-        stroke={c.plantDeep}
-        strokeWidth="0.9"
-        fill="none"
-        opacity="0.28"
-      />
-      <path
-        d={`M${x - 2} ${potTop - 20} Q${x - 4} ${potTop - 88} ${x + 2} ${potTop - 156}`}
-        stroke={c.plantDeep}
-        strokeWidth="0.9"
-        fill="none"
-        opacity="0.24"
       />
     </g>
   );
 }
 
-export function PhoebeDeskScene({ palette }) {
+/** Thin pastel shelf — single layer, clips onto grid wires. */
+function GridShelf({ x, y, w, h, fill, shadowColor, metal, highlight, clipXs }) {
+  const cap = h / 2;
+
+  return (
+    <g className="workspace-grid-shelf">
+      <WallShadow
+        cx={x + w / 2}
+        cy={y + h + 1}
+        rx={w / 2 - 6}
+        ry={1.8}
+        color={shadowColor}
+        opacity={0.28}
+      />
+
+      {clipXs.map((clipX) => (
+        <MetalRod
+          key={clipX}
+          x1={clipX}
+          y1={y - 7}
+          x2={clipX}
+          y2={y}
+          metal={metal}
+          highlight={highlight}
+          thickness={1.55}
+        />
+      ))}
+
+      <rect x={x} y={y} width={w} height={h} rx={cap} fill={fill} />
+    </g>
+  );
+}
+
+/** Metal wire grid wall — open mesh, no background panel. */
+function WireGridPanel({ c, isLampOn }) {
+  const x0 = WIRE_GRID_X;
+  const y0 = WIRE_GRID_TOP;
+  const w = WIRE_GRID_W;
+  const h = WIRE_GRID_BOTTOM - WIRE_GRID_TOP;
+  const shadowColor = isLampOn ? c.shadow : c.softShadow;
+  const metal = isLampOn ? "#C8BEB4" : "#B0A89C";
+  const highlight = isLampOn ? "rgba(255, 248, 236, 0.62)" : "rgba(255, 252, 247, 0.48)";
+  const rod = 2.2;
+  const panelSpeaker = c.coral;
+  const panelCamera = c.yellow;
+
+  const inset = 5;
+  const ix = x0 + inset;
+  const iy = y0 + inset;
+  const iw = w - inset * 2;
+  const ih = h - inset * 2;
+  const cornerR = 10;
+  const cols = 4;
+  const rows = 7;
+  const framePath = roundedWireRectPath(ix, iy, iw, ih, cornerR);
+  const rodLeft = ix + cornerR;
+  const rodRight = ix + iw - cornerR;
+  const rodTop = iy + cornerR;
+  const rodBottom = iy + ih - cornerR;
+
+  const verticalXs = Array.from({ length: cols - 1 }, (_, i) => ix + (iw / (cols - 1)) * (i + 1));
+  const horizontalYs = Array.from({ length: rows - 1 }, (_, i) => iy + (ih / (rows - 1)) * (i + 1));
+
+  const speakerClipXs = [SPEAKER_PANEL_X + 14, SPEAKER_PANEL_X + SPEAKER_PANEL_W - 14];
+  const cameraClipXs = [CAMERA_PANEL_X + 14, CAMERA_PANEL_X + CAMERA_PANEL_W - 14];
+
+  return (
+    <g className="workspace-wire-grid">
+      <path
+        d={framePath}
+        fill="none"
+        stroke={metal}
+        strokeWidth={rod}
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+      <path
+        d={framePath}
+        fill="none"
+        stroke={highlight}
+        strokeWidth={rod * 0.32}
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        opacity="0.55"
+        transform="translate(0, -0.35)"
+      />
+
+      {verticalXs.map((cx, i) => (
+        <MetalRod
+          key={`v-${i}`}
+          x1={cx}
+          y1={rodTop}
+          x2={cx}
+          y2={rodBottom}
+          metal={metal}
+          highlight={highlight}
+          thickness={rod}
+        />
+      ))}
+
+      {horizontalYs.map((cy, i) => (
+        <MetalRod
+          key={`h-${i}`}
+          x1={rodLeft}
+          y1={cy}
+          x2={rodRight}
+          y2={cy}
+          metal={metal}
+          highlight={highlight}
+          thickness={rod}
+        />
+      ))}
+
+      <GridShelf
+        x={SPEAKER_PANEL_X}
+        y={SPEAKER_PANEL_Y}
+        w={SPEAKER_PANEL_W}
+        h={GRID_SHELF_H}
+        fill={panelSpeaker}
+        shadowColor={shadowColor}
+        metal={metal}
+        highlight={highlight}
+        clipXs={speakerClipXs}
+      />
+      <GridShelf
+        x={CAMERA_PANEL_X}
+        y={CAMERA_PANEL_Y}
+        w={CAMERA_PANEL_W}
+        h={GRID_SHELF_H}
+        fill={panelCamera}
+        shadowColor={shadowColor}
+        metal={metal}
+        highlight={highlight}
+        clipXs={cameraClipXs}
+      />
+    </g>
+  );
+}
+
+export function PhoebeDeskScene({ palette, isLampOn = false }) {
   const c = palette;
   const top = DESK_SURFACE_Y;
   const under = top + DESK_THICK;
@@ -643,15 +725,19 @@ export function PhoebeDeskScene({ palette }) {
         <rect x="0" y="0" width={SHELF_LEFT_W} height="3" rx="2" fill={c.woodLight} opacity="0.45" />
       </g>
 
-      <g transform={`translate(508, ${SHELF_RIGHT_Y})`}>
-        <ContactShadow cx={160} cy={2} rx={148} ry={4} color={c.softShadow} />
-        <rect x="0" y="0" width="320" height="10" rx="3" fill={c.shelf} />
-        <rect x="0" y="0" width="320" height="3" rx="2" fill={c.woodLight} opacity="0.45" />
+      <WireGridPanel c={c} isLampOn={isLampOn} />
+
+      <g transform={`translate(${STICKY_NOTE_X}, ${STICKY_NOTE_Y})`}>
+        <StickyNoteShape c={c} isLampOn={isLampOn} />
       </g>
 
-      <FloorPlant c={c} />
-
-      <ContactShadow cx={DESK_CENTER} cy={floor + 2} rx={248} ry={4.5} color={c.softShadow} />
+      <ContactShadow
+        cx={DESK_CENTER}
+        cy={floor + 2}
+        rx={(DESK_RIGHT - DESK_LEFT) / 2 - 24}
+        ry={4.5}
+        color={c.softShadow}
+      />
       <FlatDeskIllustration c={c} top={top} under={under} floor={floor} />
     </g>
   );
@@ -662,12 +748,12 @@ export function BooksShape({ c, isLampOn }) {
 
   return (
     <g>
-      <BooksRowShadow shelfY={BOOKS_SHELF_Y} color={shadowColor} />
+      <BooksRowShadow shelfY={BOOKS_CONTACT_Y} color={shadowColor} />
       {BOOK_SPECS.map((book, index) => (
         <BookContactShadow
           key={`shadow-${index}`}
           book={book}
-          shelfY={BOOKS_SHELF_Y}
+          shelfY={BOOKS_CONTACT_Y}
           color={shadowColor}
         />
       ))}
@@ -737,96 +823,147 @@ export function ClockShape({ c, isHovered = false, isLampOn = false }) {
   );
 }
 
-export function SpeakerShape({ c, isLampOn }) {
+function MusicNotes({ c }) {
+  const noteColor = c.ink ?? "#4A4038";
+
+  const note = (scale = 1) => (
+    <g transform={`scale(${scale})`} opacity="0.9">
+      <path
+        d="M6 2 C6 1 6.7 0.4 7.6 0.6 L13.2 1.8 C14.1 2 14.6 2.7 14.4 3.6 L13.6 7.6 C13.4 8.6 12.5 9.3 11.5 9.2 L8.7 8.8 L8.7 14.5 C8.7 16.5 6.9 18 4.7 18 C2.8 18 1.3 16.9 1.1 15.3 C0.8 13.4 2.4 11.8 4.7 11.8 C5.6 11.8 6.4 12.1 7 12.5 L7 2 Z"
+        fill={noteColor}
+      />
+    </g>
+  );
+
+  const configs = [
+    { x: 30, y: 0, driftX: [-3, 8, 20], driftY: [6, -18, -48], delay: 0, scale: 0.9 },
+    { x: 50, y: 8, driftX: [3, -10, -22], driftY: [8, -22, -52], delay: 1.1, scale: 0.84 },
+  ];
+
   return (
-    <g>
-      <ContactShadow cx={26} cy={78} rx={26} ry={3} color={isLampOn ? c.shadow : c.softShadow} />
-      <rect x="0" y="0" width="52" height="76" rx="8" fill={c.gray} />
-      <rect x="4" y="4" width="44" height="68" rx="6" fill={c.grayLight} opacity="0.45" />
-      <circle cx="26" cy="24" r="10" fill={c.inkSoft} opacity="0.35" />
-      <circle cx="26" cy="52" r="14" fill={c.inkSoft} opacity="0.35" />
+    <g className="speaker-music-notes" pointerEvents="none">
+      {configs.map((cfg, index) => (
+        <motion.g
+          key={index}
+          initial={{ opacity: 0, y: cfg.driftY[0], x: cfg.driftX[0] }}
+          animate={{
+            opacity: [0, 0.5, 0],
+            y: cfg.driftY,
+            x: cfg.driftX,
+          }}
+          transition={{
+            duration: 2.8,
+            repeat: Infinity,
+            delay: cfg.delay,
+            ease: "easeOut",
+          }}
+        >
+          <g transform={`translate(${cfg.x}, ${cfg.y})`}>{note(cfg.scale)}</g>
+        </motion.g>
+      ))}
     </g>
   );
 }
 
-export function CalendarShape({ c, isHovered, isLampOn }) {
-  const W = 54;
-  const H = 74;
+export function SpeakerShape({ c, isLampOn, isMusicPlaying = false }) {
   const shadowColor = isLampOn ? c.shadow : c.softShadow;
 
   return (
     <g>
-      <ContactShadow cx={W / 2} cy={H + 1} rx={28} ry={3} color={shadowColor} />
+      <ContactShadow cx={30} cy={85} rx={22} ry={1.8} color={shadowColor} opacity={0.65} />
+      <rect x="0" y="0" width="56" height="84" rx="9" fill={c.gray} />
+      <rect x="4" y="4" width="48" height="76" rx="7" fill={c.grayLight} opacity={0.45} />
+      <circle cx="28" cy="26" r="11" fill={c.inkSoft} opacity="0.35" />
+      <circle cx="28" cy="58" r="15" fill={c.inkSoft} opacity="0.35" />
+      <circle cx="28" cy="78" r="2" fill={c.plant} opacity="0.55" />
+      {isMusicPlaying && <MusicNotes c={c} />}
+    </g>
+  );
+}
 
-      {/* Stacked pages behind */}
-      <rect x="7" y="16" width={W - 10} height={H - 16} rx="3" fill={c.cream} opacity="0.55" />
-      <rect x="4" y="14" width={W - 10} height={H - 16} rx="3" fill={c.cream} opacity="0.32" />
+export function StickyNoteShape({ c, isLampOn }) {
+  const W = 44;
+  const H = 52;
+  const shadowColor = isLampOn ? c.shadow : c.softShadow;
 
-      {/* Main page */}
-      <rect x="0" y="12" width={W} height={H - 10} rx="4" fill="url(#calendarPaper)" />
+  return (
+    <g>
+      <ContactShadow cx={W / 2 + 1.5} cy={H + 1.5} rx={18} ry={1.8} color={shadowColor} opacity={0.55} />
 
-      {/* Header band */}
-      <rect x="0" y="12" width={W} height="15" rx="4" fill={c.teal} opacity="0.16" />
-      <rect x="6" y="15" width="20" height="3" rx="1.5" fill={c.inkSoft} opacity="0.22" />
+      <rect x="4" y="3" width={W - 6} height={H - 3} rx="5" fill={c.cream} opacity="0.35" />
+      <rect x="0" y="0" width={W} height={H} rx="6" fill={isLampOn ? c.white : c.white} />
+      <rect x="0" y="0" width={W} height={H} rx="6" fill={c.cream} opacity={isLampOn ? 0.42 : 0.55} />
 
-      {/* Spiral binding rings */}
-      {[11, 26, 41].map((x) => (
-        <g key={x}>
-          <rect x={x} y="7" width="3" height="11" rx="1.5" fill={c.tealDeep} />
-          <circle cx={x + 1.5} cy="9.5" r="2.6" fill="none" stroke={c.teal} strokeWidth="1.2" />
-        </g>
-      ))}
+      <circle cx={W / 2} cy="5" r="3.2" fill={c.coral} opacity="0.55" />
+      <circle cx={W / 2 - 0.6} cy="4.2" r="1" fill={c.white} opacity="0.45" />
 
-      {/* Date grid */}
-      {[
-        { x: 8, y: 32, fill: c.teal, opacity: 0.62 },
-        { x: 20, y: 32, fill: c.teal, opacity: 0.62 },
-        { x: 32, y: 32, fill: c.coral, opacity: 0.52 },
-        { x: 8, y: 44, fill: c.teal, opacity: 0.32 },
-        { x: 20, y: 44, fill: c.coral, opacity: 0.32 },
-        { x: 32, y: 44, fill: c.teal, opacity: 0.22 },
-        { x: 8, y: 56, fill: c.coral, opacity: 0.22 },
-        { x: 20, y: 56, fill: c.teal, opacity: 0.18 },
-        { x: 32, y: 56, fill: c.coral, opacity: 0.18 },
-      ].map((cell, index) => (
-        <rect
-          key={index}
-          x={cell.x}
-          y={cell.y}
-          width="10"
-          height="9"
-          rx="1.5"
-          fill={cell.fill}
-          opacity={cell.opacity}
-        />
-      ))}
+      <rect x="7" y="14" width="26" height="2" rx="1" fill={c.inkSoft} opacity="0.16" />
+      <rect x="7" y="22" width="30" height="2" rx="1" fill={c.inkSoft} opacity="0.12" />
+      <rect x="7" y="30" width="22" height="2" rx="1" fill={c.inkSoft} opacity="0.1" />
+      <rect x="7" y="38" width="18" height="2" rx="1" fill={c.coral} opacity="0.14" />
 
-      {/* Paper edge thickness */}
-      <rect x={W - 2} y="14" width="2" height={H - 14} rx="1" fill={c.cream} opacity="0.65" />
+      <rect x={W - 1.5} y="2" width="1.5" height={H - 2} rx="0.75" fill={c.cream} opacity="0.5" />
     </g>
   );
 }
 
 export function CameraShape({ c, isHovered, cameraFlash, isLampOn }) {
+  const W = 68;
+  const cx = W / 2;
+  const bodyY = 10;
+  const bodyH = 42;
+  const bandY = 20;
+  const bandH = 16;
+  const lensCy = bandY + bandH / 2;
+  const bandFill = "#2E3836";
+  const shadowColor = isLampOn ? c.shadow : c.softShadow;
+
   return (
     <g>
-      <ContactShadow cx={34} cy={60} rx={32} ry={3} color={isLampOn ? c.shadow : c.softShadow} />
-      <rect x="0" y="12" width="68" height="44" rx="10" fill={c.teal} />
-      <rect x="4" y="16" width="60" height="36" rx="8" fill={c.tealLight} opacity="0.45" />
-      <circle cx="34" cy="34" r="16" fill={c.tealDeep} />
-      <circle cx="34" cy="34" r="12" fill={c.cream} opacity="0.35" />
-      <circle cx="34" cy="34" r="8" fill={c.inkSoft} opacity="0.45" />
-      <rect x="48" y="6" width="14" height="9" rx="2.5" fill={c.tealDeep} />
-      <circle cx="54" cy="10" r="2" fill={c.coral} />
+      <ContactShadow cx={cx} cy={CAMERA_REST_BOTTOM + 2} rx={24} ry={1.6} color={shadowColor} opacity={0.65} />
+
+      {/* Chassis — upper / lower teal panels */}
+      <rect x="0" y={bodyY} width={W} height={bodyH} rx="8" fill={c.teal} />
+      <rect x="4" y={bodyY + 2} width="60" height="10" rx="4" fill={c.tealLight} opacity="0.26" />
+      <rect x="4" y={bodyY + bodyH - 11} width="60" height="9" rx="4" fill={c.tealLight} opacity="0.2" />
+
+      {/* Dark front band */}
+      <rect x="4" y={bandY} width="60" height={bandH} rx="2.5" fill={bandFill} />
+
+      {/* Top plate */}
+      <rect x="2" y="3" width="64" height="9" rx="3.5" fill={c.teal} />
+      <rect x="2" y="3" width="64" height="3" rx="3.5" fill={c.tealLight} opacity="0.3" />
+
+      {/* Flash */}
+      <rect x="27" y="1" width="14" height="6" rx="2" fill={bandFill} />
+      <rect x="29" y="2.5" width="10" height="3.5" rx="1" fill={c.cream} opacity="0.82" />
+
+      {/* Shutter */}
+      <rect x="54" y="4.5" width="5" height="4.5" rx="1.5" fill={bandFill} />
+
+      {/* Front viewfinder */}
+      <circle cx="57" cy="16" r="3.5" fill={bandFill} />
+      <circle cx="57" cy="16" r="2.1" fill={c.tealLight} opacity="0.55" />
+
+      {/* Rangefinder window on band */}
+      <circle cx="18" cy={lensCy - 2} r="2" fill={c.cream} opacity="0.55" />
+
+      {/* Lens — focal point */}
+      <circle cx={cx} cy={lensCy} r="14" fill={c.white} />
+      <circle cx={cx} cy={lensCy} r="10.5" fill={c.teal} />
+      <circle cx={cx} cy={lensCy} r="8.5" fill={c.tealDeep} />
+      <circle cx={cx} cy={lensCy} r="5.8" fill="#3A4A4E" opacity="0.88" />
+      <ellipse cx={cx - 4} cy={lensCy - 3} rx="3.5" ry="2.6" fill={c.cream} opacity="0.62" />
+
       <motion.ellipse
-        cx="34"
-        cy="34"
+        cx={cx}
+        cy={lensCy}
         rx="5"
         ry="3"
         fill="url(#lensGlare)"
         animate={{
-          cx: isHovered ? [28, 40, 28] : 30,
-          cy: isHovered ? [30, 36, 30] : 32,
+          cx: isHovered ? [cx - 6, cx + 6, cx - 6] : cx - 2,
+          cy: isHovered ? [lensCy - 3, lensCy + 3, lensCy - 3] : lensCy - 1,
           opacity: isHovered ? [0, 0.55, 0] : 0,
         }}
         transition={{
@@ -835,12 +972,13 @@ export function CameraShape({ c, isHovered, cameraFlash, isLampOn }) {
           ease: "easeInOut",
         }}
       />
+
       <motion.rect
-        x="-6"
+        x="-4"
         y="0"
-        width="80"
-        height="68"
-        rx="12"
+        width="76"
+        height="58"
+        rx="10"
         fill="#FFFFFF"
         initial={false}
         animate={{ opacity: cameraFlash ? [0, 0.75, 0] : 0 }}
@@ -1571,6 +1709,11 @@ export function renderDeskObject(id, palette, interaction = {}) {
     cameraFlash = false,
     mugStirring = false,
     mugStirToken = 0,
+    plantWatering = false,
+    plantWaterToken = 0,
+    plantSwaying = false,
+    plantSwayToken = 0,
+    plantGrowthStage = 0,
   } = interaction;
 
   switch (id) {
@@ -1578,10 +1721,22 @@ export function renderDeskObject(id, palette, interaction = {}) {
       return <BooksShape c={c} isLampOn={isLampOn} />;
     case "clock":
       return <ClockShape c={c} isHovered={isHovered} isLampOn={isLampOn} />;
+    case "plant":
+      return (
+        <PlantShape
+          c={c}
+          isHovered={isHovered}
+          isLampOn={isLampOn}
+          compact={interaction.compactScene}
+          isWatering={interaction.plantWatering}
+          waterToken={interaction.plantWaterToken}
+          isSwaying={plantSwaying}
+          swayToken={plantSwayToken}
+          growthStage={plantGrowthStage}
+        />
+      );
     case "speaker":
-      return <SpeakerShape c={c} isLampOn={isLampOn} />;
-    case "calendar":
-      return <CalendarShape c={c} isHovered={isHovered} isLampOn={isLampOn} />;
+      return <SpeakerShape c={c} isLampOn={isLampOn} isMusicPlaying={isMusicPlaying} />;
     case "camera":
       return (
         <CameraShape

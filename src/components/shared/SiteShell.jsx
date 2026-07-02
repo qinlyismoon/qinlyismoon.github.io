@@ -10,9 +10,10 @@ import SettingsControlBar from "./SettingsControlBar";
 import PaperPeelStage from "./PaperPeelStage";
 import ViewportPortal from "./ViewportPortal";
 import { PageTransitionContext } from "../../context/PageTransitionContext";
+import { PHOEBES_DESK_PATH, isPhoebesDeskPath } from "../../lib/routes";
 
 function viewStateFromPath(pathname) {
-  return pathname === "/workspace" ? "workspace" : "landing";
+  return isPhoebesDeskPath(pathname) ? "workspace" : "landing";
 }
 
 export default function SiteShell() {
@@ -31,8 +32,27 @@ export default function SiteShell() {
 
   useEffect(() => {
     if (viewState === "opening" || viewState === "closing") return;
-    setViewState(viewStateFromPath(location.pathname));
-  }, [location.pathname, viewState]);
+    if (location.pathname === "/workspace") {
+      navigate(PHOEBES_DESK_PATH, { replace: true });
+      return;
+    }
+    if (isPhoebesDeskPath(location.pathname) && viewState === "workspace") {
+      transitionLockRef.current = false;
+      return;
+    }
+    // URL can lag behind the peel transition — avoid snapping back to landing for a frame.
+    if (
+      transitionLockRef.current &&
+      viewState === "workspace" &&
+      !isPhoebesDeskPath(location.pathname)
+    ) {
+      return;
+    }
+    const pathView = viewStateFromPath(location.pathname);
+    if (pathView !== viewState) {
+      setViewState(pathView);
+    }
+  }, [location.pathname, viewState, navigate]);
 
   const goToWorkspace = useCallback(() => {
     if (viewState !== "landing") return;
@@ -58,7 +78,7 @@ export default function SiteShell() {
   const handleOpenComplete = useCallback(() => {
     if (transitionLockRef.current) return;
     transitionLockRef.current = true;
-    navigate("/workspace");
+    navigate(PHOEBES_DESK_PATH);
     setViewState("workspace");
   }, [navigate]);
 

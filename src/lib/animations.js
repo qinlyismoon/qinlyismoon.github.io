@@ -38,7 +38,25 @@ export const paperCornerHover = {
   transition: { duration: 0.38, ease: PAPER_PEEL_EASE },
 };
 
-export const WORKSPACE_VIEWBOX = "0 0 900 620";
-export const WORKSPACE_ASPECT = "xMidYMid meet";
-/** Shifts the entire desk illustration downward within the viewport. */
-export const WORKSPACE_SCENE_OFFSET_Y = 48;
+/** Full illustration canvas — object layout is authored in these coordinates. */
+const WORKSPACE_SCENE_WIDTH = 900;
+const WORKSPACE_SCENE_HEIGHT = 620;
+
+/**
+ * Virtual camera — medium-shot framing (~13% closer than the full scene).
+ * Tweak these instead of moving individual objects.
+ */
+const WORKSPACE_CAMERA_ZOOM = 1.13;
+const WORKSPACE_CAMERA_FOCUS_X = 505;
+/** Trim empty wall above the monitor; shelf and pegboard remain visible. */
+const WORKSPACE_CAMERA_CROP_TOP = 44;
+
+const cameraWidth = Math.round(WORKSPACE_SCENE_WIDTH / WORKSPACE_CAMERA_ZOOM);
+const cameraHeight = Math.round(WORKSPACE_SCENE_HEIGHT / WORKSPACE_CAMERA_ZOOM);
+const cameraX = Math.round(WORKSPACE_CAMERA_FOCUS_X - cameraWidth / 2);
+
+export const WORKSPACE_VIEWBOX = `${cameraX} ${WORKSPACE_CAMERA_CROP_TOP} ${cameraWidth} ${cameraHeight}`;
+/** Anchor the desk to the viewport bottom for a foreground, immersive feel. */
+export const WORKSPACE_ASPECT = "xMidYMax meet";
+/** Light vertical nudge inside the camera frame after tighter crop. */
+export const WORKSPACE_SCENE_OFFSET_Y = 26;
