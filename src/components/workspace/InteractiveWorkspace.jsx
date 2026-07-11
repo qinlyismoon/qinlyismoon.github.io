@@ -67,28 +67,14 @@ export default function InteractiveWorkspace({
   const PLANT_GROW_MS = 520;
   const PLANT_GROW_EASE_OUT = (t) => 1 - Math.pow(1 - t, 3);
 
+  // Plant watering / growth is session-only — do not persist across refreshes.
   useEffect(() => {
     try {
-      const saved = window.localStorage.getItem("workspacePlantGrowthStage");
-      if (saved == null) return;
-      const parsed = Math.max(0, Math.min(PLANT_MAX_STAGE, Number(saved)));
-      if (Number.isFinite(parsed)) {
-        setPlantGrowthStage(parsed);
-        setPlantGrowthFloat(parsed);
-      }
+      window.localStorage.removeItem("workspacePlantGrowthStage");
     } catch {
       // Ignore storage errors.
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem("workspacePlantGrowthStage", String(plantGrowthStage));
-    } catch {
-      // Ignore storage errors.
-    }
-  }, [plantGrowthStage]);
 
   const animatePlantGrowthTo = useCallback((nextStage) => {
     const from = plantGrowthFloat;

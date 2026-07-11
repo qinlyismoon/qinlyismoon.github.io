@@ -186,33 +186,23 @@ const BOOK_SPECS = [
   { x: 67, y: 18, w: 16, h: 60, fill: "tealDeep", spine: "tealLight", accent: "teal" },
 ];
 
-function BookContactShadow({ book, shelfY, color }) {
+function SoftContactShadow({ cx, cy, rx, ry = 2.8, color }) {
   return (
-    <ellipse
-      cx={book.x + book.w / 2}
-      cy={shelfY + 2}
-      rx={book.w * 0.64}
-      ry={3.2}
-      fill={color}
-      opacity="0.72"
-    />
+    <g className="soft-contact-shadow" aria-hidden="true">
+      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={color} opacity="0.28" />
+      <ellipse cx={cx} cy={cy} rx={rx * 0.72} ry={ry * 0.72} fill={color} opacity="0.22" />
+    </g>
   );
 }
 
 function BooksRowShadow({ shelfY, color }) {
   const left = BOOK_SPECS[0].x;
   const right = BOOK_SPECS[BOOK_SPECS.length - 1].x + BOOK_SPECS[BOOK_SPECS.length - 1].w;
+  const width = right - left;
+  const cx = (left + right) / 2;
+  const cy = shelfY + 2.5;
 
-  return (
-    <ellipse
-      cx={(left + right) / 2}
-      cy={shelfY + 3}
-      rx={(right - left) / 2 + 6}
-      ry={4}
-      fill={color}
-      opacity="0.38"
-    />
-  );
+  return <SoftContactShadow cx={cx} cy={cy} rx={width / 2 + 5} ry={3.6} color={color} />;
 }
 
 function BookVolume({ book, c }) {
@@ -540,11 +530,6 @@ function FlatDeskIllustration({ c, top, under, floor }) {
   );
 }
 
-/** Soft drop shadow — light from upper-left, shadow falls down-right. */
-function WallShadow({ cx, cy, rx, ry, color, opacity = 0.55 }) {
-  return <ellipse cx={cx + 2.5} cy={cy + 3} rx={rx} ry={ry} fill={color} opacity={opacity} />;
-}
-
 /** Continuous rounded-rect path for bent metal wire. */
 function roundedWireRectPath(ix, iy, iw, ih, r) {
   return `M ${ix + r} ${iy} H ${ix + iw - r} Q ${ix + iw} ${iy} ${ix + iw} ${iy + r} V ${iy + ih - r} Q ${ix + iw} ${iy + ih} ${ix + iw - r} ${iy + ih} H ${ix + r} Q ${ix} ${iy + ih} ${ix} ${iy + ih - r} V ${iy + r} Q ${ix} ${iy} ${ix + r} ${iy} Z`;
@@ -578,20 +563,11 @@ function MetalRod({ x1, y1, x2, y2, metal, highlight, thickness = 2.2 }) {
 }
 
 /** Thin pastel shelf — single layer, clips onto grid wires. */
-function GridShelf({ x, y, w, h, fill, shadowColor, metal, highlight, clipXs }) {
+function GridShelf({ x, y, w, h, fill, metal, highlight, clipXs }) {
   const cap = h / 2;
 
   return (
     <g className="workspace-grid-shelf">
-      <WallShadow
-        cx={x + w / 2}
-        cy={y + h + 1}
-        rx={w / 2 - 6}
-        ry={1.8}
-        color={shadowColor}
-        opacity={0.28}
-      />
-
       {clipXs.map((clipX) => (
         <MetalRod
           key={clipX}
@@ -616,7 +592,6 @@ function WireGridPanel({ c, isLampOn }) {
   const y0 = WIRE_GRID_TOP;
   const w = WIRE_GRID_W;
   const h = WIRE_GRID_BOTTOM - WIRE_GRID_TOP;
-  const shadowColor = isLampOn ? c.shadow : c.softShadow;
   const metal = isLampOn ? "#C8BEB4" : "#B0A89C";
   const highlight = isLampOn ? "rgba(255, 248, 236, 0.62)" : "rgba(255, 252, 247, 0.48)";
   const rod = 2.2;
@@ -696,7 +671,6 @@ function WireGridPanel({ c, isLampOn }) {
         w={SPEAKER_PANEL_W}
         h={GRID_SHELF_H}
         fill={panelSpeaker}
-        shadowColor={shadowColor}
         metal={metal}
         highlight={highlight}
         clipXs={speakerClipXs}
@@ -707,7 +681,6 @@ function WireGridPanel({ c, isLampOn }) {
         w={CAMERA_PANEL_W}
         h={GRID_SHELF_H}
         fill={panelCamera}
-        shadowColor={shadowColor}
         metal={metal}
         highlight={highlight}
         clipXs={cameraClipXs}
@@ -766,44 +739,44 @@ export function RoomWindow({ c }) {
           cy={innerY + innerH - 18}
           rx={34}
           ry={26}
-          fill={c.plantDeep}
+          fill={c.windowBushDeep}
         />
         <ellipse
           cx={innerX + innerW * 0.22}
           cy={innerY + innerH - 30}
           rx={24}
           ry={20}
-          fill={c.plant}
+          fill={c.windowBush}
         />
         <ellipse
           cx={innerX + innerW * 0.58}
           cy={innerY + innerH - 14}
           rx={40}
           ry={30}
-          fill={c.plantMuted}
+          fill={c.windowBushMuted}
         />
         <ellipse
           cx={innerX + innerW * 0.58}
           cy={innerY + innerH - 28}
           rx={28}
           ry={22}
-          fill={c.plantLight}
+          fill={c.windowBushLight}
         />
         <ellipse
           cx={innerX + innerW * 0.84}
           cy={innerY + innerH - 10}
           rx={30}
           ry={24}
-          fill={c.plantDeep}
-          opacity="0.88"
+          fill={c.windowBushDeep}
+          opacity="0.85"
         />
         <ellipse
           cx={innerX + innerW * 0.84}
           cy={innerY + innerH - 24}
           rx={20}
           ry={17}
-          fill={c.plant}
-          opacity="0.9"
+          fill={c.windowBush}
+          opacity="0.88"
         />
       </g>
     </g>
@@ -848,14 +821,6 @@ export function BooksShape({ c, isLampOn }) {
   return (
     <g>
       <BooksRowShadow shelfY={BOOKS_CONTACT_Y} color={shadowColor} />
-      {BOOK_SPECS.map((book, index) => (
-        <BookContactShadow
-          key={`shadow-${index}`}
-          book={book}
-          shelfY={BOOKS_CONTACT_Y}
-          color={shadowColor}
-        />
-      ))}
       {BOOK_SPECS.map((book, index) => (
         <BookVolume key={index} book={book} c={c} />
       ))}
@@ -966,15 +931,20 @@ function MusicNotes({ c }) {
 
 export function SpeakerShape({ c, isLampOn, isMusicPlaying = false }) {
   const shadowColor = isLampOn ? c.shadow : c.softShadow;
+  const body = c.speakerBody ?? c.gray;
+  const face = c.speakerFace ?? c.grayLight;
+  const cone = c.speakerCone ?? c.inkSoft;
 
   return (
     <g>
-      <ContactShadow cx={30} cy={85} rx={22} ry={1.8} color={shadowColor} opacity={0.65} />
-      <rect x="0" y="0" width="56" height="84" rx="9" fill={c.gray} />
-      <rect x="4" y="4" width="48" height="76" rx="7" fill={c.grayLight} opacity={0.45} />
-      <circle cx="28" cy="26" r="11" fill={c.inkSoft} opacity="0.35" />
-      <circle cx="28" cy="58" r="15" fill={c.inkSoft} opacity="0.35" />
-      <circle cx="28" cy="78" r="2" fill={c.plant} opacity="0.55" />
+      <SoftContactShadow cx={30} cy={85} rx={24} ry={2.4} color={shadowColor} />
+      <rect x="0" y="0" width="56" height="84" rx="9" fill={body} />
+      <rect x="4" y="4" width="48" height="76" rx="7" fill={face} opacity={0.55} />
+      <circle cx="28" cy="26" r="11" fill={cone} opacity="0.58" />
+      <circle cx="28" cy="26" r="4.5" fill={cone} opacity="0.72" />
+      <circle cx="28" cy="58" r="15" fill={cone} opacity="0.58" />
+      <circle cx="28" cy="58" r="6" fill={cone} opacity="0.74" />
+      <circle cx="28" cy="78" r="2" fill={c.plant} opacity="0.7" />
       {isMusicPlaying && <MusicNotes c={c} />}
     </g>
   );
@@ -983,12 +953,9 @@ export function SpeakerShape({ c, isLampOn, isMusicPlaying = false }) {
 export function StickyNoteShape({ c, isLampOn }) {
   const W = 44;
   const H = 52;
-  const shadowColor = isLampOn ? c.shadow : c.softShadow;
 
   return (
     <g>
-      <ContactShadow cx={W / 2 + 1.5} cy={H + 1.5} rx={18} ry={1.8} color={shadowColor} opacity={0.55} />
-
       <rect x="4" y="3" width={W - 6} height={H - 3} rx="5" fill={c.cream} opacity="0.35" />
       <rect x="0" y="0" width={W} height={H} rx="6" fill={isLampOn ? c.white : c.white} />
       <rect x="0" y="0" width={W} height={H} rx="6" fill={c.cream} opacity={isLampOn ? 0.42 : 0.55} />
@@ -1019,7 +986,13 @@ export function CameraShape({ c, isHovered, cameraFlash, isLampOn }) {
 
   return (
     <g>
-      <ContactShadow cx={cx} cy={CAMERA_REST_BOTTOM + 2} rx={24} ry={1.6} color={shadowColor} opacity={0.65} />
+      <SoftContactShadow
+        cx={cx}
+        cy={CAMERA_REST_BOTTOM + 1.5}
+        rx={26}
+        ry={2.4}
+        color={shadowColor}
+      />
 
       {/* Chassis — upper / lower teal panels */}
       <rect x="0" y={bodyY} width={W} height={bodyH} rx="8" fill={c.teal} />
@@ -1692,7 +1665,7 @@ export function MonitorShape({ c, isLampOn, isHovered = false }) {
            L ${cx + standBottomW / 2 - 1.5} ${standBottom - 1}
            L ${cx - standBottomW / 2 + 1.5} ${standBottom - 1} Z`}
         fill={shellShade}
-        opacity="0.16"
+        opacity="0.28"
       />
 
       <rect x={screenX} y={screenY} width={screenW} height={screenH} rx="10" fill={c.monitorScreen} />
@@ -1724,7 +1697,7 @@ export function MonitorShape({ c, isLampOn, isHovered = false }) {
             height={headerH}
             rx={uiRx}
             fill={c.coral}
-            opacity="0.85"
+            opacity={c.monitorUiHeaderOpacity ?? 0.85}
           />
           <rect
             x={contentX}
@@ -1743,6 +1716,7 @@ export function MonitorShape({ c, isLampOn, isHovered = false }) {
             rx={uiRx}
             fill={c.teal}
             className="monitor-screen-ui__teal"
+            opacity={c.monitorUiTealOpacity ?? 0.55}
           />
           <rect
             x={sideX}
@@ -1752,6 +1726,7 @@ export function MonitorShape({ c, isLampOn, isHovered = false }) {
             rx={uiRx}
             fill={c.coral}
             className="monitor-screen-ui__coral"
+            opacity={c.monitorUiCoralOpacity ?? 0.4}
           />
         </SvgTranslateDrift>
 

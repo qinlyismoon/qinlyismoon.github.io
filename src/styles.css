@@ -183,18 +183,24 @@ body {
   flex-wrap: wrap;
 }
 
-.portfolio-nav__social-button {
+.portfolio-nav__social-button,
+.social-button {
   background: transparent;
   border: none;
   padding: 0;
+  margin: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  color: inherit;
   opacity: 1;
   transition: opacity 0.18s ease;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-.portfolio-nav__social-button:hover {
+.portfolio-nav__social-button:hover,
+.social-button:hover {
   opacity: 0.45;
 }
 
@@ -204,6 +210,17 @@ body {
   object-fit: contain;
   display: block;
   transition: filter 0.18s ease, opacity 0.18s ease;
+}
+
+.social-button svg.portfolio-nav__social-icon {
+  color: currentColor;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.social-button .github-icon {
+  transform: scale(1.1);
+  transform-origin: center;
 }
 
 .viewport-controls {
@@ -266,8 +283,9 @@ body {
   top: 0;
   right: 0;
   z-index: 12;
+  overflow: visible;
+  transform-origin: top right;
   pointer-events: none;
-  overflow: hidden;
 }
 
 .paper-corner__flap {
@@ -275,43 +293,36 @@ body {
   inset: 0;
   z-index: 2;
   border: none;
+  outline: none;
   padding: 0;
   margin: 0;
   cursor: inherit;
   background: transparent;
-  transform-origin: 0 0;
+  box-shadow: none;
+  transform-origin: top right;
   pointer-events: auto;
 }
 
 .paper-corner__fill {
   position: absolute;
   inset: 0;
-  /* Single flat triangle — folded card corner */
+  /* Single flat triangle — folded card corner (no stroke / crease) */
   clip-path: polygon(0 0, 0 100%, 100% 100%);
-  filter: drop-shadow(1px 2px 3px rgba(0, 0, 0, 0.07));
-  transition: filter 0.38s ease;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  /* Soft lift along the diagonal — follows the clipped triangle */
+  filter: drop-shadow(-1px 2px 2.5px rgba(0, 0, 0, 0.07));
+  transition: filter 0.28s ease;
   pointer-events: none;
+}
+
+.paper-corner:hover .paper-corner__fill {
+  filter: drop-shadow(-1.5px 2.5px 3.5px rgba(0, 0, 0, 0.09));
 }
 
 .paper-corner__flap:disabled {
   cursor: default;
-  transition: opacity 0s;
-}
-
-.paper-corner__flap:hover:not(:disabled) .paper-corner__fill {
-  filter: drop-shadow(1px 3px 4px rgba(0, 0, 0, 0.09));
-}
-
-.paper-corner__crease {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 141.42%;
-  height: 1px;
-  background: var(--paper-crease, rgba(0, 0, 0, 0.1));
-  transform: rotate(45deg);
-  transform-origin: top left;
-  pointer-events: none;
 }
 
 /* Workspace page */
@@ -557,39 +568,36 @@ body {
 
 /* Monitor screen — hover cues driven by link data-hovered */
 .monitor-screen-ui__teal {
-  opacity: 0.55;
+  opacity: 1;
 }
 
 .monitor-screen-ui__coral {
-  opacity: 0.4;
+  opacity: 1;
 }
 
 .workspace-object__hit#workspace-hit-monitor:hover .monitor-screen-ui__teal,
 .workspace-object__hit#workspace-hit-monitor[data-hovered] .monitor-screen-ui__teal {
-  opacity: 0.62;
+  opacity: 1;
+  filter: brightness(1.04);
 }
 
 .workspace-object__hit#workspace-hit-monitor:hover .monitor-screen-ui__coral,
 .workspace-object__hit#workspace-hit-monitor[data-hovered] .monitor-screen-ui__coral {
-  opacity: 0.48;
+  opacity: 1;
+  filter: brightness(1.04);
 }
 
-[data-theme="dark"] .monitor-screen-ui__teal {
-  opacity: 0.48;
-}
-
+[data-theme="dark"] .monitor-screen-ui__teal,
 [data-theme="dark"] .monitor-screen-ui__coral {
-  opacity: 0.34;
+  opacity: 1;
 }
 
 [data-theme="dark"] .workspace-object__hit#workspace-hit-monitor:hover .monitor-screen-ui__teal,
-[data-theme="dark"] .workspace-object__hit#workspace-hit-monitor[data-hovered] .monitor-screen-ui__teal {
-  opacity: 0.56;
-}
-
+[data-theme="dark"] .workspace-object__hit#workspace-hit-monitor[data-hovered] .monitor-screen-ui__teal,
 [data-theme="dark"] .workspace-object__hit#workspace-hit-monitor:hover .monitor-screen-ui__coral,
 [data-theme="dark"] .workspace-object__hit#workspace-hit-monitor[data-hovered] .monitor-screen-ui__coral {
-  opacity: 0.42;
+  opacity: 1;
+  filter: brightness(1.06);
 }
 
 [data-theme="dark"] .monitor-screen--hovered .monitor-screen-glow {

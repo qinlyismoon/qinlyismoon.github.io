@@ -1,12 +1,17 @@
+import { RiGithubFill } from "react-icons/ri";
 import emailIcon from "../../assets/email.png";
 import linkedinIcon from "../../assets/linkedin.png";
-import instagramIcon from "../../assets/instagram.png";
 import { PORTFOLIO_LINKS } from "../../lib/links";
 
 const SOCIAL_ITEMS = [
   { label: "Email", icon: emailIcon, href: PORTFOLIO_LINKS.email },
   { label: "LinkedIn", icon: linkedinIcon, href: PORTFOLIO_LINKS.linkedin },
-  { label: "Instagram", icon: instagramIcon, href: PORTFOLIO_LINKS.instagram },
+  {
+    label: "GitHub",
+    ariaLabel: "Visit Longyue's GitHub profile",
+    Icon: RiGithubFill,
+    href: PORTFOLIO_LINKS.github,
+  },
 ];
 
 export default function PortfolioNav({ copy, themeColors, isDarkMode }) {
@@ -19,6 +24,8 @@ export default function PortfolioNav({ copy, themeColors, isDarkMode }) {
       href: PORTFOLIO_LINKS.vibeCoding,
     },
   ];
+
+  const iconFilter = isDarkMode ? "brightness(0) invert(1)" : "none";
 
   return (
     <nav className="portfolio-nav" aria-label="Portfolio links">
@@ -45,26 +52,35 @@ export default function PortfolioNav({ copy, themeColors, isDarkMode }) {
       </div>
 
       <div className="portfolio-nav__social">
-        {SOCIAL_ITEMS.map((item) => (
-          <button
-            key={item.label}
-            type="button"
-            className="portfolio-nav__social-button"
-            aria-label={item.label}
-            onClick={() =>
-              window.open(item.href, "_blank", "noopener,noreferrer")
-            }
-          >
-            <img
-              src={item.icon}
-              alt=""
-              className="portfolio-nav__social-icon"
-              style={{
-                filter: isDarkMode ? "brightness(0) invert(1)" : "none",
-              }}
-            />
-          </button>
-        ))}
+        {SOCIAL_ITEMS.map((item) => {
+          const Icon = item.Icon;
+
+          return (
+            <a
+              key={item.label}
+              className="portfolio-nav__social-button social-button"
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={item.ariaLabel ?? item.label}
+            >
+              {Icon ? (
+                <Icon
+                  className="portfolio-nav__social-icon github-icon"
+                  aria-hidden="true"
+                  style={{ filter: iconFilter }}
+                />
+              ) : (
+                <img
+                  src={item.icon}
+                  alt=""
+                  className="portfolio-nav__social-icon"
+                  style={{ filter: iconFilter }}
+                />
+              )}
+            </a>
+          );
+        })}
       </div>
     </nav>
   );

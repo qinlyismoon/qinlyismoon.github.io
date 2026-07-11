@@ -2,7 +2,7 @@
 export const WORKSPACE_CANVAS_WIDTH = 900;
 
 /** Shift desk + wall decor — tuned so the plant tooltip fits on the left. */
-export const SCENE_CONTENT_SHIFT_X = -136;
+export const SCENE_CONTENT_SHIFT_X = -220;
 
 /** Right-wall window — sits right of the wire grid with a clear gap. */
 export const ROOM_WINDOW = {
@@ -58,7 +58,7 @@ export const MUG_HEIGHT = 78;
 
 /** Wire grid — portrait wall-mounted metal organizer. */
 export const WIRE_GRID_W = 196;
-export const WIRE_GRID_X = 612;
+export const WIRE_GRID_X = 660;
 export const WIRE_GRID_TOP = 44;
 export const WIRE_GRID_BOTTOM = 234;
 

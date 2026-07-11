@@ -33,9 +33,9 @@ export function peelProgress(sizePx, restSize, openSize = PAPER_PEEL_OPEN_SIZE) 
 }
 
 export const paperCornerHover = {
-  x: -2,
-  y: 2,
-  transition: { duration: 0.38, ease: PAPER_PEEL_EASE },
+  /** Subtle expand from top-right — roughly 8–12px on typical sizes. */
+  growPx: 10,
+  transition: { duration: 0.28, ease: PAPER_PEEL_EASE },
 };
 
 /** Full illustration canvas — object layout is authored in these coordinates. */
