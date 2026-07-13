@@ -19,6 +19,32 @@ const HOME_COPY = {
   },
 };
 
+const NAV_COPY = {
+  en: {
+    home: "Home",
+    desk: "Desk",
+    about: "About",
+    ariaLabel: "Site navigation",
+  },
+  zh: {
+    home: "首页",
+    desk: "工作台",
+    about: "关于",
+    ariaLabel: "网站导航",
+  },
+};
+
+const ABOUT_COPY = {
+  en: {
+    title: "About",
+    placeholder: "Content coming soon.",
+  },
+  zh: {
+    title: "关于",
+    placeholder: "内容即将到来。",
+  },
+};
+
 const WORKSPACE_COPY = {
   en: {
     closeLabel: "Close Phoebe's Desk",
@@ -94,4 +120,12 @@ export function getHomeCopy(language) {
 
 export function getWorkspaceCopy(language) {
   return WORKSPACE_COPY[language] ?? WORKSPACE_COPY.en;
+}
+
+export function getNavCopy(language) {
+  return NAV_COPY[language] ?? NAV_COPY.en;
+}
+
+export function getAboutCopy(language) {
+  return ABOUT_COPY[language] ?? ABOUT_COPY.en;
 }

@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useAppSettings } from "../../context/AppSettingsContext";
+import { useMusic } from "../../context/MusicContext";
 import { getThemeColors } from "../../lib/theme";
 import {
   moonIconUrl,
@@ -77,8 +78,21 @@ export default function SettingsControlBar({
     toggleTheme,
     toggleMute,
   } = useAppSettings();
+  const { isMusicPlaying, pauseMusic } = useMusic();
 
-  const themeColors = useMemo(() => getThemeColors(isDarkMode), [isDarkMode]);
+  const themeColors = useMemo(
+    () => getThemeColors(isDarkMode),
+    [isDarkMode],
+  );
+
+  // Mute silences desk SFX and pauses music. Icon must follow isMuted — not
+  // music paused — otherwise the UI looks muted while interactions still sound.
+  const handleMuteClick = () => {
+    if (!isMuted && isMusicPlaying) {
+      pauseMusic();
+    }
+    toggleMute();
+  };
 
   return (
     <div
@@ -137,8 +151,8 @@ export default function SettingsControlBar({
       <ControlButton
         isLarge={isLarge}
         themeColors={themeColors}
-        onClick={toggleMute}
-        ariaLabel="Toggle sound"
+        onClick={handleMuteClick}
+        ariaLabel={isMuted ? "Unmute" : "Mute"}
       >
         <img
           src={isMuted ? volumeMuteIconUrl : volumeUpIconUrl}

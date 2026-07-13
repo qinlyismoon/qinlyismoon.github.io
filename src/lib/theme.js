@@ -13,6 +13,14 @@ export function getThemeColors(isDarkMode) {
         controlBg: "rgba(255,255,255,0.08)",
         controlBorder: "1px solid rgba(255,255,255,0.10)",
         controlText: "#f5f5f7",
+        // Top nav — softer than the bottom control bar
+        navBarBg: "rgba(255,255,255,0.06)",
+        navBarBorder: "1px solid rgba(255,255,255,0.08)",
+        navInactiveText: "rgba(245,245,247,0.55)",
+        navActiveText: "#f5f5f7",
+        navHoverBg: "rgba(255,255,255,0.08)",
+        navActiveBg: "rgba(255,255,255,0.14)",
+        navActiveHoverBg: "rgba(255,255,255,0.18)",
       }
     : {
         pageBg: "#ffffff",
@@ -27,5 +35,13 @@ export function getThemeColors(isDarkMode) {
         controlBg: "rgba(60,60,67,0.18)",
         controlBorder: "1px solid rgba(255,255,255,0.18)",
         controlText: "#111111",
+        // Top nav — softer than the bottom control bar
+        navBarBg: "rgba(60,60,67,0.05)",
+        navBarBorder: "1px solid rgba(255,255,255,0.28)",
+        navInactiveText: "rgba(17,17,17,0.48)",
+        navActiveText: "#111111",
+        navHoverBg: "rgba(60,60,67,0.08)",
+        navActiveBg: "rgba(60,60,67,0.12)",
+        navActiveHoverBg: "rgba(60,60,67,0.09)",
       };
 }

@@ -8,13 +8,14 @@ const FONT_STACK =
 export default function AppLayout({ children, className = "", style = {} }) {
   const { isDarkMode } = useAppSettings();
   const themeColors = useMemo(() => getThemeColors(isDarkMode), [isDarkMode]);
+  const usesPaperSurface = /\blanding-page\b/.test(className);
 
   return (
     <div
       className={`app-layout ${className}`.trim()}
       style={{
         minHeight: "100vh",
-        background: themeColors.pageBg,
+        ...(usesPaperSurface ? {} : { background: themeColors.pageBg }),
         color: themeColors.text,
         fontFamily: FONT_STACK,
         transition: "background 0.35s ease, color 0.35s ease",

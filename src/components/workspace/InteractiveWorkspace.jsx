@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSettings } from "../../context/AppSettingsContext";
+import { useMusic } from "../../context/MusicContext";
 import { usePageTransition } from "../../context/PageTransitionContext";
 import { SCENE_CONTENT_SHIFT_X, ROOM_WINDOW } from "../../lib/deskLayout";
 import { WORKSPACE_ASPECT, WORKSPACE_SCENE_OFFSET_Y, WORKSPACE_VIEWBOX } from "../../lib/animations";
@@ -13,7 +14,6 @@ import WorkspacePlantTooltip from "./WorkspacePlantTooltip";
 import { WORKSPACE_OBJECTS } from "../../lib/workspaceObjects";
 import WorkspaceObject from "./WorkspaceObject";
 import { useCompactScene } from "../../hooks/useCompactScene";
-import { useYouTubeMusic } from "../../hooks/useYouTubeMusic";
 import {
   LampLightLayer,
   PhoebeDeskScene,
@@ -29,12 +29,12 @@ export default function InteractiveWorkspace({
   onLampToggle,
 }) {
   const { isMuted, language } = useAppSettings();
+  const { isMusicPlaying, toggleMusicFromUser } = useMusic();
   const { playSound, playLoopingSound, pauseSound, clickSoundRef } =
     usePageTransition();
   const navigate = useNavigate();
   const palette = useMemo(() => getDeskPalette(isDarkMode), [isDarkMode]);
   const compactScene = useCompactScene();
-  const youtubeMusicRef = useRef(null);
   const matchaStirRef = useRef(null);
   const lampToggleRef = useRef(null);
   const pageFlipRef = useRef(null);
@@ -49,7 +49,6 @@ export default function InteractiveWorkspace({
   const plantSwayTimerRef = useRef(null);
   const plantGrowTimerRef = useRef(null);
 
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [cameraFlash, setCameraFlash] = useState(false);
   const [mugStirring, setMugStirring] = useState(false);
   const [mugStirToken, setMugStirToken] = useState(0);
@@ -98,12 +97,6 @@ export default function InteractiveWorkspace({
     };
     requestAnimationFrame(tick);
   }, [plantGrowthFloat]);
-
-  useYouTubeMusic({
-    containerRef: youtubeMusicRef,
-    isPlaying: isMusicPlaying,
-    isMuted,
-  });
 
   const stopMatchaStir = useCallback(() => {
     window.clearTimeout(matchaStirStopTimerRef.current);
@@ -249,10 +242,6 @@ export default function InteractiveWorkspace({
     [playNatureSound, stopNatureSound]
   );
 
-  const toggleMusic = () => {
-    setIsMusicPlaying((playing) => !playing);
-  };
-
   const playObjectSound = useCallback(
     (id) => {
       if (id === "books") {
@@ -278,7 +267,7 @@ export default function InteractiveWorkspace({
     }
 
     if (action === "music") {
-      toggleMusic();
+      toggleMusicFromUser();
       return;
     }
 
@@ -363,9 +352,6 @@ export default function InteractiveWorkspace({
       }`}
       style={{ "--desk-caption": palette.caption, "--desk-tooltip-text": palette.inkSoft }}
     >
-      <div className="workspace-youtube-player" aria-hidden="true">
-        <div ref={youtubeMusicRef} />
-      </div>
       <audio ref={matchaStirRef} preload="auto" src="/matcha-stir.mp3" />
       <audio ref={lampToggleRef} preload="auto" src={soundSrc(WORKSPACE_SOUNDS.lampToggle)} />
       <audio ref={pageFlipRef} preload="auto" src={soundSrc(WORKSPACE_SOUNDS.pageFlip)} />

@@ -4,16 +4,27 @@ import { useAppSettings } from "../../context/AppSettingsContext";
 import { useSound } from "../../hooks/useSound";
 import { getHomeCopy } from "../../lib/copy";
 import { getThemeColors } from "../../lib/theme";
+import {
+  ABOUT_PATH,
+  DESK_PATH,
+  HOME_PATH,
+  isAboutPath,
+  isDeskPath,
+  isLegacyDeskPath,
+} from "../../lib/routes";
+import AboutPage from "../../pages/AboutPage";
 import LandingPage from "../../pages/LandingPage";
 import WorkspacePage from "../../pages/WorkspacePage";
 import SettingsControlBar from "./SettingsControlBar";
+import TopNavigation from "./TopNavigation";
 import PaperPeelStage from "./PaperPeelStage";
 import ViewportPortal from "./ViewportPortal";
 import { PageTransitionContext } from "../../context/PageTransitionContext";
-import { PHOEBES_DESK_PATH, isPhoebesDeskPath } from "../../lib/routes";
 
 function viewStateFromPath(pathname) {
-  return isPhoebesDeskPath(pathname) ? "workspace" : "landing";
+  if (isAboutPath(pathname)) return "about";
+  if (isDeskPath(pathname)) return "workspace";
+  return "landing";
 }
 
 export default function SiteShell() {
@@ -29,45 +40,92 @@ export default function SiteShell() {
   const clickSoundRef = useRef(null);
   const closeSoundRef = useRef(null);
   const typingSoundRef = useRef(null);
+  const transitionLockRef = useRef(false);
 
   useEffect(() => {
     if (viewState === "opening" || viewState === "closing") return;
-    if (location.pathname === "/workspace") {
-      navigate(PHOEBES_DESK_PATH, { replace: true });
+
+    if (isLegacyDeskPath(location.pathname)) {
+      navigate(DESK_PATH, { replace: true });
       return;
     }
-    if (isPhoebesDeskPath(location.pathname) && viewState === "workspace") {
+
+    if (isDeskPath(location.pathname) && viewState === "workspace") {
       transitionLockRef.current = false;
       return;
     }
+
     // URL can lag behind the peel transition — avoid snapping back to landing for a frame.
     if (
       transitionLockRef.current &&
       viewState === "workspace" &&
-      !isPhoebesDeskPath(location.pathname)
+      !isDeskPath(location.pathname)
     ) {
       return;
     }
+
     const pathView = viewStateFromPath(location.pathname);
     if (pathView !== viewState) {
       setViewState(pathView);
     }
   }, [location.pathname, viewState, navigate]);
 
-  const goToWorkspace = useCallback(() => {
+  const goToWorkspace = useCallback((options = {}) => {
     if (viewState !== "landing") return;
-    playSound(clickSoundRef);
+    if (!options.silent) playSound(clickSoundRef);
     setViewState("opening");
   }, [playSound, viewState]);
 
-  const goToLanding = useCallback(() => {
+  const goToLanding = useCallback((options = {}) => {
     if (viewState !== "workspace") return;
-    playSound(closeSoundRef);
-    navigate("/");
+    if (!options.silent) playSound(closeSoundRef);
+    navigate(HOME_PATH);
     setViewState("closing");
   }, [navigate, playSound, viewState]);
 
-  const transitionLockRef = useRef(false);
+  const navigateToHome = useCallback((options = {}) => {
+    if (viewState === "landing" || viewState === "closing") return;
+
+    if (viewState === "workspace") {
+      goToLanding(options);
+      return;
+    }
+
+    if (viewState === "opening") return;
+
+    if (!options.silent) playSound(clickSoundRef);
+    navigate(HOME_PATH);
+    setViewState("landing");
+  }, [goToLanding, navigate, playSound, viewState]);
+
+  const navigateToDesk = useCallback((options = {}) => {
+    if (
+      viewState === "workspace" ||
+      viewState === "opening" ||
+      viewState === "closing"
+    ) {
+      return;
+    }
+
+    if (viewState === "landing") {
+      goToWorkspace(options);
+      return;
+    }
+
+    if (!options.silent) playSound(clickSoundRef);
+    navigate(DESK_PATH);
+    setViewState("workspace");
+  }, [goToWorkspace, navigate, playSound, viewState]);
+
+  const navigateToAbout = useCallback((options = {}) => {
+    if (viewState === "about" || viewState === "opening" || viewState === "closing") {
+      return;
+    }
+
+    if (!options.silent) playSound(clickSoundRef);
+    navigate(ABOUT_PATH);
+    setViewState("about");
+  }, [navigate, playSound, viewState]);
 
   useEffect(() => {
     if (viewState === "opening" || viewState === "closing") {
@@ -78,7 +136,7 @@ export default function SiteShell() {
   const handleOpenComplete = useCallback(() => {
     if (transitionLockRef.current) return;
     transitionLockRef.current = true;
-    navigate(PHOEBES_DESK_PATH);
+    navigate(DESK_PATH);
     setViewState("workspace");
   }, [navigate]);
 
@@ -99,23 +157,33 @@ export default function SiteShell() {
   const pageContext = {
     goToWorkspace,
     goToLanding,
+    navigateToHome,
+    navigateToDesk,
+    navigateToAbout,
     playSound,
     playLoopingSound,
     pauseSound,
     clickSoundRef,
     typingSoundRef,
+    viewState,
     isWorkspaceActive: viewState === "workspace",
   };
 
   const themeColors = getThemeColors(isDarkMode);
   const homeCopy = getHomeCopy(language);
+  const showPeelStage = viewState !== "about";
+  const aboutBackground = isDarkMode
+    ? "linear-gradient(180deg, #2A2620 0%, #241F1A 45%, #1C1916 100%)"
+    : "linear-gradient(180deg, #faf8f4 0%, #f7f4ef 42%, #f3f0ea 100%)";
+  const shellBackground =
+    viewState === "about" ? aboutBackground : themeColors.pageBg;
 
   return (
     <PageTransitionContext.Provider value={pageContext}>
       <div
         className="site-shell"
         style={{
-          background: themeColors.pageBg,
+          background: shellBackground,
           transition: "background 0.35s ease",
         }}
       >
@@ -125,21 +193,31 @@ export default function SiteShell() {
         <audio ref={typingSoundRef} preload="auto" src="/typing-loop.mp3" loop />
 
         <ViewportPortal>
+          <div className="viewport-top-nav">
+            <TopNavigation className="viewport-top-nav__bar" />
+          </div>
+        </ViewportPortal>
+
+        <ViewportPortal>
           <div className="viewport-controls">
             <SettingsControlBar className="viewport-controls__bar" />
           </div>
         </ViewportPortal>
 
-        <PaperPeelStage
-          viewState={viewState}
-          onOpenComplete={handleOpenComplete}
-          onCloseComplete={handleCloseComplete}
-          onPeel={goToWorkspace}
-          cornerAriaLabel={homeCopy.peelCornerLabel}
-          isDarkMode={isDarkMode}
-          landing={<LandingPage />}
-          workspace={<WorkspacePage />}
-        />
+        {showPeelStage ? (
+          <PaperPeelStage
+            viewState={viewState}
+            onOpenComplete={handleOpenComplete}
+            onCloseComplete={handleCloseComplete}
+            onPeel={goToWorkspace}
+            cornerAriaLabel={homeCopy.peelCornerLabel}
+            isDarkMode={isDarkMode}
+            landing={<LandingPage />}
+            workspace={<WorkspacePage />}
+          />
+        ) : (
+          <AboutPage />
+        )}
       </div>
     </PageTransitionContext.Provider>
   );
