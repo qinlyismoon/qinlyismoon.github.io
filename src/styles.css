@@ -7,8 +7,8 @@ body,
 }
 
 html {
-  scrollbar-gutter: stable;
-  overflow-y: scroll;
+  overflow-y: auto;
+  scrollbar-gutter: auto;
 }
 
 html.moon-cursor-active,
@@ -32,11 +32,28 @@ body {
 :root {
   --viewport-controls-bottom: clamp(32px, 5vh, 48px);
   --viewport-top-nav-top: clamp(20px, 4vh, 32px);
+  /* Approximate chrome sizes — used for content safe areas */
+  --viewport-top-nav-height: 48px;
+  --viewport-controls-height: 52px;
+  --viewport-safe-top: calc(
+    var(--viewport-top-nav-top) + var(--viewport-top-nav-height) + 20px
+  );
+  --viewport-safe-bottom: calc(
+    var(--viewport-controls-bottom) + var(--viewport-controls-height) + 28px
+  );
 }
 
 .site-shell {
   min-height: 100vh;
   overflow-x: hidden;
+}
+
+/* Home + Desk: lock to one viewport — About stays scrollable. */
+.site-shell--scene-lock {
+  height: 100dvh;
+  max-height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .site-shell__page {
@@ -49,16 +66,18 @@ body {
 
 .landing-page.app-layout,
 .workspace-page.app-layout {
-  overflow: visible;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* Landing page — editorial layout system */
 
 .landing-page {
-  --editorial-inset: clamp(56px, 8.5vw, 96px);
-  --editorial-title-size: clamp(2.75rem, 8.5vw, 7.5rem);
+  --editorial-inset: clamp(48px, 6vw, 110px);
+  --editorial-title-size: clamp(4rem, 6.5vw, 7.5rem);
   --editorial-title-width: 68%;
   --editorial-title-line: 0.98;
   --editorial-title-weight: 600;
@@ -73,10 +92,12 @@ body {
   --editorial-social-gap: clamp(1.125rem, 2.5vw, 1.75rem);
   --editorial-social-offset: clamp(1.25rem, 2.5vh, 2rem);
 
-  --editorial-title-top: clamp(7rem, 17vh, 12.5rem);
-  --editorial-nav-top: clamp(31rem, 64vh, 44rem);
-  --editorial-pad-bottom: calc(var(--viewport-controls-bottom) + 3.75rem);
-  --editorial-inline-end: clamp(2rem, 5vw, 4rem);
+  --editorial-title-top: clamp(6.5rem, 15vh, 12.5rem);
+  --editorial-nav-top: clamp(28rem, 62vh, 44rem);
+  --editorial-pad-bottom: calc(var(--viewport-safe-bottom) + 0.5rem);
+  --editorial-inline-end: clamp(2rem, 4vw, 4rem);
+  /* Soft downward settle for title + links as one group (nav/chrome stay fixed). */
+  --editorial-content-nudge-y: clamp(36px, 5vh, 68px);
 
   /* Notebook / paper canvas — Home only */
   --landing-paper-base: #f6f2ea;
@@ -87,6 +108,11 @@ body {
 
   position: relative;
   isolation: isolate;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
   background-color: var(--landing-paper-base);
   background-image:
     linear-gradient(var(--landing-grid-line) 1px, transparent 1px),
@@ -154,11 +180,15 @@ body {
 }
 
 .landing-page__inner {
-  min-height: 100vh;
-  min-height: 100dvh;
   position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
   box-sizing: border-box;
   padding-bottom: var(--editorial-pad-bottom);
+  overflow: hidden;
+  transform: translateY(var(--editorial-content-nudge-y));
 }
 
 .landing-page__title-block,
@@ -431,6 +461,7 @@ body {
   --about-content-gutter: 16px;
   --about-copy-max-width: 42rem;
   --about-stage-copy-max-width: 56rem;
+  --about-journey-label-gutter: 0px;
   min-height: 100vh;
   min-height: 100dvh;
   overflow-x: clip;
@@ -443,8 +474,11 @@ body {
     calc(100% - (var(--about-content-gutter) * 2))
   );
   margin: 0 auto;
-  padding: clamp(96px, 14vh, 132px) 0
-    calc(var(--viewport-controls-bottom) + 96px);
+  padding: max(clamp(96px, 14vh, 132px), var(--viewport-safe-top)) 0
+    max(
+      calc(var(--viewport-controls-bottom) + 96px),
+      var(--viewport-safe-bottom)
+    );
   overflow: visible;
 }
 
@@ -1132,6 +1166,8 @@ body {
   --journey-gap: 22px;
   --timeline-accent: #5f8f8f;
   --timeline-accent-soft: #7ba8a8;
+  /* Keep year labels visually attached to the rail (synced as one unit). */
+  --about-timeline-label-gap: 36px;
   width: 100%;
   margin-bottom: clamp(56px, 9vh, 88px);
   overflow: visible;
@@ -1157,17 +1193,20 @@ body {
   width: 100%;
   margin-left: 0;
   overflow: visible;
+  padding-left: var(--about-journey-label-gutter);
   padding-bottom: clamp(72px, 14vh, 140px);
+  box-sizing: border-box;
 }
 
 .about-journey__rail-wrapper {
   position: absolute;
-  left: 0;
+  left: var(--about-journey-label-gutter);
   top: 0;
   bottom: 0;
   width: var(--journey-rail);
   pointer-events: none;
-  z-index: 1;
+  /* Above stage year marks so the moving label can cover them. */
+  z-index: 3;
 }
 
 .about-journey__base-line {
@@ -1196,7 +1235,7 @@ body {
 
 .about-journey__moving-label {
   position: absolute;
-  right: calc(100% + 24px);
+  right: calc(100% + var(--about-timeline-label-gap));
   top: 0;
   z-index: 4;
   box-sizing: border-box;
@@ -1332,7 +1371,9 @@ body {
   padding-top: 0;
   text-align: right;
   pointer-events: none;
-  transform: translateX(calc(-100% - 36px));
+  z-index: 0;
+  /* Sit under the moving label’s center so the label can cover the year. */
+  transform: translateX(calc(-100% - var(--about-timeline-label-gap) - 28px));
 }
 
 .about-stage__year-mark {
@@ -1343,40 +1384,48 @@ body {
   line-height: 1;
   color: rgba(61, 95, 95, 0.26);
   text-shadow: 0 0 0 rgba(123, 168, 168, 0);
+  opacity: 1;
   transition:
     color 320ms ease,
     text-shadow 320ms ease,
-    filter 320ms ease;
+    filter 320ms ease,
+    opacity 280ms ease;
 }
 
-.about-stage.is-active .about-stage__year-mark {
+/* Active stage: floating label owns this spot — hide the ghost year so they don’t stack. */
+.about-stage.is-active:not(.is-arriving) .about-stage__year-mark {
+  opacity: 0;
   color: #3d5f5f;
-  text-shadow: 0 0 16px rgba(123, 168, 168, 0.38);
-}
-
-.about-stage.is-past:not(.is-active) .about-stage__year-mark {
-  color: rgba(61, 95, 95, 0.52);
   text-shadow: none;
 }
 
+.about-stage.is-past:not(.is-active) .about-stage__year-mark {
+  color: rgba(61, 95, 95, 0.55);
+  text-shadow: none;
+  opacity: 1;
+}
+
 .about-stage.is-arriving .about-stage__year-mark {
-  animation: timelineYearLight 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: timelineYearLight 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes timelineYearLight {
   0% {
-    filter: brightness(0.85);
+    opacity: 0.45;
+    filter: brightness(0.9);
     text-shadow: 0 0 0 rgba(123, 168, 168, 0);
   }
 
-  45% {
-    filter: brightness(1.2);
-    text-shadow: 0 0 22px rgba(123, 168, 168, 0.55);
+  40% {
+    opacity: 1;
+    filter: brightness(1.15);
+    text-shadow: 0 0 18px rgba(123, 168, 168, 0.5);
   }
 
   100% {
+    opacity: 0;
     filter: brightness(1);
-    text-shadow: 0 0 16px rgba(123, 168, 168, 0.38);
+    text-shadow: none;
   }
 }
 
@@ -2036,10 +2085,41 @@ body {
   display: flex;
   flex-wrap: nowrap;
   align-items: flex-end;
-  gap: 12px 14px;
+  gap: clamp(16px, 2vw, 28px);
   margin: 1.35em 0 0.55em;
-  width: 100%;
-  max-width: 100%;
+  /* Stay left-aligned with the copy column; bleed into the shell’s right margin. */
+  width: calc(
+    100% +
+      max(
+        0px,
+        (
+            100vw -
+              min(
+                var(--about-content-max-width),
+                calc(100vw - var(--about-content-gutter) * 2)
+              )
+          ) /
+          2
+      )
+  );
+  max-width: none;
+  box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: visible;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 16px;
+  /* Extra scroll room so the last image can fully enter view. */
+  padding-right: clamp(40px, 6vw, 100px);
+}
+
+.about-stage__visuals--strip::-webkit-scrollbar {
+  display: none;
+}
+
+.about-stage__visuals--strip > .about-stage__paper {
+  flex: 0 0 auto;
 }
 
 .about-stage__visuals--sheet {
@@ -2082,7 +2162,7 @@ body {
 .about-stage__paper--strip img {
   width: auto;
   height: 112px;
-  max-width: min(220px, 28vw);
+  max-width: 220px;
 }
 
 .about-stage__paper--sheet {
@@ -2905,14 +2985,16 @@ body {
   text-shadow: 0 0 0 rgba(123, 168, 168, 0);
 }
 
-.about-page--dark .about-stage.is-active .about-stage__year-mark {
+.about-page--dark .about-stage.is-active:not(.is-arriving) .about-stage__year-mark {
+  opacity: 0;
   color: #c5d8c0;
-  text-shadow: 0 0 16px rgba(123, 168, 168, 0.42);
+  text-shadow: none;
 }
 
 .about-page--dark .about-stage.is-past:not(.is-active) .about-stage__year-mark {
   color: rgba(197, 216, 192, 0.48);
   text-shadow: none;
+  opacity: 1;
 }
 
 .about-page--dark .about-stage__node {
@@ -3264,7 +3346,11 @@ body {
       var(--about-content-max-width),
       calc(100% - (var(--about-content-gutter) * 2))
     );
-    padding-top: clamp(88px, 16vh, 112px);
+    padding-top: max(clamp(88px, 16vh, 112px), var(--viewport-safe-top));
+    padding-bottom: max(
+      calc(var(--viewport-controls-bottom) + 72px),
+      var(--viewport-safe-bottom)
+    );
   }
 
   .about-collage,
@@ -3400,6 +3486,11 @@ body {
   .about-stage__visuals--strip {
     flex-wrap: wrap;
     gap: 12px 10px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: visible;
+    padding-right: 0;
+    padding-bottom: 0;
   }
 
   .about-stage__paper--strip img {
@@ -3440,8 +3531,10 @@ body {
 
 .paper-stage {
   position: relative;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .paper-layer {
@@ -3449,8 +3542,7 @@ body {
   inset: 0;
   width: 100%;
   height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
@@ -3473,8 +3565,11 @@ body {
 
 .paper-landing-mask {
   width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
   pointer-events: auto;
 }
 
@@ -3528,10 +3623,12 @@ body {
 /* Workspace page */
 
 .workspace-page {
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
+  min-height: 0;
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .workspace-close {
@@ -3557,24 +3654,26 @@ body {
 }
 
 .workspace-page__content {
-  min-height: 100vh;
-  min-height: 100dvh;
-  max-height: 100dvh;
+  position: absolute;
+  inset: 0;
+  /* Small bottom gap — utility bar floats above; desk legs sit near the edge. */
+  padding: 0 0 clamp(12px, 2vh, 28px);
+  box-sizing: border-box;
+  overflow: hidden;
   display: flex;
   align-items: stretch;
   justify-content: stretch;
-  padding: 0;
-  padding-bottom: calc(var(--viewport-controls-bottom) + 1rem);
-  box-sizing: border-box;
-  overflow: hidden;
 }
 
 .workspace-scene {
-  flex: 1;
+  flex: 1 1 auto;
   width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
   display: flex;
+  align-items: flex-end;
+  justify-content: center;
   --object-hover-shadow: drop-shadow(0 8px 16px rgba(72, 58, 42, 0.09));
   --object-focus-shadow: drop-shadow(0 8px 14px rgba(72, 58, 42, 0.07));
 }
@@ -3593,7 +3692,7 @@ body {
 .workspace-scene__svg {
   width: 100%;
   height: 100%;
-  min-height: 100dvh;
+  min-height: 0;
   display: block;
   pointer-events: none;
 }
@@ -3847,7 +3946,7 @@ body {
 
 @media (max-width: 640px) {
   .workspace-page__content {
-    padding-bottom: calc(var(--viewport-controls-bottom) + 0.75rem);
+    padding-bottom: clamp(10px, 2vh, 20px);
   }
 
   .workspace-object__label,
@@ -3936,12 +4035,12 @@ body {
 @media (max-width: 1024px) {
   .landing-page {
     --editorial-title-width: 82%;
-    --editorial-title-size: clamp(2.35rem, 8vw, 4.5rem);
+    --editorial-title-size: clamp(3.25rem, 7.5vw, 4.75rem);
     --editorial-nav-size: clamp(0.9375rem, 2.8vw, 1.25rem);
     --editorial-title-top: clamp(5.5rem, 14vh, 9rem);
-    --editorial-nav-top: clamp(27rem, 60vh, 37rem);
-    --editorial-inset: clamp(32px, 6vw, 52px);
-    --editorial-pad-bottom: calc(var(--viewport-controls-bottom) + 3.25rem);
+    --editorial-nav-top: clamp(24rem, 58vh, 37rem);
+    --editorial-inset: clamp(40px, 6vw, 64px);
+    --editorial-pad-bottom: var(--viewport-safe-bottom);
   }
 
   .landing-page--zh {
@@ -3953,19 +4052,44 @@ body {
   .landing-page {
     --editorial-inset: clamp(28px, 5.5vw, 44px);
     --editorial-title-width: 100%;
-    --editorial-title-size: clamp(2rem, 10vw, 3rem);
+    --editorial-title-size: clamp(2rem, min(10vw, 8.5vh), 3rem);
     --editorial-title-line: 0.96;
     --editorial-nav-size: clamp(0.875rem, 3.8vw, 1.125rem);
     --editorial-nav-gap: clamp(0.3rem, 1.2vh, 0.5rem);
     --editorial-title-top: clamp(4rem, 14vh, 6rem);
-    --editorial-nav-top: clamp(25rem, 58vh, 33rem);
+    --editorial-nav-top: clamp(20rem, 54vh, 33rem);
     --editorial-social-offset: clamp(1rem, 3vh, 1.5rem);
-    --editorial-pad-bottom: calc(var(--viewport-controls-bottom) + 3rem);
+    --editorial-pad-bottom: var(--viewport-safe-bottom);
     --editorial-inline-end: clamp(1.25rem, 5vw, 2rem);
   }
 }
 
-@media (min-width: 1400px) {
+/* Laptop widths — shift the whole timeline unit (rail + year labels) outward.
+   Labels stay attached to the rail; gutter only reserves space so they don't clip. */
+@media (max-width: 1599px) and (min-width: 901px) {
+  .about-page.app-layout {
+    --about-journey-label-gutter: clamp(72px, 11vw, 148px);
+  }
+}
+
+/* Short laptop screens — tighten vertical spacing only; keep title bold */
+@media (max-height: 900px) and (min-width: 1025px) {
+  .landing-page {
+    --editorial-title-top: clamp(5.75rem, 13vh, 10rem);
+    --editorial-nav-top: clamp(26rem, 58vh, 38rem);
+    --editorial-section-gap: clamp(3.5rem, 10vh, 6rem);
+  }
+}
+
+@media (max-height: 780px) and (min-width: 1025px) {
+  .landing-page {
+    --editorial-title-top: clamp(5.25rem, 11vh, 8.5rem);
+    --editorial-nav-top: clamp(24rem, 54vh, 32rem);
+  }
+}
+
+/* Large desktop only when both width and height allow the big editorial scale */
+@media (min-width: 1400px) and (min-height: 901px) {
   .landing-page {
     --editorial-title-size: clamp(5.5rem, 6.5vw, 8rem);
     --editorial-nav-size: clamp(1.125rem, 1.6vw, 1.5rem);

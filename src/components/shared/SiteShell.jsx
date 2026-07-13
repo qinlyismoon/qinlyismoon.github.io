@@ -181,7 +181,7 @@ export default function SiteShell() {
   return (
     <PageTransitionContext.Provider value={pageContext}>
       <div
-        className="site-shell"
+        className={`site-shell${showPeelStage ? " site-shell--scene-lock" : ""}`}
         style={{
           background: shellBackground,
           transition: "background 0.35s ease",

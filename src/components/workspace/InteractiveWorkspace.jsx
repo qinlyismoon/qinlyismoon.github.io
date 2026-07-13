@@ -4,7 +4,7 @@ import { useAppSettings } from "../../context/AppSettingsContext";
 import { useMusic } from "../../context/MusicContext";
 import { usePageTransition } from "../../context/PageTransitionContext";
 import { SCENE_CONTENT_SHIFT_X, ROOM_WINDOW } from "../../lib/deskLayout";
-import { WORKSPACE_ASPECT, WORKSPACE_SCENE_OFFSET_Y, WORKSPACE_VIEWBOX } from "../../lib/animations";
+import { WORKSPACE_ASPECT } from "../../lib/animations";
 import { getDeskPalette } from "../../lib/deskPalette";
 import { CAMERA_FLASH_MS, MUG_STIR_AUDIO_MS, MUG_STIR_MS, PLANT_WATERING_MS } from "../../lib/workspaceInteractions";
 import { WORKSPACE_SOUNDS, NATURE_SOUND_VOLUME, soundSrc } from "../../lib/sounds";
@@ -14,6 +14,7 @@ import WorkspacePlantTooltip from "./WorkspacePlantTooltip";
 import { WORKSPACE_OBJECTS } from "../../lib/workspaceObjects";
 import WorkspaceObject from "./WorkspaceObject";
 import { useCompactScene } from "../../hooks/useCompactScene";
+import { useWorkspaceCamera } from "../../hooks/useWorkspaceCamera";
 import {
   LampLightLayer,
   PhoebeDeskScene,
@@ -35,6 +36,8 @@ export default function InteractiveWorkspace({
   const navigate = useNavigate();
   const palette = useMemo(() => getDeskPalette(isDarkMode), [isDarkMode]);
   const compactScene = useCompactScene();
+  const { viewBox: workspaceViewBox, offsetY: workspaceOffsetY } =
+    useWorkspaceCamera();
   const matchaStirRef = useRef(null);
   const lampToggleRef = useRef(null);
   const pageFlipRef = useRef(null);
@@ -380,13 +383,13 @@ export default function InteractiveWorkspace({
 
       <svg
         className="workspace-scene__svg"
-        viewBox={WORKSPACE_VIEWBOX}
+        viewBox={workspaceViewBox}
         preserveAspectRatio={WORKSPACE_ASPECT}
         role="img"
         aria-label={copy.sceneLabel}
       >
         <SceneDefs c={palette} />
-        <g transform={`translate(0, ${WORKSPACE_SCENE_OFFSET_Y})`}>
+        <g transform={`translate(0, ${workspaceOffsetY})`}>
           <RoomWindow c={palette} />
           <WorkspaceObject
             id="window"
