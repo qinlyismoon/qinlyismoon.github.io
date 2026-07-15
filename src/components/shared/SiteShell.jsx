@@ -41,6 +41,15 @@ export default function SiteShell() {
   const closeSoundRef = useRef(null);
   const typingSoundRef = useRef(null);
   const transitionLockRef = useRef(false);
+  const aboutLayerRef = useRef(null);
+
+  // Freeze Home/Desk peel while About covers it, so returning doesn't reset.
+  const peelViewStateRef = useRef(
+    viewState === "about" ? "landing" : viewState,
+  );
+  if (viewState !== "about") {
+    peelViewStateRef.current = viewState;
+  }
 
   useEffect(() => {
     if (viewState === "opening" || viewState === "closing") return;
@@ -133,6 +142,14 @@ export default function SiteShell() {
     }
   }, [viewState]);
 
+  // About scrolls inside its own fixed layer — always reset when covering the peel.
+  useEffect(() => {
+    if (viewState !== "about") return;
+    const layer = aboutLayerRef.current;
+    if (layer) layer.scrollTop = 0;
+    window.scrollTo(0, 0);
+  }, [viewState]);
+
   const handleOpenComplete = useCallback(() => {
     if (transitionLockRef.current) return;
     transitionLockRef.current = true;
@@ -171,21 +188,17 @@ export default function SiteShell() {
 
   const themeColors = getThemeColors(isDarkMode);
   const homeCopy = getHomeCopy(language);
-  const showPeelStage = viewState !== "about";
+  const isAbout = viewState === "about";
   const aboutBackground = isDarkMode
     ? "linear-gradient(180deg, #2A2620 0%, #241F1A 45%, #1C1916 100%)"
     : "linear-gradient(180deg, #faf8f4 0%, #f7f4ef 42%, #f3f0ea 100%)";
-  const shellBackground =
-    viewState === "about" ? aboutBackground : themeColors.pageBg;
 
   return (
     <PageTransitionContext.Provider value={pageContext}>
+      {/* Always scene-locked: About scrolls inside its overlay, same chrome as Home/Desk. */}
       <div
-        className={`site-shell${showPeelStage ? " site-shell--scene-lock" : ""}`}
-        style={{
-          background: shellBackground,
-          transition: "background 0.35s ease",
-        }}
+        className="site-shell site-shell--scene-lock"
+        style={{ background: themeColors.pageBg }}
       >
         <audio ref={hoverSoundRef} preload="auto" src="/hover-pop.mp3" />
         <audio ref={clickSoundRef} preload="auto" src="/folder-click.mp3" />
@@ -204,9 +217,10 @@ export default function SiteShell() {
           </div>
         </ViewportPortal>
 
-        {showPeelStage ? (
+        {/* Peel stays painted underneath About — no blank frame when covering/uncovering. */}
+        <div className="site-view site-view--peel" aria-hidden={isAbout}>
           <PaperPeelStage
-            viewState={viewState}
+            viewState={peelViewStateRef.current}
             onOpenComplete={handleOpenComplete}
             onCloseComplete={handleCloseComplete}
             onPeel={goToWorkspace}
@@ -215,9 +229,16 @@ export default function SiteShell() {
             landing={<LandingPage />}
             workspace={<WorkspacePage />}
           />
-        ) : (
+        </div>
+
+        <div
+          ref={aboutLayerRef}
+          className={`site-view site-view--about${isAbout ? " is-active" : ""}`}
+          aria-hidden={!isAbout}
+          style={{ background: aboutBackground }}
+        >
           <AboutPage />
-        )}
+        </div>
       </div>
     </PageTransitionContext.Provider>
   );
