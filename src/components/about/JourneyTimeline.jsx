@@ -833,6 +833,22 @@ function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 
+/** Nearest scroll container — About scrolls inside `.site-view--about`, not window. */
+function getScrollParent(el) {
+  let node = el?.parentElement ?? null;
+  while (node && node !== document.body && node !== document.documentElement) {
+    if (node.classList?.contains("site-view--about")) {
+      return node;
+    }
+    const { overflowY } = window.getComputedStyle(node);
+    if (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") {
+      return node;
+    }
+    node = node.parentElement;
+  }
+  return window;
+}
+
 function measureNodeCenters(railEl, nodeEls) {
   if (!railEl) return [];
   const railTop = railEl.getBoundingClientRect().top;
@@ -956,7 +972,9 @@ export default function JourneyTimeline({ copy, language }) {
     update();
     schedule();
 
-    window.addEventListener("scroll", schedule, { passive: true });
+    const scrollRoot = getScrollParent(trackRef.current);
+    const scrollTarget = scrollRoot === window ? window : scrollRoot;
+    scrollTarget.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
 
     const resizeObserver =
@@ -966,9 +984,12 @@ export default function JourneyTimeline({ copy, language }) {
     if (trackRef.current && resizeObserver) {
       resizeObserver.observe(trackRef.current);
     }
+    if (scrollRoot !== window && resizeObserver) {
+      resizeObserver.observe(scrollRoot);
+    }
 
     return () => {
-      window.removeEventListener("scroll", schedule);
+      scrollTarget.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
       resizeObserver?.disconnect();
       if (frame) cancelAnimationFrame(frame);
