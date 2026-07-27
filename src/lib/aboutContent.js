@@ -141,8 +141,8 @@ export const JOURNEY_STAGES = [
     subsections: [
       {
         title: {
-          en: "Design Research Assistant",
-          zh: "设计研究助理",
+          en: "Interaction Design & HCI Research Assistant",
+          zh: "交互设计与 HCI 研究助理",
         },
         organization: {
           en: "Southern University of Science and Technology",
@@ -177,7 +177,8 @@ export const JOURNEY_STAGES = [
                 },
               ],
             },
-            "Through research, workshops, and the development of structured design materials, I learned how human needs, emerging technologies, and complex interaction questions can be translated into clearer design directions.",
+            "During this research experience, I explored how interaction logic is developed—from understanding people through research, to designing meaningful interactions that respond to real contexts.",
+            "I participated in workshops and user interviews across both academic and industry settings, including collaborations with Guangzhou Academy of Fine Arts, NingboTech University, NetEase Games, and ECOVACS. These experiences taught me how different environments shape design methods, and how research can be translated into practical interaction strategies and product decisions.",
           ],
           zh: [
             {
@@ -202,7 +203,8 @@ export const JOURNEY_STAGES = [
                 { text: "合作，参与交互设计与 HCI 相关研究。" },
               ],
             },
-            "通过研究、工作坊与结构化设计材料的开发，我学会如何把人的需求、新兴技术与复杂交互问题，转化为更清晰的设计方向。",
+            "在这段研究经历中，我探索了交互逻辑是如何形成的——从通过研究理解人，到设计能够回应真实情境的有意义交互。",
+            "我参与了学术与产业两端的工作坊与用户访谈，包括与广州美术学院、宁波工程学院、网易游戏、科沃斯等的合作。这些经历让我体会到不同环境如何塑造设计方法，以及研究如何转化为切实的交互策略与产品决策。",
           ],
         },
         images: [
@@ -286,7 +288,7 @@ export const JOURNEY_STAGES = [
               type: "rich",
               parts: [
                 {
-                  text: "At CS Energy Technology, I first worked on redesigning the user profile experience within the ",
+                  text: "At CS Energy Technology, I began seeing products as systems rather than collections of interfaces. Working on the ",
                 },
                 {
                   text: "Charging Station Management System (CSMS)",
@@ -296,19 +298,19 @@ export const JOURNEY_STAGES = [
                   source: "csenergytech.co.th",
                 },
                 {
-                  text: ", rethinking the page structure and information framework rather than only adjusting the interface.",
+                  text: ", which supported charging station operators in the Thailand market, I redesigned the user profile experience by rethinking information architecture and operational workflows instead of simply refining screens.",
                 },
               ],
             },
-            "I then contributed to improving the refund workflow across the mobile app and management platform, helping operations staff handle refund requests more clearly and efficiently.",
-            "Later, I explored future-facing app features designed to create long-term value for both the platform and business partners hosting charging stations. This shifted my thinking from improving isolated functions to considering how product strategy can support a mutually beneficial relationship between users, operators, and the business.",
+            "As I redesigned workflows across both the mobile app and management platform, I realized that every interaction connected multiple stakeholders—from end users to operations teams. Even a small feature was shaped by the needs of an entire system rather than a single interface.",
+            "I later explored personalized branding for charging station operators and early concepts for future platform capabilities. Those conversations introduced me to product strategy for the first time, showing me that successful products grow by balancing user experience, operational efficiency, and business value.",
           ],
           zh: [
             {
               type: "rich",
               parts: [
                 {
-                  text: "在 CS Energy Technology，我首先参与了",
+                  text: "在 CS Energy Technology，我开始把产品看作系统，而不是界面的集合。在面向泰国市场充电站运营商的",
                 },
                 {
                   text: "Charging Station Management System (CSMS)",
@@ -318,12 +320,12 @@ export const JOURNEY_STAGES = [
                   source: "csenergytech.co.th",
                 },
                 {
-                  text: "中用户个人中心体验的重新设计，重点梳理页面结构与信息框架，而不是只调整界面表现。",
+                  text: "上，我通过重新思考信息架构与运营工作流来重新设计用户个人中心体验，而不是只做界面微调。",
                 },
               ],
             },
-            "随后，我参与优化移动端与管理平台之间的退款流程，帮助运营人员更清晰、高效地处理退款请求。",
-            "之后，我还探索面向未来的应用功能，希望为平台与运营充电站的商业合作伙伴创造长期价值。这段经历让我从优化孤立功能，转向思考产品策略如何支持用户、运营商与业务之间互利共赢的关系。",
+            "当我在移动端与管理平台两端重新设计工作流时，我意识到每一次交互都连接着多方利益相关者——从终端用户到运营团队。即便是一个很小的功能，也由整个系统的需求塑造，而不是单一界面。",
+            "之后，我探索了面向充电站运营商的个性化品牌，以及平台未来能力的早期概念。这些讨论第一次把我带入产品策略：成功的产品，是在用户体验、运营效率与商业价值之间取得平衡中成长起来的。",
           ],
         },
         images: [
@@ -339,8 +341,8 @@ export const JOURNEY_STAGES = [
       },
     ],
     highlight: {
-      en: "Design became something I could investigate,\nstructure, and build through practice.",
-      zh: "设计变成了我可以通过实践去探究、\n结构化，并亲手搭建的东西。",
+      en: "Good design doesn't connect pages. It connects people, operations, and business.",
+      zh: "好的设计连接的不是页面，而是人、运营与商业。",
     },
   },
   {

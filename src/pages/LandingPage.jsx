@@ -32,21 +32,23 @@ export default function LandingPage() {
   return (
     <AppLayout className={`landing-page landing-page--${language}`}>
       <div className="landing-page__inner">
-        <div className="landing-page__title-block">
-          <PortfolioTitle
-            titleTop={copy.titleTop}
-            titleBottom={copy.titleBottom}
-            onTitleMouseEnter={handleTitleMouseEnter}
-            onTitleMouseLeave={handleTitleMouseLeave}
-          />
-        </div>
+        <div className="landing-page__hero">
+          <div className="landing-page__title-block">
+            <PortfolioTitle
+              titleTop={copy.titleTop}
+              titleBottom={copy.titleBottom}
+              onTitleMouseEnter={handleTitleMouseEnter}
+              onTitleMouseLeave={handleTitleMouseLeave}
+            />
+          </div>
 
-        <div className="landing-page__nav-block">
-          <PortfolioNav
-            copy={copy}
-            themeColors={themeColors}
-            isDarkMode={isDarkMode}
-          />
+          <div className="landing-page__nav-block">
+            <PortfolioNav
+              copy={copy}
+              themeColors={themeColors}
+              isDarkMode={isDarkMode}
+            />
+          </div>
         </div>
       </div>
     </AppLayout>

@@ -35,6 +35,35 @@ function readBoxRelativeToNav(el, nav) {
   };
 }
 
+/** Whole-pixel geometry — fractional values create 1px seams in Chrome/Safari. */
+function snapBox(box) {
+  if (!box) return null;
+  const x = Math.round(box.x);
+  const y = Math.round(box.y);
+  const right = Math.round(box.x + box.width);
+  const bottom = Math.round(box.y + box.height);
+  return {
+    x,
+    y,
+    width: Math.max(right - x, 1),
+    height: Math.max(bottom - y, 1),
+  };
+}
+
+/** Expand 1px so the pill overlaps the track and covers sub-pixel gaps. */
+const INDICATOR_OVERLAP = 2;
+
+function layoutIndicatorBox(box) {
+  const snapped = snapBox(box);
+  if (!snapped) return null;
+  return {
+    x: snapped.x - INDICATOR_OVERLAP,
+    y: snapped.y - INDICATOR_OVERLAP,
+    width: snapped.width + INDICATOR_OVERLAP * 2,
+    height: snapped.height + INDICATOR_OVERLAP * 2,
+  };
+}
+
 function boxesEqual(a, b, epsilon = 0.5) {
   if (!a || !b) return false;
   return (
@@ -43,6 +72,12 @@ function boxesEqual(a, b, epsilon = 0.5) {
     Math.abs(a.width - b.width) < epsilon &&
     Math.abs(a.height - b.height) < epsilon
   );
+}
+
+function borderColorFromTheme(borderValue) {
+  if (!borderValue) return "transparent";
+  const match = String(borderValue).match(/rgba?\([^)]+\)|#[0-9a-fA-F]{3,8}/);
+  return match ? match[0] : "transparent";
 }
 
 export default function TopNavigation({ className, style }) {
@@ -82,7 +117,7 @@ export default function TopNavigation({ className, style }) {
 
   activeIdRef.current = activeId;
 
-  const commitBox = useCallback((box) => {
+  const applyLaidOutBox = useCallback((box) => {
     const el = indicatorRef.current;
     if (!el || !box) return;
     boxRef.current = box;
@@ -91,6 +126,13 @@ export default function TopNavigation({ className, style }) {
     el.style.transform = `translate3d(${box.x}px, ${box.y}px, 0)`;
   }, []);
 
+  const commitBox = useCallback(
+    (rawBox) => {
+      applyLaidOutBox(layoutIndicatorBox(rawBox));
+    },
+    [applyLaidOutBox],
+  );
+
   const cancelAnimations = useCallback(() => {
     const el = indicatorRef.current;
     if (!el) return;
@@ -98,15 +140,28 @@ export default function TopNavigation({ className, style }) {
   }, []);
 
   const morphIndicator = useCallback(
-    async (from, to) => {
+    async (fromLaidOut, toRaw) => {
       const el = indicatorRef.current;
       const nav = navRef.current;
-      if (!el || !nav || !from || !to) {
-        commitBox(to ?? from);
+      const toBox = layoutIndicatorBox(toRaw);
+      if (!el || !nav || !toBox) {
+        commitBox(toRaw);
         return;
       }
-      if (boxesEqual(from, to)) {
-        commitBox(to);
+
+      let start = fromLaidOut;
+      // Live indicator is already laid out — snap only, do not expand again.
+      const live = snapBox(readBoxRelativeToNav(el, nav));
+      if (live && live.width > 1 && live.height > 1) {
+        start = live;
+      }
+      if (!start) {
+        commitBox(toRaw);
+        return;
+      }
+
+      if (boxesEqual(start, toBox)) {
+        applyLaidOutBox(toBox);
         return;
       }
 
@@ -114,7 +169,7 @@ export default function TopNavigation({ className, style }) {
         animTokenRef.current += 1;
         cancelAnimations();
         isAnimatingRef.current = false;
-        commitBox(to);
+        applyLaidOutBox(toBox);
         return;
       }
 
@@ -122,29 +177,22 @@ export default function TopNavigation({ className, style }) {
       isAnimatingRef.current = true;
       cancelAnimations();
 
-      // Continue from wherever the pill currently sits if a morph was interrupted.
-      const live = readBoxRelativeToNav(el, nav);
-      if (live && live.width > 1 && live.height > 1) {
-        from = live;
-      }
+      const circle = Math.min(start.height, toBox.height);
+      const fromX = Math.round(start.x + (start.width - circle) / 2);
+      const fromY = Math.round(start.y + (start.height - circle) / 2);
+      const toX = Math.round(toBox.x + (toBox.width - circle) / 2);
+      const toY = Math.round(toBox.y + (toBox.height - circle) / 2);
 
-      const circle = Math.min(from.height, to.height);
-      const fromX = from.x + (from.width - circle) / 2;
-      const fromY = from.y + (from.height - circle) / 2;
-      const toX = to.x + (to.width - circle) / 2;
-      const toY = to.y + (to.height - circle) / 2;
-
-      // Keep underlying styles at the start; WAAPI drives the visible motion.
-      commitBox(from);
+      applyLaidOutBox(start);
 
       try {
         const animation = el.animate(
           [
             {
               offset: 0,
-              transform: `translate3d(${from.x}px, ${from.y}px, 0)`,
-              width: `${from.width}px`,
-              height: `${from.height}px`,
+              transform: `translate3d(${start.x}px, ${start.y}px, 0)`,
+              width: `${start.width}px`,
+              height: `${start.height}px`,
               easing: EASE_SHRINK,
             },
             {
@@ -163,9 +211,9 @@ export default function TopNavigation({ className, style }) {
             },
             {
               offset: 1,
-              transform: `translate3d(${to.x}px, ${to.y}px, 0)`,
-              width: `${to.width}px`,
-              height: `${to.height}px`,
+              transform: `translate3d(${toBox.x}px, ${toBox.y}px, 0)`,
+              width: `${toBox.width}px`,
+              height: `${toBox.height}px`,
             },
           ],
           {
@@ -179,16 +227,16 @@ export default function TopNavigation({ className, style }) {
         if (token !== animTokenRef.current) return;
 
         cancelAnimations();
-        commitBox(to);
+        applyLaidOutBox(toBox);
         isAnimatingRef.current = false;
       } catch {
         if (token === animTokenRef.current) {
-          commitBox(to);
+          applyLaidOutBox(toBox);
           isAnimatingRef.current = false;
         }
       }
     },
-    [cancelAnimations, commitBox],
+    [applyLaidOutBox, cancelAnimations, commitBox],
   );
 
   // Morph only when the active tab id actually changes.
@@ -240,7 +288,8 @@ export default function TopNavigation({ className, style }) {
       const tab = tabRefs.current[activeIdRef.current];
       const next = readBoxRelativeToNav(tab, nav);
       if (!next) return;
-      if (boxesEqual(boxRef.current, next)) return;
+      const laidOut = layoutIndicatorBox(next);
+      if (boxesEqual(boxRef.current, laidOut)) return;
       commitBox(next);
     };
 
@@ -262,6 +311,11 @@ export default function TopNavigation({ className, style }) {
     };
   }, [language, copy, commitBox]);
 
+  const ringColor = borderColorFromTheme(themeColors.navBarBorder);
+  const elevationShadow = isDarkMode
+    ? "0 10px 30px rgba(0,0,0,0.35)"
+    : "0 10px 30px rgba(0,0,0,0.12)";
+
   return (
     <nav
       ref={navRef}
@@ -278,13 +332,12 @@ export default function TopNavigation({ className, style }) {
         boxSizing: "border-box",
         padding: "6px",
         borderRadius: "999px",
-        background: "var(--nav-bar-bg)",
-        border: "var(--nav-bar-border)",
-        backdropFilter: "blur(18px)",
-        WebkitBackdropFilter: "blur(18px)",
-        boxShadow: isDarkMode
-          ? "0 10px 30px rgba(0,0,0,0.35)"
-          : "0 10px 30px rgba(0,0,0,0.12)",
+        // Fill + blur painted on ::before for cleaner indicator edges.
+        background: "transparent",
+        border: "none",
+        backdropFilter: "none",
+        WebkitBackdropFilter: "none",
+        boxShadow: `0 0 0 1px ${ringColor}, ${elevationShadow}`,
         fontFamily: FONT_STACK,
         ...style,
       }}

@@ -7,9 +7,13 @@ body,
 }
 
 html {
-  /* Keep gutter reserved so About's scrollbar doesn't shift the fixed top nav. */
-  overflow-y: auto;
-  scrollbar-gutter: stable;
+  /*
+   * Scrolling lives in `.site-view--about`, not the document.
+   * `scrollbar-gutter: stable` on html left a permanent white strip beside
+   * the cream paper / desk surfaces — remove it.
+   */
+  overflow: hidden;
+  background: transparent;
 }
 
 html.moon-cursor-active,
@@ -28,6 +32,8 @@ html.moon-cursor-active * {
 body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Helvetica,
     Arial, sans-serif;
+  overflow: hidden;
+  background: transparent;
 }
 
 :root {
@@ -76,6 +82,8 @@ body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  /* Reserve gutter inside About so its scrollbar doesn't shift fixed chrome. */
+  scrollbar-gutter: stable;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -125,16 +133,12 @@ body {
   --editorial-nav-weight: 400;
   --editorial-nav-tracking: -0.015em;
 
-  --editorial-section-gap: clamp(4.5rem, 14vh, 8rem);
+  /* Gap between title and portfolio links — viewport-scaled so links sit lower */
+  --editorial-section-gap: clamp(3.5rem, 12vh, 10rem);
   --editorial-social-gap: clamp(1.125rem, 2.5vw, 1.75rem);
   --editorial-social-offset: clamp(1.25rem, 2.5vh, 2rem);
 
-  --editorial-title-top: clamp(6.5rem, 15vh, 12.5rem);
-  --editorial-nav-top: clamp(28rem, 62vh, 44rem);
-  --editorial-pad-bottom: calc(var(--viewport-safe-bottom) + 0.5rem);
   --editorial-inline-end: clamp(2rem, 4vw, 4rem);
-  /* Soft downward settle for title + links as one group (nav/chrome stay fixed). */
-  --editorial-content-nudge-y: clamp(36px, 5vh, 68px);
 
   /* Notebook / paper canvas — Home only */
   --landing-paper-base: #f6f2ea;
@@ -217,36 +221,48 @@ body {
 }
 
 .landing-page__inner {
-  position: relative;
+  /* Fill the space between fixed top nav and bottom toolbar.
+     Equal fr rows center the hero; short screens bias slightly lower. */
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: start;
   width: 100%;
   height: 100%;
   min-height: 0;
   max-height: 100%;
   box-sizing: border-box;
-  padding-bottom: var(--editorial-pad-bottom);
+  padding-top: var(--viewport-safe-top);
+  padding-bottom: var(--viewport-safe-bottom);
+  padding-left: var(--editorial-inset);
+  padding-right: var(--editorial-inline-end);
   overflow: hidden;
-  transform: translateY(var(--editorial-content-nudge-y));
+}
+
+.landing-page__hero {
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--editorial-section-gap);
+  width: min(var(--editorial-title-width), 100%);
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .landing-page__title-block,
 .landing-page__nav-block {
-  position: absolute;
-  left: var(--editorial-inset);
-  width: min(
-    var(--editorial-title-width),
-    calc(100% - var(--editorial-inset) - var(--editorial-inline-end))
-  );
-  max-width: calc(100% - var(--editorial-inset) - var(--editorial-inline-end));
+  position: relative;
+  width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
 }
 
 .landing-page__title-block {
-  top: var(--editorial-title-top);
   z-index: 2;
 }
 
 .landing-page__nav-block {
-  top: var(--editorial-nav-top);
   z-index: 3;
 }
 
@@ -405,23 +421,42 @@ body {
   max-width: none;
   box-sizing: border-box;
   gap: 2px;
+  overflow: hidden;
+  isolation: isolate;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Fill + blur on a separate layer — prevents AA hairlines on the active pill. */
+.top-navigation::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: var(--nav-bar-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  pointer-events: none;
 }
 
 .top-navigation__indicator {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 0;
+  z-index: 1;
   box-sizing: border-box;
   width: 0;
   height: 0;
   border-radius: 999px;
   background: var(--nav-active-bg);
+  /* Bleed same fill 1px outward to hide rounded-corner AA fringes. */
+  box-shadow: 0 0 0 1px var(--nav-active-bg);
   pointer-events: none;
   opacity: 0;
-  transform: translate(0, 0);
-  will-change: transform, width, height;
-  transition: background 0.22s ease, opacity 0.18s ease;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  transition: background 0.22s ease, opacity 0.18s ease, box-shadow 0.22s ease;
 }
 
 .top-navigation__indicator--ready {
@@ -430,7 +465,7 @@ body {
 
 .top-navigation__tab {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   flex: 0 0 auto;
   min-width: 0;
   box-sizing: border-box;
@@ -3824,15 +3859,36 @@ body {
   overflow: visible;
 }
 
-.workspace-tooltip-measure {
-  display: inline-block;
-  line-height: 0;
-  padding: 0 8px 10px 2px;
+/* Fixed HTML portal — position from getBoundingClientRect, not fixed SVG offsets. */
+.workspace-tooltip-layer {
+  position: fixed;
+  z-index: 220;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(280px, calc(100vw - 32px));
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  /* Instant show/hide — CSS transitions were restarting and freezing at opacity 0. */
+  transform: translateY(4px);
+  -webkit-transform: translateY(4px);
+}
+
+.workspace-tooltip-layer.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  -webkit-transform: translateY(0);
+  transition:
+    opacity 0.22s cubic-bezier(0.45, 0, 0.25, 1),
+    transform 0.22s cubic-bezier(0.45, 0, 0.25, 1),
+    -webkit-transform 0.22s cubic-bezier(0.45, 0, 0.25, 1);
 }
 
 .workspace-tooltip {
   box-sizing: border-box;
   width: max-content;
+  max-width: min(280px, calc(100vw - 32px));
   display: inline-block;
   pointer-events: none;
 }
@@ -3844,6 +3900,7 @@ body {
 
   box-sizing: border-box;
   width: max-content;
+  max-width: inherit;
   padding: 10px 14px 11px;
   border: 1px solid var(--tooltip-border);
   border-radius: 10px;
@@ -3858,7 +3915,7 @@ body {
 }
 
 .workspace-tooltip--plant .workspace-tooltip__body {
-  max-width: 118px;
+  max-width: min(118px, calc(100vw - 32px));
   width: auto;
 }
 
@@ -4078,10 +4135,8 @@ body {
     --editorial-title-width: 82%;
     --editorial-title-size: clamp(3.25rem, 7.5vw, 4.75rem);
     --editorial-nav-size: clamp(0.9375rem, 2.8vw, 1.25rem);
-    --editorial-title-top: clamp(5.5rem, 14vh, 9rem);
-    --editorial-nav-top: clamp(24rem, 58vh, 37rem);
     --editorial-inset: clamp(40px, 6vw, 64px);
-    --editorial-pad-bottom: var(--viewport-safe-bottom);
+    --editorial-section-gap: clamp(3rem, 10vh, 7rem);
   }
 
   .landing-page--zh {
@@ -4097,10 +4152,8 @@ body {
     --editorial-title-line: 0.96;
     --editorial-nav-size: clamp(0.875rem, 3.8vw, 1.125rem);
     --editorial-nav-gap: clamp(0.3rem, 1.2vh, 0.5rem);
-    --editorial-title-top: clamp(4rem, 14vh, 6rem);
-    --editorial-nav-top: clamp(20rem, 54vh, 33rem);
+    --editorial-section-gap: clamp(2.25rem, 7vh, 4.5rem);
     --editorial-social-offset: clamp(1rem, 3vh, 1.5rem);
-    --editorial-pad-bottom: var(--viewport-safe-bottom);
     --editorial-inline-end: clamp(1.25rem, 5vw, 2rem);
   }
 }
@@ -4113,19 +4166,26 @@ body {
   }
 }
 
-/* Short laptop screens — tighten vertical spacing only; keep title bold */
+/* Short laptop screens — lower the visual center and keep the block readable */
 @media (max-height: 900px) and (min-width: 1025px) {
   .landing-page {
-    --editorial-title-top: clamp(5.75rem, 13vh, 10rem);
-    --editorial-nav-top: clamp(26rem, 58vh, 38rem);
-    --editorial-section-gap: clamp(3.5rem, 10vh, 6rem);
+    --editorial-title-size: clamp(3.5rem, 5.2vw + 1.2vh, 5.75rem);
+    --editorial-section-gap: clamp(3rem, 9vh, 6.5rem);
+  }
+
+  .landing-page__inner {
+    grid-template-rows: minmax(0, 1.25fr) auto minmax(0, 0.75fr);
   }
 }
 
 @media (max-height: 780px) and (min-width: 1025px) {
   .landing-page {
-    --editorial-title-top: clamp(5.25rem, 11vh, 8.5rem);
-    --editorial-nav-top: clamp(24rem, 54vh, 32rem);
+    --editorial-title-size: clamp(3rem, 4.8vw + 1vh, 4.75rem);
+    --editorial-section-gap: clamp(2.25rem, 7vh, 4.5rem);
+  }
+
+  .landing-page__inner {
+    grid-template-rows: minmax(0, 1.35fr) auto minmax(0, 0.65fr);
   }
 }
 
@@ -4136,8 +4196,11 @@ body {
     --editorial-nav-size: clamp(1.125rem, 1.6vw, 1.5rem);
     --editorial-nav-gap: clamp(0.4rem, 1vh, 0.75rem);
     --editorial-inset: clamp(56px, 6.5vw, 96px);
-    --editorial-title-top: clamp(8rem, 18vh, 13rem);
-    --editorial-nav-top: clamp(36rem, 66vh, 50rem);
+    --editorial-section-gap: clamp(4.5rem, 13vh, 11rem);
+  }
+
+  .landing-page__inner {
+    grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
   }
 
   .landing-page--en {

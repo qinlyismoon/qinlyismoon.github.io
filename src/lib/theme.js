@@ -35,9 +35,9 @@ export function getThemeColors(isDarkMode) {
         controlBg: "rgba(60,60,67,0.18)",
         controlBorder: "1px solid rgba(255,255,255,0.18)",
         controlText: "#111111",
-        // Top nav — softer than the bottom control bar
+        // Top nav — soft edge (avoid bright white hairlines on light surfaces)
         navBarBg: "rgba(60,60,67,0.05)",
-        navBarBorder: "1px solid rgba(255,255,255,0.28)",
+        navBarBorder: "1px solid rgba(60,60,67,0.12)",
         navInactiveText: "rgba(17,17,17,0.48)",
         navActiveText: "#111111",
         navHoverBg: "rgba(60,60,67,0.08)",

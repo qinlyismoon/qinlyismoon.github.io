@@ -1,14 +1,8 @@
-import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
+/** Portal to document.body — sync on the client so refs are available in useLayoutEffect. */
 export default function ViewportPortal({ children }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
+  if (typeof document === "undefined") {
     return null;
   }
 
