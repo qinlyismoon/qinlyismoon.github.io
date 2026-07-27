@@ -214,10 +214,15 @@ body {
 }
 
 .landing-page--en {
-  --editorial-title-width: 68%;
+  /* Wider track so the lead line fits at large type; second line can still wrap naturally */
+  --editorial-title-width: 86%;
   --editorial-title-line: 0.98;
   --editorial-title-tracking: -0.035em;
   --editorial-nav-tracking: -0.015em;
+}
+
+.landing-page--en .portfolio-title__lead {
+  white-space: nowrap;
 }
 
 .landing-page__inner {
@@ -3750,6 +3755,10 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  /* Shared face for SVG labels + HTML tooltips (tooltips portal to body). */
+  --desk-ui-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", Helvetica,
+    Arial, sans-serif;
+  font-family: var(--desk-ui-font);
   --object-hover-shadow: drop-shadow(0 8px 16px rgba(72, 58, 42, 0.09));
   --object-focus-shadow: drop-shadow(0 8px 14px rgba(72, 58, 42, 0.07));
 }
@@ -3869,6 +3878,9 @@ body {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  /* Match desk object labels — portal leaves the SVG inheritance tree. */
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Helvetica,
+    Arial, sans-serif;
   /* Instant show/hide — CSS transitions were restarting and freezing at opacity 0. */
   transform: translateY(4px);
   -webkit-transform: translateY(4px);
@@ -3924,17 +3936,17 @@ body {
   line-height: 1.35;
 }
 
-/* Tooltip text — darker than hover labels for legibility on the bubble */
+/* Tooltip text — same face as gray object labels, larger for readability */
 .workspace-tooltip__line {
   margin: 0;
   font-family: inherit;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1;
   text-align: left;
   white-space: nowrap;
-  color: var(--desk-tooltip-text, #7a6e62);
+  color: var(--desk-caption, #b0a494);
   opacity: 0.92;
   user-select: none;
   -webkit-font-smoothing: antialiased;
@@ -3945,7 +3957,7 @@ body {
 }
 
 .workspace-object__label {
-  font-family: inherit;
+  font-family: var(--desk-ui-font, inherit);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: -0.01em;
@@ -4047,9 +4059,12 @@ body {
     padding-bottom: clamp(10px, 2vh, 20px);
   }
 
-  .workspace-object__label,
-  .workspace-tooltip__line {
+  .workspace-object__label {
     font-size: 10px;
+  }
+
+  .workspace-tooltip__line {
+    font-size: 13px;
   }
 }
 
@@ -4139,6 +4154,10 @@ body {
     --editorial-section-gap: clamp(3rem, 10vh, 7rem);
   }
 
+  .landing-page--en {
+    --editorial-title-width: 90%;
+  }
+
   .landing-page--zh {
     --editorial-title-width: 86%;
   }
@@ -4155,6 +4174,15 @@ body {
     --editorial-section-gap: clamp(2.25rem, 7vh, 4.5rem);
     --editorial-social-offset: clamp(1rem, 3vh, 1.5rem);
     --editorial-inline-end: clamp(1.25rem, 5vw, 2rem);
+  }
+
+  /* Narrow phones — allow the lead line to wrap rather than overflow */
+  .landing-page--en {
+    --editorial-title-width: 100%;
+  }
+
+  .landing-page--en .portfolio-title__lead {
+    white-space: normal;
   }
 }
 
@@ -4204,7 +4232,7 @@ body {
   }
 
   .landing-page--en {
-    --editorial-title-width: 65%;
+    --editorial-title-width: 82%;
   }
 
   .landing-page--zh {

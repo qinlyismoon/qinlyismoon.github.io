@@ -13,7 +13,7 @@ export default function PortfolioTitle({
       onMouseLeave={onTitleMouseLeave}
     >
       <h1 className="portfolio-title__heading">
-        {titleTop}
+        <span className="portfolio-title__lead">{titleTop}</span>
         <br />
         {titleBottom}
         <span className="portfolio-title__dots" aria-hidden="true">
