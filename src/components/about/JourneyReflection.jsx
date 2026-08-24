@@ -1,6 +1,6 @@
-import portraitAvatar from "../../assets/about/portrait.jpg";
+import profileAvatar from "../../assets/profile-photo.jpg";
 
-const DEFAULT_AVATAR = portraitAvatar;
+const DEFAULT_AVATAR = profileAvatar;
 
 export default function JourneyReflection({
   text,

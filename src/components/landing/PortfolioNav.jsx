@@ -17,7 +17,6 @@ const SOCIAL_ITEMS = [
 export default function PortfolioNav({ copy, themeColors, isDarkMode }) {
   const linkItems = [
     { key: "design", label: copy.design, href: PORTFOLIO_LINKS.design },
-    { key: "ux", label: copy.ux, href: PORTFOLIO_LINKS.ux },
     {
       key: "vibeCoding",
       label: copy.vibeCoding,
@@ -30,24 +29,28 @@ export default function PortfolioNav({ copy, themeColors, isDarkMode }) {
   return (
     <nav className="portfolio-nav" aria-label="Portfolio links">
       <div className="portfolio-nav__links">
-        {linkItems.map((item) => (
-          <button
-            key={item.key}
-            type="button"
-            className="portfolio-nav__link"
-            style={{ color: themeColors.text }}
-            onClick={() =>
-              window.open(item.href, "_blank", "noopener,noreferrer")
-            }
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = themeColors.mutedText;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = themeColors.text;
-            }}
-          >
-            {item.label}
-          </button>
+        {linkItems.map((item, index) => (
+          <span key={item.key} className="portfolio-nav__link-wrap">
+            {index > 0 ? (
+              <span className="portfolio-nav__divider" aria-hidden="true" />
+            ) : null}
+            <button
+              type="button"
+              className="portfolio-nav__link"
+              style={{ color: themeColors.text }}
+              onClick={() =>
+                window.open(item.href, "_blank", "noopener,noreferrer")
+              }
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = themeColors.mutedText;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = themeColors.text;
+              }}
+            >
+              {item.label}
+            </button>
+          </span>
         ))}
       </div>
 

@@ -1,7 +1,16 @@
 const HOME_COPY = {
   en: {
-    titleTop: "Phoebe is making,",
-    titleBottom: "thinking, and researching",
+    greeting: "Hi, I’m Phoebe.",
+    akaLabel: "Also known as:",
+    chineseName: "秦珑月",
+    nameCardAria: "Name meaning of 秦珑月",
+    exploring:
+      "I’m always exploring, experimenting, and making—trying to create something new, something different, and something that matters to people.",
+    whatIDoLabel: "WHAT I DO",
+    whoIAmLabel: "WHO I AM",
+    bio: "I turn ambiguous ideas into clear, end-to-end experiences—balancing people, aesthetics, and technical feasibility.",
+    personality:
+      "I’m always learning, changing, and becoming. Through it all, I try to stay true to who I am and honest with myself.",
     design: "Design",
     ux: "UX Research",
     vibeCoding: "Vibe Coding Paradise",
@@ -9,8 +18,17 @@ const HOME_COPY = {
     peelCornerLabel: "Open Phoebe's Desk",
   },
   zh: {
-    titleTop: "珑月正在制作、",
-    titleBottom: "思考与研究",
+    greeting: "你好，我是 Phoebe.",
+    akaLabel: "也叫：",
+    chineseName: "秦珑月",
+    nameCardAria: "秦珑月的姓名释义",
+    exploring:
+      "我一直在探索、实验，也一直在动手做——想创造一些新的、不同的东西，以及真正对人有意义的东西。",
+    whatIDoLabel: "我做什么",
+    whoIAmLabel: "我是谁",
+    bio: "我把模糊的想法做成清晰的端到端体验——在人、美学与技术可行性之间取得平衡。",
+    personality:
+      "我总在学习、变化，也总在成为。无论怎样，我都努力忠于自己，并对自己诚实。",
     design: "设计",
     ux: "用户研究",
     vibeCoding: "Vibe Coding Paradise",
@@ -23,13 +41,13 @@ const NAV_COPY = {
   en: {
     home: "Home",
     desk: "Desk",
-    about: "About",
+    about: "Timeline",
     ariaLabel: "Site navigation",
   },
   zh: {
     home: "首页",
     desk: "工作台",
-    about: "关于",
+    about: "时间线",
     ariaLabel: "网站导航",
   },
 };

@@ -9,45 +9,45 @@ const PORTRAIT = {
 
 const COLLAGE_NOTES = [
   {
-    key: "ideas",
-    className: "about-collage__note-ideas about-sticky--yellow about-sticky--secondary",
+    // Core personality — highest visual weight
+    key: "curiosity",
+    className:
+      "about-collage__note-ideas about-sticky--yellow about-sticky--secondary about-sticky--core",
     rotate: -4.2,
     attach: "pin",
     attachClass: "about-sticky__attach--ideas",
   },
   {
-    key: "curious",
-    className: "about-collage__note-curious about-sticky--sage about-sticky--supporting",
+    // Observation — ordinary weight
+    key: "observe",
+    className:
+      "about-collage__note-curious about-sticky--sage about-sticky--supporting",
     rotate: 3.8,
     attach: "tape",
     attachClass: "about-sticky__attach--curious",
   },
   {
-    key: "askingWhy",
-    className: "about-collage__note-asking about-sticky--yellow about-sticky--supporting",
+    // Making — second-tier emphasis
+    key: "making",
+    className:
+      "about-collage__note-asking about-sticky--yellow about-sticky--emphasis",
     rotate: -3.4,
     attach: "pin",
     attachClass: "about-sticky__attach--asking",
   },
   {
-    key: "systems",
+    // Systems + people — second-tier emphasis
+    key: "systemsPeople",
     className:
-      "about-collage__note-systems about-sticky--sage about-sticky--supporting about-sticky--front",
-    rotate: 2.2,
-    attach: "tape",
-    attachClass: "about-sticky__attach--systems",
-  },
-  {
-    key: "making",
-    className:
-      "about-collage__note-making about-sticky--yellow about-sticky--supporting about-sticky--front",
-    rotate: -4.6,
-  },
-  {
-    key: "observe",
-    className:
-      "about-collage__note-observe about-sticky--blue about-sticky--supporting about-sticky--front",
+      "about-collage__note-observe about-sticky--blue about-sticky--emphasis about-sticky--front",
     rotate: 3.1,
+  },
+  {
+    // Becoming — quiet footnote, lower edge
+    key: "becoming",
+    className:
+      "about-collage__note-making about-sticky--yellow about-sticky--quiet about-sticky--front",
+    rotate: -4.6,
   },
 ];
 
@@ -87,12 +87,6 @@ export default function AboutHeroCollage({ copy, language = "en" }) {
   return (
     <section className="about-hero" aria-label="Personal collage">
       <div className="about-hero__text">
-        <p className="about-hero__greeting">{copy.greeting}</p>
-        <p className="about-hero__lines">
-          <span>{copy.line1}</span>
-          <span>{copy.line2}</span>
-        </p>
-        <p className="about-hero__bio">{copy.bio}</p>
         <DesignPrinciplesLoop principles={copy.principles} />
       </div>
 
@@ -140,6 +134,14 @@ export default function AboutHeroCollage({ copy, language = "en" }) {
             </div>
 
             <div
+              className="about-collage__prop about-collage__camera"
+              style={{ "--about-rotate": "-14deg" }}
+              aria-hidden="true"
+            >
+              <img src={ABOUT_IMAGES.camera} alt="" draggable={false} />
+            </div>
+
+            <div
               className="about-collage__prop about-collage__bar"
               style={{ "--about-rotate": "20deg" }}
               aria-hidden="true"
@@ -167,6 +169,15 @@ export default function AboutHeroCollage({ copy, language = "en" }) {
                 {notes[note.key]}
               </StickyNote>
             ))}
+
+            <StickyNote
+              className="about-collage__note about-collage__note-exploring about-sticky--blue about-sticky--secondary"
+              rotate={3.6}
+              attach="tape"
+              attachClass="about-sticky__attach--exploring"
+            >
+              {copy.exploringNote}
+            </StickyNote>
           </div>
 
           {/* Overflowing foreground props */}
@@ -177,18 +188,6 @@ export default function AboutHeroCollage({ copy, language = "en" }) {
             >
               <img src={ABOUT_IMAGES.snowboard} alt="" draggable={false} />
             </div>
-          </div>
-
-          {/* Keep key notes above the overflowing snowboard */}
-          <div className="about-collage__overlay">
-            <StickyNote
-              className="about-collage__note about-collage__note-exploring about-sticky--blue about-sticky--secondary"
-              rotate={3.6}
-              attach="tape"
-              attachClass="about-sticky__attach--exploring"
-            >
-              {copy.exploring}
-            </StickyNote>
           </div>
         </div>
       </div>

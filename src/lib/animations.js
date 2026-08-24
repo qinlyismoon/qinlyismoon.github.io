@@ -7,11 +7,14 @@ export const PAPER_PEEL_TRANSITION = {
   ease: PAPER_PEEL_EASE,
 };
 
-export const PAPER_CORNER_MIN = 108;
+export const PAPER_CORNER_MIN = 88;
 export const PAPER_CORNER_MAX = 148;
 export const PAPER_PEEL_OPEN_SIZE = 2600;
 
 export function getRestCornerSize(viewportWidth = window.innerWidth) {
+  if (viewportWidth <= 768) {
+    return Math.min(Math.max(viewportWidth * 0.18, 72), 96);
+  }
   return Math.min(
     Math.max(viewportWidth * 0.15, PAPER_CORNER_MIN),
     PAPER_CORNER_MAX,
