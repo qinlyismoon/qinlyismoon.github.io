@@ -148,8 +148,8 @@ export const JOURNEY_STAGES = [
       zh: "在设计研究与产品实践中打下基础",
     },
     intro: {
-      en: "After graduating in 2023, I received offers from several graduate programs. Instead of continuing directly, I chose to spend a year gaining hands-on experience in design research and product practice, then applied again in 2024.",
-      zh: "2023 年毕业后，我收到了多所研究生项目的录取。我没有直接继续，而是选择用一年时间积累设计研究与产品实践经验，再在 2024 年重新申请。",
+      en: "After graduation, I received offers from several graduate programs. Instead of continuing directly, I chose to spend a year gaining hands-on experience in design research and product practice.",
+      zh: "毕业后，我收到了多所研究生项目的录取。我没有直接继续，而是选择用一年时间积累设计研究与产品实践经验。",
     },
     subsections: [
       {
