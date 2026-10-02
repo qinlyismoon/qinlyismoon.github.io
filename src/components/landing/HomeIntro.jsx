@@ -1,20 +1,4 @@
 import AboutChineseName from "../about/AboutChineseName";
-import { ABOUT_PATH, DESK_PATH, LIBRARY_PATH } from "../../lib/routes";
-
-function handleInternalNavigation(event, navigate) {
-  if (
-    event.button !== 0 ||
-    event.metaKey ||
-    event.ctrlKey ||
-    event.shiftKey ||
-    event.altKey
-  ) {
-    return;
-  }
-
-  event.preventDefault();
-  navigate?.();
-}
 
 export default function HomeIntro({
   copy,
@@ -45,30 +29,30 @@ export default function HomeIntro({
             {copy.exploreTitle}
           </h2>
           <div className="explore-index__list">
-            <a
+            <button
               className="explore-item explore-item--primary"
-              href={LIBRARY_PATH}
-              onClick={(event) => handleInternalNavigation(event, onOpenLibrary)}
+              type="button"
+              onClick={onOpenLibrary}
             >
               <span className="explore-item__title">{copy.caseStudies} →</span>
               <span className="explore-item__description">{copy.caseStudiesDescription}</span>
-            </a>
-            <a
+            </button>
+            <button
               className="explore-item"
-              href={DESK_PATH}
-              onClick={(event) => handleInternalNavigation(event, onOpenDesk)}
+              type="button"
+              onClick={onOpenDesk}
             >
               <span className="explore-item__title">{copy.desk} →</span>
               <span className="explore-item__description">{copy.deskDescription}</span>
-            </a>
-            <a
+            </button>
+            <button
               className="explore-item"
-              href={ABOUT_PATH}
-              onClick={(event) => handleInternalNavigation(event, onOpenTimeline)}
+              type="button"
+              onClick={onOpenTimeline}
             >
               <span className="explore-item__title">{copy.versionHistory} →</span>
               <span className="explore-item__description">{copy.versionHistoryDescription}</span>
-            </a>
+            </button>
           </div>
       </section>
 
