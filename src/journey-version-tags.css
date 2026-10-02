@@ -1,0 +1,193 @@
+/* Journey version tags + timeline rail — engineer-style version language.
+ *
+ * The Log journey speaks in versions (v2022.1 … v2026.1): each stage title
+ * carries a mono kicker, and the left rail marks every stage with the same
+ * tag. Type voices follow the design system — JetBrains Mono for the
+ * version (data voice), sans for phase names. No handwritten face on the
+ * rail; Caveat stays reserved for the logo.
+ *
+ * Loaded after styles.css so these rules win the cascade. The superseded
+ * selectors in styles.css (.about-journey__moving-year,
+ * .about-stage__year-mark and their state/dark variants) no longer match
+ * any element and can be removed on the next styles.css cleanup pass.
+ */
+
+/* 1. Page title ("My design journey") — the document's own voice, not the
+ * identity's. The sidebar name speaks in the sans; the Log page title
+ * steps down in size and switches to the serif reading face, so the page
+ * opens like a chapter rather than a brand billboard. It sits one step
+ * above the stage titles. Serif titles take near-zero tracking — the
+ * tight sans tracking would cramp the letterforms.
+ */
+.about-section-heading {
+  margin: 0 0 0.7em;
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: var(--weight-medium);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+/* 1b. Stage titles step down to match: they keep the sans structural voice
+ * (paired with the mono version kicker above each one), but sit clearly
+ * below the serif page title. The dim-when-inactive color logic is
+ * untouched — only the size steps down.
+ */
+.about-stage__title {
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+/* 1c. The closing heading ("Thanks for following the journey.") is the
+ * page title's bookend — same serif voice and size, so the page never
+ * closes louder than it opened.
+ */
+.about-closing__heading {
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: var(--weight-medium);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+/* 2. Engineer-style chapter tag above each stage title, e.g. v2022.1.
+   It lives inside the stage body, so it dims with inactive stages. */
+.about-stage__version {
+  margin: 0 0 0.6em;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  color: var(--color-text-secondary);
+}
+
+/* 3. Floating rail readout — compact, system type voices. */
+.about-journey__moving-label {
+  min-width: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-family: var(--font-sans);
+}
+
+.about-journey__moving-version {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.about-journey__moving-phase {
+  font-size: 0.9375rem;
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+  color: var(--color-text-secondary);
+}
+
+/* 4. Ghost version tag per stage on the rail — same language as the
+   title kickers, quiet until its stage becomes active. */
+.about-stage__version-mark {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.08em;
+  line-height: 1;
+  color: var(--color-text-secondary);
+  opacity: 0.55;
+  transition:
+    color 320ms ease,
+    opacity 280ms ease;
+}
+
+/* Active stage: the floating label owns this spot — hide the ghost tag. */
+.about-stage.is-active:not(.is-arriving) .about-stage__version-mark {
+  opacity: 0;
+}
+
+.about-stage.is-past:not(.is-active) .about-stage__version-mark {
+  opacity: 0.9;
+}
+
+.about-stage.is-arriving .about-stage__version-mark {
+  animation: timelineYearLight 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.about-page--dark .about-stage__version-mark {
+  opacity: 0.5;
+}
+
+.about-page--dark
+  .about-stage.is-past:not(.is-active)
+  .about-stage__version-mark {
+  opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-stage__version-mark {
+    transition: none;
+  }
+
+  .about-stage.is-arriving .about-stage__version-mark {
+    animation: none;
+  }
+}
+
+/* --- Journey reflection quote: a quiet editorial pull-quote ----------------
+ * The old treatment (Caveat handwriting, oversized teal text, a photo
+ * avatar, a 5px rounded rule) read as a testimonial widget and broke the
+ * document's type system. The quote is the author's own voice inside a
+ * design document, so it now speaks in the document's voice: the serif
+ * reading face, primary text, one thin accent rule. No avatar, no extra
+ * color, no handwriting — Caveat stays reserved for the logo.
+ *
+ * These selectors intentionally mirror the legacy shapes in styles.css
+ * (base / .is-active / .about-page--dark); this file loads later, so equal
+ * specificity wins and the teal never returns.
+ */
+.journey-reflection {
+  display: block;
+  margin: 1.75em 0 1.5em;
+  padding: 0;
+  max-width: 40rem;
+  width: 100%;
+}
+
+.journey-reflection__quote {
+  margin: 0;
+  padding: 0.15em 0 0.15em 1.25rem;
+  border: 0;
+  border-left: 2px solid var(--color-accent);
+  font-family: var(--font-serif);
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(1.125rem, 1.5vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--color-text);
+  quotes: none;
+}
+
+/* The active stage no longer shifts the quote into teal. */
+.about-stage.is-active .journey-reflection__quote {
+  color: var(--color-text);
+}
+
+/* Dark mode speaks the same voice through the theme-aware tokens. */
+.about-page--dark .journey-reflection__quote,
+.about-page--dark .about-stage.is-active .journey-reflection__quote {
+  color: var(--color-text);
+}
+
+/* Legacy internals removed from the component (rule span, avatar grid);
+ * their selectors in styles.css are dead, pending cleanup. */
+
+/* Stage highlights use the bare .journey-reflection pull-quote above —
+ * the same serif + accent-rule voice as the transition prompt. A
+ * margin-note variant (soft wash card, right-docked, then a right
+ * rail, then in-flow) was tried and reverted 2026-10-01: the quote
+ * belongs to the document's voice, not to a card. */

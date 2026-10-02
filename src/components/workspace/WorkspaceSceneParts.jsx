@@ -690,7 +690,7 @@ function WireGridPanel({ c, isLampOn }) {
 }
 
 /** Right-wall window — single-layer frame, sky view. */
-export function RoomWindow({ c }) {
+export function RoomWindow({ c, environment }) {
   const { x, y, width, height, frame, sill } = ROOM_WINDOW;
   const innerX = x + frame;
   const innerY = y + frame;
@@ -709,6 +709,14 @@ export function RoomWindow({ c }) {
 
       <g clipPath="url(#room-window-view)">
         <rect x={innerX} y={innerY} width={innerW} height={innerH} fill="url(#roomWindowSky)" />
+
+        <circle
+          cx={innerX + innerW * 0.72}
+          cy={innerY + innerH * 0.2}
+          r={environment?.isNight ? 11 : 14}
+          fill={environment?.isNight ? c.moon : c.yellowLight}
+          opacity={environment?.weather?.kind === "sunny" ? 0.9 : 0.45}
+        />
 
         <ellipse
           cx={innerX + innerW * 0.34}

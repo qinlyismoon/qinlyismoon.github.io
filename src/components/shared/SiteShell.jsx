@@ -1,31 +1,52 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSettings } from "../../context/AppSettingsContext";
 import { useSound } from "../../hooks/useSound";
-import { getHomeCopy } from "../../lib/copy";
 import { getThemeColors } from "../../lib/theme";
+import { getDeskPalette } from "../../lib/deskPalette";
+import { getPageContext } from "../../lib/pageContext";
+import useDeskEnvironment from "../../hooks/useDeskEnvironment";
 import {
   ABOUT_PATH,
   DESK_PATH,
   HOME_PATH,
+  LIBRARY_PATH,
   isAboutPath,
   isDeskPath,
+  isLibraryPath,
   isLegacyDeskPath,
 } from "../../lib/routes";
 import AboutPage from "../../pages/AboutPage";
 import LandingPage from "../../pages/LandingPage";
+import LibraryPage from "../../pages/LibraryPage";
 import WorkspacePage from "../../pages/WorkspacePage";
-import SettingsControlBar from "./SettingsControlBar";
-import TopNavigation from "./TopNavigation";
-import PaperPeelStage from "./PaperPeelStage";
-import ViewportPortal from "./ViewportPortal";
+import SharedLayout from "../layouts/SharedLayout";
+import DeskLayout from "../layouts/DeskLayout";
+import VersionHistoryLayout from "../layouts/VersionHistoryLayout";
 import { PageTransitionContext } from "../../context/PageTransitionContext";
+import { SidebarOverrideContext } from "../../context/SidebarOverrideContext";
 
 function viewStateFromPath(pathname) {
   if (isAboutPath(pathname)) return "about";
+  if (isLibraryPath(pathname)) return "library";
   if (isDeskPath(pathname)) return "workspace";
   return "landing";
 }
+
+const VIEW_PATHS = {
+  landing: HOME_PATH,
+  library: LIBRARY_PATH,
+  workspace: DESK_PATH,
+  about: ABOUT_PATH,
+};
+
+const CONTEXT_PAGES = {
+  landing: "home",
+  library: "caseStudies",
+  workspace: "desk",
+  about: "versionHistory",
+};
 
 export default function SiteShell() {
   const navigate = useNavigate();
@@ -35,148 +56,90 @@ export default function SiteShell() {
   const [viewState, setViewState] = useState(() =>
     viewStateFromPath(location.pathname),
   );
+  const [isLampOn, setIsLampOn] = useState(false);
+  const [metadataOverride, setMetadataOverride] = useState(null);
+  const environment = useDeskEnvironment(language);
 
   const hoverSoundRef = useRef(null);
   const clickSoundRef = useRef(null);
-  const closeSoundRef = useRef(null);
   const typingSoundRef = useRef(null);
-  const transitionLockRef = useRef(false);
-  const aboutLayerRef = useRef(null);
-
-  // Freeze Home/Desk peel while About covers it, so returning doesn't reset.
-  const peelViewStateRef = useRef(
-    viewState === "about" ? "landing" : viewState,
-  );
-  if (viewState !== "about") {
-    peelViewStateRef.current = viewState;
-  }
+  const routeTransitionRef = useRef(false);
 
   useEffect(() => {
-    if (viewState === "opening" || viewState === "closing") return;
-
     if (isLegacyDeskPath(location.pathname)) {
       navigate(DESK_PATH, { replace: true });
       return;
     }
 
-    if (isDeskPath(location.pathname) && viewState === "workspace") {
-      transitionLockRef.current = false;
-      return;
-    }
+    if (routeTransitionRef.current) return;
+    const nextView = viewStateFromPath(location.pathname);
+    if (nextView !== viewState) setViewState(nextView);
+  }, [location.pathname, navigate, viewState]);
 
-    // URL can lag behind the peel transition — avoid snapping back to landing for a frame.
-    if (
-      transitionLockRef.current &&
-      viewState === "workspace" &&
-      !isDeskPath(location.pathname)
-    ) {
-      return;
-    }
+  const transitionTo = useCallback(
+    (nextView, options = {}) => {
+      if (nextView === viewState || routeTransitionRef.current) return;
+      if (!options.silent) playSound(clickSoundRef);
 
-    const pathView = viewStateFromPath(location.pathname);
-    if (pathView !== viewState) {
-      setViewState(pathView);
-    }
-  }, [location.pathname, viewState, navigate]);
+      const commit = () => {
+        flushSync(() => {
+          navigate(VIEW_PATHS[nextView]);
+          setViewState(nextView);
+        });
+      };
 
-  const goToWorkspace = useCallback((options = {}) => {
-    if (viewState !== "landing") return;
-    if (!options.silent) playSound(clickSoundRef);
-    setViewState("opening");
-  }, [playSound, viewState]);
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      const root = document.documentElement;
 
-  const goToLanding = useCallback((options = {}) => {
-    if (viewState !== "workspace") return;
-    if (!options.silent) playSound(closeSoundRef);
-    navigate(HOME_PATH);
-    setViewState("closing");
-  }, [navigate, playSound, viewState]);
+      if (!reduceMotion && typeof document.startViewTransition === "function") {
+        routeTransitionRef.current = true;
+        root.classList.add("page-transitioning");
+        const transition = document.startViewTransition(commit);
+        transition.finished.finally(() => {
+          root.classList.remove("page-transitioning");
+          routeTransitionRef.current = false;
+        });
+        return;
+      }
 
-  const navigateToHome = useCallback((options = {}) => {
-    if (viewState === "landing" || viewState === "closing") return;
+      commit();
+    },
+    [navigate, playSound, viewState],
+  );
 
-    if (viewState === "workspace") {
-      goToLanding(options);
-      return;
-    }
-
-    if (viewState === "opening") return;
-
-    if (!options.silent) playSound(clickSoundRef);
-    navigate(HOME_PATH);
-    setViewState("landing");
-  }, [goToLanding, navigate, playSound, viewState]);
-
-  const navigateToDesk = useCallback((options = {}) => {
-    if (
-      viewState === "workspace" ||
-      viewState === "opening" ||
-      viewState === "closing"
-    ) {
-      return;
-    }
-
-    if (viewState === "landing") {
-      goToWorkspace(options);
-      return;
-    }
-
-    if (!options.silent) playSound(clickSoundRef);
-    navigate(DESK_PATH);
-    setViewState("workspace");
-  }, [goToWorkspace, navigate, playSound, viewState]);
-
-  const navigateToAbout = useCallback((options = {}) => {
-    if (viewState === "about" || viewState === "opening" || viewState === "closing") {
-      return;
-    }
-
-    if (!options.silent) playSound(clickSoundRef);
-    navigate(ABOUT_PATH);
-    setViewState("about");
-  }, [navigate, playSound, viewState]);
-
-  useEffect(() => {
-    if (viewState === "opening" || viewState === "closing") {
-      transitionLockRef.current = false;
-    }
-  }, [viewState]);
-
-  // About scrolls inside its own fixed layer — always reset when covering the peel.
-  useEffect(() => {
-    if (viewState !== "about") return;
-    const layer = aboutLayerRef.current;
-    if (layer) layer.scrollTop = 0;
-    window.scrollTo(0, 0);
-  }, [viewState]);
-
-  const handleOpenComplete = useCallback(() => {
-    if (transitionLockRef.current) return;
-    transitionLockRef.current = true;
-    navigate(DESK_PATH);
-    setViewState("workspace");
-  }, [navigate]);
-
-  const handleCloseComplete = useCallback(() => {
-    if (transitionLockRef.current) return;
-    transitionLockRef.current = true;
-    setViewState("landing");
-  }, []);
+  const navigateToHome = useCallback(
+    (options = {}) => transitionTo("landing", options),
+    [transitionTo],
+  );
+  const navigateToLibrary = useCallback(
+    (options = {}) => transitionTo("library", options),
+    [transitionTo],
+  );
+  const navigateToDesk = useCallback(
+    (options = {}) => transitionTo("workspace", options),
+    [transitionTo],
+  );
+  const navigateToAbout = useCallback(
+    (options = {}) => transitionTo("about", options),
+    [transitionTo],
+  );
 
   useEffect(() => {
     if (isMuted) {
       pauseSound(typingSoundRef);
       pauseSound(clickSoundRef);
-      pauseSound(closeSoundRef);
     }
   }, [isMuted, pauseSound]);
 
-  const pageContext = {
-    goToWorkspace,
-    goToLanding,
+  const transitionContext = {
+    goToWorkspace: navigateToDesk,
+    goToLanding: navigateToHome,
     navigateToHome,
     navigateToDesk,
     navigateToAbout,
+    navigateToLibrary,
     playSound,
     playLoopingSound,
     pauseSound,
@@ -187,59 +150,134 @@ export default function SiteShell() {
   };
 
   const themeColors = getThemeColors(isDarkMode);
-  const homeCopy = getHomeCopy(language);
+  const sceneIsDark = isDarkMode;
+  const deskPalette = useMemo(() => getDeskPalette(sceneIsDark), [sceneIsDark]);
+  const workspaceStyle = useMemo(
+    () => ({
+      "--scene-background": sceneIsDark ? themeColors.pageBg : deskPalette.bg,
+    }),
+    [deskPalette.bg, themeColors.pageBg, sceneIsDark],
+  );
+
+  const contextPage = CONTEXT_PAGES[viewState];
+  const isLanding = viewState === "landing";
+  const isLibrary = viewState === "library";
+  const isWorkspace = viewState === "workspace";
   const isAbout = viewState === "about";
-  const aboutBackground = isDarkMode
-    ? "linear-gradient(180deg, #2A2620 0%, #241F1A 45%, #1C1916 100%)"
-    : "linear-gradient(180deg, #faf8f4 0%, #f7f4ef 42%, #f3f0ea 100%)";
+
+  useEffect(() => {
+    document.body.dataset.page = contextPage;
+    return () => {
+      delete document.body.dataset.page;
+    };
+  }, [contextPage]);
+
+  const layoutContext = useMemo(() => {
+    const base = getPageContext(language, contextPage);
+    if (contextPage === "caseStudies" && metadataOverride?.items?.length) {
+      return { ...base, metadata: metadataOverride.items };
+    }
+    if (contextPage !== "desk") return base;
+
+    return {
+      ...base,
+      metadata: base.metadata.map((item) => {
+        if (item.key === "weather") {
+          return { ...item, value: environment.weather.label };
+        }
+        if (item.key === "currentStatus") {
+          return {
+            ...item,
+            value: isLampOn
+              ? language === "zh" ? "台灯开启" : "Lamp on"
+              : language === "zh" ? "台灯关闭" : "Lamp off",
+          };
+        }
+        return item;
+      }),
+    };
+  }, [contextPage, environment.weather.label, isLampOn, language, metadataOverride]);
+
+  useEffect(() => {
+    if (contextPage !== "caseStudies") setMetadataOverride(null);
+  }, [contextPage]);
+
+  // Route-level Sidebar chrome stays mounted. ContextColumn independently
+  // distinguishes the Case Studies directory mode from its project mode.
+  const metadataSwapKey = contextPage;
+  const metadataDirection = "static";
+  const sidebarOverrideValue = useMemo(
+    () => ({ metadataOverride, setMetadataOverride }),
+    [metadataOverride],
+  );
 
   return (
-    <PageTransitionContext.Provider value={pageContext}>
-      {/* Always scene-locked: About scrolls inside its overlay, same chrome as Home/Desk. */}
-      <div
-        className="site-shell site-shell--scene-lock"
-        style={{ background: themeColors.pageBg }}
-      >
-        <audio ref={hoverSoundRef} preload="auto" src="/hover-pop.mp3" />
-        <audio ref={clickSoundRef} preload="auto" src="/folder-click.mp3" />
-        <audio ref={closeSoundRef} preload="auto" src="/window-close.mp3" />
-        <audio ref={typingSoundRef} preload="auto" src="/typing-loop.mp3" loop />
-
-        <ViewportPortal>
-          <div className="viewport-top-nav">
-            <TopNavigation className="viewport-top-nav__bar" />
-          </div>
-        </ViewportPortal>
-
-        <ViewportPortal>
-          <div className="viewport-controls">
-            <SettingsControlBar className="viewport-controls__bar" />
-          </div>
-        </ViewportPortal>
-
-        {/* Peel stays painted underneath About — no blank frame when covering/uncovering. */}
-        <div className="site-view site-view--peel" aria-hidden={isAbout}>
-          <PaperPeelStage
-            viewState={peelViewStateRef.current}
-            onOpenComplete={handleOpenComplete}
-            onCloseComplete={handleCloseComplete}
-            onPeel={goToWorkspace}
-            cornerAriaLabel={homeCopy.peelCornerLabel}
-            isDarkMode={isDarkMode}
-            landing={<LandingPage />}
-            workspace={<WorkspacePage />}
-          />
-        </div>
-
+    <PageTransitionContext.Provider value={transitionContext}>
+      <SidebarOverrideContext.Provider value={sidebarOverrideValue}>
         <div
-          ref={aboutLayerRef}
-          className={`site-view site-view--about${isAbout ? " is-active" : ""}`}
-          aria-hidden={!isAbout}
-          style={{ background: aboutBackground }}
+          className="site-shell site-shell--scene-lock"
+          style={{ background: themeColors.pageBg }}
         >
-          <AboutPage />
+          <audio ref={hoverSoundRef} preload="auto" src="/hover-pop.mp3" />
+          <audio ref={clickSoundRef} preload="auto" src="/folder-click.mp3" />
+          <audio ref={typingSoundRef} preload="auto" src="/typing-loop.mp3" loop />
+
+          <SharedLayout
+            context={layoutContext}
+            page={contextPage}
+            metadataDirection={metadataDirection}
+            metadataSwapKey={metadataSwapKey}
+          >
+            <div className="app-content-stack">
+              <div
+                className={`app-content-layer app-content-layer--route app-content-layer--home${
+                  isLanding ? " is-active" : ""
+                }`}
+                aria-hidden={!isLanding}
+              >
+                <LandingPage />
+              </div>
+
+              <div
+                className={`app-content-layer app-content-layer--route app-content-layer--desk${
+                  isWorkspace ? " is-active" : ""
+                }`}
+                aria-hidden={!isWorkspace}
+              >
+                <DeskLayout style={workspaceStyle}>
+                  <WorkspacePage
+                    environment={environment}
+                    isLampOn={isLampOn}
+                    onLampToggle={() => setIsLampOn((value) => !value)}
+                    isNight={sceneIsDark}
+                    isActive={isWorkspace}
+                  />
+                </DeskLayout>
+              </div>
+
+              <div
+                className={`app-content-layer app-content-layer--route app-content-layer--history about-page${
+                  isDarkMode ? " about-page--dark" : ""
+                }${isAbout ? " is-active" : ""}`}
+                aria-hidden={!isAbout}
+              >
+                <VersionHistoryLayout>
+                  <AboutPage />
+                </VersionHistoryLayout>
+              </div>
+
+              <div
+                className={`app-content-layer app-content-layer--route app-content-layer--library${
+                  isLibrary ? " is-active" : ""
+                }`}
+                aria-hidden={!isLibrary}
+              >
+                <LibraryPage />
+              </div>
+            </div>
+          </SharedLayout>
         </div>
-      </div>
+      </SidebarOverrideContext.Provider>
     </PageTransitionContext.Provider>
   );
 }

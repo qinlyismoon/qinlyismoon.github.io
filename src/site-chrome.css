@@ -1,0 +1,375 @@
+/* ---------------------------------------------------------------------------
+ * Site chrome — Document Controls.
+ *
+ * Navigation and system status are one layer: controls embedded in
+ * the document, never floating above it.
+ *
+ * Navigation follows the Layout Blueprint v2.0: editorial text tabs on a
+ * hairline baseline — no pills, no radius, no fill. Inactive tabs are
+ * bare secondary text; hover warms them with a pale green wash; the
+ * active tab carries a 2px accent underline sitting exactly on the
+ * baseline. Each tab reserves the widest of its EN/ZH labels (a hidden
+ * ghost twin stacked under the visible label), so switching languages
+ * never moves the tabs; even padding keeps the rhythm steady. The
+ * header reads as one continuous editorial system.
+ *
+ * System status lives near the sidebar's bottom edge as its last
+ * region: language / theme / sound as three quiet text states, one
+ * per row — typography carries the interface, no icons, no dividers,
+ * no background. Each row reports the current state; clicking toggles
+ * it. The region floats above the viewport bottom with breathing room
+ * (a dock, not a footer). The page's bottom edge stays clean — content
+ * flows downward with no boundary.
+ *
+ * Visual hierarchy is always:
+ *   1. Content
+ *   2. Sidebar
+ *   3. Document Controls (navigation + system status)
+ * Chrome never competes with content; it orients without demanding focus.
+ *
+ * Loaded after styles.css so these rules win the cascade. The legacy
+ * `.top-navigation` capsule selectors in styles.css are dead once the
+ * components below stop rendering those class names; remove them during a
+ * later styles.css cleanup (after a usage search and a successful build).
+ * ------------------------------------------------------------------------- */
+
+/* --- Editorial tabs ------------------------------------------------------------
+ * Text tabs on a hairline baseline (the blueprint's Navigation States).
+ * Inactive tabs are bare secondary text; hover warms them with a pale
+ * green wash; the active tab carries a 2px accent underline sitting
+ * exactly on the baseline. No pills, no radius, no fill.
+ */
+/* The tab row sits above the main content, not the sidebar: its left
+ * edge aligns to the content column — sidebar margin + sidebar width +
+ * grid gap (see .shared-layout__grid). On mobile the grid is a single
+ * column, so the anchor falls back to the page padding.
+ * The nav is its own header section: a solid page-ground band from the
+ * viewport top through the tab baseline plus one quiet breath below, so
+ * scrolling content slides cleanly underneath instead of showing through
+ * the tabs. Same ground as the page, so at rest it reads as no band. */
+.viewport-top-nav {
+  justify-content: flex-start;
+  padding-left: calc(
+    var(--viewport-page-padding) +
+    var(--context-column-width) +
+    var(--page-layout-gap)
+  );
+  top: 0;
+  padding-top: var(--viewport-top-nav-top);
+  padding-bottom: var(--space-2);
+  background: var(--color-background);
+}
+
+/* A project detail is its own focused reading surface. The global navigation
+   stays mounted for layout continuity but is neither visible nor interactive
+   until the detail closes. */
+body[data-project-detail="open"] .viewport-top-nav {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Desk tooltips render through a viewport portal rather than inside the Desk
+   layer. Route changes must therefore hide them explicitly at the shell
+   boundary so no clock or object bubble can appear over another page. */
+body:not([data-page="desk"]) .workspace-tooltip-layer {
+  display: none;
+}
+
+.site-nav {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-divider);
+  font-family: var(--font-sans);
+}
+
+.site-nav__item {
+  appearance: none;
+  position: relative;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  height: 50px;
+  margin: 0;
+  padding: 0 16px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.site-nav__item:hover {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+
+.site-nav__item:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Language-toggle stability: each tab stacks its visible label over a
+ * hidden ghost twin of the other language's label in the same grid
+ * cell, so the tab always sizes to the widest EN/ZH label. Switching
+ * languages never moves the tabs or the baseline's right edge. The
+ * ghost is aria-hidden in the component and takes no part in
+ * interaction. */
+.site-nav__label,
+.site-nav__label--ghost {
+  grid-area: 1 / 1;
+}
+
+.site-nav__label--ghost {
+  visibility: hidden;
+}
+
+/* The active tab: a 2px accent underline laid exactly over the baseline,
+ * so the hairline thickens and turns green beneath the current chapter. */
+.site-nav__item[aria-current="page"] {
+  color: var(--color-text);
+}
+
+.site-nav__item[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--color-accent);
+  pointer-events: none;
+}
+
+/* --- Desk header ---------------------------------------------------------------
+ * The paper-ground band is now system-wide (see .viewport-top-nav above).
+ * On Desk the band additionally stays below the floating close button
+ * (z-index 200), which keeps floating above the header.
+ * Set via body[data-page="desk"] (see SiteShell).
+ */
+body[data-page="desk"] .viewport-top-nav {
+  z-index: 190;
+}
+
+/* --- Desk camera drag-to-pan -----------------------------------------------------
+ * The scene viewport pans like a camera. Touch users scroll it with a
+ * gesture; mouse users drag it (see DeskLayout) — the grab cursor says
+ * so. A real drag never also fires the object's click (DeskLayout
+ * suppresses it past a small movement threshold), so panning across the
+ * lamp can't toggle it by accident.
+ */
+.desk-scene__viewport {
+  cursor: grab;
+}
+
+.desk-scene__viewport--dragging {
+  cursor: grabbing;
+}
+
+/* --- System status -----------------------------------------------------------
+ * A quiet system line near the sidebar's bottom edge: language / theme /
+ * sound as three text states in one row — typography carries the
+ * interface, no icons, no dividers, no background. Each item reports the
+ * current state ("EN", "Light", "Sound"); clicking toggles it. Hover
+ * follows the design-system link rule: accent color plus a rightward
+ * nudge (160ms ease). Each button keeps its accessible label (the
+ * action) plus a native tooltip.
+ */
+.context-column .system-status {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  /* Left-aligned with the sidebar content above — the panel reads as
+     part of the margin, not a control strip. */
+  justify-content: flex-start;
+  align-items: baseline;
+  gap: var(--space-3);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.system-status__item {
+  appearance: none;
+  width: fit-content;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  transition: color 160ms ease, transform 160ms ease;
+}
+
+.system-status__item:hover {
+  color: var(--color-accent);
+  transform: translateX(3px);
+}
+
+.system-status__item:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* --- Sidebar metadata value swap -------------------------------------------------
+ * Live values (desk lamp status, the clock) swap through <LiveValue>
+ * (see ContextColumn): the span stays mounted and fades out, swaps text
+ * at the midpoint, then fades back in — one calm motion instead of a
+ * blink. The keyframes below play only on first mount; updates are
+ * driven by the .is-fading transition so the old text is never removed
+ * in the same frame the new text appears. One motion voice: ~200ms
+ * ease, like every other transition in the system.
+ */
+.context-metadata__value {
+  display: inline-block;
+  animation: context-metadata-value-in 200ms ease;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+/* Route navigation already crossfades complete page snapshots. The newly
+   mounted metadata values must not start a second entrance animation after
+   that crossfade finishes — that delayed animation reads as a final blink in
+   the persistent Sidebar. Live value updates on Desk keep their normal fade
+   because only route-level static swaps receive this class. */
+.context-column__metadata-swap--static .context-metadata__value {
+  animation: none;
+}
+
+.context-metadata__value.is-fading {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+@keyframes context-metadata-value-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Theme transition -------------------------------------------------------- */
+
+/* Modern browsers crossfade two complete page snapshots. Unlike per-element
+   transitions, this also handles gradients, SVG palette swaps and Framer
+   Motion layers without exposing rectangular seams between layout regions. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 360ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  animation-name: theme-page-fade-out;
+}
+
+::view-transition-new(root) {
+  animation-name: theme-page-fade-in;
+}
+
+@keyframes theme-page-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes theme-page-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* The snapshots provide the motion. Freeze competing component transitions
+   while they are captured so the new snapshot already represents one complete
+   theme rather than another partially transitioned frame. */
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition: none !important;
+}
+
+/* Route changes crossfade two complete page snapshots. Freeze component-level
+   motion while the new snapshot is captured so content and Sidebar metadata
+   arrive as one coherent frame instead of animating independently. */
+.page-transitioning *,
+.page-transitioning *::before,
+.page-transitioning *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* API-free fallback: fade the one application root out, switch every theme
+   value at the invisible midpoint, then fade the complete new page in. */
+html.theme-fallback-out #root {
+  opacity: 0;
+  transition: opacity 140ms cubic-bezier(0.4, 0, 1, 1) !important;
+}
+
+html.theme-fallback-in #root {
+  opacity: 1;
+  transition: opacity 220ms cubic-bezier(0, 0, 0.2, 1) !important;
+}
+
+/* --- Responsive ---------------------------------------------------------- */
+@media (max-width: 680px) {
+  /* Mobile: the grid is a single column, so the tab row anchors to the
+   * content's left edge (grid padding-left: var(--space-3)). The header
+   * band stays full-bleed; only the tab row keeps its inset. */
+  .viewport-top-nav {
+    padding-left: var(--space-3);
+    width: auto;
+  }
+
+  /* Natural-width tabs persist; type and padding step down so the
+   * longest label fits small screens. */
+  .site-nav__item {
+    height: 46px;
+    padding: 0 10px;
+    font-size: 0.8125rem;
+    letter-spacing: 0.01em;
+  }
+
+  /* The system status region spans the full mobile panel and sizes to
+   * its content. */
+  .context-column__region--system-status {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    padding: 0;
+    border-bottom: 0;
+  }
+}
+
+/* --- Reduced motion ------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .site-nav__item,
+  .system-status__item,
+  .context-metadata__value {
+    transition: none;
+    animation: none;
+  }
+}

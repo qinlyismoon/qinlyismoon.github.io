@@ -2,9 +2,11 @@ import { PORTFOLIO_LINKS } from "./links";
 import {
   BOOKS_DESK_X,
   BOOKS_MAX_H,
+  BOOKS_ROW_WIDTH,
   CAMERA_HANG_X,
   CAMERA_HANG_Y,
   CLOCK_SHELF_X,
+  CLOCK_WIDTH,
   DESK_SURFACE_Y,
   LAMP_HEIGHT,
   LAMP_ORIGIN_X,
@@ -13,26 +15,57 @@ import {
   MONITOR_TOTAL_W,
   MUG_DESK_X,
   MUG_HEIGHT,
+  MUG_WIDTH,
   PLANT_HEIGHT,
   PLANT_SHELF_CONTACT_Y,
   PLANT_SHELF_X,
   PLANT_WIDTH,
+  ROOM_WINDOW,
   SHELF_LEFT_Y,
   SPEAKER_HANG_X,
   SPEAKER_HANG_Y,
 } from "./deskLayout";
 
+/**
+ * Layer assignment:
+ * - "window"  → WindowLayer (unshifted, right wall)
+ * - "shelf"   → ShelfLayer (shifted)
+ * - "objects" → ObjectLayer (shifted)
+ *
+ * hitBounds are in the object's local coordinates. The InteractionLayer
+ * mirrors each object's transform so hit areas track the visible shapes.
+ */
 export const WORKSPACE_OBJECTS = [
   {
+    id: "window",
+    layer: "window",
+    hideLabel: true,
+    transform: `translate(${ROOM_WINDOW.x}, ${ROOM_WINDOW.y})`,
+    hitBounds: {
+      x: 0,
+      y: 0,
+      width: ROOM_WINDOW.width,
+      height: ROOM_WINDOW.height,
+    },
+  },
+  {
     id: "books",
+    layer: "objects",
     labelKey: "books",
     ariaLabelKey: "books",
     href: PORTFOLIO_LINKS.mfaThesis,
     transform: `translate(${BOOKS_DESK_X}, ${DESK_SURFACE_Y - BOOKS_MAX_H})`,
     labelOffset: { x: 2, y: -6 },
+    hitBounds: {
+      x: -8,
+      y: -14,
+      width: BOOKS_ROW_WIDTH + 16,
+      height: BOOKS_MAX_H + 22,
+    },
   },
   {
     id: "plant",
+    layer: "shelf",
     action: "plant",
     ariaLabelKey: "plantAria",
     hideLabel: true,
@@ -43,48 +76,70 @@ export const WORKSPACE_OBJECTS = [
   },
   {
     id: "clock",
+    layer: "shelf",
     labelKey: "clock",
     ariaLabelKey: "clockAria",
     hideLabel: true,
     transform: `translate(${CLOCK_SHELF_X}, ${SHELF_LEFT_Y - 78})`,
     tooltipOffset: { x: 84, y: 12 },
+    hitBounds: { x: -6, y: -6, width: CLOCK_WIDTH + 12, height: 92 },
   },
   {
     id: "speaker",
+    layer: "objects",
     action: "music",
     labelKey: "musicPlay",
     ariaLabelKey: "musicAria",
     hideLabel: false,
     transform: `translate(${SPEAKER_HANG_X}, ${SPEAKER_HANG_Y})`,
     labelOffset: { x: 2, y: -6 },
+    hitBounds: { x: -8, y: -8, width: 72, height: 100 },
   },
   {
     id: "camera",
+    layer: "objects",
     labelKey: "camera",
     href: PORTFOLIO_LINKS.rednote,
     transform: `translate(${CAMERA_HANG_X}, ${CAMERA_HANG_Y})`,
     labelOffset: { x: 4, y: -6 },
-  },
-  {
-    id: "lamp",
-    labelKey: "lamp",
-    action: "lamp",
-    transform: `translate(${LAMP_ORIGIN_X}, ${DESK_SURFACE_Y - LAMP_HEIGHT})`,
-    labelOffset: { x: 8, y: -10 },
+    hitBounds: { x: -8, y: -8, width: 84, height: 76 },
   },
   {
     id: "monitor",
+    layer: "objects",
     labelKey: "monitor",
     href: PORTFOLIO_LINKS.portfolio,
     transform: `translate(${MONITOR_LEFT_X}, ${DESK_SURFACE_Y - MONITOR_TOTAL_H})`,
     labelOffset: { x: MONITOR_TOTAL_W / 2 - 20, y: -10 },
+    hitBounds: {
+      x: -10,
+      y: -12,
+      width: MONITOR_TOTAL_W + 20,
+      height: MONITOR_TOTAL_H + 24,
+    },
   },
   {
     id: "mug",
+    layer: "objects",
     action: "mug",
     ariaLabelKey: "mugAria",
     hideLabel: true,
     transform: `translate(${MUG_DESK_X}, ${DESK_SURFACE_Y - MUG_HEIGHT})`,
     tooltipOffset: { x: 66, y: -16 },
+    hitBounds: {
+      x: -10,
+      y: -10,
+      width: MUG_WIDTH + 20,
+      height: MUG_HEIGHT + 20,
+    },
+  },
+  {
+    id: "lamp",
+    layer: "objects",
+    labelKey: "lamp",
+    action: "lamp",
+    transform: `translate(${LAMP_ORIGIN_X}, ${DESK_SURFACE_Y - LAMP_HEIGHT})`,
+    labelOffset: { x: 8, y: -10 },
+    hitBounds: { x: -6, y: 8, width: 132, height: 142 },
   },
 ];

@@ -58,7 +58,7 @@ export const MUG_HEIGHT = 78;
 
 /** Wire grid — portrait wall-mounted metal organizer. */
 export const WIRE_GRID_W = 196;
-export const WIRE_GRID_X = 660;
+export const WIRE_GRID_X = 540;
 export const WIRE_GRID_TOP = 44;
 export const WIRE_GRID_BOTTOM = 234;
 
@@ -103,3 +103,28 @@ export const BOOKS_DESK_X = MONITOR_LEFT_X + MONITOR_TOTAL_W + BOOKS_DESK_GAP;
 export const MUG_WIDTH = 68;
 export const MUG_DESK_GAP = 32;
 export const MUG_DESK_X = BOOKS_DESK_X + BOOKS_ROW_WIDTH + MUG_DESK_GAP;
+
+/**
+ * Layered scene — the authored room extent.
+ * The scene renders at DESK_SCENE_SCALE and is never scaled down to fit
+ * the viewport; smaller viewports pan across it like a camera instead of
+ * shrinking the room.
+ */
+export const DESK_SCENE_MIN_X = -80;
+export const DESK_SCENE_WIDTH = 1060;
+export const DESK_SCENE_HEIGHT = 620;
+export const DESK_SCENE_VIEWBOX = `${DESK_SCENE_MIN_X} 0 ${DESK_SCENE_WIDTH} ${DESK_SCENE_HEIGHT}`;
+
+/**
+ * Base render scale for the desk scene. The SVG keeps its authored viewBox
+ * and renders at WIDTH × SCALE, so every layer — objects, hit areas,
+ * tooltips — scales up uniformly from this one constant. Tune here, never
+ * per object.
+ */
+export const DESK_SCENE_SCALE = 1.5;
+export const DESK_SCENE_RENDER_WIDTH = Math.round(
+  DESK_SCENE_WIDTH * DESK_SCENE_SCALE
+);
+export const DESK_SCENE_RENDER_HEIGHT = Math.round(
+  DESK_SCENE_HEIGHT * DESK_SCENE_SCALE
+);

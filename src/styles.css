@@ -16,27 +16,81 @@ html {
   background: transparent;
 }
 
-html.moon-cursor-active,
-html.moon-cursor-active * {
-  cursor: none !important;
-}
-
-.moon-cursor {
-  position: fixed;
-  pointer-events: none;
-  z-index: 10000;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Helvetica,
-    Arial, sans-serif;
+  /* Serif is the reading face; UI chrome opts into --font-sans explicitly. */
+  font-family: var(--font-serif);
+  font-size: var(--type-body);
+  font-weight: var(--weight-regular);
+  line-height: 1.6;
+  color: var(--color-text);
+  background: var(--color-background);
   overflow: hidden;
-  background: transparent;
 }
 
 :root {
+  color-scheme: light;
+  /* Three-face type system: Zalando Sans for UI/headings, STIX Two Text
+     for reading, JetBrains Mono for code/data. Caveat is reserved for the
+     handwritten logo only. */
+  --font-sans: "Zalando Sans", Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: "STIX Two Text", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, "Courier New", monospace;
+
+  /* Publication palette */
+  --color-background: #f7f7f5;
+  --color-surface: #ffffff;
+  --color-text: #20201f;
+  /* Strongest text voice, reserved for the case-study detail title.
+     Theme-aware: never hardcode a raw black/white for text. */
+  --color-text-strong: #000000;
+  --color-text-secondary: #6f6f6b;
+  --color-divider: #deded9;
+  --color-accent: #526b61;
+
+  /* 8pt spacing system */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 2.5rem;
+  --space-6: 3rem;
+  --space-8: 4rem;
+  --space-10: 5rem;
+  --space-12: 6rem;
+
+  /* One type scale, two weights */
+  --type-display: clamp(3rem, 6vw, 5rem);
+  --type-h1: clamp(2.25rem, 4vw, 3.5rem);
+  --type-h2: clamp(1.5rem, 2.4vw, 2rem);
+  --type-body: 1rem;
+  --type-caption: 0.875rem;
+  --weight-regular: 400;
+  --weight-medium: 600;
+
+  /* Shared page grid */
+  --page-max-width: 1200px;
+  --content-max-width: 760px;
+  --page-gutter: clamp(1.5rem, 5vw, 4rem);
+  --section-space: clamp(4rem, 9vw, 7rem);
+  --grid-columns: 12;
+  --grid-gap: var(--space-3);
+  /* Shared page grid: the context column is 280px (35x8, on the 8pt
+     grid) so the one-line identity content and longest metadata values
+     fit without wrapping; the content column is minmax(0, 1fr) and
+     shifts right automatically. */
+  --context-column-width: 280px;
+  --page-layout-gap: clamp(3rem, 5vw, 5rem);
+  --page-shell-max-width: 1440px;
+  --page-shell-top: calc(var(--viewport-safe-top) + var(--space-4));
+  /* The persistent sidebar panel anchors directly to the safe area below
+     the top nav, while document content keeps one extra spacing token of
+     breathing room (--page-shell-top). Panel and content therefore have
+     distinct, named top anchors instead of sharing one. */
+  --context-column-top: var(--viewport-safe-top);
+  --page-shell-bottom: var(--viewport-safe-bottom);
+  --viewport-page-padding: clamp(2.5rem, 5vw, 4rem);
+  --documentation-content-width: 80ch;
+
   --viewport-controls-bottom: clamp(32px, 5vh, 48px);
   --viewport-top-nav-top: clamp(20px, 4vh, 32px);
   /* Approximate chrome sizes — used for content safe areas */
@@ -48,6 +102,17 @@ body {
   --viewport-safe-bottom: calc(
     var(--viewport-controls-bottom) + var(--viewport-controls-height) + 28px
   );
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-background: #171717;
+  --color-surface: #202020;
+  --color-text: #f2f2f0;
+  --color-text-strong: #ffffff;
+  --color-text-secondary: #a3a3a0;
+  --color-divider: #393936;
+  --color-accent: #9aafa5;
 }
 
 .site-shell {
@@ -73,7 +138,8 @@ body {
  * About is a fixed cover layer (like another paper sheet).
  * It fades over the peel without unmounting or changing shell layout mode.
  */
-.site-view--about {
+.site-view--about,
+.site-view--library {
   position: fixed;
   inset: 0;
   z-index: 4;
@@ -92,13 +158,18 @@ body {
     visibility 0s linear 0.28s;
 }
 
-.site-view--about.is-active {
+.site-view--about.is-active,
+.site-view--library.is-active {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
   transition:
     opacity 0.28s ease,
     visibility 0s linear 0s;
+}
+
+.site-view--library {
+  overflow: hidden;
 }
 
 .site-shell__page {
@@ -277,6 +348,9 @@ body {
   letter-spacing: -0.022em;
   line-height: 1.28;
   color: var(--home-statement);
+  /* Short editorial statements: balance line breaks so no single word
+     is left orphaned on its own line. */
+  text-wrap: balance;
 }
 
 .home-intro__columns {
@@ -294,7 +368,7 @@ body {
 
 .home-intro__label {
   margin: 0 0 0.85em;
-  font-family: "Courier Prime", "Courier New", Courier, monospace;
+  font-family: var(--font-mono);
   font-size: clamp(0.75rem, 0.95vw, 0.875rem);
   font-weight: 500;
   letter-spacing: 0.06em;
@@ -310,6 +384,9 @@ body {
   font-weight: 400;
   font-style: normal;
   line-height: 1.55;
+  /* Short editorial statements: balance line breaks so no single word
+     is left orphaned on its own line. */
+  text-wrap: balance;
 }
 
 .home-intro__bio {
@@ -327,7 +404,7 @@ body {
 
 .portfolio-title__heading {
   margin: 0;
-  font-family: "Courier Prime", "Courier New", Courier, monospace;
+  font-family: var(--font-mono);
   font-size: clamp(4rem, 6.5vw, 7.5rem);
   line-height: 0.98;
   font-weight: 700;
@@ -607,6 +684,375 @@ body {
   }
 }
 
+/* Homepage v2 — documentation-first index */
+.landing-page__hero {
+  width: 100%;
+  max-width: none;
+  gap: var(--space-4);
+  margin-top: 0;
+}
+
+.landing-page__title-block,
+.landing-page__nav-block {
+  width: 100%;
+}
+
+.landing-page__nav-block {
+  margin-top: 0;
+}
+
+.home-index {
+  display: grid;
+  gap: var(--space-10);
+}
+
+.home-hero {
+  position: relative;
+  width: 100%;
+  min-height: 168px;
+}
+
+.home-identity {
+  display: grid;
+  width: min(100%, var(--documentation-content-width));
+  max-width: 720px;
+  gap: var(--space-1);
+}
+
+.home-identity__name-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.home-identity__name {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--type-h1);
+  font-weight: var(--weight-medium);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.home-identity__name-row .about-aka {
+  margin: 0;
+}
+
+.home-identity__name-row .about-aka__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.home-identity__name-row .about-aka__line {
+  font-size: var(--type-caption);
+  color: var(--color-text-secondary);
+}
+
+.home-identity__role {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--type-body);
+  font-weight: var(--weight-medium);
+}
+
+.home-identity__statement {
+  max-width: 610px;
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-secondary);
+  font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+  line-height: 1.55;
+}
+
+.home-index__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.8fr);
+  gap: clamp(var(--space-5), 6vw, var(--space-10));
+  align-items: start;
+}
+
+.index-section__heading {
+  margin: 0 0 var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.explore-index__list {
+  display: grid;
+}
+
+.explore-index {
+  width: min(100%, var(--documentation-content-width));
+}
+
+.explore-item {
+  display: grid;
+  width: 100%;
+  gap: 0.25rem;
+  box-sizing: border-box;
+  padding: var(--space-2) 0;
+  border: 0;
+  border-top: 1px solid var(--color-divider);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 160ms ease, padding-left 160ms ease;
+}
+
+.explore-item:last-child {
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.explore-item:hover,
+.explore-item:focus-visible {
+  padding-left: var(--space-1);
+  color: var(--color-accent);
+}
+
+.explore-item:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.explore-item__title {
+  font-size: 1.0625rem;
+  font-weight: var(--weight-medium);
+  line-height: 1.35;
+}
+
+.explore-item--primary .explore-item__title {
+  font-size: 1.25rem;
+}
+
+.explore-item__description,
+.explore-item__meta {
+  color: var(--color-text-secondary);
+  font-size: var(--type-caption);
+  line-height: 1.5;
+}
+
+.explore-item__meta {
+  margin-top: 0.125rem;
+  font-size: 0.75rem;
+}
+
+/* Home copyright colophon: one quiet line at the viewport bottom, set in
+   the sidebar label voice. Absolutely positioned so it never takes flow
+   space, never jams against the edge, and never clips. */
+.home-copyright {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 0;
+  width: min(100%, var(--documentation-content-width));
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--color-text-secondary);
+}
+
+.status-card__metadata {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.metadata-block {
+  min-width: 0;
+}
+
+.metadata-block dt {
+  margin-bottom: 0.25rem;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.metadata-block dd {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-medium);
+  line-height: 1.4;
+}
+
+.status-card__role,
+.status-card__availability p {
+  margin: 0;
+}
+
+.status-card__role,
+.status-card__availability {
+  margin-top: var(--space-2);
+}
+
+.status-card__availability p {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-medium);
+}
+
+.status-card__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.status-card__availability ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem var(--space-1);
+  margin: var(--space-1) 0 0 1rem;
+  padding: 0;
+  list-style: none;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+}
+
+.contact-index {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-divider);
+}
+
+.contact-index .index-section__heading {
+  margin: 0;
+}
+
+.contact-index__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--color-text-secondary);
+  font-size: var(--type-caption);
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.contact-link svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.contact-link:hover,
+.contact-link:focus-visible {
+  color: var(--color-accent);
+}
+
+.contact-link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* Same name-card behavior, quieter publication styling. */
+.about-aka__card,
+.about-page--dark .about-aka__card {
+  width: min(276px, calc(100vw - 32px));
+  padding: 0.5rem 0.625rem;
+  border-color: color-mix(in srgb, var(--color-divider) 72%, transparent);
+  border-radius: 8px;
+  background: var(--color-surface);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-text) 7%, transparent);
+  color: var(--color-text);
+}
+
+.about-aka__entry {
+  gap: 0.625rem;
+  padding: 0.5rem 0.125rem;
+}
+
+.about-aka__glyph {
+  width: 2.75rem;
+  min-height: 3.25rem;
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+}
+
+.about-aka__pinyin,
+.about-aka__meaning {
+  color: var(--color-text-secondary);
+}
+
+.about-aka__character {
+  color: var(--color-text);
+  font-size: 1.125rem;
+}
+
+@media (max-width: 760px) {
+  .landing-page__inner {
+    overflow-y: auto;
+  }
+
+  .home-index__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .home-identity__name-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .home-identity__name-row .about-aka__label {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    clip: auto;
+    overflow: visible;
+    white-space: normal;
+  }
+
+  .contact-index {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding-bottom: var(--space-4);
+  }
+}
+
+@media (max-width: 520px) {
+  .viewport-top-nav {
+    width: calc(100% - 24px);
+  }
+
+  .top-navigation__tab {
+    padding-inline: 8px;
+    font-size: 12px;
+  }
+}
+
 .about-page.app-layout {
   --about-content-max-width: 1120px;
   --about-content-gutter: 16px;
@@ -838,6 +1284,9 @@ body {
 
 .about-principles {
   position: relative;
+  /* Above the portrait (z-index 5) so a pill dropped over the figure
+     stays visible and grabbable. */
+  z-index: 6;
   margin: 1.5em 0 1.1rem;
   width: max-content;
   max-width: min(1050px, 100%);
@@ -874,6 +1323,46 @@ body {
   cursor: default;
   user-select: none;
   will-change: opacity, transform;
+}
+
+/* Draggable principle pills — the wrapper carries the drag offset as CSS
+   vars, so it never fights framer-motion's entrance transform on the
+   inner pill. Pills can be dropped anywhere inside the hero section,
+   including down into the collage board. */
+.about-principles__pill-drag {
+  display: inline-flex;
+  position: relative;
+  z-index: 1;
+  transform: translate(var(--px-x, 0px), var(--px-y, 0px));
+  transition: transform 0.35s ease;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.about-principles__pill-drag .about-principles__pill {
+  cursor: grab;
+}
+
+.about-principles__pill-drag--dragging {
+  transition: none;
+  cursor: grabbing;
+  z-index: 40;
+}
+
+.about-principles__pill-drag--dragging .about-principles__pill {
+  cursor: grabbing;
+}
+
+.about-principles__pill-drag--placed {
+  z-index: 20;
+}
+
+.about-principles__pill-drag:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 12px;
 }
 
 .about-principles__connector {
@@ -961,12 +1450,54 @@ body {
   height: 100%;
   min-height: inherit;
   border-radius: 28px;
+  /* Solid theme ground beneath the gradient stacks — it eases with the
+     .theme-fading hammer like every other surface, and shows through
+     the stacks' translucent bases exactly as the page background used
+     to. */
+  background-color: var(--color-background);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  overflow: visible;
+}
+
+/* Gradient stacks can't interpolate, so the board crossfades instead:
+   the light wash rides ::before, the dark wash rides ::after, and their
+   opacities trade places on the theme clock (0.35s ease). Both sit at
+   z-index 0, behind every board child (landscape z:1 … overlay z:10),
+   and site-chrome.css preserves this opacity transition while
+   .theme-fading is on. */
+.about-collage__board::before,
+.about-collage__board::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.about-collage__board::before {
   background:
     radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.7), transparent 42%),
     radial-gradient(circle at 78% 70%, rgba(123, 168, 168, 0.08), transparent 38%),
     linear-gradient(145deg, rgba(255, 252, 247, 0.92), rgba(242, 236, 226, 0.78));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
-  overflow: visible;
+  opacity: 1;
+}
+
+.about-collage__board::after {
+  background:
+    radial-gradient(circle at 18% 22%, rgba(232, 200, 96, 0.06), transparent 42%),
+    radial-gradient(circle at 78% 70%, rgba(123, 168, 168, 0.1), transparent 38%),
+    linear-gradient(145deg, rgba(50, 44, 38, 0.92), rgba(36, 31, 26, 0.88));
+  opacity: 0;
+}
+
+.about-page--dark .about-collage__board::before {
+  opacity: 0;
+}
+
+.about-page--dark .about-collage__board::after {
+  opacity: 1;
 }
 
 .about-collage__landscape {
@@ -1265,20 +1796,61 @@ body {
 }
 
 .about-sticky {
+  /* Mini card pinned to the collage board: the ds-card container
+     (8px radius, divider border, surface background) in the card type
+     voice (sans/medium). Rotation, pins, tape, and the soft drop shadow
+     are the collage markers — they stay. Dragging writes a pixel offset
+     into --about-x/--about-y; the designed position and rotation are
+     never touched. */
   position: absolute;
   z-index: 6;
   width: min(168px, 30vw);
   padding: 14px 16px 18px;
-  background: #f4e7b4;
-  color: rgba(29, 27, 24, 0.78);
-  font-family: "Caveat", cursive;
-  font-size: clamp(1.2rem, 2.3vw, 1.48rem);
-  line-height: 1.28;
+  /* Restrained tint via --sticky-bg; falls back to the plain surface. */
+  background: var(--sticky-bg, var(--color-surface));
+  border: 1px solid var(--color-divider);
+  border-radius: 8px;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-weight: var(--weight-medium);
+  font-size: clamp(0.9375rem, 1.6vw, 1.0625rem);
+  line-height: 1.5;
   white-space: pre-line;
   box-shadow: 0 8px 18px rgba(40, 32, 24, 0.08);
-  transform: rotate(var(--about-rotate, 0deg));
+  transform: translate(var(--about-x, 0px), var(--about-y, 0px))
+    rotate(var(--about-rotate, 0deg));
   transition: transform 0.35s ease, box-shadow 0.35s ease;
   overflow: visible;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* While a card is being dragged: no transition lag, it floats above the
+   collage, and the cursor signals the grab. */
+.about-sticky--dragging {
+  transition: none;
+  cursor: grabbing;
+  z-index: 30;
+}
+
+/* Drag acquisition: every collage note gets an invisible expanded hit area,
+ * so small or edge-positioned notes stay easy to pick up. The pseudo-element
+ * adds no visuals and takes no layout space — it only enlarges the pointer
+ * target. (2026-10-01: the "Always learning" note sits at the board's
+ * bottom edge and was hard to grab.) */
+.about-sticky::after {
+  content: "";
+  position: absolute;
+  inset: -16px;
+  /* No z-index: the pseudo-element paints with the card, so pointerdown
+   * anywhere in the expanded zone starts the card's drag. */
+}
+
+.about-sticky:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
 }
 
 .about-sticky__pin {
@@ -1373,31 +1945,17 @@ body {
     );
 }
 
-.about-sticky--yellow {
-  background: #f4e7b4;
-}
-
-.about-sticky--sage {
-  background: #dde8df;
-}
-
-.about-sticky--blue {
-  background: #d7e2ec;
-}
-
+/* Emphasis modifiers change card scale and stacking only — every note
+   keeps the same type voice (sans/medium, one size, primary text). */
 .about-sticky--secondary {
   z-index: 7;
   padding: 16px 20px 18px;
-  font-size: clamp(1.32rem, 2.55vw, 1.68rem);
-  line-height: 1.3;
 }
 
 .about-sticky--supporting {
   z-index: 6;
   width: min(168px, 30vw);
   padding: 13px 15px 16px;
-  font-size: clamp(1.18rem, 2.2vw, 1.42rem);
-  line-height: 1.3;
   box-shadow: 0 7px 16px rgba(40, 32, 24, 0.08);
 }
 
@@ -1405,8 +1963,6 @@ body {
   z-index: 7;
   width: min(188px, 32vw);
   padding: 14px 16px 17px;
-  font-size: clamp(1.24rem, 2.35vw, 1.52rem);
-  line-height: 1.28;
   box-shadow: 0 8px 18px rgba(40, 32, 24, 0.1);
 }
 
@@ -1414,9 +1970,6 @@ body {
   z-index: 5;
   width: min(148px, 26vw);
   padding: 11px 13px 13px;
-  font-size: clamp(1.05rem, 1.95vw, 1.24rem);
-  line-height: 1.28;
-  opacity: 0.9;
   box-shadow: 0 6px 14px rgba(40, 32, 24, 0.07);
 }
 
@@ -1431,6 +1984,41 @@ body {
   box-shadow: 0 6px 14px rgba(40, 32, 24, 0.07);
 }
 
+/* Restrained collage tints — one quiet wash of color per card. Text stays
+   on the primary voice and the border keeps the divider token; only the
+   surface is tinted, so the collage keeps its calm monochrome structure. */
+.about-sticky--tint-warm {
+  --sticky-bg: #f5efe1;
+}
+.about-sticky--tint-sage {
+  --sticky-bg: #e9f1e6;
+}
+.about-sticky--tint-mist {
+  --sticky-bg: #e7eff5;
+}
+.about-sticky--tint-clay {
+  --sticky-bg: #f2e8e3;
+}
+.about-sticky--tint-straw {
+  --sticky-bg: #f1ecd8;
+}
+
+.about-page--dark .about-sticky--tint-warm {
+  --sticky-bg: #2d2721;
+}
+.about-page--dark .about-sticky--tint-sage {
+  --sticky-bg: #222b24;
+}
+.about-page--dark .about-sticky--tint-mist {
+  --sticky-bg: #212932;
+}
+.about-page--dark .about-sticky--tint-clay {
+  --sticky-bg: #2c2422;
+}
+.about-page--dark .about-sticky--tint-straw {
+  --sticky-bg: #2b2619;
+}
+
 /* Core: Curiosity — upper left, highest weight */
 .about-collage__note-ideas {
   left: 3%;
@@ -1439,8 +2027,6 @@ body {
   max-width: min(320px, 54vw);
   padding: 14px 22px 16px;
   white-space: normal;
-  font-size: clamp(1.42rem, 2.8vw, 1.82rem);
-  line-height: 1.22;
   z-index: 8;
 }
 
@@ -1451,8 +2037,6 @@ body {
   left: auto;
   width: min(220px, 34vw);
   padding: 10px 14px 12px;
-  font-size: clamp(1.2rem, 2.2vw, 1.45rem);
-  line-height: 1.22;
   z-index: 7;
 }
 
@@ -1886,7 +2470,6 @@ body {
 .about-stage__intro p,
 .about-stage__copy {
   margin: 0;
-  max-width: none;
   width: 100%;
   font-size: clamp(1.02rem, 1.7vw, 1.125rem);
   line-height: 1.7;
@@ -2447,7 +3030,9 @@ body {
   );
   max-width: none;
   box-sizing: border-box;
-  overflow-x: auto;
+  /* Document pages never scroll horizontally; the strip bleeds into the
+     right margin but does not create a swipeable area. */
+  overflow-x: clip;
   overflow-y: visible;
   overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
@@ -3272,11 +3857,23 @@ body {
   color: rgba(149, 184, 144, 0.62);
 }
 
+/* The board's props dim and re-shadow in dark mode. Their opacity and
+   filter ride the same 0.35s theme clock (preserved under .theme-fading
+   in site-chrome.css) so they ease with the board's own crossfade
+   instead of snapping inside it. */
+.about-collage__mountain,
+.about-collage__fireworks,
+.about-collage__snowboard,
+.about-collage__ticket,
+.about-collage__film,
+.about-collage__bar,
+.about-collage__camera {
+  transition:
+    opacity 0.35s ease,
+    filter 0.35s ease;
+}
+
 .about-page--dark .about-collage__board {
-  background:
-    radial-gradient(circle at 18% 22%, rgba(232, 200, 96, 0.06), transparent 42%),
-    radial-gradient(circle at 78% 70%, rgba(123, 168, 168, 0.1), transparent 38%),
-    linear-gradient(145deg, rgba(50, 44, 38, 0.92), rgba(36, 31, 26, 0.88));
   box-shadow: inset 0 1px 0 rgba(230, 223, 212, 0.06);
 }
 
@@ -3315,23 +3912,10 @@ body {
   color: var(--about-ink-muted);
 }
 
+/* Collage notes are mini cards — the surface follows the theme, so only
+   the shadow deepens in dark mode. */
 .about-page--dark .about-sticky {
-  color: var(--about-sticky-ink);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
-}
-
-.about-page--dark .about-sticky--yellow {
-  background: #c9ad6e;
-}
-
-.about-page--dark .about-sticky--sage {
-  background: #7a9a76;
-  color: rgba(24, 28, 22, 0.88);
-}
-
-.about-page--dark .about-sticky--blue {
-  background: #6e9898;
-  color: rgba(20, 28, 30, 0.9);
 }
 
 .about-page--dark .about-sticky--supporting,
@@ -3965,6 +4549,14 @@ body {
   background: transparent;
 }
 
+/* When the peel-open completes, the paper layer holding the source page
+   fades out over 0.28s instead of unmounting the instant the animation
+   ends. */
+.paper-layer--over-fading {
+  opacity: 0;
+  transition: opacity 0.28s ease;
+}
+
 .paper-landing-mask {
   width: 100%;
   height: 100%;
@@ -3983,6 +4575,26 @@ body {
   overflow: visible;
   transform-origin: top right;
   pointer-events: none;
+}
+
+/* Page-level decoration layer for the Home page canvas. The folded paper
+   corner is a sibling of the sidebar and reading content — never inside the
+   reading container. Portaled to document.body and fixed to the viewport's
+   top-right corner, so no ancestor positioning can shift it. The layer
+   itself ignores pointer events; only the corner flap is clickable. */
+.paper-stage-decoration {
+  position: fixed;
+  inset: 0;
+  /* Above the nav's paper-ground band (z-index 210) so the folded corner
+     stays visible where the band runs under it. */
+  z-index: 220;
+  pointer-events: none;
+}
+
+.paper-stage-decoration .paper-corner {
+  top: 0;
+  right: 0;
+  transform: none;
 }
 
 .paper-corner__flap {
@@ -4067,21 +4679,166 @@ body {
   justify-content: stretch;
 }
 
-.workspace-scene {
-  flex: 1 1 auto;
+/* ------------------------------------------------------------------ */
+/* Shared Scene shell — Background / Content / Overlay / Floating UI / Effects */
+/* ------------------------------------------------------------------ */
+.scene {
+  position: relative;
   width: 100%;
-  min-width: 0;
-  min-height: 0;
   height: 100%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.scene__background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.scene__content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.scene__overlay,
+.scene__floating {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.scene__effects {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Desk scene — layered illustration at natural size. The viewport pans  */
+/* across the room like a camera; the room is never shrunk to fit.      */
+/* ------------------------------------------------------------------ */
+.desk-scene {
+  overflow: hidden;
   /* Shared face for SVG labels + HTML tooltips (tooltips portal to body). */
-  --desk-ui-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", Helvetica,
-    Arial, sans-serif;
-  font-family: var(--desk-ui-font);
+  --desk-ui-font: var(--font-sans);
+  font-family: var(--font-sans);
   --object-hover-shadow: drop-shadow(0 8px 16px rgba(72, 58, 42, 0.09));
   --object-focus-shadow: drop-shadow(0 8px 14px rgba(72, 58, 42, 0.07));
+}
+
+/* Scene background — fills the right content area; the illustration holds no backdrop.
+   Same theme clock as everything else (0.35s ease) so the ground never
+   lags the chrome mid-switch. */
+.desk-scene__background {
+  position: absolute;
+  inset: 0;
+  background: var(--scene-background, var(--color-background));
+  transition: background-color 0.35s ease;
+}
+
+/* Camera viewport — scrolls across the natural-size stage. */
+.desk-scene .scene__content.desk-scene__viewport {
+  display: flex;
+  overflow: auto;
+  padding: 40px;
+  box-sizing: border-box;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.desk-scene__viewport audio {
+  display: none;
+}
+
+/* Natural-size stage — one scene unit equals one CSS pixel.
+   margin:auto gives safe centering: centered when the viewport is larger,
+   scrollable when the stage overflows (camera pan, never shrink). */
+.desk-scene__stage {
+  display: block;
+  flex: none;
+  margin: auto;
+  pointer-events: none;
+}
+
+.desk-scene--lamp-on .desk-scene__stage {
+  transition: filter 0.55s ease;
+}
+
+/* Object chrome — labels, hover shadows. */
+.desk-object {
+  outline: none;
+}
+
+.desk-object__shape {
+  transition: filter 0.34s ease;
+}
+
+.desk-object[data-hovered] .desk-object__shape {
+  filter: var(--object-hover-shadow);
+}
+
+.desk-object--lamp[data-hovered] .desk-object__shape {
+  filter: none;
+}
+
+.desk-object--plant[data-hovered] .desk-object__shape {
+  filter: drop-shadow(2px 4px 5px rgba(92, 62, 34, 0.14))
+    drop-shadow(1px 2px 3px rgba(92, 62, 34, 0.1));
+}
+
+[data-theme="dark"] .desk-object--plant[data-hovered] .desk-object__shape {
+  filter: drop-shadow(2px 5px 6px rgba(0, 0, 0, 0.22))
+    drop-shadow(1px 2px 4px rgba(0, 0, 0, 0.14));
+}
+
+.desk-scene__label {
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-regular);
+  letter-spacing: 0.01em;
+  fill: var(--desk-caption, #b0a494);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.desk-object[data-hovered] .desk-scene__label {
+  opacity: 0.52;
+}
+
+/* Interaction layer — invisible hit areas only. */
+.desk-scene__layer--interaction {
+  pointer-events: none;
+}
+
+.desk-scene__hit {
+  pointer-events: all;
+  outline: none;
+  cursor: pointer;
+}
+
+.desk-scene__hit--hover {
+  cursor: default;
+}
+
+.desk-scene__hit:focus,
+.desk-scene__hit:focus-visible {
+  outline: none;
+}
+
+.desk-scene__hit-area {
+  fill: transparent;
+  stroke: none;
+  pointer-events: all;
 }
 
 .workspace-youtube-player {
@@ -4095,100 +4852,6 @@ body {
   pointer-events: none;
 }
 
-.workspace-scene__svg {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  display: block;
-  pointer-events: none;
-}
-
-.workspace-object__hit {
-  pointer-events: all;
-  outline: none;
-  cursor: pointer;
-}
-
-.workspace-object__hit-area {
-  pointer-events: all;
-  cursor: pointer;
-  fill: transparent;
-  stroke: none;
-}
-
-.workspace-object__hit--bounds .workspace-object__shape,
-.workspace-object__hit--bounds .workspace-object__shape * {
-  pointer-events: none !important;
-}
-
-.workspace-object__hit:focus,
-.workspace-object__hit:focus-visible {
-  outline: none;
-}
-
-.workspace-scene--lamp-on .workspace-scene__svg {
-  transition: filter 0.55s ease;
-}
-
-.workspace-lamp-light,
-.workspace-lamp-light * {
-  pointer-events: none !important;
-}
-
-.workspace-scene__caption {
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  user-select: none;
-}
-
-.workspace-scene__structure {
-  pointer-events: none;
-}
-
-.workspace-object {
-  outline: none;
-}
-
-.workspace-object:focus-visible .workspace-object__shape,
-.workspace-object__hit:focus-visible .workspace-object__shape {
-  filter: var(--object-focus-shadow);
-}
-
-.workspace-object__shape {
-  transition: filter 0.34s ease;
-}
-
-.workspace-object:hover .workspace-object__shape,
-.workspace-object__hit:hover .workspace-object__shape,
-.workspace-object__hit[data-hovered] .workspace-object__shape {
-  filter: var(--object-hover-shadow);
-}
-
-.workspace-object__hit#workspace-hit-lamp:hover .workspace-object__shape,
-.workspace-object__hit#workspace-hit-lamp[data-hovered] .workspace-object__shape {
-  filter: none;
-}
-
-.workspace-object__hit#workspace-hit-plant:hover .workspace-object__shape,
-.workspace-object__hit#workspace-hit-plant[data-hovered] .workspace-object__shape {
-  filter: drop-shadow(2px 4px 5px rgba(92, 62, 34, 0.14))
-    drop-shadow(1px 2px 3px rgba(92, 62, 34, 0.1));
-}
-
-[data-theme="dark"] .workspace-object__hit#workspace-hit-plant:hover .workspace-object__shape,
-[data-theme="dark"] .workspace-object__hit#workspace-hit-plant[data-hovered] .workspace-object__shape {
-  filter: drop-shadow(2px 5px 6px rgba(0, 0, 0, 0.22))
-    drop-shadow(1px 2px 4px rgba(0, 0, 0, 0.14));
-}
-
-.workspace-object__tooltip {
-  pointer-events: none;
-  overflow: visible;
-}
-
 /* Fixed HTML portal — position from getBoundingClientRect, not fixed SVG offsets. */
 .workspace-tooltip-layer {
   position: fixed;
@@ -4200,8 +4863,7 @@ body {
   visibility: hidden;
   pointer-events: none;
   /* Match desk object labels — portal leaves the SVG inheritance tree. */
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Helvetica,
-    Arial, sans-serif;
+  font-family: var(--font-sans);
   /* Instant show/hide — CSS transitions were restarting and freezing at opacity 0. */
   transform: translateY(4px);
   -webkit-transform: translateY(4px);
@@ -4260,11 +4922,11 @@ body {
 /* Tooltip text — same face as gray object labels, larger for readability */
 .workspace-tooltip__line {
   margin: 0;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 1;
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-regular);
+  letter-spacing: 0.01em;
+  line-height: 1.5;
   text-align: left;
   white-space: nowrap;
   color: var(--desk-caption, #b0a494);
@@ -4277,25 +4939,6 @@ body {
   margin-top: 3px;
 }
 
-.workspace-object__label {
-  font-family: var(--desk-ui-font, inherit);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  fill: var(--desk-caption, #b0a494);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.28s ease;
-  user-select: none;
-}
-
-.workspace-object:hover .workspace-object__label,
-.workspace-object:focus-visible .workspace-object__label,
-.workspace-object__hit:focus-visible .workspace-object__label,
-.workspace-object__hit[data-hovered] .workspace-object__label {
-  opacity: 0.52;
-}
-
 /* Monitor screen — hover cues driven by link data-hovered */
 .monitor-screen-ui__teal {
   opacity: 1;
@@ -4305,14 +4948,12 @@ body {
   opacity: 1;
 }
 
-.workspace-object__hit#workspace-hit-monitor:hover .monitor-screen-ui__teal,
-.workspace-object__hit#workspace-hit-monitor[data-hovered] .monitor-screen-ui__teal {
+.desk-object--monitor[data-hovered] .monitor-screen-ui__teal {
   opacity: 1;
   filter: brightness(1.04);
 }
 
-.workspace-object__hit#workspace-hit-monitor:hover .monitor-screen-ui__coral,
-.workspace-object__hit#workspace-hit-monitor[data-hovered] .monitor-screen-ui__coral {
+.desk-object--monitor[data-hovered] .monitor-screen-ui__coral {
   opacity: 1;
   filter: brightness(1.04);
 }
@@ -4322,10 +4963,8 @@ body {
   opacity: 1;
 }
 
-[data-theme="dark"] .workspace-object__hit#workspace-hit-monitor:hover .monitor-screen-ui__teal,
-[data-theme="dark"] .workspace-object__hit#workspace-hit-monitor[data-hovered] .monitor-screen-ui__teal,
-[data-theme="dark"] .workspace-object__hit#workspace-hit-monitor:hover .monitor-screen-ui__coral,
-[data-theme="dark"] .workspace-object__hit#workspace-hit-monitor[data-hovered] .monitor-screen-ui__coral {
+[data-theme="dark"] .desk-object--monitor[data-hovered] .monitor-screen-ui__teal,
+[data-theme="dark"] .desk-object--monitor[data-hovered] .monitor-screen-ui__coral {
   opacity: 1;
   filter: brightness(1.06);
 }
@@ -4370,22 +5009,14 @@ body {
   }
 }
 
-.workspace-object__hit#workspace-hit-monitor:hover .monitor-screen-cursor__icon,
-.workspace-object__hit#workspace-hit-monitor[data-hovered] .monitor-screen-cursor__icon {
+.desk-object--monitor[data-hovered] .monitor-screen-cursor__icon {
   opacity: 0.72;
 }
 
 @media (max-width: 640px) {
-  .workspace-page__content {
-    padding-bottom: clamp(10px, 2vh, 20px);
-  }
-
-  .workspace-object__label {
-    font-size: 10px;
-  }
-
+  .desk-scene__label,
   .workspace-tooltip__line {
-    font-size: 13px;
+    font-size: var(--type-caption);
   }
 }
 
@@ -4619,4 +5250,2193 @@ body {
     --editorial-title-width: 1050px;
     --editorial-columns-width: 980px;
   }
+}
+
+/* --------------------------------------------------------------------------
+   Shared publication system
+   These rules intentionally come last: legacy page compositions remain intact,
+   while every route inherits one typographic, spacing, color, and grid language.
+   -------------------------------------------------------------------------- */
+
+.app-layout,
+.top-navigation,
+.settings-control-bar,
+.workspace-scene,
+.workspace-tooltip-layer {
+  font-family: var(--font-sans);
+}
+
+.app-layout {
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+.site-view--about,
+.about-page {
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+.landing-page {
+  --editorial-inset: var(--page-gutter);
+  --editorial-title-width: var(--page-max-width);
+  --editorial-columns-width: var(--content-max-width);
+  --editorial-section-gap: var(--space-8);
+  --landing-paper-base: var(--color-background);
+  --landing-grid-line: transparent;
+  --home-ink: var(--color-text);
+  --home-statement: var(--color-text);
+  --home-body: var(--color-text-secondary);
+  --home-personality: var(--color-text-secondary);
+  --home-muted: var(--color-text-secondary);
+  --home-label: var(--color-text);
+}
+
+.landing-page__inner,
+.about-page__shell {
+  width: min(100%, var(--page-max-width));
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+  box-sizing: border-box;
+}
+
+.home-intro__greeting {
+  font-family: var(--font-sans);
+  font-size: var(--type-display);
+  font-weight: var(--weight-medium);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.about-hero__greeting,
+.about-closing__heading {
+  font-family: var(--font-sans);
+  font-size: var(--type-h1);
+  font-weight: var(--weight-medium);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: var(--color-text);
+}
+
+.home-intro__label,
+.about-section-heading,
+.about-stage__title {
+  font-family: var(--font-sans);
+  font-size: var(--type-h2);
+  font-weight: var(--weight-medium);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.home-intro__bio,
+.home-intro__personality,
+.home-intro__exploring,
+.about-hero__bio,
+.about-hero__personality,
+.about-journey__support {
+  font-family: var(--font-sans);
+}
+
+.about-stage__copy,
+.about-closing__body {
+  /* Reading copy uses the serif face. */
+  font-family: var(--font-serif);
+  font-size: var(--type-body);
+  font-weight: var(--weight-regular);
+  line-height: 1.7;
+}
+
+.home-intro__kicker,
+.about-stage__meta,
+.about-stage__topics,
+.workspace-scene__caption,
+.desk-scene__label,
+.ds-project-preview__meta {
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-regular);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+.portfolio-title__heading,
+.about-polaroid figcaption,
+.about-stage__year-mark,
+.about-stage__note,
+.journey-reflection__quote,
+.about-stage__reflection-prompt,
+.about-stage__reflection-line {
+  /* Editorial quotes use the serif face. Collage notes are cards, so they
+     keep the card type voice (sans/medium) set on .about-sticky. */
+  font-family: var(--font-serif);
+  font-weight: var(--weight-regular);
+}
+
+.about-page,
+.about-page--dark {
+  --about-ink: var(--color-text);
+  --about-ink-soft: var(--color-text-secondary);
+  --about-ink-muted: var(--color-text-secondary);
+  --about-ink-faint: var(--color-divider);
+  --about-accent: var(--color-accent);
+  --about-accent-deep: var(--color-accent);
+  --about-sage: var(--color-accent);
+  --about-sage-ink: var(--color-accent);
+  --about-surface: var(--color-surface);
+  --about-surface-soft: var(--color-surface);
+  --about-border: var(--color-divider);
+}
+
+.about-journey {
+  --timeline-accent: var(--color-accent);
+  --timeline-accent-soft: var(--color-accent);
+}
+
+.about-principles__pill,
+.about-journey__moving-label,
+.about-stage__note,
+.about-page--dark .about-principles__pill,
+.about-page--dark .about-journey__moving-label,
+.about-page--dark .about-stage__note {
+  border-color: var(--color-divider);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+}
+
+.about-journey__base-line,
+.about-stage__sub,
+.about-stage__entry,
+.about-aka__entry + .about-aka__entry {
+  border-color: var(--color-divider);
+}
+
+.about-journey__base-line {
+  background: var(--color-divider);
+}
+
+.about-journey__progress-line,
+.journey-reflection__rule {
+  background: var(--color-accent);
+}
+
+/* Shared primitives */
+.ds-section {
+  width: 100%;
+  padding-block: var(--section-space);
+}
+
+.ds-section + .ds-section {
+  border-top: 1px solid var(--color-divider);
+}
+
+.ds-divider {
+  width: 100%;
+  height: 1px;
+  margin: var(--space-6) 0;
+  border: 0;
+  background: var(--color-divider);
+}
+
+.ds-button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  box-sizing: border-box;
+  padding: 0.625rem var(--space-2);
+  border: 1px solid var(--color-divider);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-weight: var(--weight-medium);
+  line-height: 1.25;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.ds-button:hover {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 6%, var(--color-surface));
+}
+
+.ds-link,
+.ds-project-preview__link {
+  color: inherit;
+  text-decoration-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.ds-link:hover,
+.ds-project-preview__link:hover {
+  color: var(--color-accent);
+  text-decoration-color: currentColor;
+}
+
+.ds-button:focus-visible,
+.ds-link:focus-visible,
+.ds-project-preview__link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.ds-card {
+  padding: var(--space-3);
+  border: 1px solid var(--color-divider);
+  border-radius: 8px;
+  background: var(--color-surface);
+}
+
+.ds-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 var(--space-1);
+  border: 1px solid var(--color-divider);
+  border-radius: 999px;
+  color: var(--color-text-secondary);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-regular);
+  line-height: 1;
+}
+
+.ds-project-preview {
+  padding: 0;
+  overflow: hidden;
+}
+
+.ds-project-preview__link,
+.ds-project-preview:not(:has(.ds-project-preview__link)) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-4);
+  padding: var(--space-3);
+  text-decoration: none;
+}
+
+.ds-project-preview__meta,
+.ds-project-preview__description {
+  color: var(--color-text-secondary);
+}
+
+.ds-project-preview__meta,
+.ds-project-preview__title,
+.ds-project-preview__description {
+  margin: 0;
+}
+
+.ds-project-preview__title {
+  margin-top: var(--space-1);
+  font-family: var(--font-sans);
+  font-size: var(--type-h2);
+  font-weight: var(--weight-medium);
+  letter-spacing: -0.025em;
+}
+
+.ds-project-preview__description {
+  max-width: var(--content-max-width);
+  margin-top: var(--space-1);
+  line-height: 1.6;
+}
+
+.ds-project-preview__tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-1);
+}
+
+.about-closing__cta.ds-button {
+  box-shadow: none;
+  color: var(--color-text);
+}
+
+@media (max-width: 640px) {
+  .ds-project-preview__link,
+  .ds-project-preview:not(:has(.ds-project-preview__link)) {
+    grid-template-columns: 1fr;
+  }
+
+  .ds-project-preview__tags {
+    justify-content: flex-start;
+  }
+}
+
+/* Homepage name-card surface override must follow the legacy Timeline styles. */
+.home-identity .about-aka__card,
+.about-page .about-aka__card {
+  width: min(276px, calc(100vw - 32px));
+  padding: 0.5rem 0.625rem;
+  border-color: color-mix(in srgb, var(--color-divider) 72%, transparent);
+  border-radius: 8px;
+  background: var(--color-surface);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-text) 7%, transparent);
+  color: var(--color-text);
+}
+
+.home-identity .about-aka__entry,
+.about-page .about-aka__entry {
+  gap: 0.625rem;
+  padding: 0.5rem 0.125rem;
+}
+
+.home-identity .about-aka__glyph,
+.about-page .about-aka__glyph {
+  width: 2.75rem;
+  min-height: 3.25rem;
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+}
+
+.home-identity .about-aka__pinyin,
+.home-identity .about-aka__meaning,
+.about-page .about-aka__pinyin,
+.about-page .about-aka__meaning {
+  color: var(--color-text-secondary);
+}
+
+.home-identity .about-aka__character,
+.about-page .about-aka__character {
+  color: var(--color-text);
+  font-size: 1.125rem;
+}
+
+/* --------------------------------------------------------------------------
+   Global page skeleton
+   A persistent metadata column plus a page-specific main content region.
+   -------------------------------------------------------------------------- */
+
+.global-page-layout {
+  display: grid;
+  grid-template-columns: var(--context-column-width) minmax(0, 1fr);
+  gap: var(--page-layout-gap);
+  width: 100%;
+  max-width: none;
+  min-height: 100%;
+  min-width: 0;
+  margin-inline: 0;
+  padding: var(--page-shell-top) var(--viewport-page-padding)
+    var(--viewport-page-padding) var(--viewport-page-padding);
+  box-sizing: border-box;
+}
+
+.page-content,
+.global-page-layout__main {
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.context-column {
+  position: sticky;
+  top: var(--context-column-top);
+  align-self: start;
+  display: grid;
+  /* Identity and metadata keep fixed heights from the panel top; system
+     status pins near the panel bottom with breathing room below it — a
+     floating dock, not a footer. The flexible spacer between metadata
+     and system status absorbs viewport height (never less than
+     var(--space-6)), so the whitespace stays intentional. Divider
+     positions are identical across pages at the same viewport size. */
+  grid-template-rows: 232px 336px minmax(var(--space-6), 1fr) auto;
+  min-height: calc(100vh - var(--context-column-top));
+  gap: 0;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-weight: var(--weight-regular);
+  width: var(--context-column-width);
+  box-sizing: border-box;
+  /* The system status floats above the viewport bottom — intentionally
+     placed, not glued to the edge. */
+  padding-bottom: var(--space-3);
+  background: transparent;
+}
+
+/* Fixed information panel: identity and metadata keep fixed heights from
+   the panel top; system status pins near the panel bottom; a flexible
+   spacer between metadata and system status absorbs viewport height.
+   Divider positions are identical across pages at the same viewport
+   size; only the content inside each region changes per route. */
+.context-column__region {
+  box-sizing: border-box;
+  min-height: 0;
+  padding-block: var(--space-2);
+  border-bottom: 1px solid var(--color-divider);
+  overflow: hidden;
+}
+
+/* Identity block: the handwritten logo, name, roles and contact links read
+   as one visual unit — no divider between them. The region is tall on
+   purpose: the logo reads as a signature, not an icon, with generous
+   whitespace above it and between each line. Calm and intentional. */
+.context-column__region--identity {
+  height: 232px;
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-3);
+}
+
+.context-column__logo {
+  display: block;
+  width: 56px;
+  height: auto;
+  margin: 0 0 var(--space-3);
+  object-fit: contain;
+  opacity: 0.85;
+}
+
+[data-theme="dark"] .context-column__logo {
+  filter: invert(1);
+}
+
+.context-column__region--metadata {
+  /* Sized for the densest directory (Version History: seven section
+     links) so nothing clips. Every page shares this height — content
+     changes, the panel never moves. */
+  height: 336px;
+  /* No divider below the metadata: the system status region needs no
+     dividing line above it — it sits directly on the panel, separated
+     by whitespace. */
+  border-bottom: 0;
+  /* The section and its divider stay static; only the inner content swaps. */
+}
+
+/* Inner metadata content: remounts on page change (keyed by page) and
+   slides in the direction of tab navigation. Content stays top-aligned;
+   the region's fixed height is shared by every page. */
+.context-column__metadata-swap {
+  height: 100%;
+}
+
+.context-column__metadata-swap--forward {
+  animation: metadata-slide-from-right 0.28s ease;
+}
+
+.context-column__metadata-swap--backward {
+  animation: metadata-slide-from-left 0.28s ease;
+}
+
+.context-column__metadata-swap--none {
+  animation: metadata-fade-in 0.28s ease;
+}
+
+/* A paper peel already supplies the page transition. Metadata swaps during
+   that handoff must be atomic: remounting at opacity zero creates a visible
+   blank flash in the otherwise persistent sidebar. */
+.context-column__metadata-swap--static {
+  animation: none;
+}
+
+/* Hover-driven overrides (e.g. Case Studies cards) slide vertically. */
+.context-column__metadata-swap--vertical {
+  animation: metadata-slide-from-below 0.28s ease;
+}
+
+@keyframes metadata-slide-from-below {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .context-column__metadata-swap--vertical {
+    animation: metadata-fade-in 0.28s ease;
+  }
+}
+
+@keyframes metadata-slide-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes metadata-slide-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes metadata-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* One spacing system for every page: the densest directory (Version
+   History, seven section links) fits the fixed region with the same gaps
+   as the rest. */
+.context-column__region--metadata .context-column__metadata {
+  gap: var(--space-3);
+}
+
+/* System status: pinned near the panel bottom (grid row 4, below the
+   flexible spacer), with breathing room below it — a floating dock,
+   not a footer. No divider above or below; the whitespace does the
+   work. The region sizes to its content. */
+.context-column__region--system-status {
+  grid-row: 4;
+  padding: 0;
+  border-bottom: 0;
+  overflow: hidden;
+}
+
+.context-column__name,
+.context-column__roles,
+.context-column__availability {
+  margin: 0;
+}
+
+.context-column__name {
+  font-size: 1rem;
+  font-weight: var(--weight-medium);
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+}
+
+/* Two parallel professional identities with equal visual importance. */
+.context-column__roles {
+  margin-top: var(--space-2);
+}
+
+.context-column__role {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: var(--type-caption);
+  line-height: 1.45;
+}
+
+.context-column__role + .context-column__role {
+  margin-top: 0.25rem;
+}
+
+.context-column__metadata {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+/* Case Studies has two intentional structures: the default collection
+   directory and the two-field project metadata view. The structure animates
+   only when entering/leaving project hover. Moving between projects keeps the
+   same keyed structure, so the labels remain still and LiveValue updates only
+   the values beneath them. */
+.context-column__metadata--case-study-mode.context-column__metadata--mode-transition {
+  animation: case-study-metadata-mode-in 0.2s ease;
+}
+
+@keyframes case-study-metadata-mode-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .context-column__metadata--case-study-mode {
+    animation: none;
+  }
+}
+
+/* Sidebar type system — one scale for every page.
+   Labels: 12px / medium (500) / secondary text.
+   Values: 17px / semibold (600) / primary text.
+   Label -> value gap: 7px. Item gap: var(--space-3), identical everywhere. */
+.context-metadata dt {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+.context-metadata dd {
+  margin: 7px 0 0;
+  color: var(--color-text);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+
+/* Case Studies sidebar directory: section links stacked under one heading.
+   Links inherit the value type treatment (17px / 600); hover is quiet —
+   accent color plus the design-system rightward nudge, no underline,
+   matching the card hover language. */
+.context-metadata__links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Case Studies keeps its section title stationary. Only this inner content
+   slot is keyed and animated when a project card is hovered. */
+.context-metadata__content-swap {
+  animation: none;
+}
+
+@keyframes metadata-content-swap-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.context-metadata__details {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.context-metadata__detail {
+  display: grid;
+  gap: 7px;
+}
+
+.context-metadata__detail-label {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+.context-metadata__detail-value {
+  color: var(--color-text);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .context-metadata__content-swap {
+    animation: none;
+  }
+}
+
+.context-metadata__link {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.context-metadata__link:hover {
+  color: var(--color-accent);
+}
+
+.context-metadata__link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Availability is a value-level status statement: same type treatment as
+   metadata values. */
+.context-column__availability {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: var(--space-3) 0 0;
+  color: var(--color-text);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+
+.context-column__status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+/* Contact links: one quiet text line inside the identity block — words
+   separated by middle dots, no label. Secondary voice; the underline
+   voice comes from .ds-link. */
+.context-column__contact-line {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--type-caption);
+  line-height: 1.45;
+}
+
+/* Design-system link hover for the sidebar's quiet inline links: accent
+   color plus a rightward nudge, matching the homepage explore rows.
+   Block rows shift with padding-left; inline links nudge with a small
+   translateX. The contact links' underline voice comes from .ds-link. */
+.context-column__contact-line a,
+.context-metadata__link {
+  display: inline-block;
+  transition: transform 160ms ease;
+}
+
+.context-column__contact-line a:hover,
+.context-metadata__link:hover {
+  transform: translateX(3px);
+}
+
+.context-column__contact-separator {
+  margin: 0 0.3em;
+}
+
+/* Home contributes only Identity and Explore to the changing content region. */
+.global-page-layout--home .home-index {
+  gap: var(--space-12);
+}
+
+.global-page-layout--home .explore-index {
+  max-width: 720px;
+}
+
+/* Version History uses the same frame while retaining its existing narrative. */
+.global-page-layout--history {
+  width: 100%;
+}
+
+.global-page-layout--history .about-page__shell {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.global-page-layout--history .about-hero,
+.global-page-layout--history .about-principles {
+  margin-top: 0;
+}
+
+/* Desk keeps its working surface, now framed by contextual workspace metadata. */
+.global-page-layout--desk {
+  height: 100%;
+}
+
+.global-page-layout--desk .context-column {
+  z-index: 4;
+}
+
+.global-page-layout__main--desk {
+  overflow: hidden;
+  background: var(--workspace-background);
+  transition: background 0.5s ease;
+}
+
+.global-page-layout__main--desk .workspace-page__content {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+}
+
+/* Library keeps the publication frame while allowing its source to be replaced. */
+.library-page.app-layout {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.global-page-layout--library {
+  height: 100%;
+}
+
+.global-page-layout__main--library {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.project-viewer {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100%;
+  min-height: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider);
+}
+
+.project-viewer__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: 56px;
+  padding: var(--space-1) var(--space-2);
+  border-bottom: 1px solid var(--color-divider);
+  box-sizing: border-box;
+}
+
+.project-viewer__eyebrow,
+.project-viewer__bar h1 {
+  margin: 0;
+}
+
+.project-viewer__eyebrow {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+
+.project-viewer__bar h1 {
+  font-size: var(--type-caption);
+  font-weight: var(--weight-medium);
+  line-height: 1.4;
+}
+
+.project-viewer__bar a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--color-text-secondary);
+  font-size: var(--type-caption);
+  text-decoration: none;
+}
+
+.project-viewer__bar a:hover,
+.project-viewer__bar a:focus-visible {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.project-viewer__surface {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.project-viewer__frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: var(--color-surface);
+}
+
+.project-viewer__loading {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: 1;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--type-caption);
+  transform: translate(-50%, -50%);
+}
+
+.project-viewer__fallback {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: 2;
+  width: min(24rem, calc(100% - var(--space-4)));
+  color: var(--color-text-secondary);
+  font-size: var(--type-caption);
+  line-height: 1.5;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.project-viewer__fallback p {
+  margin: 0 0 var(--space-2);
+}
+
+.project-viewer__fallback a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--color-text);
+  font-weight: var(--weight-medium);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+@media (max-width: 680px) {
+  .global-page-layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .context-column {
+    position: relative;
+    top: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    min-height: 0;
+    gap: 0 var(--space-3);
+    width: 100%;
+    border-bottom: 1px solid var(--color-divider);
+  }
+
+  .context-column__region {
+    height: auto;
+    padding-block: var(--space-1);
+    border-bottom: 0;
+    overflow: visible;
+  }
+
+  .context-column__metadata {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .global-page-layout--desk {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .global-page-layout--library {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .global-page-layout--desk .context-column {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-height: 176px;
+    overflow: auto;
+  }
+}
+
+/* Active layout roots own overflow; transition layers only switch visibility. */
+.shared-layout .app-content-layer--history,
+.shared-layout .app-content-layer--library {
+  overflow: visible;
+}
+
+/* --------------------------------------------------------------------------
+   Layout architecture
+   SharedLayout owns only persistent chrome. Each experience owns its canvas.
+   -------------------------------------------------------------------------- */
+
+.shared-layout {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.shared-layout__grid {
+  display: grid;
+  /* First column includes room for the sidebar's left margin, so the
+     margin never overflows and the fixed gap to the content is preserved. */
+  grid-template-columns: calc(var(--context-column-width) + var(--viewport-page-padding)) minmax(0, 1fr);
+  gap: var(--page-layout-gap);
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  /* System rule: the grid never owns padding. Spacing is owned by the
+     sidebar (margin) and each content layer (internal padding), so switching
+     pages never shifts the layout geometry during transitions. */
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.shared-layout__content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: visible;
+}
+
+.shared-layout__content > .app-content-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Desk page: the scene background owns the right column edge-to-edge.
+   The sidebar keeps its spacing via margins so its layout never shifts. */
+.shared-layout .context-column {
+  /* The panel anchors to its own top token (directly below the nav),
+     not the content's breathing room — see --context-column-top. */
+  margin-top: var(--context-column-top);
+  margin-left: var(--viewport-page-padding);
+}
+
+/* Case Studies and Version History own their internal spacing (the grid no
+   longer provides it), so their layers never shift when pages change. */
+.app-content-layer--history,
+.app-content-layer--library {
+  padding: var(--page-shell-top) var(--viewport-page-padding)
+    var(--viewport-page-padding) 0;
+  box-sizing: border-box;
+}
+
+/* Peel over-layer showing a document page (Case Studies / Version History)
+   instead of Home. Replicates the layer's spacing so the peel starts from
+   the exact visual state of the source page — no Home flash. */
+.peel-over-document {
+  width: 100%;
+  height: 100%;
+  padding: var(--page-shell-top) var(--viewport-page-padding)
+    var(--viewport-page-padding) 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  background: var(--color-background);
+}
+
+.peel-over-document::-webkit-scrollbar {
+  display: none;
+}
+
+/* Home shares the stage container with Desk: the grid padding is removed for
+   both so switching views never shifts the layout. The home reading content
+   gets the padding back here, inside the peel mask. */
+.shared-layout--desk .home-layout:not(.home-layout--library) {
+  padding: var(--page-shell-top) var(--viewport-page-padding)
+    var(--viewport-page-padding) 0;
+  box-sizing: border-box;
+}
+
+/* Home: a readable column. The second track reserves the right-side margin;
+   the folded paper corner lives in the page-level decoration layer
+   (.landing-decoration), anchored to the page's top-right corner. */
+.home-layout {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow-x: visible;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+/* The home page is a single viewport: it never scrolls. Case Studies
+   shares HomeLayout as .home-layout--library and keeps its scroll. */
+.home-layout:not(.home-layout--library) {
+  overflow-x: clip;
+  overflow-y: hidden;
+}
+
+.home-layout::-webkit-scrollbar {
+  display: none;
+}
+
+.home-layout__grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, var(--documentation-content-width))
+    minmax(7rem, 1fr);
+  align-items: start;
+  width: 100%;
+  min-height: 100%;
+}
+
+.home-layout__reading {
+  grid-column: 1;
+  min-width: 0;
+  width: 100%;
+  max-width: var(--documentation-content-width);
+}
+
+.home-layout--library .home-layout__grid,
+.home-layout--library .home-layout__reading {
+  height: 100%;
+}
+
+/* Desk: its background and spatial canvas are owned here, never by Home. */
+/* Desk page frame — hosts the Scene. The Scene owns the background layer and
+   the camera viewport; this frame never scrolls or scales the illustration. */
+.desk-layout {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--scene-background, var(--color-background));
+  /* This remains useful for time-based environment changes. During a manual
+     theme switch the shared transition class freezes it so the page-level
+     snapshot is the only animation clock. */
+  transition: background-color 0.35s ease;
+}
+
+/* Centers the natural-size stage inside the camera viewport; safe-centers so
+   an overflowing stage stays reachable by scrolling instead of clipping. */
+.desk-layout .workspace-page__content {
+  position: relative;
+  flex: none;
+  margin: auto;
+  padding: 0;
+}
+
+/* Version History: an unconstrained narrative canvas with its own scroll. */
+.version-history-layout {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  /* Document pages never scroll horizontally: decorative bleed (collage
+     fireworks, rotated cards) is clipped, never swipeable. */
+  overflow-x: clip;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  background: var(--color-background);
+}
+
+.version-history-layout::-webkit-scrollbar {
+  display: none;
+}
+
+.version-history-layout > *,
+.version-history-layout .about-page__shell {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  height: auto;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.version-history-layout .about-hero {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.version-history-layout .about-hero,
+.version-history-layout .about-collage,
+.version-history-layout .about-collage__board,
+.version-history-layout .about-journey,
+.version-history-layout .about-journey__track,
+.version-history-layout .about-stage,
+.version-history-layout .about-stage__body,
+.version-history-layout .about-stage__content {
+  min-width: 0;
+  max-width: none;
+  overflow: visible;
+}
+
+.version-history-layout .about-collage,
+.version-history-layout .about-collage__board,
+.version-history-layout .about-journey,
+.version-history-layout .about-stage__visuals,
+.version-history-layout .about-stage__visuals--strip {
+  width: 100%;
+  max-width: none;
+}
+
+.version-history-layout .about-stage__visuals,
+.version-history-layout .about-stage__visuals--strip {
+  overflow: visible;
+}
+
+.version-history-layout .about-stage__visuals--strip {
+  flex-wrap: wrap;
+  padding-right: 0;
+}
+
+.app-content-layer--history {
+  overflow: visible;
+}
+
+@media (max-width: 900px) {
+  .home-layout__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(5rem, 7rem);
+  }
+}
+
+@media (max-width: 680px) {
+  .shared-layout__grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: var(--space-4);
+    padding-top: var(--page-shell-top);
+    padding-right: var(--space-3);
+    padding-bottom: var(--space-3);
+    padding-left: var(--space-3);
+  }
+
+  /* On mobile the grid owns the spacing again; reset the desktop
+     sidebar margin and fixed width (the 280px desktop column would
+     overflow small screens) to avoid double spacing. */
+  .shared-layout .context-column {
+    margin-top: 0;
+    margin-left: 0;
+    width: auto;
+  }
+
+  .app-content-layer--history,
+  .app-content-layer--library {
+    padding: 0;
+  }
+
+  .home-layout__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(4.5rem, 6rem);
+  }
+
+}
+
+@media (max-width: 560px) {
+  .context-column {
+    grid-template-columns: 1fr;
+  }
+
+  .context-column__metadata {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .global-page-layout--desk .context-column {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .global-page-layout--desk .context-column__availability {
+    display: none;
+  }
+}
+
+/* Phase 4 layout refinements */
+.viewport-top-nav__bar,
+.top-navigation {
+  width: min(460px, calc(100vw - 24px));
+  max-width: 460px;
+}
+
+.top-navigation {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.top-navigation__tab {
+  width: 100%;
+  padding-inline: var(--space-1);
+}
+
+.landing-page__inner {
+  max-width: none;
+  padding: 0;
+}
+
+.global-page-layout--home .home-identity {
+  gap: var(--space-1);
+}
+
+.global-page-layout--home .home-identity__statement {
+  margin-top: var(--space-2);
+}
+
+.global-page-layout--home .explore-item {
+  padding-block: var(--space-3);
+}
+
+@media (max-height: 760px) and (min-width: 681px) {
+  .landing-page__inner {
+    overflow-y: auto;
+  }
+
+  .global-page-layout--home .home-index {
+    gap: var(--space-8);
+  }
+
+  .global-page-layout--home .explore-item {
+    padding-block: var(--space-2);
+  }
+}
+
+@media (max-width: 520px) {
+  .top-navigation__tab {
+    padding-inline: 4px;
+    font-size: 11px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Single application layout
+   Navigation, grid, context and controls mount once; routes replace content.
+   -------------------------------------------------------------------------- */
+
+.app-layout--global {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.global-page-layout--app {
+  height: 100%;
+  min-height: 0;
+}
+
+.app-layout__content,
+.content-viewport,
+.content-viewport__inner,
+.app-content-stack {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.app-layout__content {
+  overflow: hidden;
+}
+
+.content-viewport,
+.content-viewport__inner,
+.app-content-stack {
+  position: relative;
+}
+
+.content-viewport {
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.content-viewport__inner {
+  box-sizing: border-box;
+}
+
+.content-viewport--documentation .content-viewport__inner {
+  width: 100%;
+  max-width: none;
+}
+
+.document-content {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+.document-content--reading {
+  width: min(100%, var(--documentation-content-width));
+  max-width: var(--documentation-content-width);
+}
+
+.document-content--fluid {
+  width: 100%;
+  max-width: none;
+}
+
+/* Narrative mode is an open storytelling canvas, not a document container. */
+.content-viewport--narrative {
+  overflow-x: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  background: var(--color-background);
+}
+
+.content-viewport--narrative::-webkit-scrollbar {
+  display: none;
+}
+
+.content-viewport--narrative .content-viewport__inner,
+.content-viewport--narrative .app-content-stack {
+  height: auto;
+  min-height: 100%;
+  overflow: visible;
+}
+
+.narrative-canvas {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  min-height: 100%;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.content-viewport--workspace {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  touch-action: pan-x;
+  background: var(--workspace-background, var(--color-background));
+}
+
+.content-viewport--workspace .content-viewport__inner {
+  width: max(100%, var(--workspace-canvas-min-width));
+  min-width: var(--workspace-canvas-min-width);
+  max-width: none;
+}
+
+.app-content-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.28s ease, visibility 0s linear 0.28s;
+}
+
+/* Page navigation (top tabs): the outgoing layer vanishes instantly so the
+   old page never flashes or blends with the incoming one. The incoming
+   layer still fades in smoothly via the base transition. */
+.app-content-layer--peel[aria-hidden="true"],
+.app-content-layer--history:not(.is-active),
+.app-content-layer--library:not(.is-active) {
+  transition: opacity 0s linear 0s, visibility 0s linear 0s;
+}
+
+/* During the peel open/close, use a crossfade instead so the outgoing
+   document page stays continuous with the peel over-layer content. */
+.site-shell--peeling .app-content-layer--history:not(.is-active),
+.site-shell--peeling .app-content-layer--library:not(.is-active) {
+  transition: opacity 0.28s ease, visibility 0s linear 0.28s;
+}
+
+.app-content-layer--peel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.app-content-layer--peel[aria-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app-content-layer--history.is-active,
+.app-content-layer--library.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.28s ease, visibility 0s linear 0s;
+}
+
+/* The completed fold already presents the destination at full opacity.
+   Swap that visual copy for the real page atomically; running the ordinary
+   page-navigation fade here exposes the Desk beneath for one compositor
+   frame and reads as a flash. */
+.site-shell--peel-handoff .app-content-layer--history.is-active,
+.site-shell--peel-handoff .app-content-layer--library.is-active {
+  opacity: 1;
+  visibility: visible;
+  transition: none;
+}
+
+.app-content-layer--history {
+  /* The layer stays overflow: visible (see the .shared-layout rule)
+     so the inner .version-history-layout is the single scroll surface. */
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  background: var(--color-background);
+}
+
+.app-content-layer--history::-webkit-scrollbar {
+  display: none;
+}
+
+.content-viewport--narrative .app-content-layer--history {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  min-height: 100%;
+  overflow: visible;
+  overscroll-behavior: auto;
+  border: 0;
+  background: transparent;
+}
+
+.app-content-layer--library {
+  overflow: hidden;
+  background: var(--color-background);
+}
+
+/* Direct route system -------------------------------------------------------
+   Home, Case Studies, Desk and Log are peer layers. Navigation changes the
+   active layer directly; no paper mask, corner decoration or intermediary
+   opening/closing state participates in layout. */
+.app-content-layer--route {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.24s ease,
+    visibility 0s linear 0.24s;
+}
+
+.app-content-layer--route:not(.is-active) {
+  transition:
+    opacity 0.24s ease,
+    visibility 0s linear 0.24s;
+}
+
+.app-content-layer--route.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity 0.24s ease,
+    visibility 0s linear 0s;
+}
+
+/* Desk begins on the same vertical content baseline as every document page.
+   Its child still owns the complete remaining workspace width and height. */
+.app-content-layer--desk {
+  padding-top: var(--page-shell-top);
+  overflow: hidden;
+  background: var(--color-background);
+}
+
+.app-content-layer--desk > .desk-layout {
+  height: 100%;
+}
+
+.paper-stage {
+  height: 100%;
+  max-height: 100%;
+}
+
+.paper-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.paper-layer.landing-page,
+.paper-layer.workspace-page {
+  height: 100%;
+  max-height: 100%;
+}
+
+.paper-landing-mask {
+  position: relative;
+  background: var(--color-background);
+}
+
+.home-background-layer,
+.home-content-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.home-background-layer {
+  z-index: 0;
+  background: var(--color-background);
+  pointer-events: none;
+}
+
+.home-content-layer {
+  z-index: 1;
+}
+
+.paper-layer--over .landing-page__hero {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.paper-layer--over .home-index {
+  gap: var(--space-12);
+}
+
+.paper-layer--over .explore-index {
+  max-width: 720px;
+}
+
+@media (max-width: 900px) {
+  .home-hero {
+    padding-right: clamp(4.5rem, 14vw, 7rem);
+    box-sizing: border-box;
+  }
+
+  .home-hero__decoration {
+    right: var(--space-3);
+  }
+}
+
+.paper-layer--over .home-identity {
+  gap: var(--space-1);
+}
+
+.paper-layer--over .home-identity__statement {
+  margin-top: var(--space-2);
+}
+
+.paper-layer--over .explore-item {
+  padding-block: var(--space-3);
+}
+
+.app-content-layer--history.about-page {
+  min-height: 0;
+}
+
+.app-content-layer--history .about-page__shell {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.app-content-layer--history .about-hero,
+.app-content-layer--history .about-collage,
+.app-content-layer--history .about-collage__board,
+.app-content-layer--history .about-journey,
+.app-content-layer--history .about-journey__track,
+.app-content-layer--history .about-stage,
+.app-content-layer--history .about-stage__body,
+.app-content-layer--history .about-stage__content {
+  min-width: 0;
+  max-width: none;
+  overflow: visible;
+}
+
+.app-content-layer--history .about-hero {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.app-content-layer--history .about-collage__board {
+  width: 100%;
+  max-width: 100%;
+}
+
+.app-content-layer--history .about-principles,
+.app-content-layer--history .about-collage,
+.app-content-layer--history .about-journey {
+  width: 100%;
+  max-width: none;
+}
+
+.app-content-layer--history .about-stage__visuals,
+.app-content-layer--history .about-stage__visuals--strip {
+  width: 100%;
+  max-width: none;
+  overflow: visible;
+}
+
+.app-content-layer--history .about-stage__visuals--strip {
+  flex-wrap: wrap;
+  padding-right: 0;
+}
+
+.app-content-layer--history .about-hero,
+.app-content-layer--history .about-principles {
+  margin-top: 0;
+}
+
+.app-content-layer--library .project-viewer {
+  height: 100%;
+}
+
+.paper-layer--under.workspace-page {
+  transition: background 0.5s ease;
+}
+
+@media (max-height: 760px) and (min-width: 681px) {
+  .paper-layer--over {
+    overflow-y: auto;
+  }
+
+  .paper-layer--over .home-index {
+    gap: var(--space-6);
+  }
+
+  .paper-layer--over .explore-item {
+    padding-block: var(--space-2);
+  }
+}
+
+@media (max-width: 680px) {
+  .global-page-layout--app {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .content-viewport--workspace .content-viewport__inner {
+    width: max(100%, 820px);
+    min-width: 820px;
+  }
+
+  .global-page-layout {
+    padding-right: var(--space-3);
+    padding-bottom: var(--space-3);
+    padding-left: var(--space-3);
+  }
+}
+
+/* Final ownership boundary: page layouts, not transition layers, scroll. */
+/* ------------------------------------------------------------------ */
+/* Case Studies page: Selected Work + Vibe Coding                       */
+/* ------------------------------------------------------------------ */
+
+.case-studies__section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-1);
+}
+
+.case-studies__section-header .case-studies__section-title {
+  margin: 0;
+}
+
+.case-studies__view-all {
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--color-divider);
+  padding-bottom: 2px;
+  display: inline-block;
+  transition: color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+/* Follows the design-system link hover: accent color plus a rightward
+   nudge, like the sidebar links. */
+.case-studies__view-all:hover,
+.case-studies__view-all:focus-visible {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  transform: translateX(3px);
+}
+
+.case-studies__section {
+  /* Keep section titles clear of the fixed top nav when jumped to
+     from the sidebar directory. */
+  scroll-margin-top: var(--viewport-safe-top);
+  margin-bottom: var(--space-8);
+}
+
+/* Version History directory targets: keep jumped-to sections clear of
+   the fixed top nav. */
+.app-content-layer--history .about-hero,
+.app-content-layer--history .about-stage,
+.app-content-layer--history .about-closing {
+  scroll-margin-top: var(--viewport-safe-top);
+}
+
+.case-studies__section:last-child {
+  margin-bottom: 0;
+}
+
+.case-studies__section-title {
+  font-family: var(--font-sans);
+  font-size: var(--type-h2);
+  font-weight: var(--weight-medium);
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-1);
+}
+
+.case-studies__section-note {
+  font-family: var(--font-serif);
+  font-size: var(--type-body);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-2);
+  max-width: 60ch;
+  text-wrap: balance;
+}
+
+/* Vibe coding project grid */
+.vibe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.vibe-card {
+  margin: 0;
+}
+
+/* Shared card surface for button cards (open a modal) and link cards
+   (open an external page): quiet hover is accent border only, never
+   lift or shadow. */
+.vibe-card__button,
+.vibe-card__link {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--color-divider);
+  border-radius: 8px;
+  background: var(--color-surface);
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+  transition: border-color 0.2s ease, transform 160ms ease;
+}
+
+.vibe-card__button:hover,
+.vibe-card__button:focus-visible,
+.vibe-card__link:hover,
+.vibe-card__link:focus-visible {
+  border-color: var(--color-accent);
+  transform: translateX(3px);
+}
+
+/* Card hover: the whole card — frame included — nudges right as one
+   unit, exactly like the inline-link and explore-row hover. A transform
+   never disturbs the grid: siblings stay put, only the hovered card
+   paints 3px to the right. The title warms to the accent voice and the
+   border keeps its quiet accent shift. */
+.vibe-card__button:hover .vibe-card__title,
+.vibe-card__button:focus-visible .vibe-card__title,
+.vibe-card__link:hover .vibe-card__title,
+.vibe-card__link:focus-visible .vibe-card__title {
+  color: var(--color-accent);
+}
+
+.vibe-card__button:focus-visible,
+.vibe-card__link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* Anchor cards need the link resets that buttons get for free. */
+.vibe-card__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* External-link arrow on link-card titles: quiet secondary voice. */
+.vibe-card__external {
+  margin-left: var(--space-1);
+  font-size: 0.875em;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.vibe-card__thumbnail {
+  aspect-ratio: 16 / 10;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-divider);
+  overflow: hidden;
+  transition: transform 160ms ease;
+}
+
+.vibe-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.vibe-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vibe-card__placeholder-mark {
+  font-family: var(--font-sans);
+  font-size: var(--type-h2);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+  letter-spacing: 0.08em;
+}
+
+.vibe-card__body {
+  padding: var(--space-2) var(--space-2) var(--space-3);
+  transition: transform 160ms ease;
+}
+
+.vibe-card__title {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  font-weight: var(--weight-medium);
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-1);
+  color: var(--color-text);
+  transition: color 160ms ease;
+}
+
+.vibe-card__description {
+  font-family: var(--font-serif);
+  font-size: var(--type-caption);
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-2);
+}
+
+.vibe-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.vibe-card__tag {
+  /* Tags are quiet rectangular chips: default neutral background block,
+     text in the sidebar label voice. Radius is half the card radius —
+     rectangular, never a pill; never the mono/data voice. */
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--color-text-secondary);
+  background: var(--color-background);
+  border-radius: 4px;
+  padding: calc(var(--space-1) / 2) var(--space-1);
+}
+
+/* Vibe project detail modal */
+.vibe-detail__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4) var(--space-2);
+  background: rgba(20, 20, 18, 0.55);
+  backdrop-filter: blur(6px);
+  overflow-y: auto;
+  animation: vibe-detail-fade 0.25s ease;
+}
+
+@keyframes vibe-detail-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.vibe-detail {
+  position: relative;
+  width: 100%;
+  max-width: 44rem;
+  margin: auto;
+  background: var(--color-surface);
+  border-radius: 16px;
+  overflow: hidden;
+  animation: vibe-detail-rise 0.3s ease;
+}
+
+@keyframes vibe-detail-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vibe-detail__close {
+  position: absolute;
+  top: var(--space-1);
+  right: var(--space-1);
+  z-index: 2;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 50%;
+  background: rgba(20, 20, 18, 0.5);
+  color: #fff;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.vibe-detail__close:hover {
+  background: rgba(20, 20, 18, 0.75);
+}
+
+.vibe-detail__hero {
+  aspect-ratio: 16 / 9;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.vibe-detail__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.vibe-detail__body {
+  padding: var(--space-4);
+}
+
+.vibe-detail__kicker {
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-1);
+}
+
+.vibe-detail__title {
+  font-family: var(--font-sans);
+  font-size: var(--type-h2);
+  font-weight: var(--weight-medium);
+  letter-spacing: -0.01em;
+  /* The detail title is the single strongest text voice in the view. */
+  color: var(--color-text-strong);
+  margin: 0 0 var(--space-1);
+}
+
+.vibe-detail__tagline {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--type-body);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-2);
+  text-wrap: balance;
+}
+
+.vibe-detail__tags {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-1);
+  list-style: none;
+  margin: 0 0 var(--space-3);
+  padding: 0;
+}
+
+.vibe-detail__tag {
+  /* Same quiet rectangular chip as the card tags. */
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--color-text-secondary);
+  background: var(--color-background);
+  border-radius: 4px;
+  padding: calc(var(--space-1) / 2) var(--space-1);
+}
+
+.vibe-detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.vibe-detail__action {
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  border: 1px solid var(--color-divider);
+  border-radius: 999px;
+  padding: 0.625rem 1.25rem;
+  color: var(--color-text);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.vibe-detail__action:hover {
+  border-color: var(--color-text);
+}
+
+.vibe-detail__action--primary {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  color: var(--color-background);
+}
+
+.vibe-detail__action--primary:hover {
+  opacity: 0.85;
+  border-color: var(--color-text);
+}
+
+.vibe-detail__sections {
+  margin: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.vibe-detail__section dt {
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+.vibe-detail__section dd {
+  font-family: var(--font-serif);
+  font-size: var(--type-body);
+  line-height: 1.7;
+  /* Body copy stays secondary; only titles use the primary text color. */
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.vibe-detail__quote {
+  font-style: italic;
+  border-left: 2px solid var(--color-divider);
+  padding-left: var(--space-1);
+}
+
+@media (max-width: 640px) {
+  .vibe-detail__body {
+    padding: var(--space-3) var(--space-2);
+  }
+}
+
+/* Language-toggle stability: localized copy can wrap to a different number
+   of lines per language. Reserve the tallest line count with min-height in
+   lh units so switching languages never changes the block's height and
+   content below never jumps. Longer text (narrow screens) still grows
+   naturally past the minimum — nothing is clipped. */
+.case-studies__section-note {
+  /* One line in Chinese, two in English. */
+  min-height: 2lh;
+}
+
+.home-identity__statement {
+  /* One line in Chinese, two in English — keeps the Explore section below
+     from shifting on language toggle. */
+  min-height: 2lh;
 }

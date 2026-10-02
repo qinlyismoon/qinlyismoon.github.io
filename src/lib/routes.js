@@ -5,12 +5,14 @@ export const DESK_PATH = "/desk";
 export const PHOEBES_DESK_PATH = "/phoebes-desk";
 
 export const ABOUT_PATH = "/about";
+export const LIBRARY_PATH = "/library";
 export const HOME_PATH = "/";
 
 const LEGACY_WORKSPACE_PATH = "/workspace";
 
 export const NAV_ITEMS = [
   { id: "home", path: HOME_PATH },
+  { id: "caseStudies", path: LIBRARY_PATH },
   { id: "desk", path: DESK_PATH },
   { id: "about", path: ABOUT_PATH },
 ];
@@ -32,6 +34,10 @@ export function isAboutPath(pathname) {
   return pathname === ABOUT_PATH;
 }
 
+export function isLibraryPath(pathname) {
+  return pathname === LIBRARY_PATH;
+}
+
 export function isHomePath(pathname) {
   return pathname === HOME_PATH;
 }
@@ -42,6 +48,7 @@ export function isLegacyDeskPath(pathname) {
 
 export function viewIdFromPath(pathname) {
   if (isAboutPath(pathname)) return "about";
+  if (isLibraryPath(pathname)) return "caseStudies";
   if (isDeskPath(pathname)) return "desk";
   return "home";
 }

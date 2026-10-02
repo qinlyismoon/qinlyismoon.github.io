@@ -600,6 +600,9 @@ function StageBody({ stage, language, isActive }) {
 
   return (
     <div className="about-stage__content">
+      {stage.version ? (
+        <p className="about-stage__version">{stage.version}</p>
+      ) : null}
       <h3 className="about-stage__title">{pickLang(stage.title, language)}</h3>
 
       {meta ? <p className="about-stage__meta">{meta}</p> : null}
@@ -715,7 +718,9 @@ function StageBody({ stage, language, isActive }) {
       })}
 
       {stage.highlight ? (
-        <JourneyReflection text={pickLang(stage.highlight, language)} />
+        <JourneyReflection
+          text={pickLang(stage.highlight, language)}
+        />
       ) : null}
 
       {stage.note ? (
@@ -761,8 +766,8 @@ function JourneySection({
     >
       <div className="about-stage__timeline-meta" aria-hidden="true">
         {stage.transition ? null : (
-          <span className="about-stage__year-mark">
-            {pickLang(stage.year, language)}
+          <span className="about-stage__version-mark">
+            {stage.version ?? pickLang(stage.year, language)}
           </span>
         )}
       </div>
@@ -797,7 +802,7 @@ function MovingTimelineLabel({
     );
   }
 
-  const year = pickLang(stage.year, language);
+  const version = stage.version ?? pickLang(stage.year, language);
   const phase = pickLang(stage.phase, language);
 
   return (
@@ -811,7 +816,7 @@ function MovingTimelineLabel({
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
-          key={`${year}-${phase}`}
+          key={`${version}-${phase}`}
           className="about-journey__moving-label-content"
           initial={reduceMotion ? false : { opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
@@ -821,7 +826,7 @@ function MovingTimelineLabel({
             ease: [0.22, 1, 0.36, 1],
           }}
         >
-          <div className="about-journey__moving-year">{year}</div>
+          <div className="about-journey__moving-version">{version}</div>
           <div className="about-journey__moving-phase">{phase}</div>
         </motion.div>
       </AnimatePresence>

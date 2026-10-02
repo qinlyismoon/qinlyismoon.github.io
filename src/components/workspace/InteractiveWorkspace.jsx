@@ -3,41 +3,36 @@ import { useNavigate } from "react-router-dom";
 import { useAppSettings } from "../../context/AppSettingsContext";
 import { useMusic } from "../../context/MusicContext";
 import { usePageTransition } from "../../context/PageTransitionContext";
-import { SCENE_CONTENT_SHIFT_X, ROOM_WINDOW } from "../../lib/deskLayout";
-import { WORKSPACE_ASPECT } from "../../lib/animations";
 import { getDeskPalette } from "../../lib/deskPalette";
 import { CAMERA_FLASH_MS, MUG_STIR_AUDIO_MS, MUG_STIR_MS, PLANT_WATERING_MS } from "../../lib/workspaceInteractions";
 import { WORKSPACE_SOUNDS, NATURE_SOUND_VOLUME, soundSrc } from "../../lib/sounds";
-import WorkspaceMugTooltip from "./WorkspaceMugTooltip";
-import WorkspaceClockTooltip from "./WorkspaceClockTooltip";
-import WorkspacePlantTooltip from "./WorkspacePlantTooltip";
-import { WORKSPACE_OBJECTS } from "../../lib/workspaceObjects";
-import WorkspaceObject from "./WorkspaceObject";
 import { useCompactScene } from "../../hooks/useCompactScene";
-import { useWorkspaceCamera } from "../../hooks/useWorkspaceCamera";
-import {
-  LampLightLayer,
-  PhoebeDeskScene,
-  RoomWindow,
-  renderDeskObject,
-  SceneDefs,
-} from "./WorkspaceSceneParts";
+import Scene from "../shared/Scene";
+import DeskScene, { SceneBackground } from "./scene/DeskScene";
 
+/**
+ * InteractiveWorkspace — the desk scene controller.
+ *
+ * Owns all interaction state (audio, hover, toggles, growth) and composes
+ * the layered DeskScene. It renders no illustration itself: visible shapes
+ * live in the object components, hit areas in the Interaction layer, and
+ * light in the Effect layer.
+ */
 export default function InteractiveWorkspace({
   copy,
-  isDarkMode,
+  isNight,
   isLampOn,
   onLampToggle,
+  environment,
+  isActive,
 }) {
   const { isMuted, language } = useAppSettings();
   const { isMusicPlaying, toggleMusicFromUser } = useMusic();
   const { playSound, playLoopingSound, pauseSound, clickSoundRef } =
     usePageTransition();
   const navigate = useNavigate();
-  const palette = useMemo(() => getDeskPalette(isDarkMode), [isDarkMode]);
+  const palette = useMemo(() => getDeskPalette(isNight), [isNight]);
   const compactScene = useCompactScene();
-  const { viewBox: workspaceViewBox, offsetY: workspaceOffsetY } =
-    useWorkspaceCamera();
   const matchaStirRef = useRef(null);
   const lampToggleRef = useRef(null);
   const pageFlipRef = useRef(null);
@@ -52,6 +47,7 @@ export default function InteractiveWorkspace({
   const plantSwayTimerRef = useRef(null);
   const plantGrowTimerRef = useRef(null);
 
+  const [hoveredId, setHoveredId] = useState(null);
   const [cameraFlash, setCameraFlash] = useState(false);
   const [mugStirring, setMugStirring] = useState(false);
   const [mugStirToken, setMugStirToken] = useState(0);
@@ -191,6 +187,18 @@ export default function InteractiveWorkspace({
     }
   }, [isMuted, stopMatchaStir, stopClockTick, stopPlantDrops, stopNatureSound]);
 
+  // Desk stays mounted between routes so its scene state is preserved. Clear
+  // transient hover UI and audio as soon as the workspace stops being the
+  // active page; portal-based tooltips otherwise outlive the hidden layer.
+  useEffect(() => {
+    if (isActive) return;
+    setHoveredId(null);
+    stopMatchaStir();
+    stopClockTick();
+    stopPlantDrops();
+    stopNatureSound();
+  }, [isActive, stopMatchaStir, stopClockTick, stopPlantDrops, stopNatureSound]);
+
   useEffect(() => () => {
     pauseSound(matchaStirRef);
     stopClockTick();
@@ -243,6 +251,18 @@ export default function InteractiveWorkspace({
       stopNatureSound();
     },
     [playNatureSound, stopNatureSound]
+  );
+
+  /** Single hover entry point — the Interaction layer reports here. */
+  const handleHoverChange = useCallback(
+    (id, hovered) => {
+      setHoveredId((prev) => (hovered ? id : prev === id ? null : prev));
+      if (id === "mug") handleMugHoverChange(hovered);
+      else if (id === "clock") handleClockHoverChange(hovered);
+      else if (id === "plant") handlePlantHoverChange(hovered);
+      else if (id === "window") handleWindowHoverChange(hovered);
+    },
+    [handleMugHoverChange, handleClockHoverChange, handlePlantHoverChange, handleWindowHoverChange]
   );
 
   const playObjectSound = useCallback(
@@ -346,13 +366,27 @@ export default function InteractiveWorkspace({
     plantGrowthStage: plantGrowthFloat,
     plantIsMaxed,
     compactScene,
+    hoveredId: isActive ? hoveredId : null,
+    onHoverChange: handleHoverChange,
+    onActivate: handleActivate,
+  };
+
+  const chromeProps = {
+    copy,
+    language,
+    isLampOn,
+    isMusicPlaying,
+    plantIsMaxed,
   };
 
   return (
-    <div
-      className={`workspace-scene${isLampOn ? " workspace-scene--lamp-on" : ""}${
-        isMusicPlaying ? " workspace-scene--music-on" : ""
-      }`}
+    <Scene
+      className={`desk-scene desk-scene--${environment.dayPhase} desk-scene--weather-${environment.weather.kind}${
+        isLampOn ? " desk-scene--lamp-on" : ""
+      }${isMusicPlaying ? " desk-scene--music-on" : ""}`}
+      label={copy.sceneLabel}
+      background={<SceneBackground />}
+      contentClassName="desk-scene__viewport"
       style={{ "--desk-caption": palette.caption, "--desk-tooltip-text": palette.inkSoft }}
     >
       <audio ref={matchaStirRef} preload="auto" src="/matcha-stir.mp3" />
@@ -381,124 +415,15 @@ export default function InteractiveWorkspace({
         loop
       />
 
-      <svg
-        className="workspace-scene__svg"
-        viewBox={workspaceViewBox}
-        preserveAspectRatio={WORKSPACE_ASPECT}
-        role="img"
-        aria-label={copy.sceneLabel}
-      >
-        <SceneDefs c={palette} />
-        <g transform={`translate(0, ${workspaceOffsetY})`}>
-          <RoomWindow c={palette} />
-          <WorkspaceObject
-            id="window"
-            ariaLabel={copy.objects.windowAria}
-            transform={`translate(${ROOM_WINDOW.x}, ${ROOM_WINDOW.y})`}
-            hitBounds={{ x: 0, y: 0, width: ROOM_WINDOW.width, height: ROOM_WINDOW.height }}
-            hideLabel
-            onHoverChange={handleWindowHoverChange}
-          >
-            {() => null}
-          </WorkspaceObject>
-          <g transform={`translate(${SCENE_CONTENT_SHIFT_X}, 0)`}>
-          <PhoebeDeskScene palette={palette} isLampOn={isLampOn} />
-
-          {WORKSPACE_OBJECTS.filter((object) => object.id !== "lamp").map((object) => (
-          <WorkspaceObject
-            key={object.id}
-            id={object.id}
-            label={
-              object.id === "speaker"
-                ? isMusicPlaying
-                  ? copy.objects.musicPause
-                  : copy.objects.musicPlay
-                : object.labelKey && !object.hideLabel
-                  ? copy.objects[object.labelKey]
-                  : undefined
-            }
-            tooltip={
-              object.id === "mug" ? (
-                <WorkspaceMugTooltip key={language} />
-              ) : object.id === "clock" ? (
-                <WorkspaceClockTooltip key={language} />
-              ) : object.id === "plant" ? (
-                <WorkspacePlantTooltip key={language} isMaxed={plantIsMaxed} />
-              ) : undefined
-            }
-            ariaLabel={
-              object.id === "speaker"
-                ? isMusicPlaying
-                  ? copy.objects.musicPause
-                  : copy.objects.musicPlay
-                : object.ariaLabelKey
-                  ? object.id === "plant" && plantIsMaxed
-                    ? language === "zh"
-                      ? "搁板上的绿植（已长到最大，不需要再浇水）"
-                      : "Trailing plant (fully grown, no more watering)"
-                    : copy.objects[object.ariaLabelKey]
-                  : undefined
-            }
-            href={object.href}
-            action={object.action}
-            transform={object.transform}
-            labelOffset={object.labelOffset}
-            tooltipOffset={object.tooltipOffset}
-            tooltipAlign={object.tooltipAlign}
-            hideLabel={object.hideLabel}
-            hitBounds={object.hitBounds}
-            isLampOn={object.action === "lamp" ? isLampOn : undefined}
-            isMusicPlaying={object.action === "music" ? isMusicPlaying : undefined}
-            onActivate={handleActivate}
-            onHoverChange={
-              object.action === "mug"
-                ? handleMugHoverChange
-                : object.id === "clock"
-                  ? handleClockHoverChange
-                  : object.action === "plant"
-                    ? handlePlantHoverChange
-                    : undefined
-            }
-          >
-            {(isHovered) =>
-              renderDeskObject(object.id, palette, {
-                ...interactionState,
-                isHovered,
-              })
-            }
-          </WorkspaceObject>
-          ))}
-
-          <LampLightLayer isOn={isLampOn} lampLight={palette.lampLight} />
-
-          {WORKSPACE_OBJECTS.filter((object) => object.id === "lamp").map((object) => (
-          <WorkspaceObject
-            key={object.id}
-            id={object.id}
-            label={isLampOn ? copy.objects.lampTurnOff : copy.objects.lampTurnOn}
-            ariaLabel={isLampOn ? copy.objects.lampTurnOff : copy.objects.lampTurnOn}
-            href={object.href}
-            action={object.action}
-            transform={object.transform}
-            labelOffset={object.labelOffset}
-            tooltipOffset={object.tooltipOffset}
-            tooltipAlign={object.tooltipAlign}
-            hideLabel={object.hideLabel}
-            hitBounds={object.hitBounds}
-            isLampOn={isLampOn}
-            onActivate={handleActivate}
-          >
-            {(isHovered) =>
-              renderDeskObject(object.id, palette, {
-                ...interactionState,
-                isHovered,
-              })
-            }
-          </WorkspaceObject>
-          ))}
-          </g>
-        </g>
-      </svg>
-    </div>
+      <DeskScene
+        c={palette}
+        environment={environment}
+        isLampOn={isLampOn}
+        isNight={isNight}
+        interaction={interactionState}
+        chromeProps={chromeProps}
+        sceneLabel={copy.sceneLabel}
+      />
+    </Scene>
   );
 }

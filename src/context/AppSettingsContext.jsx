@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 
 const STORAGE_KEY = "phoebe-site-settings";
 
@@ -56,8 +57,49 @@ export function AppSettingsProvider({ children }) {
           ...prev,
           language: prev.language === "en" ? "zh" : "en",
         })),
-      toggleTheme: () =>
-        setSettings((prev) => ({ ...prev, isDarkMode: !prev.isDarkMode })),
+      toggleTheme: () => {
+        const nextIsDarkMode = !settings.isDarkMode;
+        const applyTheme = () => {
+          document.documentElement.dataset.theme = nextIsDarkMode
+            ? "dark"
+            : "light";
+          flushSync(() => {
+            setSettings((prev) => ({ ...prev, isDarkMode: nextIsDarkMode }));
+          });
+        };
+
+        const reduceMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        const root = document.documentElement;
+
+        if (!reduceMotion && typeof document.startViewTransition === "function") {
+          root.classList.add("theme-transitioning");
+          const transition = document.startViewTransition(applyTheme);
+          transition.finished.finally(() => {
+            root.classList.remove("theme-transitioning");
+          });
+          return;
+        }
+
+        if (!reduceMotion) {
+          if (root.classList.contains("theme-transitioning")) return;
+          root.classList.add("theme-transitioning", "theme-fallback-out");
+
+          window.setTimeout(() => {
+            applyTheme();
+            root.classList.remove("theme-fallback-out");
+            root.classList.add("theme-fallback-in");
+
+            window.setTimeout(() => {
+              root.classList.remove("theme-fallback-in", "theme-transitioning");
+            }, 230);
+          }, 150);
+          return;
+        }
+
+        applyTheme();
+      },
       toggleMute: () =>
         setSettings((prev) => ({ ...prev, isMuted: !prev.isMuted })),
     }),

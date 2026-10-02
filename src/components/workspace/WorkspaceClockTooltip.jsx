@@ -1,13 +1,13 @@
 import { useAppSettings } from "../../context/AppSettingsContext";
 import {
-  useEasternClockTooltipLine,
-  useEasternDateLine,
-} from "../../hooks/useEasternTime";
+  useLocalClockTooltipLine,
+  useLocalDateLine,
+} from "../../lib/useLocalTime";
 
 export default function WorkspaceClockTooltip() {
   const { language } = useAppSettings();
-  const dateLine = useEasternDateLine(language);
-  const timeLine = useEasternClockTooltipLine(language);
+  const dateLine = useLocalDateLine(language);
+  const timeLine = useLocalClockTooltipLine(language);
 
   return (
     <div className="workspace-tooltip">

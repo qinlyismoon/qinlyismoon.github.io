@@ -115,6 +115,7 @@ export const JOURNEY_STAGES = [
   {
     id: "2022",
     year: { en: "2022", zh: "2022" },
+    version: "v2022.1",
     phase: { en: "Following What Draws Me", zh: "追随吸引我的方向" },
     title: {
       en: "Choosing a path toward making and innovation",
@@ -124,12 +125,10 @@ export const JOURNEY_STAGES = [
       en: [
         "My interest in making began long before I knew what design was. In elementary school, I represented my school in a citywide model-making competition. I also enjoyed taking things apart and imagining what else they could become—once turning a small solar-powered fan from a sun hat into a model solar boat.",
         "Later, my background in civil and coastal engineering, along with information systems management, taught me to think systematically and understand how complex systems work. Yet I found myself most drawn to innovation, hands-on making, and the process of turning ideas into things people could experience and respond to.",
-        "During my junior year of college, I began to recognize that these interests were pointing me toward design. Following what had always drawn me, I decided to pursue a new direction.",
       ],
       zh: [
         "我对制作的兴趣，早在我知道设计是什么之前就开始了。小学时，我代表学校参加全市模型制作比赛。我也喜欢拆开东西，想象它们还能变成什么——曾经把遮阳帽上的小太阳能风扇改成了一个太阳能模型船。",
         "后来，土木与海岸工程的背景，连同信息管理系统，让我学会系统思考，并理解复杂系统如何运作。但最吸引我的，始终是创新、动手制作，以及把想法变成人们能够体验并回应的东西。",
-        "大三时，我开始意识到这些兴趣正指向设计。追随一直吸引着我的东西，我决定走向新的方向。",
       ],
     },
     highlight: {
@@ -142,6 +141,7 @@ export const JOURNEY_STAGES = [
   {
     id: "2023-2024",
     year: { en: "2023–2024", zh: "2023–2024" },
+    version: "v2023.1",
     phase: { en: "Learning Through Practice", zh: "在实践中学习" },
     title: {
       en: "Building a foundation through design research and product practice",
@@ -361,6 +361,7 @@ export const JOURNEY_STAGES = [
   {
     id: "2024-now",
     year: { en: "2024–Now", zh: "2024–现在" },
+    version: "v2024.1",
     phase: { en: "Expanding Design", zh: "扩展设计" },
     title: {
       en: "Exploring what design can become",
@@ -560,6 +561,7 @@ export const JOURNEY_STAGES = [
   {
     id: "2025-now",
     year: { en: "2025–Now", zh: "2025–现在" },
+    version: "v2025.1",
     phase: { en: "Growing With Others", zh: "与他人一同成长" },
     title: {
       en: "Learning design through teaching others",
@@ -644,6 +646,7 @@ export const JOURNEY_STAGES = [
   {
     id: "2026-now",
     year: { en: "2026–Now", zh: "2026–现在" },
+    version: "v2026.1",
     phase: { en: "Designing in the Age of AI", zh: "在 AI 时代设计" },
     title: {
       en: "Designing a product from zero to one",
