@@ -323,6 +323,25 @@ body[data-page="desk"] .viewport-top-nav {
   transition: none !important;
 }
 
+/* The identity region is global chrome, not route content. Keep its new
+   snapshot fully painted throughout navigation so the logo, name, role and
+   contact line never participate in the root-page crossfade. Metadata remains
+   outside this named layer and can still update for the destination page. */
+html.page-transitioning::view-transition-group(context-identity),
+html.page-transitioning::view-transition-image-pair(context-identity),
+html.page-transitioning::view-transition-old(context-identity),
+html.page-transitioning::view-transition-new(context-identity) {
+  animation: none !important;
+}
+
+html.page-transitioning::view-transition-old(context-identity) {
+  opacity: 0;
+}
+
+html.page-transitioning::view-transition-new(context-identity) {
+  opacity: 1;
+}
+
 /* API-free fallback: fade the one application root out, switch every theme
    value at the invisible midpoint, then fade the complete new page in. */
 html.theme-fallback-out #root {

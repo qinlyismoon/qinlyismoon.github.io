@@ -5680,6 +5680,9 @@ body {
   height: 232px;
   padding-top: var(--space-4);
   padding-bottom: var(--space-3);
+  /* Persistent chrome: route transitions must not crossfade the identity
+     block with the changing page snapshot. */
+  view-transition-name: context-identity;
 }
 
 .context-column__logo {
