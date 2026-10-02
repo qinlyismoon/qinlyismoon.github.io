@@ -5805,6 +5805,9 @@ body {
   padding: 0;
   border-bottom: 0;
   overflow: hidden;
+  /* Language, theme and sound are persistent global controls. Route content
+     can change around them without fading or repainting this dock. */
+  view-transition-name: context-system-status;
 }
 
 .context-column__name,

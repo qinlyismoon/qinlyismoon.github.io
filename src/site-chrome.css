@@ -330,15 +330,21 @@ body[data-page="desk"] .viewport-top-nav {
 html.page-transitioning::view-transition-group(context-identity),
 html.page-transitioning::view-transition-image-pair(context-identity),
 html.page-transitioning::view-transition-old(context-identity),
-html.page-transitioning::view-transition-new(context-identity) {
+html.page-transitioning::view-transition-new(context-identity),
+html.page-transitioning::view-transition-group(context-system-status),
+html.page-transitioning::view-transition-image-pair(context-system-status),
+html.page-transitioning::view-transition-old(context-system-status),
+html.page-transitioning::view-transition-new(context-system-status) {
   animation: none !important;
 }
 
-html.page-transitioning::view-transition-old(context-identity) {
+html.page-transitioning::view-transition-old(context-identity),
+html.page-transitioning::view-transition-old(context-system-status) {
   opacity: 0;
 }
 
-html.page-transitioning::view-transition-new(context-identity) {
+html.page-transitioning::view-transition-new(context-identity),
+html.page-transitioning::view-transition-new(context-system-status) {
   opacity: 1;
 }
 
