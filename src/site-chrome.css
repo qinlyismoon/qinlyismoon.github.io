@@ -58,6 +58,9 @@
   padding-top: var(--viewport-top-nav-top);
   padding-bottom: var(--space-2);
   background: var(--color-background);
+  /* Fixed global chrome: route content changes underneath this layer, while
+     its position and opacity remain stable. */
+  view-transition-name: global-navigation;
 }
 
 /* A project detail is its own focused reading surface. The global navigation
@@ -323,10 +326,10 @@ body[data-page="desk"] .viewport-top-nav {
   transition: none !important;
 }
 
-/* The identity region is global chrome, not route content. Keep its new
-   snapshot fully painted throughout navigation so the logo, name, role and
-   contact line never participate in the root-page crossfade. Metadata remains
-   outside this named layer and can still update for the destination page. */
+/* Fixed global chrome is not route content. Keep each new snapshot fully
+   painted throughout navigation so the top navigation, sidebar identity and
+   system controls never participate in the root-page crossfade. Metadata
+   remains outside these named layers and can update for the destination. */
 html.page-transitioning::view-transition-group(context-identity),
 html.page-transitioning::view-transition-image-pair(context-identity),
 html.page-transitioning::view-transition-old(context-identity),
@@ -334,17 +337,23 @@ html.page-transitioning::view-transition-new(context-identity),
 html.page-transitioning::view-transition-group(context-system-status),
 html.page-transitioning::view-transition-image-pair(context-system-status),
 html.page-transitioning::view-transition-old(context-system-status),
-html.page-transitioning::view-transition-new(context-system-status) {
+html.page-transitioning::view-transition-new(context-system-status),
+html.page-transitioning::view-transition-group(global-navigation),
+html.page-transitioning::view-transition-image-pair(global-navigation),
+html.page-transitioning::view-transition-old(global-navigation),
+html.page-transitioning::view-transition-new(global-navigation) {
   animation: none !important;
 }
 
 html.page-transitioning::view-transition-old(context-identity),
-html.page-transitioning::view-transition-old(context-system-status) {
+html.page-transitioning::view-transition-old(context-system-status),
+html.page-transitioning::view-transition-old(global-navigation) {
   opacity: 0;
 }
 
 html.page-transitioning::view-transition-new(context-identity),
-html.page-transitioning::view-transition-new(context-system-status) {
+html.page-transitioning::view-transition-new(context-system-status),
+html.page-transitioning::view-transition-new(global-navigation) {
   opacity: 1;
 }
 
