@@ -244,7 +244,7 @@ export default function SiteShell() {
                 }`}
                 aria-hidden={!isWorkspace}
               >
-                <DeskLayout style={workspaceStyle}>
+                <DeskLayout style={workspaceStyle} isActive={isWorkspace}>
                   <WorkspacePage
                     environment={environment}
                     isLampOn={isLampOn}

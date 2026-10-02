@@ -9,27 +9,32 @@ import { useEffect, useRef } from "react";
  * mouse behavior: drag-to-pan, so mouse users can pan the way touch
  * users scroll with a gesture.
  */
-export default function DeskLayout({ children, style }) {
+export default function DeskLayout({ children, style, isActive = false }) {
   const layoutRef = useRef(null);
   // Set on pointerup after a real drag, so the release click doesn't also
   // activate whatever the drag ended on (e.g. toggling the lamp after
   // panning across it).
   const suppressClickRef = useRef(false);
 
+  // Desk opens from the beginning of the horizontal canvas. Resetting when
+  // the route becomes active also prevents a previous visit's pan position
+  // from becoming the next visit's default view.
+  useEffect(() => {
+    if (!isActive) return undefined;
+    const viewport = layoutRef.current?.querySelector(".desk-scene__viewport");
+    if (!viewport) return undefined;
+
+    const frame = window.requestAnimationFrame(() => {
+      viewport.scrollLeft = 0;
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [isActive]);
+
   useEffect(() => {
     const layout = layoutRef.current;
     const viewport = layout?.querySelector(".desk-scene__viewport");
     if (!viewport) return undefined;
-
-    const centerWorkspace = () => {
-      viewport.scrollLeft = Math.max(
-        0,
-        (viewport.scrollWidth - viewport.clientWidth) / 2,
-      );
-    };
-
-    const frame = window.requestAnimationFrame(centerWorkspace);
-    window.addEventListener("resize", centerWorkspace);
 
     // Drag-to-pan for the mouse. Touch and pen keep their native
     // scrolling — only mouse pointers are handled here.
@@ -82,8 +87,6 @@ export default function DeskLayout({ children, style }) {
     viewport.addEventListener("dragstart", onDragStart);
 
     return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("resize", centerWorkspace);
       viewport.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
