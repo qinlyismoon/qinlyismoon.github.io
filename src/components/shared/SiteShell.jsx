@@ -174,6 +174,9 @@ export default function SiteShell() {
 
   const layoutContext = useMemo(() => {
     const base = getPageContext(language, contextPage);
+    if (contextPage === "home" && metadataOverride?.items?.length) {
+      return { ...base, metadata: [...(base.metadata ?? []), ...metadataOverride.items] };
+    }
     if (contextPage === "caseStudies" && metadataOverride?.items?.length) {
       return { ...base, metadata: metadataOverride.items };
     }
@@ -199,7 +202,7 @@ export default function SiteShell() {
   }, [contextPage, environment.weather.label, isLampOn, language, metadataOverride]);
 
   useEffect(() => {
-    if (contextPage !== "caseStudies") setMetadataOverride(null);
+    if (contextPage !== "caseStudies" && contextPage !== "home") setMetadataOverride(null);
   }, [contextPage]);
 
   // Route-level Sidebar chrome stays mounted. ContextColumn independently

@@ -29,7 +29,7 @@ const LABELS = {
   },
 };
 
-export default function LibraryPage() {
+export default function LibraryPage({ embedded = false }) {
   const { language } = useAppSettings();
   const labels = LABELS[language] ?? LABELS.en;
   const [activeProject, setActiveProject] = useState(null);
@@ -95,8 +95,8 @@ export default function LibraryPage() {
     setActiveProject(project);
   };
 
-  return (
-    <HomeLayout className="home-layout--library">
+  const content = (
+    <div className={embedded ? "home-work" : ""}>
       <section
         id="selected-work"
         className="case-studies__section"
@@ -150,6 +150,8 @@ export default function LibraryPage() {
           onClose={() => setActiveProject(null)}
         />
       ) : null}
-    </HomeLayout>
+    </div>
   );
+
+  return embedded ? content : <HomeLayout className="home-layout--library">{content}</HomeLayout>;
 }

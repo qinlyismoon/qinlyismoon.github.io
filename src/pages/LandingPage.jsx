@@ -1,24 +1,21 @@
 import { useMemo } from "react";
 import { useAppSettings } from "../context/AppSettingsContext";
 import { getHomeCopy } from "../lib/copy";
-import { usePageTransition } from "../context/PageTransitionContext";
 import HomeIntro from "../components/landing/HomeIntro";
+import EditorialThread from "../components/landing/EditorialThread";
 import HomeLayout from "../components/layouts/HomeLayout";
+import LibraryPage from "./LibraryPage";
 
 export default function LandingPage() {
   const { language } = useAppSettings();
-  const { navigateToDesk, navigateToAbout, navigateToLibrary } = usePageTransition();
-
   const copy = useMemo(() => getHomeCopy(language), [language]);
   return (
     <HomeLayout>
       <div className="landing-page__hero">
-        <HomeIntro
-          copy={copy}
-          onOpenLibrary={() => navigateToLibrary({ silent: true })}
-          onOpenDesk={() => navigateToDesk({ silent: true })}
-          onOpenTimeline={() => navigateToAbout({ silent: true })}
-        />
+        <HomeIntro copy={copy} />
+        <EditorialThread note={copy.editorialThreadNote} />
+        <LibraryPage embedded />
+        <p className="home-copyright">© 2026 Phoebe Qin · v2.1.0</p>
       </div>
     </HomeLayout>
   );

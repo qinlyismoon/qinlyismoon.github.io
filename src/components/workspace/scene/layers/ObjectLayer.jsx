@@ -12,6 +12,7 @@ import CameraObject from "../objects/CameraObject";
 import LampObject from "../objects/LampObject";
 import MonitorObject from "../objects/MonitorObject";
 import DrinkObject from "../objects/DrinkObject";
+import ArchiveObject from "../objects/ArchiveObject";
 
 const OBJECT_COMPONENTS = {
   books: BooksObject,
@@ -20,6 +21,8 @@ const OBJECT_COMPONENTS = {
   lamp: LampObject,
   monitor: MonitorObject,
   mug: DrinkObject,
+  board: (props) => <ArchiveObject {...props} variant="board" />,
+  timeline: (props) => <ArchiveObject {...props} variant="timeline" />,
 };
 
 export default function ObjectLayer({ c, isLampOn, interaction, chromeProps }) {
@@ -41,7 +44,7 @@ export default function ObjectLayer({ c, isLampOn, interaction, chromeProps }) {
 
   // Speaker and camera hang on the wire grid in WallLayer, which is not
   // shifted. They must skip SCENE_CONTENT_SHIFT_X to stay aligned to the grid.
-  const WALL_MOUNTED_IDS = new Set(["speaker", "camera"]);
+  const WALL_MOUNTED_IDS = new Set(["speaker", "camera", "board", "timeline"]);
   const wallObjects = WORKSPACE_OBJECTS.filter(
     (object) => object.layer === "objects" && WALL_MOUNTED_IDS.has(object.id),
   );

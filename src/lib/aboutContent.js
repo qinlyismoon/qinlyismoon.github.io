@@ -41,6 +41,18 @@ const ABOUT_PAGE_COPY = {
   en: {
     hero: {
       greeting: "Hi, I’m Phoebe.",
+      kicker: "Design engineer · product designer",
+      philosophyLabel: "Philosophy",
+      philosophyTitle: "Clarity is something we build, not something we wait for.",
+      philosophyBody: "I work through uncertainty by making the invisible visible: the assumptions, relationships, decisions, and trade-offs inside a product. Good systems give teams room to move and people confidence to act.",
+      processLabel: "How I work",
+      processTitle: "A loop for turning ambiguity into something real",
+      processBody: "My process is deliberately cyclical: I learn by making, use what I make to see the system more clearly, and return to the people the system is meant to serve.",
+      processSteps: ["Understand people", "Shape the system", "Build to learn"],
+      headshotAlt: "Portrait of Phoebe Qin",
+      collageLabel: "Beyond the process",
+      collageTitle: "The things that keep me curious",
+      collageBody: "A movable board of places, habits, and small observations that continue to shape how I see and make.",
       exploring: [
         "I’m always exploring, experimenting, and making—",
         "trying to create something new, something different, and something that matters to people.",
@@ -79,6 +91,18 @@ const ABOUT_PAGE_COPY = {
   zh: {
     hero: {
       greeting: "你好，我是 Phoebe.",
+      kicker: "设计工程师 · 产品设计师",
+      philosophyLabel: "设计观",
+      philosophyTitle: "清晰不是等来的，而是被一步步建立出来的。",
+      philosophyBody: "我通过制作来穿过不确定性，把产品中不可见的假设、关系、决定与取舍变得可见。好的系统让团队有行动的空间，也让使用它的人有做出判断的信心。",
+      processLabel: "我的工作方式",
+      processTitle: "一个把模糊想法变成真实体验的循环",
+      processBody: "我的过程刻意保持循环：通过制作获得理解，用原型看清系统，再回到系统真正服务的人。",
+      processSteps: ["理解人", "构建系统", "在制作中学习"],
+      headshotAlt: "Phoebe Qin 的职业肖像",
+      collageLabel: "流程之外",
+      collageTitle: "那些让我持续好奇的事物",
+      collageBody: "这是一个可以移动的剪贴板，记录着地点、习惯与微小观察——它们持续影响我如何观看与创造。",
       exploring: [
         "我一直在探索、实验，也一直在动手做——",
         "想创造一些新的、不同的，以及对人真正有意义的东西。",

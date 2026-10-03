@@ -30,6 +30,9 @@ serif, so the document never borrows the identity's voice.
 - Card titles (e.g. vibe grid cards): sans/medium at `1.125rem` — one step
   below section titles so cards never compete with section headings.
 - Body: `--type-body`, used for reading text and controls.
+- Editorial reading: `--type-reading` (`clamp(1.125rem, 1.55vw, 1.35rem)`),
+  shared by the Home introduction and About narrative. Page identity must
+  not create a second body-copy scale.
 - Caption: `--type-caption`, used for metadata and secondary labels.
 - Weights: regular (`400`) and medium (`600`) only.
 - Short editorial statements (1-3 lines, e.g. home intro bio/statement)
@@ -174,18 +177,63 @@ Case Studies can change their values independently without changing the
 column structure. The Context Column is informational,
 not navigational, and owns the shared contact links.
 
-The home page closes with a single copyright line (`.home-copyright`,
-`© 2026 Phoebe Qin`) after the explore index. It is set in the sidebar
+The home page closes with a single versioned copyright line (`.home-copyright`,
+`© 2026 Phoebe Qin · v2.1.0`) after the work index. It is set in the sidebar
 label voice (12px/500/secondary) and aligned to the documentation content
 width — a quiet colophon, never a footer bar. It is language-neutral, so
 it lives directly in `HomeIntro.jsx` rather than the localization copy.
-The copyright is absolutely positioned at `bottom: var(--space-4)` of
-`.home-layout` (which is `position: relative`), so it always rests at the
-viewport bottom with breathing room — out of flow, never jammed against
-the edge, never clipped.
-The home page is a single viewport and never scrolls
-(`.home-layout:not(.home-layout--library)`); Case Studies shares the
-layout component and keeps its scroll.
+The copyright stays in document flow with one `--space-4` gap after the final
+project section, preventing a false empty footer region. Home is a scrolling
+portfolio index on every viewport.
+
+On desktop, the Home sidebar keeps `Current location` first and `Open to
+opportunities` directly below it. Project hover appends `Project role` and
+`Timeline` after both persistent items; it never inserts project information
+between them or replaces them. On mobile the sidebar is absent, so cards do
+not depend on hover metadata for comprehension.
+
+Between the Home introduction and `Selected Work`, one continuous editorial
+thread replaces the conventional horizontal divider. It begins at the main
+content column — never inside or across the sidebar — and continues through
+the content canvas as a restrained organic curve (`1.15px`, muted accent
+green). A quiet but legible Caveat annotation (`1rem` desktop) sits near the
+80% point above the stroke. The thread is narrative continuity, not
+decoration: no icons, illustrations, repeated lines, or UI container treatment
+may be added. Its Bézier path breathes between two nearly identical curves on
+a slow `16s` ease-in-out loop; vertical change stays within a few pixels so it
+feels alive without reading as a wave. Reduced-motion mode keeps the authored
+curve static. On mobile, the same line contracts to the content bounds.
+Because inactive route layers remain mounted, the thread is explicitly hidden
+whenever `body[data-page]` is not `home`; it must never bleed into About or
+Desk.
+
+Desk archive windows inherit the active theme context. In particular, the
+Design Journey timeline must apply the same dark-mode text, rail, node, and
+reflection tokens used by its original About implementation; light-theme ink
+values must never appear inside a dark archive window.
+
+Desk keeps the authored scene at its natural 1.5× scale on mobile. Its
+viewport is a horizontally pannable camera, not a fit-to-width thumbnail.
+The inspiration board and design timeline are wall-mounted scene objects;
+both open document windows using the Vibe Coding detail-modal grammar.
+The overlay is the only vertical scroll surface; the white modal window
+never draws an inner scrollbar. New Desk objects must occupy non-overlapping
+visual and hit-area regions at the authored scene scale.
+
+Desk object affordance contract: every clickable scene object must expose a
+plain-language hover/focus label naming the object and the resulting action.
+The label reuses `.desk-scene__label` — the same sans caption size, regular
+weight, muted color and fade used by Portfolio and MFA Thesis — rather than
+introducing an HTML tooltip style. Archive entries name the object only; they
+do not add instructional copy.
+When an existing decorative prop can carry the meaning, upgrade that prop
+instead of adding a competing object. In v2.1.0 the wire-grid note is the
+Timeline entry; it is not duplicated elsewhere in the room.
+
+The Home copyright is a content-column colophon, not part of the sidebar
+control dock. It aligns horizontally with the work column and follows the
+last card at the parent layout's standard `--space-4` gap; it does not force
+an unrelated baseline alignment with the sidebar controls.
 
 ### Site chrome: Document Controls (Layout Blueprint v2.0, 2026-10-01)
 
@@ -252,6 +300,10 @@ downward with no boundary.
 - **Radius discipline.** The chrome uses only the site radius family:
 `0` everywhere in the chrome — the underline active state needs no
 radius at all. No other radii.
+- **Tab continuity.** The active underline is one persistent indicator,
+  not a separate line painted by each tab. It measures the active tab and
+  glides between positions and widths over `360ms` with
+  `cubic-bezier(0.22, 1, 0.36, 1)`; reduced motion changes it instantly.
 - Both use theme-aware tokens (`--color-text`,
 `--color-text-secondary`, `--color-divider`, `--color-background`,
 `--color-accent`) so light and dark mode come for free.
@@ -315,7 +367,8 @@ editorial typography language and lighten the panel.
 Link hover is a design-system rule, unified 2026-10-01: hover/focus turns
 the link accent green **and** nudges it right — block rows (homepage
 explore items) shift with `padding-left: var(--space-1)`; inline links
-(sidebar contact links, metadata directory links, `View all work`)
+(homepage contact links, sidebar contact links, metadata directory links,
+`View all work`)
 nudge with `translateX(3px)`; the whole card (frame included) nudges
 with `translateX(3px)` on card hover/focus. `160ms ease`. One perceived
 effect, the technique fits the context. On cards the whole card moves —

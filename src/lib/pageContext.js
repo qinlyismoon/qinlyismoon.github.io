@@ -17,8 +17,15 @@ const PAGE_CONTEXT = {
     identity: { name: "Phoebe Qin", roles: ["Design Engineer & Product Designer"] },
     contactLabels: { email: "Email", github: "GitHub", linkedin: "LinkedIn" },
     home: {
-      metadata: [{ label: "Current location", value: "Columbus, Ohio" }],
-      availability: "Open to opportunities",
+      metadata: [
+        { label: "Current location", value: "Columbus, Ohio" },
+        {
+          key: "availability",
+          label: "Current availability",
+          value: "Open to opportunities",
+          status: true,
+        },
+      ],
     },
     desk: {
       metadata: [
@@ -31,12 +38,9 @@ const PAGE_CONTEXT = {
       ],
     },
     versionHistory: {
-      // The Log is an ongoing record of thinking, not software releases:
-      // the sidebar reports status (the current chapter of the journey),
-      // never version metadata.
       metadata: [
         { label: "Current chapter", value: "Designing in the Age of AI" },
-        { label: "Last updated", value: "September 2026" },
+        { label: "Version", value: "v2.1.0" },
       ],
     },
     caseStudies: {
@@ -59,8 +63,15 @@ const PAGE_CONTEXT = {
     identity: { name: "Phoebe Qin", roles: ["设计工程师 & 产品设计师"] },
     contactLabels: { email: "邮箱", github: "GitHub", linkedin: "LinkedIn" },
     home: {
-      metadata: [{ label: "当前位置", value: "俄亥俄州哥伦布市" }],
-      availability: "正在寻找新的机会",
+      metadata: [
+        { label: "当前位置", value: "俄亥俄州哥伦布市" },
+        {
+          key: "availability",
+          label: "当前求职状态",
+          value: "正在寻找新的机会",
+          status: true,
+        },
+      ],
     },
     desk: {
       metadata: [
@@ -77,7 +88,7 @@ const PAGE_CONTEXT = {
       // English rather than inventing translations.
       metadata: [
         { label: "Current chapter", value: "Designing in the Age of AI" },
-        { label: "Last updated", value: "September 2026" },
+        { label: "版本", value: "v2.1.0" },
       ],
     },
     caseStudies: {

@@ -9,6 +9,7 @@ import { WORKSPACE_SOUNDS, NATURE_SOUND_VOLUME, soundSrc } from "../../lib/sound
 import { useCompactScene } from "../../hooks/useCompactScene";
 import Scene from "../shared/Scene";
 import DeskScene, { SceneBackground } from "./scene/DeskScene";
+import DeskArchiveDetail from "./DeskArchiveDetail";
 
 /**
  * InteractiveWorkspace — the desk scene controller.
@@ -58,6 +59,7 @@ export default function InteractiveWorkspace({
   const [plantGrowthStage, setPlantGrowthStage] = useState(0);
   const [plantGrowthFloat, setPlantGrowthFloat] = useState(0);
   const [plantGrowing, setPlantGrowing] = useState(false);
+  const [archivePanel, setArchivePanel] = useState(null);
 
   const PLANT_MAX_STAGE = 4;
   const plantIsMaxed = plantGrowthStage >= PLANT_MAX_STAGE;
@@ -333,6 +335,12 @@ export default function InteractiveWorkspace({
       return;
     }
 
+    if (action === "archive") {
+      playSound(clickSoundRef);
+      setArchivePanel(id);
+      return;
+    }
+
     if (id === "camera") {
       setCameraFlash(true);
       window.setTimeout(() => setCameraFlash(false), CAMERA_FLASH_MS);
@@ -380,6 +388,7 @@ export default function InteractiveWorkspace({
   };
 
   return (
+    <>
     <Scene
       className={`desk-scene desk-scene--${environment.dayPhase} desk-scene--weather-${environment.weather.kind}${
         isLampOn ? " desk-scene--lamp-on" : ""
@@ -425,5 +434,7 @@ export default function InteractiveWorkspace({
         sceneLabel={copy.sceneLabel}
       />
     </Scene>
+    <DeskArchiveDetail panel={archivePanel} onClose={() => setArchivePanel(null)} />
+    </>
   );
 }

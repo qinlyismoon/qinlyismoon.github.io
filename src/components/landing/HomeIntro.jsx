@@ -1,11 +1,7 @@
 import AboutChineseName from "../about/AboutChineseName";
+import { PORTFOLIO_LINKS } from "../../lib/links";
 
-export default function HomeIntro({
-  copy,
-  onOpenLibrary,
-  onOpenDesk,
-  onOpenTimeline,
-}) {
+export default function HomeIntro({ copy }) {
   return (
     <main className="home-index">
       <section className="home-hero" aria-labelledby="home-title">
@@ -18,45 +14,17 @@ export default function HomeIntro({
               cardAriaLabel={copy.nameCardAria}
             />
           </div>
-          <p className="home-identity__role">{copy.role}</p>
-          <p className="home-identity__statement">{copy.statement}</p>
+          <p className="home-identity__introduction">
+            {copy.role}. {copy.statement} {copy.detail}
+          </p>
+          <p className="home-identity__links">
+            <a href={PORTFOLIO_LINKS.email}>{copy.email}</a>
+            <a href={PORTFOLIO_LINKS.github} target="_blank" rel="noreferrer">GitHub ↗</a>
+            <a href={PORTFOLIO_LINKS.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
+          </p>
         </header>
-
       </section>
 
-      <section className="explore-index" aria-labelledby="explore-heading">
-          <h2 id="explore-heading" className="index-section__heading">
-            {copy.exploreTitle}
-          </h2>
-          <div className="explore-index__list">
-            <button
-              className="explore-item explore-item--primary"
-              type="button"
-              onClick={onOpenLibrary}
-            >
-              <span className="explore-item__title">{copy.caseStudies} →</span>
-              <span className="explore-item__description">{copy.caseStudiesDescription}</span>
-            </button>
-            <button
-              className="explore-item"
-              type="button"
-              onClick={onOpenDesk}
-            >
-              <span className="explore-item__title">{copy.desk} →</span>
-              <span className="explore-item__description">{copy.deskDescription}</span>
-            </button>
-            <button
-              className="explore-item"
-              type="button"
-              onClick={onOpenTimeline}
-            >
-              <span className="explore-item__title">{copy.versionHistory} →</span>
-              <span className="explore-item__description">{copy.versionHistoryDescription}</span>
-            </button>
-          </div>
-      </section>
-
-      <p className="home-copyright">© 2026 Phoebe Qin</p>
     </main>
   );
 }

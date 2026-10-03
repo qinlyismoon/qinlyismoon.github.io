@@ -12,9 +12,8 @@ const LEGACY_WORKSPACE_PATH = "/workspace";
 
 export const NAV_ITEMS = [
   { id: "home", path: HOME_PATH },
-  { id: "caseStudies", path: LIBRARY_PATH },
-  { id: "desk", path: DESK_PATH },
   { id: "about", path: ABOUT_PATH },
+  { id: "desk", path: DESK_PATH },
 ];
 
 export function isDeskPath(pathname) {

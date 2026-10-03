@@ -4,6 +4,7 @@ import { getThemeColors } from "../../lib/theme";
 import ContextColumn from "../shared/ContextColumn";
 import TopNavigation from "../shared/TopNavigation";
 import ViewportPortal from "../shared/ViewportPortal";
+import SystemStatus from "../shared/SystemStatus";
 
 export default function SharedLayout({
   children,
@@ -31,6 +32,9 @@ export default function SharedLayout({
       <ViewportPortal>
         <div className="viewport-top-nav">
           <TopNavigation className="viewport-top-nav__bar" />
+          <div className="viewport-top-nav__mobile-settings" aria-label="Display settings">
+            <SystemStatus />
+          </div>
         </div>
       </ViewportPortal>
 

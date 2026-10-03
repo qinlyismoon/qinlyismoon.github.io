@@ -105,6 +105,18 @@ function LiveValue({ value }) {
 function ContextMetadata({ item }) {
   const localTime = useLocalTimeLabel();
 
+  if (item.status) {
+    return (
+      <div className="context-metadata context-metadata--status">
+        <dt className="sr-only">{item.label}</dt>
+        <dd className="context-column__availability">
+          <span className="context-column__status-dot" aria-hidden="true" />
+          <LiveValue value={item.value} />
+        </dd>
+      </div>
+    );
+  }
+
   // Directory variant: a heading over a stack of in-page section links
   // (Case Studies default state). The heading remains mounted while only the
   // content slot beneath it swaps to project details on card hover.
@@ -176,7 +188,6 @@ function ContextMetadata({ item }) {
 export default function ContextColumn({
   identity,
   metadata = [],
-  availability,
   contactLabels,
   page,
   direction = "none",
@@ -270,12 +281,7 @@ export default function ContextColumn({
             </dl>
           ) : null}
 
-          {availability ? (
-            <p className="context-column__availability">
-              <span className="context-column__status-dot" aria-hidden="true" />
-              {availability}
-            </p>
-          ) : null}
+
         </div>
       </section>
 

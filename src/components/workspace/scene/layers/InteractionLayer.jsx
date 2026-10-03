@@ -48,7 +48,7 @@ export default function InteractionLayer({
           isMusicPlaying,
         });
         const shift =
-          object.layer === "window" || object.id === "speaker" || object.id === "camera"
+          object.layer === "window" || ["speaker", "camera", "board", "timeline"].includes(object.id)
             ? 0
             : SCENE_CONTENT_SHIFT_X;
         const isHovered = hoveredId === object.id;
@@ -76,7 +76,7 @@ export default function InteractionLayer({
         };
 
         const isToggle = object.action === "lamp" || object.action === "music";
-        const isButton = object.action === "mug" || object.action === "plant";
+        const isButton = object.action === "mug" || object.action === "plant" || object.action === "archive";
         const isLink = Boolean(object.href) && !isToggle && !isButton;
         const isHoverOnly = !isLink && !isToggle && !isButton;
         const external = isLink && isExternalHref(object.href);

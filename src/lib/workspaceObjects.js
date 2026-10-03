@@ -24,6 +24,8 @@ import {
   SHELF_LEFT_Y,
   SPEAKER_HANG_X,
   SPEAKER_HANG_Y,
+  STICKY_NOTE_X,
+  STICKY_NOTE_Y,
 } from "./deskLayout";
 
 /**
@@ -36,6 +38,26 @@ import {
  * mirrors each object's transform so hit areas track the visible shapes.
  */
 export const WORKSPACE_OBJECTS = [
+  {
+    id: "board",
+    layer: "objects",
+    action: "archive",
+    labelKey: "boardLabel",
+    ariaLabelKey: "boardAria",
+    labelOffset: { x: 0, y: -9 },
+    transform: "translate(292, 48)",
+    hitBounds: { x: 0, y: 0, width: 170, height: 106 },
+  },
+  {
+    id: "timeline",
+    layer: "objects",
+    action: "archive",
+    labelKey: "timelineLabel",
+    ariaLabelKey: "timelineAria",
+    labelOffset: { x: -105, y: 15 },
+    transform: `translate(${STICKY_NOTE_X}, ${STICKY_NOTE_Y})`,
+    hitBounds: { x: 0, y: 0, width: 44, height: 52 },
+  },
   {
     id: "window",
     layer: "window",

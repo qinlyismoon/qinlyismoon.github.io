@@ -206,9 +206,6 @@ export default function WallLayer({ c, isLampOn }) {
   return (
     <g className="desk-scene__layer desk-scene__layer--wall" aria-hidden="true">
       <WireGridPanel c={c} isLampOn={isLampOn} />
-      <g transform={`translate(${STICKY_NOTE_X}, ${STICKY_NOTE_Y})`}>
-        <StickyNoteShape c={c} isLampOn={isLampOn} />
-      </g>
     </g>
   );
 }

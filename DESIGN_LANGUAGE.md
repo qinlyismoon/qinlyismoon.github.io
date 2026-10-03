@@ -2,7 +2,14 @@
 
 *A living notebook for documenting how ideas become systems.*
 
-Version 1.0 — October 2026.
+Version 1.1 — October 2026. Website release: v2.1.0.
+
+The v2.1.0 information architecture treats Home as the portfolio index,
+About as the continuous personal narrative, and Desk as the spatial archive.
+Home and About share one editorial reading token. Project hover augments the
+stable sidebar status instead of replacing it. On small screens the sidebar
+is removed, while the Desk remains a natural-scale, horizontally pannable
+scene. The Desk's board and timeline open as document windows.
 
 ## How to use this document
 

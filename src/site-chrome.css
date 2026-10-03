@@ -143,21 +143,36 @@ body:not([data-page="desk"]) .workspace-tooltip-layer {
   visibility: hidden;
 }
 
-/* The active tab: a 2px accent underline laid exactly over the baseline,
- * so the hairline thickens and turns green beneath the current chapter. */
-.site-nav__item[aria-current="page"] {
-  color: var(--color-text);
-}
-
-.site-nav__item[aria-current="page"]::after {
-  content: "";
+/* One continuous active indicator glides between tab slots. Width and offset
+ * follow the rendered labels, including language changes, while the shared
+ * spring-like easing gives route changes a calm arrival instead of a jump. */
+.site-nav__indicator {
   position: absolute;
+  z-index: 1;
   left: 0;
-  right: 0;
   bottom: -1px;
   height: 2px;
   background: var(--color-accent);
   pointer-events: none;
+  opacity: 0;
+}
+
+.site-nav__indicator.is-ready {
+  opacity: 1;
+  transition:
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 120ms ease;
+}
+
+.site-nav__item[aria-current="page"] {
+  color: var(--color-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-nav__indicator.is-ready {
+    transition: opacity 120ms ease;
+  }
 }
 
 /* --- Desk header ---------------------------------------------------------------
@@ -370,13 +385,41 @@ html.theme-fallback-in #root {
 }
 
 /* --- Responsive ---------------------------------------------------------- */
+.viewport-top-nav__mobile-settings {
+  display: none;
+}
+
 @media (max-width: 680px) {
   /* Mobile: the grid is a single column, so the tab row anchors to the
    * content's left edge (grid padding-left: var(--space-3)). The header
    * band stays full-bleed; only the tab row keeps its inset. */
   .viewport-top-nav {
     padding-left: var(--space-3);
+    padding-right: var(--space-3);
     width: auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .viewport-top-nav__mobile-settings {
+    display: block;
+    padding-bottom: var(--space-2);
+  }
+
+  .viewport-top-nav__mobile-settings .system-status {
+    gap: var(--space-1);
+  }
+
+  .viewport-top-nav__mobile-settings .system-status__item {
+    font-size: 0.6875rem;
+    padding-inline: 2px;
+  }
+
+  .viewport-top-nav__mobile-settings .system-status__item + .system-status__item::before {
+    content: "·";
+    margin-right: var(--space-1);
+    color: var(--color-divider);
   }
 
   /* Natural-width tabs persist; type and padding step down so the

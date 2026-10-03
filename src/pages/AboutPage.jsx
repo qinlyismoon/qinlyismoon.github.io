@@ -1,9 +1,7 @@
 import { useMemo } from "react";
 import { useAppSettings } from "../context/AppSettingsContext";
 import { getAboutPageCopy } from "../lib/aboutContent";
-import AboutHeroCollage from "../components/about/AboutHeroCollage";
-import JourneyTimeline from "../components/about/JourneyTimeline";
-import AboutClosing from "../components/about/AboutClosing";
+import AboutNarrative from "../components/about/AboutNarrative";
 
 export default function AboutPage() {
   const { language } = useAppSettings();
@@ -11,9 +9,7 @@ export default function AboutPage() {
 
   return (
     <div className="about-page__shell">
-      <AboutHeroCollage copy={copy.hero} language={language} />
-      <JourneyTimeline copy={copy.journey} language={language} />
-      <AboutClosing copy={copy.closing} />
+      <AboutNarrative copy={copy.hero} language={language} />
     </div>
   );
 }
