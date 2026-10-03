@@ -5,7 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Longyue Qin</title>
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <script>
+      /* Apply the saved theme before the loader paints, preventing a
+         light loading screen from flashing before a dark portfolio. */
+      try {
+        const savedSettings = JSON.parse(
+          localStorage.getItem("phoebe-site-settings") || "null",
+        );
+        const initialTheme = savedSettings?.isDarkMode ? "dark" : "light";
+        document.documentElement.dataset.theme = initialTheme;
+        document.documentElement.style.colorScheme = initialTheme;
+      } catch {
+        document.documentElement.dataset.theme = "light";
+        document.documentElement.style.colorScheme = "light";
+      }
+    </script>
     <style>
+      :root {
+        --loader-background: #f7f7f5;
+        --loader-text: #20201f;
+        --loader-logo-filter: none;
+      }
+
+      :root[data-theme="dark"] {
+        --loader-background: #171717;
+        --loader-text: #f2f2f0;
+        --loader-logo-filter: invert(1);
+      }
+
       #site-loader {
         position: fixed;
         inset: 0;
@@ -13,9 +40,10 @@
         display: grid;
         place-content: center;
         gap: 16px;
-        color: #20201f;
-        background: #f7f7f5;
-        font: 400 14px/1.5 "Zalando Sans", Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--loader-text);
+        background: var(--loader-background);
+        font: 400 16px/1.5 "Zalando Sans", Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        letter-spacing: 0.01em;
         text-align: center;
         opacity: 1;
         transition: opacity 220ms ease;
@@ -27,10 +55,11 @@
       }
 
       #site-loader img {
-        width: 40px;
+        width: 56px;
         height: auto;
         margin: 0 auto;
         object-fit: contain;
+        filter: var(--loader-logo-filter);
       }
 
       #site-loader p {
@@ -49,8 +78,8 @@
       href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Zalando+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap"
       rel="stylesheet"
     />
-    <script type="module" crossorigin src="/assets/index-PhYwvf9w.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DWtrMdRM.css">
+    <script type="module" crossorigin src="/assets/index-Dnwy0jzG.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-G5LpeqOi.css">
   </head>
   <body>
     <div id="site-loader" role="status" aria-label="Loading website">

@@ -920,6 +920,7 @@ body {
   flex: 0 0 auto;
   border-radius: 50%;
   background: var(--color-accent);
+  animation: availability-breathe 4.8s ease-in-out infinite;
 }
 
 .status-card__availability ul {
@@ -1045,7 +1046,7 @@ body {
 
 @media (max-width: 520px) {
   .viewport-top-nav {
-    width: calc(100% - 24px);
+    width: 100%;
   }
 
   .top-navigation__tab {
@@ -1414,24 +1415,26 @@ body {
 
 @media (max-width: 640px) {
   .about-principles {
-    width: 100%;
+    width: max-content;
+    max-width: 100%;
     margin: 2em 0 1.5rem;
-    padding-bottom: 0;
-    --principles-connector-width: 40px;
+    padding-bottom: 44px;
+    --principles-connector-width: 20px !important;
   }
 
   .about-principles__row {
-    flex-wrap: wrap;
-    row-gap: 0.75rem;
+    flex-wrap: nowrap;
   }
 
   .about-principles__pill {
-    white-space: normal;
+    padding: 0.5em 0.62em;
+    font-size: clamp(0.64rem, 2.8vw, 0.75rem);
+    white-space: nowrap;
     text-align: center;
   }
 
   .about-principles__return {
-    display: none;
+    display: block;
   }
 }
 
@@ -5990,6 +5993,28 @@ body {
   flex: 0 0 auto;
   border-radius: 50%;
   background: var(--color-accent);
+  animation: availability-breathe 4.8s ease-in-out infinite;
+}
+
+@keyframes availability-breathe {
+  0%,
+  100% {
+    opacity: 0.62;
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 18%, transparent);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 0%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-card__dot,
+  .context-column__status-dot {
+    animation: none;
+    opacity: 1;
+    box-shadow: none;
+  }
 }
 
 /* Contact links: one quiet text line inside the identity block — words
@@ -7119,6 +7144,7 @@ body {
   cursor: pointer;
   text-align: left;
   overflow: hidden;
+  box-sizing: border-box;
   transition: border-color 0.2s ease, transform 160ms ease;
 }
 
@@ -7663,6 +7689,7 @@ body {
 
   .shared-layout .context-column { display: none; }
   .shared-layout__content { height: calc(100dvh - var(--page-shell-top)); }
+  .app-content-layer--desk { padding-top: 0; }
   .shared-layout--desk .home-layout:not(.home-layout--library) { padding: 0; }
   .home-layout__grid { display: block; }
   .home-layout__reading { max-width: none; }
@@ -7738,7 +7765,16 @@ body {
   transform: translateX(3px);
 }
 
+/* Force the text presentation of the external-link mark on iOS. */
+.external-arrow {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-variant-emoji: text;
+}
+
 .editorial-thread__marker {
+  position: relative;
   width: 100%;
   height: clamp(4rem, 7vw, 5.5rem);
 }
@@ -7746,12 +7782,7 @@ body {
 .editorial-thread {
   position: absolute;
   z-index: 1;
-  left: calc(
-    var(--viewport-page-padding) +
-    var(--context-column-width) +
-    var(--page-layout-gap)
-  );
-  right: var(--viewport-page-padding);
+  inset: 0;
   height: clamp(4rem, 7vw, 5.5rem);
   pointer-events: none;
 }
@@ -7875,8 +7906,7 @@ body:not([data-page="home"]) .editorial-thread {
   .home-identity__links { gap: var(--space-2); font-size: 1rem; }
   .editorial-thread__marker { height: var(--space-8); }
   .editorial-thread {
-    left: var(--space-3);
-    right: var(--space-3);
+    inset: 0;
     height: var(--space-8);
   }
   .editorial-thread__note {
@@ -7894,6 +7924,15 @@ body:not([data-page="home"]) .editorial-thread {
   .log-process h2 { font-size: 1.05rem; line-height: 1.68; }
   .log-headshot { margin: var(--space-6) 0 var(--space-10); aspect-ratio: 4 / 3; }
   .log-process .about-principles { overflow: visible; }
+
+  .vibe-grid,
+  .vibe-card { min-width: 0; }
+
+  /* Touch focus must not shift a full-width card out of its clipping area. */
+  .vibe-card__button:hover,
+  .vibe-card__button:focus-visible,
+  .vibe-card__link:hover,
+  .vibe-card__link:focus-visible { transform: none; }
 }
 
 .desk-archive {
@@ -7930,9 +7969,10 @@ body:not([data-page="home"]) .editorial-thread {
     overflow-y: hidden;
     touch-action: pan-x;
     justify-content: flex-start;
+    align-items: flex-start;
     padding: var(--space-3);
   }
-  .desk-scene__stage { margin-inline: 0; }
+  .desk-scene__stage { margin: 0; }
 }
 
 .home-identity__statement {

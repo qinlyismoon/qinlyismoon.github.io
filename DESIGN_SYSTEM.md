@@ -137,6 +137,35 @@ optional role can change without changing its layout. Local time updates from
 the shared local-time utility (`src/lib/useLocalTime.js`), which follows the
 viewer's local timezone — no fixed timezone.
 
+The green availability dot is a live-status signal. It breathes slowly over
+`4.8s` through a restrained opacity change and a maximum `3px` soft ring; it
+never changes layout or competes with the label. Reduced-motion mode renders
+the dot fully visible and static.
+
+On mobile, Navigation and Settings form one header row with a shared `46px`
+vertical frame and optical center. Navigation remains primary at
+`0.8125rem`; Settings remains secondary at `0.75rem`, but every Settings item
+has a minimum `44px` touch target. The portalled header wrapper does not accept
+pointer input, so both the navigation bar and the mobile Settings region must
+explicitly restore `pointer-events: auto`.
+
+The initial loading screen is part of the theme system, not a neutral pre-app
+surface. Before first paint, `index.html` reads the same
+`phoebe-site-settings` value used by `AppSettingsContext` and applies
+`data-theme` to the root. Loader background, text, and logo treatment use
+theme-specific semantic variables (`#f7f7f5` / `#20201f` in Light;
+`#171717` / `#f2f2f0` with an inverted mark in Dark). This prevents a light
+flash before a saved Dark session and keeps loader and application palettes
+continuous.
+The loader follows the 8pt grid: its identity mark is `56px` wide and its
+status copy uses the system body size (`16px`, regular sans, `1.5` line-height,
+`0.01em` tracking). It may feel present during initialization, but must remain
+quieter than page headings.
+
+The browser-tab favicon uses the original transparent PNG identity mark. It
+has no container, background fill, color reversal, or artificial stroke
+expansion, keeping it consistent with the handwritten mark used in the page.
+
 ## Global page layout
 
 `PageSkeleton` in `GlobalPageLayout.jsx` defines the website-wide page skeleton: the persistent top
@@ -178,7 +207,7 @@ column structure. The Context Column is informational,
 not navigational, and owns the shared contact links.
 
 The home page closes with a single versioned copyright line (`.home-copyright`,
-`© 2026 Phoebe Qin · v2.1.0`) after the work index. It is set in the sidebar
+`© 2026 Phoebe Qin · v2.1.1`) after the work index. It is set in the sidebar
 label voice (12px/500/secondary) and aligned to the documentation content
 width — a quiet colophon, never a footer bar. It is language-neutral, so
 it lives directly in `HomeIntro.jsx` rather than the localization copy.
@@ -202,7 +231,10 @@ decoration: no icons, illustrations, repeated lines, or UI container treatment
 may be added. Its Bézier path breathes between two nearly identical curves on
 a slow `16s` ease-in-out loop; vertical change stays within a few pixels so it
 feels alive without reading as a wave. Reduced-motion mode keeps the authored
-curve static. On mobile, the same line contracts to the content bounds.
+curve static. On mobile, the same line contracts to the content bounds. The
+line and its handwritten note live in the same in-flow marker; do not portal
+or independently position them, because mobile scroll must never change their
+relationship.
 Because inactive route layers remain mounted, the thread is explicitly hidden
 whenever `body[data-page]` is not `home`; it must never bleed into About or
 Desk.
@@ -501,6 +533,13 @@ this one constant — never per object.
   larger and stays scrollable when it overflows.
 - `DeskLayout` centers the viewport on mount and resize; it never scales the
   artwork below the base scale.
+- On mobile the stage aligns to the viewport's top-left (`margin: 0`) so Desk
+  begins on the same content baseline as Home and About. The canvas pans
+  horizontally at its authored scale; it is never vertically centered inside
+  a tall phone viewport.
+- Touch activation uses a short tap gesture (maximum 8px travel) on SVG
+  controls. Horizontal drags remain camera panning and must not activate an
+  object.
 
 ### Desk hover labels and tooltips share one face
 
@@ -621,6 +660,9 @@ per her direction — `useDraggablePills` deleted from
 `DesignPrinciplesLoop.jsx`, along with its localStorage key
 `about-principle-positions:v1`; the `boundsRef` prop is gone too).
 `.about-principles` sits at z-index 6, above the portrait (z-index 5).
+On mobile, the three pills and both connectors remain one unbroken row. The
+type, padding, and connector widths contract together; the process may not
+wrap into a second line.
 The now-unused `.about-principles__pill-drag*` selectors in styles.css are
 dead; remove them in the styles.css cleanup pass.
 

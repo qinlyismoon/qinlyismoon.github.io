@@ -19,8 +19,8 @@ export default function HomeIntro({ copy }) {
           </p>
           <p className="home-identity__links">
             <a href={PORTFOLIO_LINKS.email}>{copy.email}</a>
-            <a href={PORTFOLIO_LINKS.github} target="_blank" rel="noreferrer">GitHub ↗</a>
-            <a href={PORTFOLIO_LINKS.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
+            <a href={PORTFOLIO_LINKS.github} target="_blank" rel="noreferrer">GitHub <span className="external-arrow" aria-hidden="true">↗︎</span></a>
+            <a href={PORTFOLIO_LINKS.linkedin} target="_blank" rel="noreferrer">LinkedIn <span className="external-arrow" aria-hidden="true">↗︎</span></a>
           </p>
         </header>
       </section>

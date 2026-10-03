@@ -396,24 +396,31 @@ html.theme-fallback-in #root {
   .viewport-top-nav {
     padding-left: var(--space-3);
     padding-right: var(--space-3);
-    width: auto;
+    padding-bottom: 0;
+    width: 100%;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
   }
 
   .viewport-top-nav__mobile-settings {
-    display: block;
-    padding-bottom: var(--space-2);
+    display: flex;
+    align-items: center;
+    height: 46px;
+    padding: 0;
+    pointer-events: auto;
   }
 
   .viewport-top-nav__mobile-settings .system-status {
-    gap: var(--space-1);
+    align-items: center;
+    gap: 0;
   }
 
   .viewport-top-nav__mobile-settings .system-status__item {
-    font-size: 0.6875rem;
-    padding-inline: 2px;
+    min-height: 44px;
+    padding-inline: 4px;
+    font-size: 0.75rem;
+    line-height: 1;
   }
 
   .viewport-top-nav__mobile-settings .system-status__item + .system-status__item::before {

@@ -110,7 +110,7 @@ export default function LibraryPage({ embedded = false }) {
             rel="noreferrer"
             className="case-studies__view-all"
           >
-            {labels.viewAll} ↗
+            {labels.viewAll} <span className="external-arrow" aria-hidden="true">↗︎</span>
           </a>
         </div>
         <p className="case-studies__section-note">{labels.selectedWorkNote}</p>

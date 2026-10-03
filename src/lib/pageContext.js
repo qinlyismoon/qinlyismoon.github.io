@@ -40,7 +40,7 @@ const PAGE_CONTEXT = {
     versionHistory: {
       metadata: [
         { label: "Current chapter", value: "Designing in the Age of AI" },
-        { label: "Version", value: "v2.1.0" },
+        { label: "Version", value: "v2.1.1" },
       ],
     },
     caseStudies: {
@@ -88,7 +88,7 @@ const PAGE_CONTEXT = {
       // English rather than inventing translations.
       metadata: [
         { label: "Current chapter", value: "Designing in the Age of AI" },
-        { label: "版本", value: "v2.1.0" },
+        { label: "版本", value: "v2.1.1" },
       ],
     },
     caseStudies: {

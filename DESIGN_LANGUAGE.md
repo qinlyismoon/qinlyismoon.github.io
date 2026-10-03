@@ -2,9 +2,9 @@
 
 *A living notebook for documenting how ideas become systems.*
 
-Version 1.1 — October 2026. Website release: v2.1.0.
+Version 1.1 — October 2026. Website release: v2.1.1.
 
-The v2.1.0 information architecture treats Home as the portfolio index,
+The v2.1.1 information architecture treats Home as the portfolio index,
 About as the continuous personal narrative, and Desk as the spatial archive.
 Home and About share one editorial reading token. Project hover augments the
 stable sidebar status instead of replacing it. On small screens the sidebar
@@ -586,6 +586,8 @@ an explore row — while the frame never moves, so the grid stays
 aligned.
 External links always carry `↗` (`Visit live site ↗`, `Project notes
 ↗`, `GitHub ↗`) — never a plain `→` for an external destination.
+Render the mark with Unicode text presentation (`↗︎`, U+2197 U+FE0E) in the
+sans UI face so iOS never substitutes a colored emoji glyph.
 Never a button where a link will do; never a link where plain text
 will do.
 

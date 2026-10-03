@@ -45,7 +45,7 @@ export default function SelectedWorkCard({ project, onHover }) {
           <h3 className="vibe-card__title">
             {project.title}
             <span className="vibe-card__external" aria-hidden="true">
-              ↗
+              ↗︎
             </span>
           </h3>
           <p className="vibe-card__description">{description}</p>

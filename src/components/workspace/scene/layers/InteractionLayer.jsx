@@ -8,6 +8,7 @@
 import { SCENE_CONTENT_SHIFT_X } from "../../../../lib/deskLayout";
 import { WORKSPACE_OBJECTS } from "../../../../lib/workspaceObjects";
 import { resolveObjectChrome } from "../objectChrome";
+import { useRef } from "react";
 
 function isExternalHref(href) {
   return (
@@ -39,6 +40,8 @@ export default function InteractionLayer({
   isLampOn,
   isMusicPlaying,
 }) {
+  const touchRef = useRef(null);
+
   return (
     <g className="desk-scene__layer desk-scene__layer--interaction">
       {WORKSPACE_OBJECTS.map((object) => {
@@ -74,6 +77,27 @@ export default function InteractionLayer({
             activate(event);
           }
         };
+        const touchHandlers = {
+          onPointerDown: (event) => {
+            if (event.pointerType === "mouse") return;
+            touchRef.current = { id: object.id, x: event.clientX, y: event.clientY, moved: false };
+          },
+          onPointerMove: (event) => {
+            const touch = touchRef.current;
+            if (!touch || touch.id !== object.id) return;
+            if (Math.hypot(event.clientX - touch.x, event.clientY - touch.y) > 8) touch.moved = true;
+          },
+          onPointerUp: (event) => {
+            const touch = touchRef.current;
+            touchRef.current = null;
+            if (!touch || touch.id !== object.id || touch.moved) return;
+            event.preventDefault();
+            activate(event);
+          },
+          onPointerCancel: () => {
+            touchRef.current = null;
+          },
+        };
 
         const isToggle = object.action === "lamp" || object.action === "music";
         const isButton = object.action === "mug" || object.action === "plant" || object.action === "archive";
@@ -108,6 +132,7 @@ export default function InteractionLayer({
               aria-pressed={isToggle ? (object.action === "lamp" ? isLampOn : isMusicPlaying) : undefined}
               onClick={activate}
               onKeyDown={keyActivate}
+              {...touchHandlers}
               {...hoverHandlers}
             >
               <HitRect object={object} />
