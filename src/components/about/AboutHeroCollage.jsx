@@ -256,10 +256,10 @@ function StickyNote({
   attachClass = "",
   dragProps = {},
 }) {
-  const { style: dragStyle = {}, ...restDragProps } = dragProps;
+  const { style: dragStyle = {}, className: extraClass = "", ...restDragProps } = dragProps;
   return (
     <div
-      className={`about-sticky ${className}`.trim()}
+      className={`about-sticky ${className} ${extraClass}`.trim()}
       style={{ "--about-rotate": `${rotate}deg`, ...dragStyle }}
       {...restDragProps}
     >
@@ -280,11 +280,107 @@ function StickyNote({
   );
 }
 
+/** Below this board width the scattered notes cover each other and the
+ * portrait, so the board switches to the note stack. */
+const STACK_BREAKPOINT = 560;
+
+function useCompactBoard(boardRef) {
+  const [compact, setCompact] = useState(false);
+  useEffect(() => {
+    const board = boardRef.current;
+    if (!board) return undefined;
+    const update = () => setCompact(board.clientWidth > 0 && board.clientWidth < STACK_BREAKPOINT);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(board);
+    return () => observer.disconnect();
+  }, [boardRef]);
+  return compact;
+}
+
+/**
+ * Note stack — the compact board's answer to six notes on a phone.
+ *
+ * Scattered at phone size, every note covered another note or the
+ * portrait. Compact boards gather the notes into one hand-held stack in
+ * the lower-left corner: the top card is full size and readable, the rest
+ * peek out behind it at their own small angles. Tapping the stack (or
+ * Enter / Space) slips the top card to the back — reading becomes leafing
+ * through notes, one thought at a time, and the portrait stays visible.
+ * A quiet mono counter on the top card reports where you are. Desktop keeps the free,
+ * draggable scatter.
+ */
+function useNoteStack(keys) {
+  const [order, setOrder] = useState(keys);
+  const [leaving, setLeaving] = useState(null);
+  const timerRef = useRef(0);
+
+  useEffect(() => () => window.clearTimeout(timerRef.current), []);
+
+  const advance = useCallback(() => {
+    if (leaving) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      setOrder((prev) => [...prev.slice(1), prev[0]]);
+      return;
+    }
+    setLeaving(order[0]);
+    timerRef.current = window.setTimeout(() => {
+      setOrder((prev) => [...prev.slice(1), prev[0]]);
+      setLeaving(null);
+    }, 220);
+  }, [leaving, order]);
+
+  const position = (key) => order.indexOf(key);
+  return { order, leaving, advance, position };
+}
+
+const STACK_TILTS = [-2.5, 3, -4, 2, -1.5, 4];
+
 export default function AboutHeroCollage({ copy, language = "en" }) {
   const portraitAlt = pickLang(PORTRAIT.alt, language);
   const notes = copy.notes;
   const { boardRef, getNoteDragProps } = useDraggableNotes();
   const heroRef = useRef(null);
+  const isStack = useCompactBoard(boardRef);
+  const stackKeys = [...COLLAGE_NOTES.map((note) => note.key), "exploring"];
+  const stack = useNoteStack(stackKeys);
+  const noteText = (key) => (key === "exploring" ? copy.exploringNote : notes[key]);
+  const stackLabel = language === "zh" ? "便签" : "Note";
+
+  // In stack mode a note is a card in the pile, not a draggable scrap.
+  const getNoteProps = (key) => {
+    if (!isStack) return getNoteDragProps(key, noteText(key));
+    const depth = stack.position(key);
+    const isTop = depth === 0;
+    return {
+      "data-note-key": key,
+      "data-stack-depth": depth,
+      "data-stack-index": `${stackKeys.indexOf(key) + 1} / ${stackKeys.length}`,
+      tabIndex: isTop ? 0 : -1,
+      role: "button",
+      "aria-hidden": isTop ? undefined : true,
+      "aria-label": isTop
+        ? `${noteText(key)} \u2014 ${stackLabel} ${stackKeys.indexOf(key) + 1} / ${stackKeys.length}. ${
+            language === "zh" ? "点按查看下一张。" : "Tap for the next note."
+          }`
+        : undefined,
+      className: `about-sticky--stacked${isTop ? " is-top" : ""}${
+        stack.leaving === key ? " is-leaving" : ""
+      }`,
+      style: {
+        "--stack-depth": depth,
+        "--stack-tilt": `${STACK_TILTS[stackKeys.indexOf(key) % STACK_TILTS.length]}deg`,
+      },
+      onClick: stack.advance,
+      onKeyDown: (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          stack.advance();
+        }
+      },
+    };
+  };
 
   return (
     <section
@@ -297,7 +393,7 @@ export default function AboutHeroCollage({ copy, language = "en" }) {
         <DesignPrinciplesLoop principles={copy.principles} />
       </div>
 
-      <div className="about-collage about-collage--scene">
+      <div className={`about-collage about-collage--scene${isStack ? " about-collage--stack" : ""}`}>
         <div className="about-collage__board" ref={boardRef}>
           {/* Landscape base — clipped to the board */}
           <div className="about-collage__landscape" aria-hidden="true">
@@ -374,7 +470,7 @@ export default function AboutHeroCollage({ copy, language = "en" }) {
                 rotate={note.rotate}
                 attach={note.attach}
                 attachClass={note.attachClass}
-                dragProps={getNoteDragProps(note.key, notes[note.key])}
+                dragProps={getNoteProps(note.key)}
               >
                 {notes[note.key]}
               </StickyNote>
@@ -385,7 +481,7 @@ export default function AboutHeroCollage({ copy, language = "en" }) {
               rotate={3.6}
               attach="tape"
               attachClass="about-sticky__attach--exploring"
-              dragProps={getNoteDragProps("exploring", copy.exploringNote)}
+              dragProps={getNoteProps("exploring")}
             >
               {copy.exploringNote}
             </StickyNote>

@@ -54,7 +54,10 @@ export const WORKSPACE_OBJECTS = [
     action: "archive",
     labelKey: "timelineLabel",
     ariaLabelKey: "timelineAria",
-    labelOffset: { x: -105, y: 15 },
+    // Label rule shared by every object: left-aligned to the object and
+    // just above it (board, books, camera, speaker use the same offset), so
+    // the caption never lands on a neighbouring object.
+    labelOffset: { x: 0, y: -9 },
     transform: `translate(${STICKY_NOTE_X}, ${STICKY_NOTE_Y})`,
     hitBounds: { x: 0, y: 0, width: 44, height: 52 },
   },

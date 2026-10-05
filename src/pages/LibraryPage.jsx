@@ -13,7 +13,7 @@ const LABELS = {
     viewAll: "View all work",
     selectedWork: "Selected Work",
     selectedWorkNote:
-      "Curated case studies covering product design, research, and design engineering.",
+      "Case studies in making complex systems understandable, from research and product strategy to working code.",
     vibeCoding: "Vibe Coding",
     vibeCodingNote:
       "Interactive experiments designed and built with AI coding agents — best experienced live.",
@@ -22,7 +22,7 @@ const LABELS = {
     viewAll: "查看全部作品",
     selectedWork: "精选作品",
     selectedWorkNote:
-      "产品设计、研究与设计工程方向的精选案例。",
+      "让复杂系统变得可理解的案例——从研究、产品策略到可运行的代码。",
     vibeCoding: "Vibe Coding",
     vibeCodingNote:
       "与 AI 编程助手共同设计并构建的互动实验——建议亲自体验。",

@@ -3,10 +3,10 @@ const HOME_COPY = {
     name: "Phoebe Qin",
     role: "Design Engineer & Product Designer",
     statement:
-      "I design and build thoughtful systems where product thinking, interaction, and code come together.",
+      "I design and build interactive systems that help people understand complexity and act with confidence.",
     detail:
-      "I’m interested in the space between a promising idea and a credible product: framing the right problem, making the system legible, and prototyping until the experience feels clear, useful, and human.",
-    akaLabel: "Also known as:",
+      "I take a product from a tangled problem to a working prototype: deciding what matters, designing how it behaves, and prototyping it in code the team can test and build on.",
+    akaLabel: "Chinese name",
     chineseName: "秦珑月",
     nameCardAria: "Name meaning of 秦珑月",
     exploreTitle: "Explore",
@@ -34,9 +34,9 @@ const HOME_COPY = {
   zh: {
     name: "Phoebe Qin",
     role: "设计工程师 & 产品设计师",
-    statement: "我设计并构建有思考的系统，让产品思维、交互与代码在其中相遇。",
-    detail: "我关注一个有潜力的想法如何变成可信的产品：找到真正的问题，让系统清晰可读，并通过原型不断验证，直到体验变得清楚、实用，也有人情味。",
-    akaLabel: "也叫：",
+    statement: "我设计并构建交互系统，帮助人们理解复杂，并有信心地行动。",
+    detail: "我能把一个产品从纠缠的问题一路带到可运行的原型：判断什么最重要，设计它如何运作，再用代码把它做成团队可以测试、可以接着开发的样子。",
+    akaLabel: "中文名",
     chineseName: "秦珑月",
     nameCardAria: "秦珑月的姓名释义",
     exploreTitle: "探索",

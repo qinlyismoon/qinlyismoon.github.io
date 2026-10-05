@@ -51,31 +51,32 @@ export const VIBE_PROJECTS = [
 
 // Selected design work. These live in Notion (no live URL to experience),
 // so cards link straight out to the case study instead of opening a modal.
-// Descriptions are taken verbatim from the Notion pages; tags, roles and
-// timelines are provisional — confirm or revise them.
+// v2.1.2: descriptions are rewritten from the Notion case studies around
+// the positioning "help people understand complexity" — each line names the
+// complexity and what the design makes understandable.
 export const SELECTED_PROJECTS = [
   {
     id: "leaf-note",
     title: "Leaf Note",
     description:
-      "LeafNote is a shared plant-care app that helps casual plant owners remember essential care, track what has happened, and confidently hand responsibility to someone else when they travel.",
+      "A shared plant-care app that makes a care handoff legible: the caregiver knows when to act, how, and when to flag a problem, and the owner can finally let go of the follow-up. Designed and built as a working prototype.",
     descriptionZh:
-      "LeafNote 是一款共享植物养护应用，帮助新手植物主人记住关键养护事项、记录养护历史，并在旅行时放心地把照料责任交接给他人。",
-    tags: ["Product Design", "UX Research"],
+      "一款共享植物养护应用，让照料的交接变得清楚可读：临时照料者知道何时行动、如何操作、何时需要上报异常，主人也终于可以放下远程的跟进。从设计到代码，做成了可运行的原型。",
+    tags: ["Product Design", "Design Engineering"],
     url: "https://app.notion.com/p/Leaf-Note-3c77fb6b97a580628279feb164c27446?source=copy_link",
     thumbnail: "/leaf-note-thumb.png",
-    role: "Product Designer",
-    roleZh: "产品设计师",
+    role: "Product Designer & Engineer",
+    roleZh: "产品设计师 & 工程实现",
     timeline: "2026",
   },
   {
     id: "money-map",
     title: "Money Map",
     description:
-      "MoneyMap is a financial goal-tracking redesign focused on helping users plan their savings, manage competing goals, and understand how their progress is calculated.",
+      "A savings-goal redesign that shows what each goal requires, where you stand this month, and how a change ripples through the plan, so people can act without doing the math themselves.",
     descriptionZh:
-      "MoneyMap 是一个财务目标追踪的改版设计，帮助用户规划储蓄、管理多个并行的目标，并理解进度是如何计算的。",
-    tags: ["Product Design", "UX Research"],
+      "一个储蓄目标的改版设计：让人看清每个目标需要什么、这个月进行到哪里，以及一次修改会如何影响整个计划——不必自己算，也能做出决定。",
+    tags: ["Product Design", "Usability Testing"],
     url: "https://app.notion.com/p/Money-Map-3aa7fb6b97a5804aa621f9657a47f5d3?source=copy_link",
     thumbnail: "/money-map-thumb.png",
     role: "Product Designer",
@@ -86,9 +87,9 @@ export const SELECTED_PROJECTS = [
     id: "oscar-ar",
     title: "Oscar et la Dame Rose",
     description:
-      "I designed and built an AR reading experience that transforms key moments from Oscar et la Dame Rose into spatial interactions, bridging a physical book with an interactive digital layer.",
+      "An AR reading experience that turns key moments of Oscar et la Dame Rose into spatial interactions, keeping the physical book at the center while a digital layer helps readers step into the story. Designed and built in Unity for iOS.",
     descriptionZh:
-      "我设计并构建了一个 AR 阅读体验，将《Oscar et la Dame Rose》中的关键情节转化为空间交互，在纸质书与互动数字层之间架起桥梁。",
+      "一个 AR 阅读体验，把《Oscar et la Dame Rose》中的关键时刻变成空间交互：纸质书始终是中心，数字层帮助读者走进故事。在 Unity 中设计并实现，运行于 iOS。",
     tags: ["AR", "Interaction Design"],
     url: "https://app.notion.com/p/Oscar-et-la-Dame-Rose-Turning-reading-into-participation-through-AR-8917fb6b97a583e7a5ab01fb84401ea8?source=copy_link",
     thumbnail: "/oscar-ar-thumb.png",

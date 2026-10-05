@@ -207,7 +207,7 @@ column structure. The Context Column is informational,
 not navigational, and owns the shared contact links.
 
 The home page closes with a single versioned copyright line (`.home-copyright`,
-`© 2026 Phoebe Qin · v2.1.1`) after the work index. It is set in the sidebar
+`© 2026 Phoebe Qin · v2.1.2`) after the work index. It is set in the sidebar
 label voice (12px/500/secondary) and aligned to the documentation content
 width — a quiet colophon, never a footer bar. It is language-neutral, so
 it lives directly in `HomeIntro.jsx` rather than the localization copy.
@@ -254,6 +254,10 @@ visual and hit-area regions at the authored scene scale.
 
 Desk object affordance contract: every clickable scene object must expose a
 plain-language hover/focus label naming the object and the resulting action.
+Placement is one rule for every object: left-aligned to the object and just
+above it (`labelOffset` ≈ `{ x: 0, y: -9 }`), so a caption never lands on a
+neighbouring object (v2.1.2: the Design Journey label moved from the left of
+the note, where it crossed the inspiration board's gap, to this position).
 The label reuses `.desk-scene__label` — the same sans caption size, regular
 weight, muted color and fade used by Portfolio and MFA Thesis — rather than
 introducing an HTML tooltip style. Archive entries name the object only; they
@@ -314,28 +318,20 @@ page, its left edge aligned to the content column
 a single column) — the same anchor on document pages and on the
 full-bleed Desk scene. Chrome placement is a system rule, never a
 per-page exception.
-- **System status** (`SystemStatus.jsx`, `.system-status` /
-`.system-status__item`) — language, theme and sound as three quiet text
-states in one row near the sidebar's bottom edge
-(`.context-column__region--system-status`, auto height, floating above the
-panel bottom with `var(--space-3)` of breathing room — a dock, not a
-footer). Each item reports the current state (`EN` / `Light` / `Sound`)
-and clicking toggles it: typography carries the interface, no icons, no
-dividers, no background. Items are `0.75rem` / 500 / secondary text (the
-calmest voice in the panel), set in one flex row with `var(--space-3)`
-gaps. Hover follows the link rule — accent color plus a `3px` rightward
-nudge (`160ms ease`); each button keeps its accessible label (the action,
-e.g. "Switch to Chinese") plus a native tooltip. Rendered inside
-`ContextColumn`, so every page — including the full-bleed Desk scene —
-inherits it; the page's bottom edge stays clean and content flows
-downward with no boundary.
+- **System status** (`SystemStatus.jsx`, `.system-status`) — `EN ·
+Settings`: language plus one Settings control, separated by a middle dot
+on every viewport (desktop sidebar dock and mobile header alike). See
+"Settings (v2.1.2)" below. Items are `0.75rem` / 500 / secondary text;
+hover follows the link rule (accent plus a `3px` nudge, `160ms ease`).
+Rendered inside `ContextColumn` and the mobile header.
 - **Radius discipline.** The chrome uses only the site radius family:
 `0` everywhere in the chrome — the underline active state needs no
 radius at all. No other radii.
 - **Tab continuity.** The active underline is one persistent indicator,
-  not a separate line painted by each tab. It measures the active tab and
-  glides between positions and widths over `360ms` with
-  `cubic-bezier(0.22, 1, 0.36, 1)`; reduced motion changes it instantly.
+  not a separate line painted by each tab. It moves with the shared
+  **sliding-indicator motion** (`src/hooks/useSlidingIndicator.js`, see
+  "Underline voice and motion" below); reduced motion changes it
+  instantly.
 - Both use theme-aware tokens (`--color-text`,
 `--color-text-secondary`, `--color-divider`, `--color-background`,
 `--color-accent`) so light and dark mode come for free.
@@ -587,8 +583,8 @@ cards never compete with section headings), descriptions in serif, tags
 in the sidebar label voice (sans 12px/500/secondary). Tags are quiet
 rectangular chips: a `--color-background` block with 4px radius (half the
 card radius) and token-derived padding — rectangular, never pills, and
-never the mono/data voice. Detail body copy
-(section `dd`) renders in secondary text for readability; the detail
+never the mono/data voice. Detail sections use the shared reading primitives (see "Reading
+primitives" below) — no detail-only type; the detail
 title is the single strongest text voice in the view and uses
 `--color-text-strong`. Both detail actions open external pages, so both
 carry the external-link arrow: "Visit live site ↗" (primary) and
@@ -728,6 +724,182 @@ Journey reading measure: stage body copy (`.about-stage__copy`,
 2026-10-01). The dim-when-inactive color logic is untouched; the active
 reading color rests at 72% ink (an 80% step-up tried the same day was
 reverted too).
+
+## v2.1.2 system additions
+
+### Positioning
+
+One sentence anchors every surface: *I design and build interactive
+systems that help people understand complexity and act with confidence.*
+Self-introductions speak as a person, not a résumé: no list of domains
+taken from past projects; curiosity reaches past screens (AR, data
+visualization, physical and hybrid interfaces).
+Home introduction, About bio/philosophy and the case-study descriptions
+are written from it — each case study names the complexity and what the
+design makes understandable (`src/lib/copy.js`, `aboutContent.js`,
+`caseStudies.js`). Chinese copy for these lines is new in v2.1.2 and
+should be reviewed by Phoebe (the "explicit approval" rule).
+
+### Settings (`src/lib/settings.js`, `SystemStatus.jsx`, `src/settings.css`)
+
+- Stored under `phoebe-site-settings`:
+  `{ language, themeMode: light|dark|system, accent, isMuted }`.
+  `normalizeSettings` migrates the v2.1.1 `{ isDarkMode }` shape.
+- `index.html` reads the same value before first paint and sets
+  `data-theme` and `data-accent` (System resolves through
+  `prefers-color-scheme`), so the loader never flashes the wrong theme or
+  accent.
+- The panel is paper: surface, `1px` divider border, `8px` radius, no
+  shadow, `--space-3` padding, `--space-3` between groups. Labels use the
+  metadata-label voice (12px / 500 / secondary).
+- Mode changes run one page crossfade (`runThemeTransition`). Accent
+  changes do not crossfade the page (that made photographs blink): the
+  accent repaints in place while `html.accent-shifting` eases color,
+  border, fill and stroke on the 200ms clock, and the accent name in the
+  panel rolls vertically in the direction of the change (a pigment further
+  along the row rises from below; going back drops from above). The OS
+  switching under System mode applies instantly.
+- Text selection uses the accent (`::selection`, 24% accent wash, text
+  color unchanged).
+- Accent pigments (AA in both modes): Forest `#526b61/#9aafa5` (default),
+  Ink `#4c6178/#a3b4c7`, Clay `#94584a/#d4a698`, Plum `#6b5a75/#bcaac4`,
+  Ochre `#80652e/#cdb27c`. Tokens live on `html[data-accent]` in
+  `settings.css` and in `ACCENTS` — change both together. The timeline
+  progress line and pulse now read `--color-accent`.
+
+### Route and theme crossfade
+
+- **Route change = page turn, out-then-in** (never an overlapping blend,
+  which ghosted one page's text over the other's and read as flicker):
+  page content fades out 150ms, the new page fades in 220ms after a 90ms
+  beat; the sidebar metadata is its own named layer (`context-metadata`)
+  and lifts away 120ms, then rises in 200ms after 110ms (the `<LiveValue>`
+  grammar). Navigation, identity and system status stay still.
+- **Theme change = no-dip crossfade:** the old snapshot stays opaque and
+  the new one fades in over it (360ms), so a theme change never passes
+  through an empty page or a dimmed one.
+- The current tab has no hover wash (the wash on the just-clicked tab
+  restarted when the transition freeze lifted and blinked).
+- Verified by frame-by-frame capture of a tab click (v2.1.2): every region
+  now changes monotonically — no frame differs from both the start and the
+  end state except the intended blank beat between pages.
+
+### About: one continuous essay
+
+About explains how I think; Home already says what I build, and the two
+never repeat each other. The page is a single essay with no section
+headlines (`AboutNarrative.jsx`, copy in `aboutContent.js → essay`):
+
+```
+observation → reflection → why complexity → design thinking
+→ working approach → diagram → reflection on the diagram → closing
+```
+
+- Paragraphs build toward their ideas; no headline-first statements.
+- Writing avoids binary constructions ("not … but", "rather than",
+  "instead of"): explain how I think without arguing against an opposite.
+- The portrait is a pause after the "why"; the process loop sits inside
+  the argument as a visual summary of the paragraphs above it and is
+  followed by a short reflection; the closing paragraph returns to the
+  central idea — understanding complexity, making relationships visible,
+  helping people move forward with confidence.
+- Rhythm: `--space-3` between paragraphs, `--space-8` around the portrait,
+  `--space-6` / `--space-8` around the diagram, `--space-8` before the
+  closing. All paragraphs use the reading-body voice.
+
+### Reading primitives (one set for every page)
+
+Long-form text on Home, About, case-study details and the Desk timeline
+uses one set of voices, defined once at the end of `styles.css` as grouped
+selectors — a change there reaches every page; never restyle reading text
+per page.
+
+| Role          | Voice |
+|---------------|-------|
+| Reading body  | serif · `--type-reading` · 1.72 · `--color-reading` · measure `--content-max-width` |
+| Section title | serif · `--type-reading` · medium · `--color-text` |
+| Pull quote    | serif upright · `clamp(1.125rem, 1.5vw, 1.25rem)` · `--color-text` · 2px accent rule |
+| Button        | 8px card radius (the radius set is 0 / 4 / 8 / 16 / 50%; no pills, no 6px) |
+
+`--color-reading` = 78% primary ink over the page ground: darker than
+secondary for sustained reading, quieter than headings. It replaced three
+competing values (secondary grey on About/Home, a hardcoded 72% ink on the
+timeline, 82% on details). Phones step reading body and section titles to
+1.05rem / 1.68 together.
+
+### Underline voice and motion
+
+- **Color.** Every underline is the accent. Links rest on
+  `--link-underline` (50% accent) and deepen to the full accent on hover;
+  indicators that mark the current choice (navigation tab, Inline Choice)
+  are the full accent. No divider-grey or hardcoded-green underlines.
+  Covered: sidebar contact links (`.ds-link`), Home contact links, `View all
+  work`, the 秦珑月 dotted trigger, timeline link previews.
+- **Motion (sliding indicator).** An underline that moves between choices
+  travels like an inchworm: the leading edge sets off first (`240ms`,
+  `cubic-bezier(0.2, 0.9, 0.1, 1)`), the trailing edge waits a beat and
+  catches up with a decisive settle (`380ms`, `70ms` delay,
+  `cubic-bezier(0.6, 0, 0.1, 1)`). The line stretches across the gap and
+  lands — smooth in travel, a small tactile beat on arrival. One hook
+  (`useSlidingIndicator`, constants in `INDICATOR_MOTION`) drives every
+  instance. It runs on the Web Animations API, not CSS transitions, so it
+  keeps playing during the route crossfade; the old CSS transition was
+  frozen by `.page-transitioning` and the underline jumped (the reported
+  nav flicker).
+
+### Inline Choice (`InlineChoice.jsx`, `.ds-choice`)
+
+Words separated by middle dots; chosen = primary text + `1px` accent rule
+that slides between words with the sliding-indicator motion;
+radiogroup semantics with roving focus. Used by Settings. New choice UI must use it — no pills or segmented controls.
+
+### Desk framing (`useDeskFraming`, `deskLayout.js`)
+
+- Desktop: authored viewBox at `1.5×`, horizontal pan (unchanged).
+- (Pastel and linen render styles were explored in v2.1.2 and removed:
+  the Desk keeps one illustration style, Flat.)
+- Phones (≤ 680px): compact viewBox (`DESK_SCENE_COMPACT_TOP` 24 →
+  `_BOTTOM` 568) crops the empty wall; the stage fits the camera height,
+  clamped to `0.85×`–`1.5×`. The camera (`.workspace-page__content`) is
+  pinned to the Desk frame (`position: absolute; inset: 0`) so it never
+  sizes to its own stage.
+- Window: `ROOM_WINDOW.x` 750 → 800; `DESK_SCENE_WIDTH` 1060 → 1110 keeps
+  the 30-unit right margin. Wall elements keep a clear gap (64 units
+  between grid and window).
+
+### Timeline readout (`JourneyTimeline readout="rail" | "none"`)
+
+`rail` (default) keeps the floating label beside the rail where a gutter
+exists. The Desk archive window has no gutter, so it uses `none`: no
+floating label at all — the rail, progress line and node show position,
+and ghost version marks are hidden. (A sticky running head was tried in
+v2.1.2 and removed: once scrolled it read as a dead header.)
+
+### Collage note stack (`AboutHeroCollage.jsx`)
+
+Boards narrower than `560px` render the notes as one stack (lower-left,
+top card readable, three peeking behind, tap/Enter to advance, mono
+`n / 6` counter on the top card). Drag is desktop-only. The snowboard
+foreground tucks behind the stack in this mode.
+
+### One top boundary
+
+Every page's content begins at `--page-shell-top`, level with the sidebar
+logo: the Desk canvas, About's scroll surface and — since v2.1.2 — Home's
+scroll surface (`.app-content-layer--home` owns the offset; the reading
+surface scrolls below it instead of sliding under the nav band). New pages
+must put their scroll surface below this edge, never at the viewport top.
+
+### Home first screen + Chinese name
+
+- Rule: a scrolling document's first viewport shows the start of the next
+  section. Home's hero padding, hero gap and thread height are
+  vh-clamped so `Selected Work` peeks at 1280×720, 1440×900 and phone
+  heights; the thread sits directly under the introduction.
+- The Chinese name is one line on every viewport below the H1:
+  `Chinese name · 秦珑月` (`中文名` in Chinese). Label in the caption sans,
+  characters in the reading serif with the dotted underline that opens the
+  meaning card; pinyin and meanings live in the card only.
 
 ## Localization
 

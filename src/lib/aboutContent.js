@@ -42,12 +42,28 @@ const ABOUT_PAGE_COPY = {
     hero: {
       greeting: "Hi, I’m Phoebe.",
       kicker: "Design engineer · product designer",
-      philosophyLabel: "Philosophy",
-      philosophyTitle: "Clarity is something we build, not something we wait for.",
-      philosophyBody: "I work through uncertainty by making the invisible visible: the assumptions, relationships, decisions, and trade-offs inside a product. Good systems give teams room to move and people confidence to act.",
-      processLabel: "How I work",
-      processTitle: "A loop for turning ambiguity into something real",
-      processBody: "My process is deliberately cyclical: I learn by making, use what I make to see the system more clearly, and return to the people the system is meant to serve.",
+      // v2.1.2 — About reads as one continuous essay about how I think:
+      // observation → reflection → why → design thinking → working
+      // across media → working approach → diagram → reflection on the
+      // diagram → closing.
+      // No headlines, no "not… but / rather than / instead of".
+      essay: {
+        opening: [
+          "A lot of everyday confusion comes from things that are simple one piece at a time. A task passes from one person to another. A plan changes in one place and quietly shifts something somewhere else. A decision depends on information that sits on a different screen. Each part makes sense on its own; the difficulty lives in how the parts relate.",
+          "I noticed this early in my projects, and it kept surprising me how often the hardest moment for people was simply not knowing where they stood. When someone hesitates, it is usually because a relationship they need is out of sight: who is responsible now, what has already happened, what a change will affect. Once that relationship becomes visible, people tend to know what to do next without being told.",
+          "Making those relationships visible is the part of design I keep returning to. Complexity interests me because it is where people most need help, and where good structure makes the biggest difference. I am drawn to problems with several people, many states and decisions that pull on one another, because untangling them changes how someone feels about the whole task. Watching a person move from hesitation to confidence is the most rewarding moment in my work.",
+        ],
+        thinking: [
+          "So when I design, I start by trying to see the system as a whole: the people involved, the information that moves between them, the states things can be in. Then I ask what someone needs to see at a given moment, how it will help them reflect on where they are, and what they can confidently do next. Those three questions shape most of my decisions, from information architecture to the smallest piece of feedback.",
+          "The same way of thinking carries across the different kinds of things I make. Some of my work lives on a screen, some in physical space, and some where the two meet. In each, the work is the same: finding the relationships that matter and giving them a form people can sense and act on.",
+          "It also shapes how I work. Understanding a system on paper only goes so far, so I build early. Putting something real in front of people shows me where they hesitate and which relationships are still hidden. What I learn there sends me back to the people I am designing for, and then into the next version of the structure.",
+        ],
+        afterDiagram: [
+          "Drawn out, it is a simple loop. It is the pattern I find myself returning to on every project, whatever its scale or medium, and each pass around it makes the next version a little clearer.",
+        ],
+        closing:
+          "Underneath all of it is the same quiet interest: understanding how something complex really works, making the relationships inside it visible, and shaping it into a system people can move through with confidence. Each project teaches me a little more about where that confidence comes from.",
+      },
       processSteps: ["Understand people", "Shape the system", "Build to learn"],
       headshotAlt: "Portrait of Phoebe Qin",
       collageLabel: "Beyond the process",
@@ -57,10 +73,7 @@ const ABOUT_PAGE_COPY = {
         "I’m always exploring, experimenting, and making—",
         "trying to create something new, something different, and something that matters to people.",
       ],
-      bio: "I enjoy shaping ambiguous ideas into complete end-to-end experiences—making sense of complex problems, balancing efficiency, aesthetics, and technical feasibility, and creating designs that are clear, credible, and ready to build.",
-      personality:
-        "I’m always learning, changing, and becoming. Through it all, I try to stay true to who I am and honest with myself.",
-      akaLabel: "Also known as:",
+      akaLabel: "Chinese name",
       chineseName: "秦珑月",
       nameCardAria: "Name meaning of 秦珑月",
       principles: [
@@ -92,12 +105,23 @@ const ABOUT_PAGE_COPY = {
     hero: {
       greeting: "你好，我是 Phoebe.",
       kicker: "设计工程师 · 产品设计师",
-      philosophyLabel: "设计观",
-      philosophyTitle: "清晰不是等来的，而是被一步步建立出来的。",
-      philosophyBody: "我通过制作来穿过不确定性，把产品中不可见的假设、关系、决定与取舍变得可见。好的系统让团队有行动的空间，也让使用它的人有做出判断的信心。",
-      processLabel: "我的工作方式",
-      processTitle: "一个把模糊想法变成真实体验的循环",
-      processBody: "我的过程刻意保持循环：通过制作获得理解，用原型看清系统，再回到系统真正服务的人。",
+      essay: {
+        opening: [
+          "日常里的很多困惑，拆开来看，每一块都很简单。一项任务从一个人交到另一个人手里；一个计划在某处改了一点，别处也悄悄跟着变；一个决定依赖的信息，放在另一个页面上。每个部分单独看都说得通，难点藏在它们彼此的关系里。",
+          "我在做项目的过程中很早就注意到这一点，也一再惊讶于：人们最吃力的时刻，往往只是不知道自己身处何处。人会犹豫，通常是因为某段需要的关系被藏了起来：现在由谁负责，之前已经发生了什么，一次修改会牵动哪里。一旦这段关系变得可见，人往往不需要别人提醒，就知道下一步该做什么。",
+          "让这些关系变得可见，是设计中我一次次回到的部分。复杂之所以吸引我，是因为那里最需要帮助，好的结构也最能带来改变。我会被那些牵涉好几个人、很多种状态、彼此牵动的决定的问题吸引，因为把它们理顺，会改变一个人对整件事的感受。看着一个人从犹豫走到笃定，是我工作中最有成就感的时刻。",
+        ],
+        thinking: [
+          "所以设计时，我会先试着看清整个系统：涉及哪些人，信息如何在他们之间流动，事情可能处于哪些状态。然后问自己：一个人此刻需要看见什么，它如何帮助他们理解和反思自己所处的位置，接下来他们又能有信心地做什么。这三个问题影响着我的大部分决定，从信息架构，到最小的一处反馈。",
+          "这种思考方式贯穿我做的各种东西。我的一些作品在屏幕上，一些在实体空间里，也有一些在两者交汇的地方。无论哪一种，要做的事都一样：找到真正重要的关系，并给它一个人可以感知、也可以据此行动的形式。",
+          "它也塑造了我的工作方式。在纸上理解一个系统只能走到一定程度，所以我会尽早动手做。把真实的东西放到人面前，会让我看到他们在哪里犹豫、哪些关系仍然被藏着；从中学到的东西，又把我带回到我为之设计的人身上，再进入下一版结构。",
+        ],
+        afterDiagram: [
+          "把它画出来，是一个简单的循环。这是我在每个项目里都会一次次回到的模式，无论项目大小、媒介如何；每绕一圈，下一版就会更清晰一点。",
+        ],
+        closing:
+          "这一切的底下，是同一份安静的兴趣：弄清一个复杂的东西究竟如何运作，让其中的关系变得可见，再把它塑造成人们可以有信心地穿行其中的系统。每一个项目，都让我对这份信心从何而来多懂一点。",
+      },
       processSteps: ["理解人", "构建系统", "在制作中学习"],
       headshotAlt: "Phoebe Qin 的职业肖像",
       collageLabel: "流程之外",
@@ -107,10 +131,7 @@ const ABOUT_PAGE_COPY = {
         "我一直在探索、实验，也一直在动手做——",
         "想创造一些新的、不同的，以及对人真正有意义的东西。",
       ],
-      bio: "我喜欢把模糊的想法打磨成完整的端到端体验——厘清复杂问题，在效率、美学与技术可行性之间取得平衡，并做出清晰、可信、可落地的设计。",
-      personality:
-        "我总在学习、变化，也总在成为。无论怎样，我都努力忠于自己，并对自己诚实。",
-      akaLabel: "也叫：",
+      akaLabel: "中文名",
       chineseName: "秦珑月",
       nameCardAria: "秦珑月的姓名释义",
       principles: ["在制作中学习", "以系统思考", "为人而设计"],

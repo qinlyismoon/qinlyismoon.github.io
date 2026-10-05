@@ -4,9 +4,11 @@ export const WORKSPACE_CANVAS_WIDTH = 900;
 /** Shift desk + wall decor — tuned so the plant tooltip fits on the left. */
 export const SCENE_CONTENT_SHIFT_X = -220;
 
-/** Right-wall window — sits right of the wire grid with a clear gap. */
+/** Right-wall window — sits right of the wire grid with a clear wall gap
+ * (64 units since v2.1.2, so the grid and the window read as two objects,
+ * not one cluster). The room extent grows with it; see DESK_SCENE_WIDTH. */
 export const ROOM_WINDOW = {
-  x: 750,
+  x: 800,
   y: 64,
   width: 200,
   height: 286,
@@ -111,9 +113,28 @@ export const MUG_DESK_X = BOOKS_DESK_X + BOOKS_ROW_WIDTH + MUG_DESK_GAP;
  * shrinking the room.
  */
 export const DESK_SCENE_MIN_X = -80;
-export const DESK_SCENE_WIDTH = 1060;
+/** 1060 → 1110 in v2.1.2: room for the window's new wall gap plus the same
+ * 30-unit right margin the room always had. */
+export const DESK_SCENE_WIDTH = 1110;
 export const DESK_SCENE_HEIGHT = 620;
 export const DESK_SCENE_VIEWBOX = `${DESK_SCENE_MIN_X} 0 ${DESK_SCENE_WIDTH} ${DESK_SCENE_HEIGHT}`;
+
+/**
+ * Compact framing (phones). The camera tilts down past the empty wall above
+ * the shelves and stops just under the desk's floor shadow, so the whole
+ * desk — not a band of blank wall — fills a portrait screen. The crop is
+ * authored here once; objects, hit areas and tooltips are untouched because
+ * only the viewBox window changes.
+ */
+export const DESK_SCENE_COMPACT_TOP = 24;
+export const DESK_SCENE_COMPACT_BOTTOM = 568;
+export const DESK_SCENE_COMPACT_HEIGHT =
+  DESK_SCENE_COMPACT_BOTTOM - DESK_SCENE_COMPACT_TOP;
+export const DESK_SCENE_COMPACT_VIEWBOX = `${DESK_SCENE_MIN_X} ${DESK_SCENE_COMPACT_TOP} ${DESK_SCENE_WIDTH} ${DESK_SCENE_COMPACT_HEIGHT}`;
+/** Compact scale fits the available height, within these bounds. Below
+ * 0.85× the smallest objects (camera, speaker) get too small to tap; above
+ * the base scale nothing is gained. */
+export const DESK_SCENE_COMPACT_MIN_SCALE = 0.85;
 
 /**
  * Base render scale for the desk scene. The SVG keeps its authored viewBox

@@ -7937,7 +7937,9 @@ body:not([data-page="home"]) .editorial-thread {
 
 .desk-archive {
   max-width: min(72rem, calc(100vw - var(--space-6)));
-  overflow: hidden;
+  /* clip, not hidden: the window clips its corners without becoming a
+     second scroll container inside the overlay. */
+  overflow: clip;
   background: var(--color-background);
 }
 
@@ -7979,4 +7981,349 @@ body:not([data-page="home"]) .editorial-thread {
   /* One line in Chinese, two in English — keeps the Explore section below
      from shifting on language toggle. */
   min-height: 2lh;
+}
+
+/* --- Collage note stack (v2.1.2) ----------------------------------------------
+ * Compact boards (< 560px wide, see AboutHeroCollage) gather the notes into
+ * one stack in the lower-left corner. The top card is full size and
+ * readable; up to three cards peek out behind it at their own small tilt.
+ * Tap / Enter slips the top card to the back. The counter is the data voice
+ * (mono, secondary) in the top card's corner. Paper keeps its soft shadow
+ * (A04); no new radius, border or color. */
+.about-collage--stack .about-sticky.about-sticky--stacked {
+  left: 5%;
+  right: auto;
+  top: auto;
+  bottom: 7%;
+  width: min(68%, 288px);
+  max-width: none;
+  padding: var(--space-2) var(--space-3) var(--space-4);
+  font-size: 1rem;
+  line-height: 1.45;
+  white-space: pre-line;
+  z-index: calc(20 - var(--stack-depth));
+  transform:
+    translate(calc(var(--stack-depth) * 4px), calc(var(--stack-depth) * -8px))
+    rotate(var(--stack-tilt));
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease,
+    box-shadow 0.32s ease;
+}
+
+.about-collage--stack .about-sticky--stacked:not(.is-top) {
+  box-shadow: 0 2px 8px rgba(40, 32, 24, 0.06);
+  color: transparent;
+}
+
+.about-collage--stack .about-sticky--stacked:not(.is-top) > span {
+  opacity: 0;
+}
+
+.about-collage--stack .about-sticky--stacked[data-stack-depth="4"],
+.about-collage--stack .about-sticky--stacked[data-stack-depth="5"] {
+  opacity: 0;
+}
+
+.about-collage--stack .about-sticky--stacked.is-top {
+  transform: rotate(calc(var(--stack-tilt) * 0.4));
+}
+
+.about-collage--stack .about-sticky--stacked.is-top::before {
+  content: attr(data-stack-index);
+  position: absolute;
+  right: var(--space-2);
+  bottom: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+}
+
+.about-collage--stack .about-sticky--stacked.is-leaving {
+  transform: translate(36%, -24%) rotate(9deg);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-collage--stack .about-sticky.about-sticky--stacked {
+    transition: none;
+  }
+}
+
+/* The stack is the one thing to read on a compact board — the snowboard
+   (foreground prop) tucks behind it instead of slicing across the card. */
+.about-collage--stack .about-collage__foreground {
+  z-index: 2;
+}
+
+/* --- Home identity: Chinese name (v2.1.2) -------------------------------------
+ * One treatment on every viewport (desktop used to show a bare 秦珑月 beside
+ * the H1, phones an "Also known as:" line). The name now reads as a labelled
+ * fact below the H1: `Chinese name · 秦珑月`. The label speaks in the caption
+ * sans voice, the characters in the reading serif with the dotted underline
+ * that opens the meaning card (pinyin and meaning live there, not inline). */
+.home-identity__name-row {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+.home-identity__name-row .about-aka__label {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  clip: auto;
+  overflow: visible;
+  white-space: nowrap;
+}
+
+.about-aka__line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0;
+}
+
+.home-identity__name-row .about-aka__line {
+  font-family: var(--font-serif);
+  font-size: var(--type-body);
+  color: var(--color-text-secondary);
+}
+
+.home-identity__name-row .about-aka__label {
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.about-aka__separator {
+  padding: 0 var(--space-1);
+  font-family: var(--font-sans);
+  opacity: 0.6;
+}
+
+.home-identity__name-row .about-aka__name {
+  color: var(--color-text);
+}
+
+
+/* --- Home first screen: the next section always peeks (v2.1.2) ----------------
+ * System rule for scrolling documents: the first viewport shows the top of
+ * the next section. On Home the editorial thread is the hinge, so the hero's
+ * vertical rhythm scales with viewport height (vh-clamped spacing) and the
+ * thread sits right under the introduction; `Selected Work` begins inside
+ * the first screen on common laptop and phone heights. */
+.home-hero {
+  padding-top: clamp(var(--space-3), 7vh, var(--space-8));
+  padding-bottom: clamp(var(--space-2), 3vh, var(--space-4));
+}
+
+.editorial-thread__marker,
+.editorial-thread {
+  height: clamp(var(--space-6), 7vh, var(--space-8));
+}
+
+.landing-page__hero {
+  gap: clamp(var(--space-1), 2vh, var(--space-4));
+}
+
+.home-identity__name-row {
+  margin-bottom: var(--space-2);
+}
+
+.home-identity__introduction {
+  margin-top: var(--space-3);
+  text-wrap: pretty;
+}
+
+.home-work {
+  padding-top: var(--space-1);
+  scroll-margin-top: var(--viewport-safe-top);
+}
+
+@media (max-width: 680px) {
+  .home-hero {
+    padding-top: 0;
+    padding-bottom: var(--space-1);
+  }
+
+  .home-identity__introduction {
+    margin-top: var(--space-2);
+  }
+
+  .editorial-thread__marker,
+  .editorial-thread {
+    height: var(--space-6);
+  }
+}
+
+/* --- One top boundary for every page (v2.1.2) ---------------------------------
+ * Home used to scroll from the viewport top, so its content slid up under
+ * the nav band and was cut at the band's edge, while About's scroll surface
+ * and the Desk canvas both begin at --page-shell-top (level with the sidebar
+ * logo). Home now uses the same rule: the layer owns the top offset and the
+ * reading surface scrolls below it, so every page shares one top edge. */
+.app-content-layer--home {
+  padding-top: var(--page-shell-top);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.shared-layout--desk .app-content-layer--home .home-layout:not(.home-layout--library) {
+  padding-top: 0;
+}
+
+@media (max-width: 680px) {
+  .app-content-layer--home {
+    padding-top: 0;
+  }
+}
+
+/* --- Desk compact camera (v2.1.2) ---------------------------------------------
+ * Phones: the scene is framed by useDeskFraming (compact viewBox that crops
+ * the empty wall, fit to the remaining height), so the whole desk sits on
+ * screen. The camera must be exactly the Desk frame's size, never
+ * content-sized, or the fit-to-height framing would measure its own stage. */
+@media (max-width: 680px) {
+  .desk-layout .workspace-page__content {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .desk-scene .scene__content.desk-scene__viewport {
+    padding: var(--space-3);
+  }
+}
+
+/* --- Reading primitives (v2.1.2) ------------------------------------------------
+ * Long-form text has ONE set of voices across every page — Home intro,
+ * About, case-study details, the Desk timeline. Change them here, never
+ * per page. (Replaces a details-only patch that had invented its own size,
+ * ink and heading voice.)
+ *
+ *  Reading body   serif · --type-reading · 1.72 · --color-reading
+ *  Section title  serif · --type-reading · medium · primary text
+ *  Pull quote     serif upright · clamp(1.125–1.25rem) · primary · 2px accent rule
+ *  Measure        --content-max-width
+ *  Buttons        the 8px card radius (radius set is 0 / 4 / 8 / 16 / 50%)
+ *
+ * --color-reading sits between primary and secondary ink: dark enough for
+ * sustained reading, still quieter than headings. It replaces the mix of
+ * secondary grey, a hardcoded 72% ink and an 82% ink used before. */
+:root {
+  --color-reading: color-mix(in srgb, var(--color-text) 78%, var(--color-background));
+}
+
+.home-identity__introduction,
+.log-essay > p,
+.log-intro p,
+.log-philosophy p,
+.log-philosophy > p:last-child,
+.log-process > p,
+.vibe-detail__section dd {
+  max-width: var(--content-max-width);
+  font-family: var(--font-serif);
+  font-size: var(--type-reading);
+  line-height: 1.72;
+  color: var(--color-reading);
+}
+
+.about-stage.is-active .about-stage__intro p,
+.about-stage.is-active .about-stage__copy,
+.about-page--dark .about-stage.is-active .about-stage__intro p,
+.about-page--dark .about-stage.is-active .about-stage__copy {
+  color: var(--color-reading);
+}
+
+.log-philosophy h2,
+.log-process h2,
+.vibe-detail__section dt {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-serif);
+  font-size: var(--type-reading);
+  font-weight: var(--weight-medium);
+  line-height: 1.72;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-text);
+}
+
+.journey-reflection__quote,
+.vibe-detail__quote {
+  max-width: 40rem;
+  padding: 0.15em 0 0.15em 1.25rem;
+  border-left: 2px solid var(--color-accent);
+  font-family: var(--font-serif);
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(1.125rem, 1.5vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.ds-button,
+.vibe-detail__action {
+  border-radius: 8px;
+}
+
+/* About essay rhythm: paragraphs follow one another at the reading gap;
+   the portrait and the diagram are pauses inside the argument (64px), and
+   the closing paragraph gets a little more air before it (64px). */
+.log-essay > p {
+  margin: 0 0 var(--space-3);
+}
+
+.log-essay .log-headshot {
+  margin: var(--space-8) 0;
+}
+
+.log-essay__diagram {
+  margin: var(--space-6) 0 var(--space-8);
+}
+
+.log-essay > p.log-essay__closing {
+  margin-top: var(--space-8);
+}
+
+.log-essay__diagram .about-principles__pill {
+  font-family: var(--font-sans);
+}
+
+/* Detail rhythm uses the spacing scale: 40px between sections. */
+.vibe-detail__body {
+  padding: var(--space-5);
+}
+
+.vibe-detail__sections {
+  gap: var(--space-5);
+}
+
+@media (max-width: 680px) {
+  .log-essay > p,
+  .log-intro p,
+  .log-philosophy p,
+  .log-process > p,
+  .log-philosophy h2,
+  .log-process h2,
+  .vibe-detail__section dt,
+  .vibe-detail__section dd {
+    font-size: 1.05rem;
+    line-height: 1.68;
+  }
+
+  .vibe-detail__body {
+    padding: var(--space-3) var(--space-2);
+  }
+
+  .vibe-detail__sections {
+    gap: var(--space-4);
+  }
 }

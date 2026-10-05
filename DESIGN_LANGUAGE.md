@@ -2,7 +2,13 @@
 
 *A living notebook for documenting how ideas become systems.*
 
-Version 1.1 — October 2026. Website release: v2.1.1.
+Version 1.2 — October 2026. Website release: v2.1.2.
+
+v2.1.2 positions the work around one sentence — *I design and build
+interactive systems that help people understand complexity and act with
+confidence* — and adds two system pieces: **Settings** (mode, sound,
+accent behind one quiet text control) and the **Inline Choice** primitive
+(words separated by middle dots).
 
 The v2.1.1 information architecture treats Home as the portfolio index,
 About as the continuous personal narrative, and Desk as the spatial archive.
@@ -166,6 +172,11 @@ Three faces, each with one role: **Zalando Sans** for UI chrome,
 **STIX Two Text** for reading, **JetBrains Mono** for code, data, and
 technical labels. **Caveat** is reserved for the logo — never for UI or
 body copy. No additional styles unless absolutely necessary.
+
+Long-form reading has one set of voices on every page (v2.1.2): reading
+body (serif, `--type-reading`, `--color-reading`), section title (serif,
+`--type-reading`, medium, primary), pull quote (upright serif, accent
+rule). Pages never restyle reading text locally.
 
 One deliberate exception: the Log page title ("My design journey") and
 its closing heading speak in the serif reading face, not the sans — the
@@ -406,8 +417,25 @@ same. Two named exceptions exist and no others:
 | `--color-text-secondary`| `#6f6f6b` | `#a3a3a0` | Labels, quiet text              |
 | `--color-divider`       | `#deded9` | `#393936` | The one border, hairline rules  |
 | `--color-accent`        | `#526b61` | `#9aafa5` | Forest green — the active voice |
+| `--color-reading`       | 78% text  | 78% text  | Long-form reading body (v2.1.2) |
 
 Dark mode redefines the same roles; components never hardcode a color.
+
+**Accent options (v2.1.2).** `--color-accent` is chosen in Settings from
+five natural pigments that belong on a desk. Every pair passes WCAG AA on
+the page and surface in both modes. Set via `html[data-accent]`
+(`src/settings.css`, mirrored in `ACCENTS` in `src/lib/settings.js`).
+
+| Accent | Light     | Dark      | Reference                |
+|--------|-----------|-----------|--------------------------|
+| Forest | `#526b61` | `#9aafa5` | plant green (default)    |
+| Ink    | `#4c6178` | `#a3b4c7` | fountain-pen ink         |
+| Clay   | `#94584a` | `#d4a698` | terracotta pot           |
+| Plum   | `#6b5a75` | `#bcaac4` | dusk                     |
+| Ochre  | `#80652e` | `#cdb27c` | pencil / straw           |
+
+Anything that used to hardcode the teal timeline voice (progress line,
+pulse) now reads the accent.
 
 ### A07 Type Scale
 
@@ -558,22 +586,49 @@ on Case Studies only. Banned: `Based in`, `Version`, `Focus`, `Info`,
 
 (`SystemStatus.jsx`, `.system-status`)
 
-Three quiet text states in one row near the sidebar's bottom edge
-(`.context-column__region--system-status`, auto height, floating above
-the panel bottom with `24px` of breathing room — a dock, not a footer):
-language, theme and sound. Each item reports the current
-state (`EN` / `Light` / `Sound`); clicking toggles it. Typography
-carries the interface — no icons, no dividers, no background, no
-radius. Items are `0.75rem` / 500 / secondary text, the calmest voice
-in the panel, set in one flex row with `var(--space-3)` gaps and
-left-aligned with the panel content above. Hover follows the
-design-system link rule: accent color plus a `3px` rightward nudge
-(`160ms ease`). Each button keeps its accessible label (the action)
-plus a native tooltip. Because the panel lives in the sidebar, the
-page's bottom edge stays clean — content flows downward with no
-boundary.
+One quiet text row: `EN · Settings` — in the sidebar's bottom dock on
+desktop and in the header on phones. Items are separated by a middle dot
+on every viewport (the same separator as the contact line). Language stays
+one tap because it changes what you read; everything that changes how the
+site looks or sounds lives behind `Settings`. Items are `0.75rem` / 500 /
+secondary; hover follows the link rule (accent plus a `3px` nudge).
+
+### Settings
+
+(`SystemStatus.jsx`, `.settings-panel`, `src/lib/settings.js`)
+
+A paper panel opened by `Settings`: surface ground, the one `1px` divider
+border, `8px` card radius, no shadow (it is not pinned paper). It opens
+upward from the sidebar dock and downward from the mobile header, closes
+on outside tap or Escape. Three groups, each a metadata label over an
+Inline Choice:
+
+- **Mode** — `Light · Dark · System` (Light is the default; System follows
+  `prefers-color-scheme` live).
+- **Sound** — `On · Off` (Off also pauses music).
+- **Accent** — five swatches, the chosen name after the label
+  (`Accent · Forest`). See A06.
+
+Mode and accent changes run through one page crossfade
+(`runThemeTransition`), so no surface leads or lags.
+
+### Inline Choice
+
+(`InlineChoice.jsx`, `.ds-choice`)
+
+The notebook's only choice control: plain words separated by middle dots
+(`Light · Dark · System`). The chosen word is primary text on a `1px`
+accent rule; the rest stay secondary; hover warms to accent. A
+radiogroup with roving focus (arrow keys move and select). A swatch-only
+variant (true circles, chosen one ringed) exists for color choices. Never
+a pill, never a segmented control, never a background. Type follows its
+context: `0.8125rem` in panels, the metadata value voice (`17px / 600`)
+when it sits in the sidebar.
 
 ### Links
+
+Every underline is the accent (v2.1.2): links rest on `--link-underline`
+(50% accent) and deepen to the full accent on hover.
 
 Quiet links: secondary text, hover turns accent green with an underline
 **and** a rightward nudge — the design-system link hover, unified
@@ -655,6 +710,8 @@ Verbs that describe the destination:
 
 ```
 Hover:       opacity / underline / background tint — 200ms ease
+Indicator:   sliding underline — lead edge 240ms, trail edge 380ms
+             (+70ms), stretch then settle (useSlidingIndicator)
 Transitions: 200ms ease, always (peel 280ms, scene 500ms — see A05)
 Desk:        physical movement, gentle response
 Log:         scroll-driven reveals, calm
@@ -687,6 +744,13 @@ obey the same physics.
   Objects are independent components. Responsive means the camera pans
   at a base render scale — never shrink the scene below it; mouse users
   pan by dragging the viewport (touch keeps its native scroll).
+- **One style:** the Desk has a single illustration style (Flat). Oil
+  pastel and linen embroidery renderings were explored in v2.1.2 and
+  removed — one coherent drawing over switchable materials.
+- **Framing:** on phones the camera crops the empty wall above the
+  shelves (compact viewBox `y 24–568`) and fits the remaining height
+  (`0.85×`–`1.5×`), so the whole desk is on screen; it still pans
+  horizontally.
 - **Light:** time-based night darkens only the window sky (the Window
   layer owns night colors: dark gradient, moon, stars). The room,
   objects, and background stay day. A full dark scene applies only on
@@ -767,6 +831,13 @@ Format: version → problem → new version → reason.
   baseline's right edge (`Case Studies` vs `案例研究`); the tabs should
   stay put. Same principle as the language-toggle stability rule:
   reserve, never reflow.
+- **v0.9** — Sliding-indicator motion (v2.1.2): the active underline
+  moves like an inchworm — leading edge first, trailing edge catches up
+  with a settle — on the Web Animations API, shared with Inline Choice.
+  **Reason:** her report — clicking a tab flickered (the CSS glide was
+  frozen during the route crossfade, so the line jumped); she asked for a
+  switch that is smooth but has a little tactile beat, applied to every
+  sliding underline.
 - **v0.8** — Tab type stepped up (2026-10-01): `0.77rem` → `0.875rem`
   (`0.72rem` → `0.8125rem` on mobile), still `500` sans.
   **Reason:** her report — the tab type read too small; `0.875rem` is
@@ -871,6 +942,13 @@ Format: version → problem → new version → reason.
   the page background and the dim is neutral, so sidebar, nav band and
   scene read as one ground.
 
+- **v0.9** — Settings (v2.1.2): the row becomes `EN · Settings`, with
+  middle dots on every viewport; mode (Light / Dark / System), sound and
+  accent move into one paper panel built from Inline Choice.
+  **Reason:** her brief — theme and sound are both "how the site looks
+  and sounds" and belong together; mode needed a System option; the
+  phone's dotted row was the clearer pattern, so desktop adopts it.
+
 ### Active color
 
 - **v0.1** — Green text on a white pill.
@@ -883,6 +961,13 @@ Format: version → problem → new version → reason.
   **Reason:** the fill read as a dashboard control, not a notebook
   divider. The active tab's meaning now comes from paper-fusion, not
   color.
+
+- **v0.4** — Accent becomes a setting (v2.1.2): five AA-passing
+  pigments (Forest default, Ink, Clay, Plum, Ochre) on `html[data-accent]`.
+  **Reason:** her request for theme colors that fit the site's core; each
+  is a material already on the desk, so the notebook stays one object.
+  Switching accent repaints in place (no page crossfade — photos blinked)
+  and the accent name rolls up or down with the direction of the change.
 
 ### Cards
 
@@ -930,6 +1015,14 @@ Format: version → problem → new version → reason.
   can't toggle it); the lamp status value crossfades through a keyed
   span (200ms fade-and-rise) instead of snapping.
 
+- **v0.4** — Window gap + phone framing + styles (v2.1.2): the window
+  moves right (`x 750 → 800`, room `1060 → 1110` wide) so the wire grid and
+  window read as two objects; phones get the compact, fit-to-height
+  camera. Switchable render styles (oil pastel, linen embroidery) were
+  built and then removed at her call — Flat stays the only style.
+  **Reason:** her reports — on phones the top was blank wall and the desk
+  fell below the fold; the window crowded the grid.
+
 ### Log journey
 
 - **v0.1** — Year timeline with a testimonial-style reflection card.
@@ -949,6 +1042,50 @@ Format: version → problem → new version → reason.
   **Reason:** her correction — the title was too large and spoke in the
   name's font.
 
+- **v0.4** — No readout in the Desk window (v2.1.2): the floating tag
+  covered the text it labelled; a sticky running head was tried and
+  removed (once scrolled it read as a dead header). Where the rail has no
+  gutter, the rail, progress line and node alone show position.
+  **Reason:** her reports, in that order.
+
+### About page
+
+- **v0.1** — Headline-led sections (bio, "Clarity is something we
+  build…", "A loop for turning ambiguity…").
+  **Problem:** each section read as an independent statement; conclusions
+  came first; contrastive phrasing felt argumentative; the page ended
+  abruptly after the diagram.
+- **v0.2** — One continuous essay (v2.1.2): observation → reflection →
+  why → design thinking → working approach → diagram → reflection →
+  closing; no headlines, no binary constructions.
+  **Reason:** her brief — About should explain why she thinks this way and
+  deepen the Home statement, reading like one train of thought.
+
+### Collage board
+
+- **v0.1** — Free scatter of draggable notes.
+  **Problem:** on phones the six notes covered each other and the
+  portrait.
+- **v0.2** — Note stack on compact boards (< 560px, v2.1.2): the notes
+  gather into one stack in the lower-left corner; tap (or Enter) slips the
+  top card to the back; a mono `1 / 6` counter sits on the top card.
+  **Reason:** one thought at a time is readable and keeps the portrait
+  visible; leafing through cards is physical, so it stays in the
+  notebook's language. Desktop keeps the scatter.
+
+### Home
+
+- **v0.1** — Name with a bare 秦珑月 on desktop, "Also known as:" on
+  phones; editorial thread far below the introduction.
+- **v0.2** — (v2.1.2) One Chinese-name line on every viewport:
+  `Chinese name · 秦珑月` (中文名 in Chinese); the label tells you what it
+  is, the hover/tap card gives pinyin and meaning. The
+  first screen's rhythm scales with viewport height so `Selected Work`
+  peeks above the fold.
+  **Reason:** her questions — why phones and desktop differed, and how to
+  signal there is more below. Rule: a scrolling document's first viewport
+  always shows the start of the next section.
+
 ---
 
-*End of Design Language v1.0. The notebook grows. The system remains.*
+*End of Design Language v1.2. The notebook grows. The system remains.*

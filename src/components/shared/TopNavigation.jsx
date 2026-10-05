@@ -1,4 +1,5 @@
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
+import useSlidingIndicator from "../../hooks/useSlidingIndicator";
 import { useLocation } from "react-router-dom";
 import { useAppSettings } from "../../context/AppSettingsContext";
 import { usePageTransition } from "../../context/PageTransitionContext";
@@ -30,8 +31,8 @@ export default function TopNavigation({ className, style }) {
   const copyEn = useMemo(() => getNavCopy("en"), []);
   const copyZh = useMemo(() => getNavCopy("zh"), []);
   const navRef = useRef(null);
+  const indicatorRef = useRef(null);
   const itemRefs = useRef(new Map());
-  const [indicator, setIndicator] = useState({ left: 0, width: 0, ready: false });
 
   const activeId = useMemo(() => {
     if (viewState === "opening" || viewState === "workspace") return "desk";
@@ -48,30 +49,14 @@ export default function TopNavigation({ className, style }) {
     about: navigateToAbout,
   };
 
-  useLayoutEffect(() => {
-    const updateIndicator = () => {
-      const activeItem = itemRefs.current.get(activeId);
-      if (!activeItem) return;
-      setIndicator((current) => ({
-        left: activeItem.offsetLeft,
-        width: activeItem.offsetWidth,
-        ready: current.ready,
-      }));
-    };
-
-    updateIndicator();
-    const frame = window.requestAnimationFrame(() => {
-      setIndicator((current) => ({ ...current, ready: true }));
-    });
-    const observer = new ResizeObserver(updateIndicator);
-    if (navRef.current) observer.observe(navRef.current);
-    itemRefs.current.forEach((item) => observer.observe(item));
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      observer.disconnect();
-    };
-  }, [activeId, language]);
+  // One persistent underline, moved by the shared sliding-indicator motion.
+  useSlidingIndicator({
+    containerRef: navRef,
+    indicatorRef,
+    getActive: () => itemRefs.current.get(activeId),
+    activeKey: activeId,
+    layoutKey: language,
+  });
 
   return (
     <nav
@@ -80,14 +65,7 @@ export default function TopNavigation({ className, style }) {
       aria-label={copy.ariaLabel}
       style={style}
     >
-      <span
-        className={`site-nav__indicator${indicator.ready ? " is-ready" : ""}`}
-        style={{
-          width: `${indicator.width}px`,
-          transform: `translateX(${indicator.left}px)`,
-        }}
-        aria-hidden="true"
-      />
+      <span ref={indicatorRef} className="site-nav__indicator" aria-hidden="true" />
       {NAV_ITEMS.map((item) => {
         const isActive = activeId === item.id;
         // The ghost twin is the other language's label, stacked invisibly

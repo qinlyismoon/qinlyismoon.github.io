@@ -12,11 +12,17 @@
         const savedSettings = JSON.parse(
           localStorage.getItem("phoebe-site-settings") || "null",
         );
-        const initialTheme = savedSettings?.isDarkMode ? "dark" : "light";
+        const mode = savedSettings?.themeMode
+          || (savedSettings?.isDarkMode ? "dark" : "light");
+        const isDark = mode === "dark"
+          || (mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        const initialTheme = isDark ? "dark" : "light";
         document.documentElement.dataset.theme = initialTheme;
+        document.documentElement.dataset.accent = savedSettings?.accent || "forest";
         document.documentElement.style.colorScheme = initialTheme;
       } catch {
         document.documentElement.dataset.theme = "light";
+        document.documentElement.dataset.accent = "forest";
         document.documentElement.style.colorScheme = "light";
       }
     </script>

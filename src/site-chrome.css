@@ -150,30 +150,27 @@ body:not([data-page="desk"]) .workspace-tooltip-layer {
   position: absolute;
   z-index: 1;
   left: 0;
+  right: 100%;
   bottom: -1px;
   height: 2px;
   background: var(--color-accent);
   pointer-events: none;
   opacity: 0;
-}
-
-.site-nav__indicator.is-ready {
-  opacity: 1;
-  transition:
-    transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
-    width 360ms cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 120ms ease;
+  /* Position is driven by useSlidingIndicator (Web Animations), so the
+     glide survives the route crossfade. */
 }
 
 .site-nav__item[aria-current="page"] {
   color: var(--color-text);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .site-nav__indicator.is-ready {
-    transition: opacity 120ms ease;
-  }
+/* The current tab needs no hover wash: it is already the answer. (The wash
+   on the tab you just clicked restarted when the route crossfade released
+   its transition freeze, and blinked — v2.1.2.) */
+.site-nav__item[aria-current="page"]:hover {
+  background: transparent;
 }
+
 
 /* --- Desk header ---------------------------------------------------------------
  * The paper-ground band is now system-wide (see .viewport-top-nav above).
@@ -304,17 +301,18 @@ body[data-page="desk"] .viewport-top-nav {
   mix-blend-mode: normal;
 }
 
+/* No-dip crossfade (v2.1.2): the old snapshot stays fully opaque underneath
+   and only the new one fades in on top. Fading both at once let the page
+   ground show through mid-way — everything the two pages share (sidebar
+   text, the nav row, the Desk ground) dimmed by ~20% and came back, which
+   read as a flicker on every tab click and theme change. */
 ::view-transition-old(root) {
-  animation-name: theme-page-fade-out;
+  animation: none;
+  opacity: 1;
 }
 
 ::view-transition-new(root) {
   animation-name: theme-page-fade-in;
-}
-
-@keyframes theme-page-fade-out {
-  from { opacity: 1; }
-  to { opacity: 0; }
 }
 
 @keyframes theme-page-fade-in {
@@ -370,6 +368,81 @@ html.page-transitioning::view-transition-new(context-identity),
 html.page-transitioning::view-transition-new(context-system-status),
 html.page-transitioning::view-transition-new(global-navigation) {
   opacity: 1;
+}
+
+/* --- Route change choreography (v2.1.2) ---------------------------------------
+ * A tab click is a page turn, not a blend. Overlapping crossfades left
+ * ghosted text — "Columbus, Ohio" over "Designing in the Age of AI" in the
+ * sidebar, Home's intro over About's — which read as a flicker. Route
+ * changes now run out-then-in, the same grammar as <LiveValue>:
+ *   - page content (root): old fades out 150ms, new fades in 220ms after a
+ *     90ms beat;
+ *   - sidebar metadata (its own named layer): old lifts away 120ms, new
+ *     rises in 200ms after 110ms;
+ *   - navigation, identity and system status stay perfectly still.
+ * Theme changes keep the no-dip crossfade above (new over an opaque old),
+ * because a theme change must never pass through an empty page. */
+.context-column__region--metadata {
+  view-transition-name: context-metadata;
+}
+
+html.page-transitioning::view-transition-old(root) {
+  animation: route-out 150ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+html.page-transitioning::view-transition-new(root) {
+  animation: route-in 220ms cubic-bezier(0, 0, 0.2, 1) 90ms both;
+}
+
+html.page-transitioning::view-transition-group(context-metadata) {
+  animation: none;
+}
+
+html.page-transitioning::view-transition-old(context-metadata) {
+  animation: metadata-out 120ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+html.page-transitioning::view-transition-new(context-metadata) {
+  animation: metadata-in 200ms cubic-bezier(0, 0, 0.2, 1) 110ms both;
+}
+
+/* Theme changes: the metadata layer joins the page's no-dip crossfade. */
+html.theme-transitioning::view-transition-old(context-metadata) {
+  animation: none;
+  opacity: 1;
+}
+
+html.theme-transitioning::view-transition-new(context-metadata) {
+  animation: theme-page-fade-in 360ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes route-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes route-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes metadata-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-4px); }
+}
+
+@keyframes metadata-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.page-transitioning::view-transition-old(root),
+  html.page-transitioning::view-transition-new(root),
+  html.page-transitioning::view-transition-old(context-metadata),
+  html.page-transitioning::view-transition-new(context-metadata) {
+    animation: none;
+  }
 }
 
 /* API-free fallback: fade the one application root out, switch every theme

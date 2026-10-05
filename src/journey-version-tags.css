@@ -191,3 +191,25 @@
  * margin-note variant (soft wash card, right-docked, then a right
  * rail, then in-flow) was tried and reverted 2026-10-01: the quote
  * belongs to the document's voice, not to a card. */
+
+/* 6. No readout (v2.1.2) — where the rail has no gutter (Desk archive
+ * window; JourneyTimeline readout="none"). The floating label used to sit
+ * on top of the copy it described, and a sticky running head was tried and
+ * dropped (it read as a dead header once you scrolled). The rail, progress
+ * line and node alone show where you are; the gutter and ghost version
+ * marks are removed. */
+.about-journey--no-readout {
+  --about-journey-label-gutter: 0px;
+}
+
+.about-journey--no-readout .about-journey__track {
+  padding-left: 0;
+}
+
+.about-journey--no-readout .about-journey__rail-wrapper {
+  left: 0;
+}
+
+.about-journey--no-readout .about-stage__timeline-meta {
+  display: none;
+}

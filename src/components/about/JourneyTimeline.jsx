@@ -882,7 +882,11 @@ function pickActiveByRange(indicatorY, sectionStarts, railHeight) {
   return sectionStarts.length - 1;
 }
 
-export default function JourneyTimeline({ copy, language }) {
+export default function JourneyTimeline({ copy, language, readout = "rail" }) {
+  // "rail": floating label beside the rail (needs a left gutter).
+  // "none": no floating label — the rail, progress line and node carry the
+  // position (Desk archive window, where no gutter exists).
+  const isRailReadout = readout === "rail";
   const [activeIndex, setActiveIndex] = useState(0);
   const [indicatorY, setIndicatorY] = useState(0);
   const [railOriginY, setRailOriginY] = useState(0);
@@ -1008,7 +1012,10 @@ export default function JourneyTimeline({ copy, language }) {
   const motionTransition = reduceMotion ? "none" : undefined;
 
   return (
-    <section className="about-journey" aria-labelledby="about-journey-heading">
+    <section
+      className={`about-journey${isRailReadout ? "" : " about-journey--no-readout"}`}
+      aria-labelledby="about-journey-heading"
+    >
       <div className="about-journey__intro">
         <h2 id="about-journey-heading" className="about-section-heading">
           {copy.heading}
@@ -1032,12 +1039,14 @@ export default function JourneyTimeline({ copy, language }) {
             aria-hidden="true"
           />
 
-          <MovingTimelineLabel
-            stage={activeStage}
-            language={language}
-            indicatorY={indicatorY}
-            reduceMotion={reduceMotion}
-          />
+          {!isRailReadout ? null : (
+            <MovingTimelineLabel
+              stage={activeStage}
+              language={language}
+              indicatorY={indicatorY}
+              reduceMotion={reduceMotion}
+            />
+          )}
 
           <div
             className="about-journey__active-indicator"

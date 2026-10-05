@@ -173,7 +173,8 @@ export default function AboutChineseName({
       onMouseLeave={canHover ? scheduleHide : undefined}
     >
       <p className="about-aka__line">
-        <span className="about-aka__label">{akaLabel}</span>{" "}
+        <span className="about-aka__label">{akaLabel}</span>
+        <span className="about-aka__separator" aria-hidden="true">·</span>
         <button
           ref={triggerRef}
           type="button"

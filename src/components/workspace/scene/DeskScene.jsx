@@ -7,12 +7,9 @@
  * SceneBackground changes → Window updates → Lamp state updates →
  * Effect layer updates → everything else stays the same.
  */
-import {
-  DESK_SCENE_MIN_X,
-  DESK_SCENE_VIEWBOX,
-  DESK_SCENE_RENDER_WIDTH,
-  DESK_SCENE_RENDER_HEIGHT,
-} from "../../../lib/deskLayout";
+import { useRef } from "react";
+import { DESK_SCENE_MIN_X } from "../../../lib/deskLayout";
+import useDeskFraming from "../../../hooks/useDeskFraming";
 import { SceneDefs } from "./SceneDefs";
 import SceneBackground from "./layers/SceneBackground";
 import WallLayer from "./layers/WallLayer";
@@ -32,12 +29,16 @@ export default function DeskScene({
   chromeProps,
   sceneLabel,
 }) {
+  const stageRef = useRef(null);
+  const framing = useDeskFraming(stageRef);
+
   return (
     <svg
+      ref={stageRef}
       className="desk-scene__stage"
-      viewBox={DESK_SCENE_VIEWBOX}
-      width={DESK_SCENE_RENDER_WIDTH}
-      height={DESK_SCENE_RENDER_HEIGHT}
+      viewBox={framing.viewBox}
+      width={framing.width}
+      height={framing.height}
       role="img"
       aria-label={sceneLabel}
     >

@@ -1,0 +1,351 @@
+/* ---------------------------------------------------------------------------
+ * Settings, accent tokens and the InlineChoice primitive (v2.1.2).
+ *
+ * Loaded after site-chrome.css. See DESIGN_SYSTEM.md → "Settings" and
+ * DESIGN_LANGUAGE.md → Appendix C "Inline Choice" / "Settings".
+ * ------------------------------------------------------------------------- */
+
+/* --- Accent tokens --------------------------------------------------------
+ * One active voice, five natural pigments. Each pair passes WCAG AA on the
+ * page background and surface (forest 5.4 / ink 6.0 / clay 5.2 / plum 5.9 /
+ * ochre 5.1 in light; ≥ 7.0 in dark). Values mirror ACCENTS in
+ * src/lib/settings.js — change both together. Forest is the default and
+ * already lives on :root in styles.css. */
+:root[data-accent="ink"] { --color-accent: #4c6178; }
+:root[data-accent="clay"] { --color-accent: #94584a; }
+:root[data-accent="plum"] { --color-accent: #6b5a75; }
+:root[data-accent="ochre"] { --color-accent: #80652e; }
+
+:root[data-theme="dark"][data-accent="ink"] { --color-accent: #a3b4c7; }
+:root[data-theme="dark"][data-accent="clay"] { --color-accent: #d4a698; }
+:root[data-theme="dark"][data-accent="plum"] { --color-accent: #bcaac4; }
+:root[data-theme="dark"][data-accent="ochre"] { --color-accent: #cdb27c; }
+
+/* Surfaces that used to hardcode the teal timeline voice now follow the
+ * accent, so every pigment reaches the whole system. */
+.about-journey__progress-line {
+  background: var(--color-accent);
+}
+
+.about-journey__active-pulse {
+  background: color-mix(in srgb, var(--color-accent) 28%, transparent);
+}
+
+/* Accent change: accent-painted colors ease in place on the system clock
+ * (no page crossfade, so photographs never blink). */
+html.accent-shifting *,
+html.accent-shifting *::before,
+html.accent-shifting *::after {
+  transition:
+    color 200ms ease,
+    background-color 200ms ease,
+    border-color 200ms ease,
+    outline-color 200ms ease,
+    box-shadow 200ms ease,
+    fill 200ms ease,
+    stroke 200ms ease !important;
+}
+
+/* --- One underline voice ------------------------------------------------------
+ * Every underline in the interface is the accent: links rest on a 50%
+ * accent rule and deepen to the full accent on hover; moving indicators
+ * (tabs, Inline Choice) are the full accent. No divider-grey or hardcoded
+ * green underlines remain. */
+:root {
+  --link-underline: color-mix(in srgb, var(--color-accent) 50%, transparent);
+}
+
+.ds-link,
+.ds-project-preview__link,
+.home-identity__links a,
+.home-contact__links a,
+.about-link-preview__anchor {
+  text-decoration-color: var(--link-underline);
+}
+
+.home-identity__links a:hover,
+.home-identity__links a:focus-visible,
+.home-contact__links a:hover,
+.home-contact__links a:focus-visible,
+.about-link-preview__anchor:hover,
+.about-link-preview__anchor:focus-visible {
+  color: var(--color-accent);
+  text-decoration-color: currentColor;
+}
+
+.case-studies__view-all {
+  border-bottom-color: var(--link-underline);
+}
+
+.case-studies__view-all:hover,
+.case-studies__view-all:focus-visible {
+  border-bottom-color: var(--color-accent);
+}
+
+.about-aka__name {
+  border-bottom-color: var(--link-underline);
+}
+
+/* Text selection speaks in the accent too. */
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 24%, transparent);
+  color: inherit;
+}
+
+/* --- Inline Choice ---------------------------------------------------------
+ * Words separated by middle dots; the chosen word is primary text on a
+ * 1px accent rule. Same 12px / 500 sans voice as System Status. */
+.ds-choice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  row-gap: var(--space-1);
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+}
+
+.ds-choice__slot {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.ds-choice__separator {
+  padding: 0 var(--space-1);
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+}
+
+.ds-choice__option {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0 0 2px;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ds-choice__option:hover {
+  color: var(--color-accent);
+}
+
+.ds-choice__option[aria-checked="true"] {
+  color: var(--color-text);
+}
+
+/* The chosen word's rule: one line that slides between words
+   (useSlidingIndicator — same motion as the navigation tabs). */
+.ds-choice {
+  position: relative;
+}
+
+.ds-choice__indicator {
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: 0;
+  height: 1px;
+  background: var(--color-accent);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.ds-choice__option:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* Swatch-only variant (accent): true circles, the chosen one ringed. */
+.ds-choice--swatches {
+  gap: var(--space-1);
+}
+
+.ds-choice--swatches .ds-choice__option {
+  width: 28px;
+  height: 28px;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+}
+
+.ds-choice__swatch {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--swatch);
+}
+
+.ds-choice--swatches .ds-choice__swatch {
+  width: 16px;
+  height: 16px;
+  box-shadow: 0 0 0 0 transparent;
+  transition: box-shadow 160ms ease;
+}
+
+.ds-choice--swatches .ds-choice__option[aria-checked="true"] .ds-choice__swatch {
+  box-shadow:
+    0 0 0 3px var(--color-surface),
+    0 0 0 4px var(--swatch);
+}
+
+/* --- System Status row ----------------------------------------------------
+ * `EN · Settings` — the middle dot separates items on every viewport. */
+.system-status {
+  position: relative;
+}
+
+.context-column .system-status,
+.viewport-top-nav__mobile-settings .system-status {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0;
+}
+
+.system-status__separator {
+  padding: 0 var(--space-1);
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.system-status.is-open > .system-status__item[aria-expanded="true"] {
+  color: var(--color-text);
+}
+
+/* The old mobile-only pseudo separator is replaced by real separators. */
+.viewport-top-nav__mobile-settings .system-status__item + .system-status__item::before {
+  content: none;
+}
+
+.context-column__region--system-status {
+  position: relative;
+  z-index: 30;
+  overflow: visible;
+}
+
+/* --- Settings panel ---------------------------------------------------------
+ * Paper, not chrome: surface ground, the one 1px border, card radius, no
+ * shadow. Labels speak in the metadata-label voice; choices in
+ * InlineChoice. Opens upward from the sidebar dock and downward from the
+ * mobile header. */
+.settings-panel {
+  position: absolute;
+  z-index: 40;
+  display: grid;
+  gap: var(--space-3);
+  box-sizing: border-box;
+  width: 248px;
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider);
+  border-radius: 8px;
+  color: var(--color-text);
+  text-align: left;
+  pointer-events: auto;
+  animation: settings-panel-in 200ms ease;
+}
+
+.settings-panel[hidden] {
+  display: none;
+}
+
+.context-column .settings-panel {
+  left: 0;
+  bottom: calc(100% + var(--space-2));
+}
+
+.viewport-top-nav__mobile-settings .settings-panel {
+  right: 0;
+  top: calc(100% + var(--space-1));
+}
+
+.settings-panel__group {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.settings-panel__label {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+
+.settings-panel__label {
+  display: flex;
+  align-items: baseline;
+}
+
+.settings-panel__separator {
+  padding: 0 4px;
+  opacity: 0.6;
+}
+
+/* The accent name rolls vertically inside a clipped slot. */
+.settings-panel__roll {
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  height: 1.4em;
+  align-items: baseline;
+}
+
+.settings-panel__value {
+  display: inline-block;
+  color: var(--color-text);
+}
+
+@keyframes settings-panel-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+  .viewport-top-nav__mobile-settings .system-status__item {
+    padding-inline: 2px;
+  }
+
+  .viewport-top-nav__mobile-settings .system-status__separator {
+    padding: 0 4px;
+  }
+
+  .settings-panel .ds-choice__option {
+    min-height: 32px;
+  }
+
+  .settings-panel .ds-choice--swatches {
+    flex-wrap: nowrap;
+    gap: 4px;
+  }
+
+  .settings-panel .ds-choice--swatches .ds-choice__option {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settings-panel { animation: none; }
+  .ds-choice__option,
+  .ds-choice__swatch { transition: none; }
+}

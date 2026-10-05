@@ -55,7 +55,7 @@ export default function DeskArchiveDetail({ panel, onClose }) {
           {isBoard ? (
             <AboutHeroCollage copy={copy.hero} language={language} />
           ) : (
-            <JourneyTimeline copy={copy.journey} language={language} />
+            <JourneyTimeline copy={copy.journey} language={language} readout="none" />
           )}
         </div>
       </div>
