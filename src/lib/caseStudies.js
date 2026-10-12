@@ -54,6 +54,9 @@ export const VIBE_PROJECTS = [
 // v2.1.2: descriptions are rewritten from the Notion case studies around
 // the positioning "help people understand complexity" — each line names the
 // complexity and what the design makes understandable.
+// v2.2.1: a selected project that also has a live website (liveUrl) opens
+// the same introduction modal as the vibe projects, offering the live site
+// and the Notion case study, instead of linking straight out.
 export const SELECTED_PROJECTS = [
   {
     id: "leaf-note",
@@ -68,6 +71,38 @@ export const SELECTED_PROJECTS = [
     role: "Product Designer & Engineer",
     roleZh: "产品设计师 & 工程实现",
     timeline: "2026",
+  },
+  {
+    id: "emotion-garden",
+    title: "Emotion Garden",
+    subtitle: "Data Visualization · Interaction Design · Personal Informatics",
+    description:
+      "An interactive data visualization experience that turns emotional records into a living garden, helping people explore patterns, relationships, and everyday experiences over time.",
+    descriptionZh:
+      "一个交互式数据可视化体验，把情绪记录变成一座生长的花园，帮助人们探索随时间展开的模式、关联与日常经历。",
+    tags: ["Data Visualization", "Interaction Design"],
+    url: "https://app.notion.com/p/Emotion-Graden-3f67fb6b97a580f395e5d6099d671d31?source=copy_link",
+    liveUrl: "https://emotion-garden-sooty.vercel.app/",
+    notesUrl:
+      "https://app.notion.com/p/Emotion-Graden-3f67fb6b97a580f395e5d6099d671d31?source=copy_link",
+    liveLabel: "Experience Website",
+    liveLabelZh: "体验网站",
+    notesLabel: "View Case Study",
+    notesLabelZh: "查看案例研究",
+    // Screen recording of the live sample garden: ambient motion plus
+    // hovering flowers to reveal each moment's feeling, time and duration.
+    thumbnail: "/emotion-garden-thumb.gif",
+    role: "Data Visualization Designer & Engineer",
+    roleZh: "数据可视化设计 & 工程实现",
+    timeline: "2026",
+    detail: {
+      overview:
+        "Emotion Garden explores how personal emotional data can become a living visual landscape. Through a flower-based visual language, interactive timelines, and reflective insights, the experience allows people to explore emotional patterns across time and everyday contexts.",
+    },
+    detailZh: {
+      overview:
+        "Emotion Garden 探索个人情绪数据如何成为一片有生命的视觉景观。通过以花为单位的视觉语言、可交互的时间线与反思性的洞察，人们可以在时间与日常情境中探索自己的情绪模式。",
+    },
   },
   {
     id: "money-map",

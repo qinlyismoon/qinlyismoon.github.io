@@ -8228,6 +8228,7 @@ body:not([data-page="home"]) .editorial-thread {
 .log-philosophy p,
 .log-philosophy > p:last-child,
 .log-process > p,
+.teaching-prose > p,
 .vibe-detail__section dd {
   max-width: var(--content-max-width);
   font-family: var(--font-serif);
@@ -8311,6 +8312,7 @@ body:not([data-page="home"]) .editorial-thread {
   .log-intro p,
   .log-philosophy p,
   .log-process > p,
+  .teaching-prose > p,
   .log-philosophy h2,
   .log-process h2,
   .vibe-detail__section dt,

@@ -6,7 +6,7 @@
 import { useState } from "react";
 import { useAppSettings } from "../../context/AppSettingsContext";
 
-export default function SelectedWorkCard({ project, onHover }) {
+export default function SelectedWorkCard({ project, onHover, onOpen }) {
   const { language } = useAppSettings();
   const isZh = language === "zh";
   const description =
@@ -16,6 +16,59 @@ export default function SelectedWorkCard({ project, onHover }) {
   const tags = project.tags;
   const [imageFailed, setImageFailed] = useState(false);
   const showImage = project.thumbnail && !imageFailed;
+
+  // v2.2.1: projects with a live website follow the vibe card pattern —
+  // the card is a button that opens the introduction modal, which then
+  // offers the live site and the case study.
+  if (project.liveUrl && onOpen) {
+    return (
+      <article className="vibe-card">
+        <button
+          type="button"
+          className="vibe-card__button"
+          onClick={() => onOpen(project)}
+          onMouseEnter={() => onHover?.(project)}
+          onMouseLeave={() => onHover?.(null)}
+          onFocus={() => onHover?.(project)}
+          onBlur={() => onHover?.(null)}
+          aria-label={`View details for ${project.title}`}
+        >
+          {showImage || project.placeholder ? (
+            <div className="vibe-card__thumbnail" aria-hidden="true">
+              {showImage ? (
+                <img
+                  src={project.thumbnail}
+                  alt=""
+                  className="vibe-card__image"
+                  loading="lazy"
+                  onError={() => setImageFailed(true)}
+                />
+              ) : (
+                <div className="vibe-card__placeholder">
+                  <span className="vibe-card__placeholder-mark">
+                    {project.placeholder}
+                  </span>
+                </div>
+              )}
+            </div>
+          ) : null}
+          <div className="vibe-card__body">
+            <h3 className="vibe-card__title">{project.title}</h3>
+            <p className="vibe-card__description">{description}</p>
+            {tags?.length ? (
+              <ul className="vibe-card__tags" aria-label="Tags">
+                {tags.map((tag) => (
+                  <li key={tag} className="vibe-card__tag">
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+        </button>
+      </article>
+    );
+  }
 
   return (
     <article className="vibe-card">

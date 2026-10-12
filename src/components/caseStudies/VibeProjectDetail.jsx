@@ -11,6 +11,7 @@ const LABELS = {
     technologies: "Technologies",
     visitLive: "Visit live site",
     projectNotes: "Project notes",
+    overview: "Overview",
     background: "Background",
     question: "The question",
     visual: "Visual language",
@@ -23,6 +24,7 @@ const LABELS = {
     technologies: "技术",
     visitLive: "访问体验网站",
     projectNotes: "项目笔记",
+    overview: "项目概述",
     background: "背景",
     question: "核心问题",
     visual: "视觉语言",
@@ -55,6 +57,12 @@ export default function VibeProjectDetail({ project, onClose }) {
   const detail = isZh && project.detailZh ? project.detailZh : project.detail ?? {};
   const tagline = isZh && project.taglineZh ? project.taglineZh : project.tagline;
   const showImage = project.thumbnail && !imageFailed;
+  // Optional per-project action labels (v2.2.1); vibe projects keep the
+  // shared defaults.
+  const liveLabel =
+    (isZh ? project.liveLabelZh : project.liveLabel) ?? labels.visitLive;
+  const notesLabel =
+    (isZh ? project.notesLabelZh : project.notesLabel) ?? labels.projectNotes;
 
   return (
     <div
@@ -89,7 +97,7 @@ export default function VibeProjectDetail({ project, onClose }) {
         <div className="vibe-detail__body">
           <p className="vibe-detail__kicker">{project.subtitle}</p>
           <h2 className="vibe-detail__title">{project.title}</h2>
-          <p className="vibe-detail__tagline">{tagline}</p>
+          {tagline ? <p className="vibe-detail__tagline">{tagline}</p> : null}
           {project.tags?.length ? (
             <ul className="vibe-detail__tags" aria-label={labels.technologies}>
               {project.tags.map((tag) => (
@@ -106,7 +114,7 @@ export default function VibeProjectDetail({ project, onClose }) {
               rel="noreferrer"
               className="vibe-detail__action vibe-detail__action--primary"
             >
-              {labels.visitLive} ↗
+              {liveLabel} ↗
             </a>
             {project.notesUrl ? (
               <a
@@ -115,11 +123,17 @@ export default function VibeProjectDetail({ project, onClose }) {
                 rel="noreferrer"
                 className="vibe-detail__action"
               >
-                {labels.projectNotes} ↗
+                {notesLabel} ↗
               </a>
             ) : null}
           </div>
           <dl className="vibe-detail__sections">
+            {detail.overview ? (
+              <div className="vibe-detail__section">
+                <dt>{labels.overview}</dt>
+                <dd>{detail.overview}</dd>
+              </div>
+            ) : null}
             {detail.background ? (
               <div className="vibe-detail__section">
                 <dt>{labels.background}</dt>

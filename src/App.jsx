@@ -4,6 +4,7 @@ import { MusicProvider } from "./context/MusicContext";
 import SiteShell from "./components/shared/SiteShell";
 import "./styles.css";
 import "./journey-version-tags.css";
+import "./teaching.css";
 import "./site-chrome.css";
 import "./settings.css";
 

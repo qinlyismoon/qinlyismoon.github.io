@@ -12,23 +12,28 @@ import {
   DESK_PATH,
   HOME_PATH,
   LIBRARY_PATH,
+  TEACHING_PATH,
   isAboutPath,
   isDeskPath,
   isLibraryPath,
+  isTeachingPath,
   isLegacyDeskPath,
 } from "../../lib/routes";
 import AboutPage from "../../pages/AboutPage";
 import LandingPage from "../../pages/LandingPage";
 import LibraryPage from "../../pages/LibraryPage";
+import TeachingPage from "../../pages/TeachingPage";
 import WorkspacePage from "../../pages/WorkspacePage";
 import SharedLayout from "../layouts/SharedLayout";
 import DeskLayout from "../layouts/DeskLayout";
 import VersionHistoryLayout from "../layouts/VersionHistoryLayout";
+import TeachingLayout from "../layouts/TeachingLayout";
 import { PageTransitionContext } from "../../context/PageTransitionContext";
 import { SidebarOverrideContext } from "../../context/SidebarOverrideContext";
 
 function viewStateFromPath(pathname) {
   if (isAboutPath(pathname)) return "about";
+  if (isTeachingPath(pathname)) return "teaching";
   if (isLibraryPath(pathname)) return "library";
   if (isDeskPath(pathname)) return "workspace";
   return "landing";
@@ -39,6 +44,7 @@ const VIEW_PATHS = {
   library: LIBRARY_PATH,
   workspace: DESK_PATH,
   about: ABOUT_PATH,
+  teaching: TEACHING_PATH,
 };
 
 const CONTEXT_PAGES = {
@@ -46,6 +52,7 @@ const CONTEXT_PAGES = {
   library: "caseStudies",
   workspace: "desk",
   about: "versionHistory",
+  teaching: "teaching",
 };
 
 export default function SiteShell() {
@@ -125,6 +132,10 @@ export default function SiteShell() {
     (options = {}) => transitionTo("about", options),
     [transitionTo],
   );
+  const navigateToTeaching = useCallback(
+    (options = {}) => transitionTo("teaching", options),
+    [transitionTo],
+  );
 
   useEffect(() => {
     if (isMuted) {
@@ -139,6 +150,7 @@ export default function SiteShell() {
     navigateToHome,
     navigateToDesk,
     navigateToAbout,
+    navigateToTeaching,
     navigateToLibrary,
     playSound,
     playLoopingSound,
@@ -164,6 +176,7 @@ export default function SiteShell() {
   const isLibrary = viewState === "library";
   const isWorkspace = viewState === "workspace";
   const isAbout = viewState === "about";
+  const isTeaching = viewState === "teaching";
 
   useEffect(() => {
     document.body.dataset.page = contextPage;
@@ -267,6 +280,17 @@ export default function SiteShell() {
                 <VersionHistoryLayout>
                   <AboutPage />
                 </VersionHistoryLayout>
+              </div>
+
+              <div
+                className={`app-content-layer app-content-layer--route app-content-layer--teaching${
+                  isTeaching ? " is-active" : ""
+                }`}
+                aria-hidden={!isTeaching}
+              >
+                <TeachingLayout>
+                  <TeachingPage />
+                </TeachingLayout>
               </div>
 
               <div

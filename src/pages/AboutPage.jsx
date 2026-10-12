@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useAppSettings } from "../context/AppSettingsContext";
 import { getAboutPageCopy } from "../lib/aboutContent";
 import AboutNarrative from "../components/about/AboutNarrative";
+import "../about.css";
 
 export default function AboutPage() {
   const { language } = useAppSettings();

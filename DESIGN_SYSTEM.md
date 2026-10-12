@@ -784,28 +784,43 @@ should be reviewed by Phoebe (the "explicit approval" rule).
   now changes monotonically — no frame differs from both the start and the
   end state except the intended blank beat between pages.
 
-### About: one continuous essay
+### About: who I am, not a case-study list (v2.2.1; replaces the v2.1.2 single essay)
 
-About explains how I think; Home already says what I build, and the two
-never repeat each other. The page is a single essay with no section
-headlines (`AboutNarrative.jsx`, copy in `aboutContent.js → essay`):
+About shows my personality and the way I think; Home and Selected Work
+already show what I build. Structure (`AboutNarrative.jsx`, copy in
+`aboutContent.js → essay`, styles in `src/about.css`):
 
 ```
-observation → reflection → why complexity → design thinking
-→ working approach → diagram → reflection on the diagram → closing
+epigraph (Latin original + translation) → roadmap line
+→ portrait → I start with questions → Seeing from every side
+→ Clarity comes from making (+ loop diagram) → Staying true to myself
 ```
 
-- Paragraphs build toward their ideas; no headline-first statements.
+- No self-introduction: Home already says who I am, so the page opens
+  with the epigraph.
+- One section per trait, ordered as a path: how I think (asking
+  questions, framed as curiosity and shared with the team) → whose eyes
+  I look through (empathy across stakeholders) → how I find answers
+  (making) → who I am underneath (honesty with myself: telling what I
+  truly feel from what I think I feel, learned through doing concrete
+  things; knowing myself is what lets me understand others, which ties
+  back to the perspectives section).
+- Lead with the trait. Examples are light anchors (a clause or one named
+  project), never the point of a paragraph; project details belong to
+  Selected Work.
+- No self-praising adjectives; no closing paragraph that restates the page.
+- The epigraph has no on-page caption. For the record: "Dubito, ergo
+  cogito, ergo sum" is a later paraphrase of Descartes (Antoine Léonard
+  Thomas, 1765), so never attribute it to Descartes on the page.
+- Section headings use the site's section-title voice
+  (`.log-essay__heading`); body paragraphs use the reading voice; the
+  epigraph uses a display voice: large serif italic Latin, translation
+  below in the reading size (`.log-essay__quote`, `src/about.css`).
 - Writing avoids binary constructions ("not … but", "rather than",
-  "instead of"): explain how I think without arguing against an opposite.
-- The portrait is a pause after the "why"; the process loop sits inside
-  the argument as a visual summary of the paragraphs above it and is
-  followed by a short reflection; the closing paragraph returns to the
-  central idea — understanding complexity, making relationships visible,
-  helping people move forward with confidence.
-- Rhythm: `--space-3` between paragraphs, `--space-8` around the portrait,
-  `--space-6` / `--space-8` around the diagram, `--space-8` before the
-  closing. All paragraphs use the reading-body voice.
+  "instead of").
+- Rhythm: `--space-3` between paragraphs, `--space-4` below the epigraph,
+  `--space-8` around the portrait, `--space-10` between sections
+  (`--space-8` on phones), `--space-6` above the diagram.
 
 ### Reading primitives (one set for every page)
 
@@ -900,6 +915,123 @@ must put their scroll surface below this edge, never at the viewport top.
   `Chinese name · 秦珑月` (`中文名` in Chinese). Label in the caption sans,
   characters in the reading serif with the dotted underline that opens the
   meaning card; pinyin and meanings live in the card only.
+
+## v2.2.0 system additions
+
+### Teaching page (`TeachingPage.jsx`, `components/teaching/`, `src/teaching.css`)
+
+- Navigation is `Home · About · Teaching · Desk`; route `/teaching`,
+  view state `teaching`, `body[data-page="teaching"]`.
+- Frame: the About frame. `.app-content-layer--teaching` owns the top
+  offset and gutters; `.teaching-layout` is the single vertical scroll
+  surface (`overflow-x: clip`). Column `--content-max-width`.
+- Structure from type and space, not rules: sections separated by
+  `--section-space`, courses by `--space-12`, work inside a course by
+  `--space-8` / `--space-10`. The only lines are the pull-quote accent
+  rule, the hairline frame around images (the Log headshot treatment) and
+  the hand-drawn voice. Do not add dividers between entries.
+- Type system (strict): two faces, five sizes. H1 / H2 / H3 (course
+  title) in sans; ALL running text in the reading-body voice (serif,
+  `--type-reading`, 1.72); subheads (principle names, work titles) in sans
+  medium at the same body size; ALL metadata (kickers, notes, terms,
+  `My role`, step names, captions) in the caption label voice. No mono, no
+  italics, no extra sizes on this page; course content vs my role differ
+  by ink color only. Principles are stacked so descriptions stay at body
+  size.
+- Hand-drawn voice, used exactly twice: the editorial thread between
+  Introduction and Philosophy (Home's stroke, curve and breathing, with a
+  Caveat note) and the small sketch arrows of the review-session arc. It
+  marks a turn in thinking; never decorate with it.
+- Three sections (Introduction, Teaching Philosophy, Teaching Experience),
+  each with a kicker (`01 / Introduction`, index in accent), a sans H2 and
+  a serif note. The page title uses the Home H1 voice; the introduction
+  states the role in its first sentence (no separate metadata line).
+- Practice never lives apart from its course. Each course is: title, meta
+  (course number in the mono data voice), the official focus as one quiet
+  italic serif line, `My role` (at most three items, never repeating the
+  work below), then its work blocks (`work[]`): a small sans title, one
+  short paragraph, real documentation, an optional external link and a
+  reflection in the pull-quote voice. Show the method behind repeated
+  work (the review-session arc: ask → revisit → apply → synthesize, each
+  step a real slide) instead of one session's detail; no in-page jump
+  links. External documentation uses the Home Selected Work card
+  (`.vibe-card`, text-only without a thumbnail, max 22rem).
+- Images are real documentation, shown whole (no cropping); third-party
+  imagery inside course slides is left out, and personal details on slide
+  footers are blurred. The gallery pairs a tall lead image with a stack of
+  wide ones and stacks to one column below a 560px container.
+- Copy accuracy: role is Graduate Teaching Associate; no invented
+  outcomes, evaluations, testimonials or numbers. See the header comment
+  in `teachingContent.js`.
+- Sidebar: `Current role` plus a `Teaching Portfolio` section directory
+  (the document-page exception, as on Case Studies). Directories are
+  styled apart from status values everywhere they appear (Teaching, Case
+  Studies): each entry leads with a `›` marker, labels are 15px / 500 in
+  secondary ink (status values are 17px / 600), entries sit at
+  `--space-1`, and the section being read is marked (`aria-current=
+  "location"`, primary ink, accent marker) by scroll position.
+- Localization: Teaching follows the language toggle. `TEACHING_COPY_ZH`
+  overrides the English copy field by field (arrays by index), so images,
+  links and untranslated fields fall back to English. Course titles, the
+  Notion card title and tags stay English (proper nouns / tag rule). Nav
+  `教学` and the sidebar labels are part of the same Chinese draft, pending
+  Phoebe's approval.
+- Phone header: with four tabs, tab padding steps to 8px at ≤ 420px,
+  type to 0.75rem at ≤ 380px, and 0.6875rem at ≤ 340px, so tabs and
+  `EN · Settings` never collide (checked at 320–430px).
+
+## v2.2.1 system additions
+
+### Wrap stability: swapped values never move the layout
+
+Any value that changes in place — sidebar metadata on card hover, live
+values, localized copy — can wrap to a different number of lines than the
+value it replaces (e.g. `Product Designer & Engineer` is one line in the
+sidebar, `Data Visualization Designer & Engineer` is two). The block must
+not change height when it swaps; nothing below it may jump. Rules:
+
+- **Known set of candidates → ghost stack.** Stack every candidate as a
+  hidden ghost (`visibility: hidden`, `aria-hidden`) in the same grid cell
+  as the visible value, so the slot sizes to whichever candidate wraps to
+  the most lines at the current width and language. Sidebar metadata does
+  this through `item.reserve` (`ContextColumn.jsx`,
+  `.context-metadata__slot` / `.context-metadata__value--ghost` in
+  `src/site-chrome.css`). `LibraryPage` passes every project's role and
+  timeline (current language) as `reserve`, so hovering from a one-line
+  role to a two-line role never moves `Timeline`. Nav tabs use the same
+  technique for EN/ZH labels.
+- The stack always includes the current value. Values swap after a
+  fade-out, so during the fade the old text is visible while the new one
+  must already reserve its lines; excluding the current value made
+  `Timeline` jump for one beat (fixed in v2.2.1).
+- **Open-ended text → `min-height: <n>lh`.** When the candidates are not
+  known up front (localized paragraphs), reserve the tallest expected line
+  count in `lh` units (see Localization). Longer text still grows; nothing
+  is clipped.
+- **Adding a new swappable value** (a new hover field, a new project, a
+  new live status): include it in the candidate set, or reserve its line
+  count. A new project's `role` / `roleZh` / `timeline` is picked up
+  automatically because the reserve is built from the project lists.
+- Never fix a jump by shortening copy to fit one line, fixed pixel
+  heights, or `white-space: nowrap` with truncation; those break with the
+  next edit, a narrower sidebar, or the other language.
+
+### Selected Work with a live site (`SelectedWorkCard.jsx`)
+
+A Selected Work project that has a `liveUrl` (e.g. Emotion Garden) opens
+the same introduction modal as Vibe Coding projects instead of linking
+straight out. The modal offers the live site as the primary action and the
+case study as the secondary one; labels can be set per project
+(`liveLabel` / `notesLabel` and their `Zh` variants). Projects without a
+`liveUrl` keep the direct Notion link. Order: Leaf Note → Emotion Garden
+→ Money Map → Oscar et la Dame Rose.
+
+### Version
+
+The site version is v2.2.1. It appears in `package.json` /
+`package-lock.json`, the Home footer (`LandingPage.jsx`) and the sidebar
+`Current version` on About (`pageContext.js`, EN and ZH). Bump all of
+them together.
 
 ## Localization
 

@@ -1,0 +1,80 @@
+/* About page (v2.2.1). Kept in its own file so About styles stay
+ * independent of shared stylesheets edited in parallel. Imported by
+ * AboutPage.jsx. Body copy reuses the reading voice; section headings use
+ * the site's section-title voice (same as Selected Work / Teaching); the
+ * quote uses the shared reflection-quote voice. */
+
+/* Headed sections restore a scannable structure. 80px between sections;
+   the first one follows the portrait directly. */
+.log-essay__section + .log-essay__section {
+  margin-top: var(--space-10);
+}
+
+.log-essay__heading {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--type-h2);
+  font-weight: var(--weight-medium);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.log-essay__section > p {
+  max-width: var(--content-max-width);
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-serif);
+  font-size: var(--type-reading);
+  line-height: 1.72;
+  color: var(--color-reading);
+}
+
+.log-essay__section .log-essay__diagram {
+  margin: var(--space-6) 0 0;
+}
+
+/* Epigraph: the quote opens the page. The Latin line is the display
+   voice (large serif italic, primary text); the translation sits under
+   it in the reading voice, secondary. No rule, no caption: it reads as
+   the page's opening line. */
+.log-essay__quote {
+  margin: 0 0 var(--space-4);
+}
+
+.log-essay__quote blockquote {
+  margin: 0;
+  padding: 0;
+}
+
+.log-essay__quote blockquote p {
+  margin: 0;
+}
+
+.log-essay__quote-original {
+  font-family: var(--font-serif);
+  font-size: clamp(1.875rem, 3.4vw, 2.75rem);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--color-text);
+}
+
+.log-essay__quote blockquote .log-essay__quote-translation {
+  margin-top: var(--space-2);
+  font-family: var(--font-serif);
+  font-size: var(--type-reading);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 680px) {
+  .log-essay__section > p {
+    font-size: 1.05rem;
+    line-height: 1.68;
+  }
+
+  .log-essay__section + .log-essay__section {
+    margin-top: var(--space-8);
+  }
+}

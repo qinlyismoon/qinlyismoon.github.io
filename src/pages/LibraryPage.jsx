@@ -8,6 +8,11 @@ import VibeProjectDetail from "../components/caseStudies/VibeProjectDetail";
 import { VIBE_PROJECTS, SELECTED_PROJECTS } from "../lib/caseStudies";
 import { PORTFOLIO_LINKS } from "../lib/links";
 
+// Every project that can drive the sidebar on hover. Their role and
+// timeline values are passed as `reserve` candidates so the sidebar slot is
+// always sized to the longest one (no jump when moving between cards).
+const HOVER_PROJECTS = [...SELECTED_PROJECTS, ...VIBE_PROJECTS];
+
 const LABELS = {
   en: {
     viewAll: "View all work",
@@ -75,16 +80,22 @@ export default function LibraryPage({ embedded = false }) {
     const isZh = language === "zh";
     const items = [];
     const role = isZh ? project.roleZh : project.role;
+    const roleCandidates = HOVER_PROJECTS.map((p) =>
+      isZh ? p.roleZh : p.role,
+    );
+    const timelineCandidates = HOVER_PROJECTS.map((p) => p.timeline);
     if (role) {
       items.push({
         label: isZh ? "项目角色" : "Project role",
         value: role,
+        reserve: roleCandidates,
       });
     }
     if (project.timeline) {
       items.push({
         label: isZh ? "时间线" : "Timeline",
         value: project.timeline,
+        reserve: timelineCandidates,
       });
     }
     setMetadataOverride(items.length ? { id: project.id, items } : null);
@@ -119,6 +130,7 @@ export default function LibraryPage({ embedded = false }) {
             <SelectedWorkCard
               key={project.id}
               project={project}
+              onOpen={handleCardOpen}
               onHover={handleCardHover}
             />
           ))}

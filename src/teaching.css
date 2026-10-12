@@ -1,0 +1,485 @@
+/* ---------------------------------------------------------------------------
+ * Teaching page (v2.2.0).
+ *
+ * A document page in the About frame: the route layer owns the top offset
+ * and gutters (same values as About / Case Studies), `.teaching-layout` is
+ * the single vertical scroll surface, and the column uses the shared
+ * reading measure (--content-max-width).
+ *
+ * TYPE SYSTEM — two faces, five sizes, nothing else:
+ *   H1      sans · --type-h1 · medium            page title
+ *   H2      sans · --type-h2 · medium            section title
+ *   H3      sans · clamp(1.25–1.5rem) · medium   course title
+ *   Body    serif · --type-reading · 1.72        ALL running text
+ *           (sans · same size · medium for subheads: principle names,
+ *            work titles — face and weight change, size does not)
+ *   Label   sans · --type-caption · 500          ALL metadata: kickers,
+ *           notes, terms, "My role", step names, captions
+ * No mono, no italics, no extra sizes. Official course content and my own
+ * role differ by color only (secondary vs reading ink). The one exception
+ * is the handwritten Caveat note on the thread — the hand-drawn voice.
+ *
+ * Structure comes from type and space, not rules. Lines on the page: the
+ * pull-quote accent rule, the hairline frame around images, and the
+ * hand-drawn voice (exactly twice: the thread and the arc arrows).
+ * Imported after styles.css and before site-chrome.css.
+ * ------------------------------------------------------------------------- */
+
+/* --- Route layer + scroll surface ------------------------------------------ */
+.app-content-layer--teaching {
+  padding: var(--page-shell-top) var(--viewport-page-padding)
+    var(--viewport-page-padding) 0;
+  box-sizing: border-box;
+  overflow: visible;
+  background: var(--color-background);
+}
+
+.teaching-layout {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow-x: clip;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  background: var(--color-background);
+}
+
+.teaching-layout::-webkit-scrollbar {
+  display: none;
+}
+
+/* --- Page column ------------------------------------------------------------- */
+.teaching-page {
+  container: teaching / inline-size;
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0;
+  padding: var(--space-8) 0 var(--section-space);
+}
+
+.teaching-section {
+  scroll-margin-top: var(--space-3);
+}
+
+.teaching-section + .teaching-section {
+  margin-top: var(--section-space);
+}
+
+/* --- Type roles ------------------------------------------------------------------ */
+
+/* Body: every paragraph and list item on the page. */
+.teaching-prose > p,
+.teaching-principles__description,
+.teaching-course__focus,
+.teaching-list,
+.teaching-work__body > p,
+.teaching-reflection p:not(.teaching-label) {
+  max-width: var(--content-max-width);
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: var(--type-reading);
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.72;
+  color: var(--color-reading);
+}
+
+/* Subheads: body size, sans medium. */
+.teaching-principles__title,
+.teaching-work__title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--type-reading);
+  font-weight: var(--weight-medium);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+/* Label: every piece of metadata. */
+.teaching-section__kicker,
+.teaching-section__note,
+.teaching-meta,
+.teaching-label,
+.teaching-caption,
+.teaching-arc__label,
+.teaching-arc__text {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+/* --- Section header ------------------------------------------------------------ */
+.teaching-section__kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+
+.teaching-section__index,
+.teaching-principles__index,
+.teaching-arc__index {
+  color: var(--color-accent);
+}
+
+.teaching-section__slash {
+  color: var(--color-divider);
+}
+
+.teaching-section__title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--type-h2);
+  font-weight: var(--weight-medium);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.teaching-section--intro .teaching-section__title {
+  font-size: var(--type-h1);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.teaching-section__note {
+  margin-top: var(--space-1);
+}
+
+/* --- Prose ------------------------------------------------------------------------ */
+.teaching-prose {
+  margin-top: var(--space-5);
+}
+
+.teaching-prose > p + p {
+  margin-top: var(--space-3);
+}
+
+/* --- Figures ---------------------------------------------------------------------- */
+.teaching-figure {
+  margin: 0;
+}
+
+.teaching-figure__frame {
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider);
+  border-radius: 8px;
+}
+
+.teaching-figure__frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.teaching-caption {
+  margin-top: var(--space-1);
+}
+
+/* --- Hand-drawn voice ------------------------------------------------------------ */
+/* The thread reuses the Home editorial thread's stroke, curve and breathing
+   (`.editorial-thread__line` in styles.css); only placement is local. */
+.teaching-thread {
+  position: relative;
+  height: clamp(var(--space-6), 7vh, var(--space-8));
+  margin: var(--space-8) 0;
+  pointer-events: none;
+}
+
+.teaching-thread__note {
+  position: absolute;
+  left: 72%;
+  top: 0.2rem;
+  color: color-mix(in srgb, var(--color-accent) 62%, transparent);
+  font-family: "Caveat", cursive;
+  font-size: 1.0625rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  transform: rotate(-1.5deg);
+}
+
+/* --- 02 Principles: stacked, so descriptions read at body size ------------------ */
+.teaching-principles {
+  display: grid;
+  gap: var(--space-5);
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.teaching-principles__index {
+  display: inline-block;
+  width: 2.5rem;
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.teaching-principles__description {
+  margin-top: calc(var(--space-1) / 2);
+  padding-left: 2.5rem;
+}
+
+/* --- 03 Courses ------------------------------------------------------------------- */
+.teaching-courses {
+  display: grid;
+  gap: var(--space-12);
+  margin-top: var(--space-8);
+}
+
+.teaching-course {
+  scroll-margin-top: var(--space-3);
+}
+
+.teaching-course__title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(1.25rem, 1.9vw, 1.5rem);
+  font-weight: var(--weight-medium);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.teaching-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  margin-top: calc(var(--space-1) / 2);
+}
+
+.teaching-meta > * + *::before {
+  content: "·";
+  padding: 0 var(--space-1);
+  opacity: 0.6;
+}
+
+/* Official course content: body voice in secondary ink. */
+.teaching-course__focus {
+  margin-top: var(--space-3);
+  color: var(--color-text-secondary);
+}
+
+.teaching-course__role {
+  margin-top: var(--space-3);
+}
+
+.teaching-course__role .teaching-label {
+  margin-bottom: calc(var(--space-1) / 2);
+}
+
+.teaching-list {
+  padding: 0;
+  list-style: none;
+}
+
+.teaching-list li {
+  position: relative;
+  padding-left: 1.1em;
+}
+
+.teaching-list li::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  color: var(--color-text-secondary);
+}
+
+/* --- Work inside a course --------------------------------------------------------- */
+.teaching-work {
+  margin-top: var(--space-8);
+}
+
+.teaching-work + .teaching-work {
+  margin-top: var(--space-10);
+}
+
+.teaching-work__body {
+  margin-top: var(--space-1);
+}
+
+.teaching-work__body > p + p {
+  margin-top: var(--space-2);
+}
+
+.teaching-work__figure {
+  margin-top: var(--space-4);
+}
+
+/* Gallery: a tall lead image beside a stack of wide ones; never cropped. */
+.teaching-gallery {
+  margin-top: var(--space-4);
+}
+
+.teaching-gallery__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: start;
+}
+
+.teaching-gallery__stack {
+  display: grid;
+  gap: var(--space-2);
+}
+
+/* Session arc: four real slides joined by small hand-drawn arrows. */
+.teaching-arc {
+  margin-top: var(--space-4);
+}
+
+.teaching-arc__steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3) var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.teaching-arc__media {
+  position: relative;
+}
+
+.teaching-arc__arrow {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: calc(var(--space-4) * -1 + 3px);
+  width: calc(var(--space-4) - 6px);
+  height: 16px;
+  overflow: visible;
+  transform: translateY(-50%);
+}
+
+.teaching-arc__arrow path {
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-accent) 70%, transparent);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.teaching-arc__label {
+  margin-top: var(--space-1);
+  color: var(--color-text);
+}
+
+.teaching-arc .teaching-caption {
+  margin-top: var(--space-2);
+}
+
+@container teaching (min-width: 640px) {
+  .teaching-arc__steps {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .teaching-arc__arrow {
+    display: block;
+  }
+}
+
+/* External documentation: the Home Selected Work card at grid width. */
+.teaching-card {
+  max-width: 22rem;
+  margin-top: var(--space-4);
+}
+
+/* Reflection: body voice with the pull-quote accent rule. */
+.teaching-reflection {
+  margin: var(--space-5) 0 0;
+  padding: 0.15em 0 0.15em 1.25rem;
+  border-left: 2px solid var(--color-accent);
+}
+
+.teaching-reflection .teaching-label {
+  margin-bottom: calc(var(--space-1) / 2);
+}
+
+.teaching-reflection p:not(.teaching-label) {
+  color: var(--color-text);
+}
+
+/* --- Narrow column (tablet portrait with sidebar, phones) ------------------------ */
+@container teaching (max-width: 560px) {
+  .teaching-gallery__grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Metadata lines stack instead of wrapping, so a middle dot never
+     starts a line. */
+  .teaching-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .teaching-meta > * + *::before {
+    content: none;
+  }
+}
+
+/* --- Responsive (viewport) ------------------------------------------------------ */
+@media (max-width: 680px) {
+  .app-content-layer--teaching {
+    padding: 0;
+  }
+
+  .teaching-page {
+    padding: var(--space-5) 0 var(--space-10);
+  }
+
+  .teaching-section--intro .teaching-section__title {
+    font-size: clamp(2.5rem, 14vw, 4rem);
+  }
+
+  .teaching-section + .teaching-section {
+    margin-top: var(--space-12);
+  }
+
+  .teaching-courses {
+    gap: var(--space-10);
+  }
+
+  /* Phones step body and subheads down together (reading primitives). */
+  .teaching-prose > p,
+  .teaching-principles__description,
+  .teaching-course__focus,
+  .teaching-list,
+  .teaching-work__body > p,
+  .teaching-reflection p:not(.teaching-label),
+  .teaching-principles__title,
+  .teaching-work__title {
+    font-size: 1.05rem;
+    line-height: 1.68;
+  }
+
+  .teaching-principles__description {
+    padding-left: 0;
+  }
+
+  .teaching-thread {
+    height: var(--space-6);
+    margin: var(--space-6) 0;
+  }
+
+  .teaching-thread__note {
+    left: auto;
+    right: 6%;
+    top: 0;
+    font-size: 0.9375rem;
+  }
+}

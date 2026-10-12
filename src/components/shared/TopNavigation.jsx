@@ -21,6 +21,7 @@ export default function TopNavigation({ className, style }) {
     navigateToHome,
     navigateToDesk,
     navigateToAbout,
+    navigateToTeaching,
     navigateToLibrary,
     viewState,
   } = usePageTransition();
@@ -38,6 +39,7 @@ export default function TopNavigation({ className, style }) {
     if (viewState === "opening" || viewState === "workspace") return "desk";
     if (viewState === "closing" || viewState === "landing") return "home";
     if (viewState === "about") return "about";
+    if (viewState === "teaching") return "teaching";
     if (viewState === "library") return "caseStudies";
     return viewIdFromPath(pathname);
   }, [viewState, pathname]);
@@ -47,6 +49,7 @@ export default function TopNavigation({ className, style }) {
     caseStudies: navigateToLibrary,
     desk: navigateToDesk,
     about: navigateToAbout,
+    teaching: navigateToTeaching,
   };
 
   // One persistent underline, moved by the shared sliding-indicator motion.

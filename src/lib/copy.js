@@ -71,6 +71,7 @@ const NAV_COPY = {
     caseStudies: "Case Studies",
     desk: "Desk",
     about: "About",
+    teaching: "Teaching",
     ariaLabel: "Site navigation",
   },
   zh: {
@@ -78,6 +79,8 @@ const NAV_COPY = {
     caseStudies: "案例研究",
     desk: "工作台",
     about: "关于",
+    // Chinese label is a draft pending Phoebe's approval.
+    teaching: "教学",
     ariaLabel: "网站导航",
   },
 };

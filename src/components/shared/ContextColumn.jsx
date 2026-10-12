@@ -102,6 +102,102 @@ function LiveValue({ value }) {
   );
 }
 
+/** Nearest scrollable ancestor of an element (the page's scroll surface). */
+function findScrollParent(element) {
+  let node = element?.parentElement;
+  while (node && node !== document.body) {
+    const { overflowY } = window.getComputedStyle(node);
+    if (/(auto|scroll)/.test(overflowY) && node.scrollHeight > node.clientHeight) {
+      return node;
+    }
+    node = node.parentElement;
+  }
+  return null;
+}
+
+/**
+ * Tracks which in-page section is currently being read, so a sidebar
+ * directory can mark it. The active section is the last one whose top has
+ * passed a reading line ~30% down the scroll surface; at the very bottom
+ * the last section wins.
+ */
+function useActiveSection(targetIds) {
+  const [activeId, setActiveId] = useState(targetIds[0] ?? null);
+  const key = targetIds.join("|");
+
+  useEffect(() => {
+    const targets = targetIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean);
+    if (!targets.length) return undefined;
+    const container = findScrollParent(targets[0]);
+    if (!container) return undefined;
+
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const top = container.getBoundingClientRect().top;
+      const line = top + container.clientHeight * 0.3;
+      let current = targets[0].id;
+      targets.forEach((target) => {
+        if (target.getBoundingClientRect().top <= line) current = target.id;
+      });
+      const atBottom =
+        container.scrollTop + container.clientHeight >= container.scrollHeight - 2;
+      if (atBottom) current = targets[targets.length - 1].id;
+      setActiveId(current);
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+
+    update();
+    container.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      container.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+
+  return [activeId, setActiveId];
+}
+
+/**
+ * Directory variant of the metadata region: a short table of contents for
+ * a document page. It is styled apart from status values on purpose — a
+ * leading › marker, a lighter, smaller label, and the section being read
+ * marked in the accent — so a directory never reads like a status line.
+ */
+function DirectoryLinks({ links }) {
+  const [activeId, setActiveId] = useActiveSection(links.map((link) => link.target));
+
+  return (
+    <nav className="context-metadata__links" aria-label="On this page">
+      {links.map((link) => {
+        const isActive = activeId === link.target;
+        return (
+          <a
+            key={link.target}
+            href={`#${link.target}`}
+            className="context-metadata__link"
+            aria-current={isActive ? "location" : undefined}
+            onClick={(event) => {
+              setActiveId(link.target);
+              scrollToSection(event, link.target);
+            }}
+          >
+            <span className="context-metadata__link-marker" aria-hidden="true">›</span>
+            <span className="context-metadata__link-label">{link.label}</span>
+          </a>
+        );
+      })}
+    </nav>
+  );
+}
+
 function ContextMetadata({ item }) {
   const localTime = useLocalTimeLabel();
 
@@ -141,18 +237,7 @@ function ContextMetadata({ item }) {
                 ))}
               </div>
             ) : (
-              <div className="context-metadata__links">
-                {item.links.map((link) => (
-                  <a
-                    key={link.target}
-                    href={`#${link.target}`}
-                    className="context-metadata__link"
-                    onClick={(event) => scrollToSection(event, link.target)}
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </div>
+              <DirectoryLinks links={item.links} />
             )}
           </div>
         </dd>
@@ -161,6 +246,17 @@ function ContextMetadata({ item }) {
   }
 
   const value = item.dynamic === "localTime" ? localTime : item.value;
+  // Wrap stability (v2.2.1): when a value swaps in place among a known set
+  // (e.g. project roles on card hover), `item.reserve` lists every
+  // candidate. They stack invisibly in the same grid cell as the visible
+  // value, so the slot is always as tall as the longest candidate wraps
+  // and the items below never jump when the value changes.
+  // Every candidate stays in the stack, including the current value: the
+  // visible text swaps only after its fade-out, so for that moment the old
+  // value is shown and the new one must already be reserving its lines.
+  const reserve = (item.reserve ?? []).filter(
+    (candidate, index, list) => candidate && list.indexOf(candidate) === index,
+  );
 
   return (
     <div className="context-metadata">
@@ -168,7 +264,16 @@ function ContextMetadata({ item }) {
       {/* Live values swap through <LiveValue>: the span stays mounted and
           fades out/in around the text change, so the metadata block never
           remounts and the swap can't blink. */}
-      <dd>
+      <dd className={reserve.length ? "context-metadata__slot" : undefined}>
+        {reserve.map((candidate) => (
+          <span
+            key={candidate}
+            className="context-metadata__value--ghost"
+            aria-hidden="true"
+          >
+            {candidate}
+          </span>
+        ))}
         <LiveValue value={value} />
       </dd>
     </div>

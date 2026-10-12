@@ -40,7 +40,23 @@ const PAGE_CONTEXT = {
     versionHistory: {
       metadata: [
         { label: "Current chapter", value: "Designing in the Age of AI" },
-        { label: "Current version", value: "v2.1.2" },
+        { label: "Current version", value: "v2.2.1" },
+      ],
+    },
+    teaching: {
+      // A status line (the role) over a small directory of the page's
+      // sections — the document-page exception to the status vocabulary
+      // (see Case Studies). Links smooth-scroll to each section.
+      metadata: [
+        { label: "Current role", value: "Graduate Teaching Associate" },
+        {
+          label: "Teaching Portfolio",
+          links: [
+            { label: "Introduction", target: "teaching-introduction" },
+            { label: "Teaching Philosophy", target: "teaching-philosophy" },
+            { label: "Teaching Experience", target: "teaching-experience" },
+          ],
+        },
       ],
     },
     caseStudies: {
@@ -88,7 +104,21 @@ const PAGE_CONTEXT = {
       // English rather than inventing translations.
       metadata: [
         { label: "Current chapter", value: "Designing in the Age of AI" },
-        { label: "当前版本", value: "v2.1.2" },
+        { label: "当前版本", value: "v2.2.1" },
+      ],
+    },
+    teaching: {
+      // Chinese labels are a draft pending the user's approval.
+      metadata: [
+        { label: "当前角色", value: "研究生助教" },
+        {
+          label: "教学档案",
+          links: [
+            { label: "介绍", target: "teaching-introduction" },
+            { label: "教学理念", target: "teaching-philosophy" },
+            { label: "教学经历", target: "teaching-experience" },
+          ],
+        },
       ],
     },
     caseStudies: {

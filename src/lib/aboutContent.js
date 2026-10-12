@@ -42,27 +42,52 @@ const ABOUT_PAGE_COPY = {
     hero: {
       greeting: "Hi, I’m Phoebe.",
       kicker: "Design engineer · product designer",
-      // v2.1.2 — About reads as one continuous essay about how I think:
-      // observation → reflection → why → design thinking → working
-      // across media → working approach → diagram → reflection on the
-      // diagram → closing.
-      // No headlines, no "not… but / rather than / instead of".
+      // v2.2.1 — About shows who I am: how I think, whose eyes I look
+      // through, how I find answers, and who I am underneath. Each section
+      // leads with a trait; examples are light anchors, never the point.
+      // quote + one-line roadmap → portrait → questions → other
+      // people's perspectives → making (+ loop) → staying true to myself.
       essay: {
-        opening: [
-          "A lot of everyday confusion comes from things that are simple one piece at a time. A task passes from one person to another. A plan changes in one place and quietly shifts something somewhere else. A decision depends on information that sits on a different screen. Each part makes sense on its own; the difficulty lives in how the parts relate.",
-          "I noticed this early in my projects, and it kept surprising me how often the hardest moment for people was simply not knowing where they stood. When someone hesitates, it is usually because a relationship they need is out of sight: who is responsible now, what has already happened, what a change will affect. Once that relationship becomes visible, people tend to know what to do next without being told.",
-          "Making those relationships visible is the part of design I keep returning to. Complexity interests me because it is where people most need help, and where good structure makes the biggest difference. I am drawn to problems with several people, many states and decisions that pull on one another, because untangling them changes how someone feels about the whole task. Watching a person move from hesitation to confidence is the most rewarding moment in my work.",
+        quote: {
+          original: "Dubito, ergo cogito, ergo sum.",
+          translation: "I doubt, therefore I think, therefore I am.",
+        },
+        roadmap:
+          "It is the line closest to how I work: questions start my thinking, other people’s perspectives widen it, and making turns it into something real.",
+        sections: [
+          {
+            id: "doubt",
+            title: "I start with questions",
+            paragraphs: [
+              "I like to ask why. When a brief arrives, when I meet a familiar pattern, or when I have a first idea of my own, I get curious about where it came from, who it is for, and what might happen if we tried it another way. I ask my own work the most questions of all.",
+              "Asking early and out loud helps me understand a problem well, and it often opens up better options for the whole team.",
+            ],
+          },
+          {
+            id: "perspectives",
+            title: "Seeing from every side",
+            paragraphs: [
+              "Before I settle on a direction, I try to stand where each person involved stands: the person handing over a task and the person taking it on, the operator and the team behind the platform, the student who sees things differently from me. Once I understand what each of them cares about and worries about, and hold those views side by side, the real problem usually shows up.",
+            ],
+          },
+          {
+            id: "making",
+            title: "Clarity comes from making",
+            paragraphs: [
+              "When I have an idea, I start making it right away: a sketch, a clickable flow, a rough version in code. That is where my questions get their answers. Emotion Garden, my thesis project, took more than a hundred versions to find its visual language, and each one showed me what the next should change. Working with AI keeps shortening the distance between an idea and something people can try, which suits me well.",
+              "Put together, it becomes a loop:",
+            ],
+            diagram: true,
+          },
+          {
+            id: "true",
+            title: "Staying true to myself",
+            paragraphs: [
+              "Being honest with myself is harder than it sounds. Sometimes I believe I care about something, or that a direction feels right, and only later realize it wasn’t what I truly felt. Telling the two apart takes practice, and for me that practice is doing concrete things: once I’m making something, it becomes clear whether I’m absorbed or forcing it, curious or only feeling I should be.",
+              "Knowing myself is also what lets me understand other people. It is hard to stand where someone else stands while I’m unclear about where I stand. I’m always learning, changing and becoming, and this honesty is what I hold on to through all of it.",
+            ],
+          },
         ],
-        thinking: [
-          "So when I design, I start by trying to see the system as a whole: the people involved, the information that moves between them, the states things can be in. Then I ask what someone needs to see at a given moment, how it will help them reflect on where they are, and what they can confidently do next. Those three questions shape most of my decisions, from information architecture to the smallest piece of feedback.",
-          "The same way of thinking carries across the different kinds of things I make. Some of my work lives on a screen, some in physical space, and some where the two meet. In each, the work is the same: finding the relationships that matter and giving them a form people can sense and act on.",
-          "It also shapes how I work. Understanding a system on paper only goes so far, so I build early. Putting something real in front of people shows me where they hesitate and which relationships are still hidden. What I learn there sends me back to the people I am designing for, and then into the next version of the structure.",
-        ],
-        afterDiagram: [
-          "Drawn out, it is a simple loop. It is the pattern I find myself returning to on every project, whatever its scale or medium, and each pass around it makes the next version a little clearer.",
-        ],
-        closing:
-          "Underneath all of it is the same quiet interest: understanding how something complex really works, making the relationships inside it visible, and shaping it into a system people can move through with confidence. Each project teaches me a little more about where that confidence comes from.",
       },
       processSteps: ["Understand people", "Shape the system", "Build to learn"],
       headshotAlt: "Portrait of Phoebe Qin",
@@ -106,21 +131,46 @@ const ABOUT_PAGE_COPY = {
       greeting: "你好，我是 Phoebe.",
       kicker: "设计工程师 · 产品设计师",
       essay: {
-        opening: [
-          "日常里的很多困惑，拆开来看，每一块都很简单。一项任务从一个人交到另一个人手里；一个计划在某处改了一点，别处也悄悄跟着变；一个决定依赖的信息，放在另一个页面上。每个部分单独看都说得通，难点藏在它们彼此的关系里。",
-          "我在做项目的过程中很早就注意到这一点，也一再惊讶于：人们最吃力的时刻，往往只是不知道自己身处何处。人会犹豫，通常是因为某段需要的关系被藏了起来：现在由谁负责，之前已经发生了什么，一次修改会牵动哪里。一旦这段关系变得可见，人往往不需要别人提醒，就知道下一步该做什么。",
-          "让这些关系变得可见，是设计中我一次次回到的部分。复杂之所以吸引我，是因为那里最需要帮助，好的结构也最能带来改变。我会被那些牵涉好几个人、很多种状态、彼此牵动的决定的问题吸引，因为把它们理顺，会改变一个人对整件事的感受。看着一个人从犹豫走到笃定，是我工作中最有成就感的时刻。",
+        quote: {
+          original: "Dubito, ergo cogito, ergo sum.",
+          translation: "我怀疑，故我思；我思，故我在。",
+        },
+        roadmap:
+          "这是最贴近我工作方式的一句话：提问让我开始思考，站到不同人的位置上让思考变宽，动手去做把它变成真实的东西。",
+        sections: [
+          {
+            id: "doubt",
+            title: "我从提问开始",
+            paragraphs: [
+              "我习惯先问一句「为什么」。拿到一份需求、遇到一个常见的设计模式，或者冒出自己的第一个想法时，我会好奇：它从哪里来，为谁而做，如果换一种方式会怎样。问得最多的，往往是我自己的作品。",
+              "早一点、坦诚地把问题提出来，能帮我把一件事真正想透，也常常为整个团队打开更好的选择。",
+            ],
+          },
+          {
+            id: "perspectives",
+            title: "站在每一方的位置上看",
+            paragraphs: [
+              "在定下方案之前，我会先试着站到每个相关的人的位置上：交出一件事的人和接手的人，运营商和平台背后的团队，和我想法不一样的学生。看清他们各自在意什么、担心什么，再把这些视角放在一起，真正的问题往往就浮现了。",
+            ],
+          },
+          {
+            id: "making",
+            title: "在做的过程中找到清晰",
+            paragraphs: [
+              "有了想法，我会马上动手做：一张草图、一段可以点的流程、一个用代码搭的粗糙版本。我的疑问，往往在做的过程中得到回答。我的论文项目 Emotion Garden 改了一百多个版本，才找到自己的视觉语言，每一版都告诉我下一版该改什么。现在和 AI 一起工作，从想法到别人能试用的东西，距离越来越短，这很适合我。",
+              "把这些放在一起，就是一个循环：",
+            ],
+            diagram: true,
+          },
+          {
+            id: "true",
+            title: "对自己诚实",
+            paragraphs: [
+              "对自己诚实，比听起来要难。有时候我以为自己在乎某件事、某个方向是对的，后来才发现，那并不是我真正的感受。分辨这两者需要练习，而对我来说，最好的练习就是去做具体的事：一件事真正做下去，我是投入还是勉强，是好奇还是只觉得「应该」，都会慢慢变得清楚。",
+              "认识自己，也是理解别人的前提；连自己站在哪里都看不清，就很难真正站到别人的位置上。我一直在学习、在改变、在成为，这份诚实，是我一路都想守住的东西。",
+            ],
+          },
         ],
-        thinking: [
-          "所以设计时，我会先试着看清整个系统：涉及哪些人，信息如何在他们之间流动，事情可能处于哪些状态。然后问自己：一个人此刻需要看见什么，它如何帮助他们理解和反思自己所处的位置，接下来他们又能有信心地做什么。这三个问题影响着我的大部分决定，从信息架构，到最小的一处反馈。",
-          "这种思考方式贯穿我做的各种东西。我的一些作品在屏幕上，一些在实体空间里，也有一些在两者交汇的地方。无论哪一种，要做的事都一样：找到真正重要的关系，并给它一个人可以感知、也可以据此行动的形式。",
-          "它也塑造了我的工作方式。在纸上理解一个系统只能走到一定程度，所以我会尽早动手做。把真实的东西放到人面前，会让我看到他们在哪里犹豫、哪些关系仍然被藏着；从中学到的东西，又把我带回到我为之设计的人身上，再进入下一版结构。",
-        ],
-        afterDiagram: [
-          "把它画出来，是一个简单的循环。这是我在每个项目里都会一次次回到的模式，无论项目大小、媒介如何；每绕一圈，下一版就会更清晰一点。",
-        ],
-        closing:
-          "这一切的底下，是同一份安静的兴趣：弄清一个复杂的东西究竟如何运作，让其中的关系变得可见，再把它塑造成人们可以有信心地穿行其中的系统。每一个项目，都让我对这份信心从何而来多懂一点。",
       },
       processSteps: ["理解人", "构建系统", "在制作中学习"],
       headshotAlt: "Phoebe Qin 的职业肖像",

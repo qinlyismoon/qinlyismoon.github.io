@@ -278,6 +278,24 @@ body[data-page="desk"] .viewport-top-nav {
   transform: translateY(4px);
 }
 
+/* Wrap stability (v2.2.1): a value that swaps among a known set of
+ * candidates stacks hidden ghost copies of every candidate in the same
+ * grid cell, so the slot always sizes to the candidate that wraps to the
+ * most lines (at the current width and language). Swapping never changes
+ * the slot height, so the items below never jump. Same technique as the
+ * nav tab ghost twins. */
+.context-metadata__slot {
+  display: grid;
+}
+
+.context-metadata__slot > * {
+  grid-area: 1 / 1;
+}
+
+.context-metadata__value--ghost {
+  visibility: hidden;
+}
+
 @keyframes context-metadata-value-in {
   from {
     opacity: 0;
@@ -286,6 +304,71 @@ body[data-page="desk"] .viewport-top-nav {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* --- Sidebar directory (v2.2.0) ----------------------------------------------
+ * On document pages (Teaching, Case Studies) the metadata region can hold a
+ * table of contents instead of status. It must never read like a status
+ * value: each entry leads with a › marker, the label is one step smaller
+ * and lighter than status values (15px / 500 vs 17px / 600), entries sit
+ * close together like a list, and the section being read is marked —
+ * primary ink with an accent marker. Hover follows the link rule (accent +
+ * 3px nudge). */
+.context-metadata__links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: 2px;
+}
+
+.context-metadata__link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.55em;
+  width: fit-content;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color 160ms ease, transform 160ms ease;
+}
+
+.context-metadata__link-marker {
+  display: inline-block;
+  width: 0.6em;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--color-text-secondary) 55%, transparent);
+  transition: color 160ms ease;
+}
+
+.context-metadata__link[aria-current="location"] {
+  color: var(--color-text);
+}
+
+.context-metadata__link[aria-current="location"] .context-metadata__link-marker {
+  color: var(--color-accent);
+}
+
+.context-metadata__link:hover,
+.context-metadata__link:hover .context-metadata__link-marker {
+  color: var(--color-accent);
+}
+
+.context-metadata__link:hover {
+  transform: translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .context-metadata__link,
+  .context-metadata__link-marker {
+    transition: none;
+  }
+
+  .context-metadata__link:hover {
+    transform: none;
   }
 }
 
@@ -518,6 +601,35 @@ html.theme-fallback-in #root {
     grid-row: auto;
     padding: 0;
     border-bottom: 0;
+  }
+}
+
+/* Four tabs (v2.2.0: Home · About · Teaching · Desk) share the phone header
+ * row with `EN · Settings`. Tab padding, then type, step down on narrow
+ * phones so the row never collides or wraps; heights and the underline
+ * grammar are unchanged. Measured at 320 / 360 / 375 / 390 / 430px. */
+@media (max-width: 420px) {
+  .site-nav__item {
+    padding: 0 8px;
+  }
+}
+
+@media (max-width: 380px) {
+  .site-nav__item {
+    padding: 0 7px;
+    font-size: 0.75rem;
+    letter-spacing: 0;
+  }
+}
+
+@media (max-width: 340px) {
+  .site-nav__item {
+    padding: 0 5px;
+    font-size: 0.6875rem;
+  }
+
+  .viewport-top-nav__mobile-settings .system-status__item {
+    padding-inline: 2px;
   }
 }
 
