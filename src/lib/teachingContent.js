@@ -36,7 +36,7 @@ const TEACHING_COPY_EN = {
   introduction: {
     title: "Teaching",
     paragraphs: [
-      "Since 2025 I have been a Graduate Teaching Associate at The Ohio State University, supporting courses in design foundations, experiential media, and visual communication.",
+      "Since January 2025 I have been a Graduate Teaching Associate at The Ohio State University, supporting courses in design foundations, experiential media, and visual communication.",
       "Teaching changed the way I understand my own design process. Explaining an idea to someone else means making its reasoning visible: what I would do, and why. Working with students taught me to listen closely, adapt feedback to different ways of thinking, and leave room for experimentation.",
     ],
     // Handwritten note on the thread between Introduction and Philosophy.
@@ -54,19 +54,19 @@ const TEACHING_COPY_EN = {
         index: "01",
         title: "Transferable Thinking",
         description:
-          "Every method answers a question. Teaching the question lets students rebuild the method wherever they need it.",
+          "A method is tied to one situation; the question behind it travels. I teach that question so students can rebuild a method when the assignment, the field, or the medium changes.",
       },
       {
         index: "02",
         title: "Individual Approaches",
         description:
-          "A shared objective can be reached by many routes. Built on a student's own field and experience, a method stops being borrowed and becomes theirs.",
+          "The same goal can be reached by many routes. When a method grows from a student’s own field and experience, it becomes theirs to keep using.",
       },
       {
         index: "03",
         title: "Contextual Reasoning",
         description:
-          "Audience, medium, and purpose change what good looks like. Learning to read them turns rules into judgment.",
+          "Audience, medium, and purpose change what “good” looks like. Learning to read them is how students move from following rules to making their own judgment.",
       },
     ],
   },
@@ -220,40 +220,40 @@ const TEACHING_COPY_ZH = {
   introduction: {
     title: "教学",
     paragraphs: [
-      "自 2025 年起，我在俄亥俄州立大学担任研究生助教（Graduate Teaching Associate），参与设计基础、体验媒体与视觉传达方向的课程。",
-      "教学改变了我理解自己设计过程的方式。向别人解释一个想法，意味着把它背后的推理变得可见：我会怎么做，以及为什么。与学生一起工作，让我学会更仔细地倾听，根据不同的思维方式调整反馈，并为实验留出空间。",
+      "从 2025 年 1 月起，我在俄亥俄州立大学做研究生助教（Graduate Teaching Associate），参与设计基础、体验媒体和视觉传达方向的课。",
+      "教学改变了我对自己设计过程的理解。要把想法讲清楚，就得把背后的理由摊开：我会怎么做，为什么这么做。和学生一起工作，让我学会听得更细，按不同的思维方式给反馈，也为试错留一点空。",
     ],
-    threadNote: "让思考被看见",
+    threadNote: "把想法摊开",
   },
 
   philosophy: {
-    title: "我如何看待教学",
-    subtitle: "学会在课堂之外思考。",
+    title: "我怎么看教学",
+    subtitle: "学会在课堂之外想问题。",
     paragraphs: [
-      "我为课程结束之后的那一刻而教：当学生遇到一个任何作业都没有准备过的问题时，支撑他们的是一种思考方式——质疑所见、读懂情境，并相信自己的判断。",
+      "我为课结束之后的那一刻而教：当学生碰上任何作业都没准备过的问题时，托住他们的是一种想事情的方式——质疑所见、读懂情境，并相信自己的判断。",
     ],
     principles: [
       {
-        title: "可迁移的思考",
+        title: "能带走的思考",
         description:
-          "每一种方法都在回答一个问题。教会那个问题，学生就能在任何需要的地方重新建立方法。",
+          "方法往往绑在某一种情境里；它背后的问题，可以带走。我教的是那个问题，这样学生换了作业、领域或媒介，也能自己重新搭起方法。",
       },
       {
-        title: "个体化的路径",
+        title: "各自的路",
         description:
-          "同一个目标可以有许多条路。当方法建立在学生自己的领域与经验之上，它就不再是借来的，而成为他们自己的。",
+          "同一个目标可以有许多条路。当方法从学生自己的领域和经验里长出来，它就真正成为他们可以继续用的东西。",
       },
       {
-        title: "情境中的判断",
+        title: "看清再判断",
         description:
-          "受众、媒介与目的，会改变“好”的标准。学会读懂它们，规则才会变成判断。",
+          "受众、媒介和目的，会改变「好」的标准。学会读懂它们，学生才能从跟着规则走，走到自己做出判断。",
       },
     ],
   },
 
   experience: {
     title: "教学经历",
-    note: "我作为研究生助教参与的课程，以及每门课中留下的工作。",
+    note: "我作为研究生助教参与的课，以及每门课里留下的工作。",
     labels: {
       role: "我的角色",
       reflection: "反思",
@@ -261,28 +261,27 @@ const TEACHING_COPY_ZH = {
     courses: [
       {
         term: "2026 春季 / 2026 秋季",
-        focus:
-          "视觉传达、字体排印、层级与演示设计：通过视觉思考来发展想法。",
+        focus: "视觉传达、字体排印、层级与演示设计：用视觉思考把想法长出来。",
         role: ["评阅并点评学生作业。", "支持课堂讨论与活动。"],
         work: [
           {
             title: "复习课",
             body: [
-              "这门课每周都有一次复习课，我在学期中主讲其中的一部分。每节课围绕一个问题展开，把它从当周的阅读带进学生自己的领域。结构始终如一，变的只是问题。",
+              "这门课每周有一次复习课，我在学期中主讲其中一部分。每节课围着一个问题转，把它从当周的阅读带进学生自己的领域。结构差不多，变的只是问题。",
             ],
             arc: [
               { label: "提问", text: "一个宏观的问题" },
               { label: "回顾", text: "阅读、视频与讲座" },
               { label: "应用", text: "放进每位学生自己的领域" },
-              { label: "整合", text: "回到“演示即思考”" },
+              { label: "整合", text: "回到「演示即思考」" },
             ],
-            arcCaption: "这一结构，以我主讲的一节复习课的幻灯片呈现。",
+            arcCaption: "这个结构，用我主讲的一节复习课幻灯片来呈现。",
             figure: {
               alt: "Phoebe 在线上主讲复习课的录屏截图，正在讲解幻灯片：如何应用旗帜设计的五项原则？",
-              caption: "主讲复习课，正处于“应用”这一步。",
+              caption: "主讲复习课，正走到「应用」这一步。",
             },
             reflection:
-              "每节课都结束在学生出发的地方：他们自己的领域。一个想法能否走得更远，要在那里得到检验。",
+              "每节课都落回学生出发的地方：他们自己的领域。一个想法能不能走得更远，要在那里试。",
           },
         ],
       },
@@ -294,33 +293,34 @@ const TEACHING_COPY_ZH = {
           {
             title: "学生项目",
             body: [
-              "我指导的项目包括一个把身体运动转化为游戏式互动的投影映射作品，以及设定在设计学院大楼中的 AR 体验。",
+              "我带过的项目里，有一个把身体运动变成游戏式互动的投影映射作品，也有设定在设计学院大楼里的 AR 体验。",
             ],
             gallery: [
-              { alt: "学生在设计工作室中踏过可互动的投影地面" },
+              { alt: "学生在设计工作室里踏过可互动的投影地面" },
               { alt: "学生 AR 项目：以 Hayes Hall 为背景的视觉小说式鬼故事" },
               { alt: "学生 AR 项目：设计学院导览的分镜与界面" },
             ],
             galleryCaption:
-              "左：把运动变成游戏的投影映射；右：在 Hayes Hall 与为设计学院制作的 AR 项目。",
+              "左：把运动变成游戏的投影映射；右：在 Hayes Hall 与为设计学院做的 AR 项目。",
           },
           {
             title: "传感器原型",
             body: [
-              "在项目之外，我探索了哪些物理输入能够稳定地触发动画与视频播放，并在过程中记录了每一个原型。",
+              "项目之外，我试过哪些物理输入能稳定触发动画和视频播放，并在过程中记下每一个原型。",
             ],
             card: {
-              description: "一份过程记录：测试光线、按钮与距离输入作为动画和视频播放的触发方式。",
+              description:
+                "一份过程记录：测试光线、按钮与距离输入，作为动画和视频播放的触发方式。",
             },
             reflection:
-              "动手搭建并测试原型，是我理解一种媒介的可能性、限制与行为方式的途径。",
+              "动手搭、动手测，是我弄清一种媒介能做什么、做不到什么、会怎么动的方式。",
           },
         ],
       },
       {
         term: "2025 春季",
         focus: "基础设计原则、视觉语言、构图与迭代过程。",
-        role: ["在工作室中进行一对一点评。", "鼓励学生清楚地说明自己的设计决定。"],
+        role: ["在工作室里做一对一点评。", "鼓励学生把设计决定说清楚。"],
       },
     ],
   },

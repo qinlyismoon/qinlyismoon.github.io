@@ -1,7 +1,11 @@
-export function getThemeColors(isDarkMode) {
+import { getAccentPageBg } from "./settings";
+
+export function getThemeColors(isDarkMode, accent = "forest") {
+  const pageBg = getAccentPageBg(accent, isDarkMode);
+
   return isDarkMode
     ? {
-        pageBg: "#171717",
+        pageBg,
         windowBg: "#202020",
         windowTexture:
           "radial-gradient(circle at 18% 22%, rgba(255,255,255,0.045) 0, rgba(255,255,255,0.045) 1px, transparent 1.6px), radial-gradient(circle at 72% 64%, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1.7px), linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 22%, rgba(0,0,0,0.02) 100%)",
@@ -23,7 +27,7 @@ export function getThemeColors(isDarkMode) {
         navActiveHoverBg: "rgba(255,255,255,0.18)",
       }
     : {
-        pageBg: "#f7f7f5",
+        pageBg,
         windowBg: "#ffffff",
         windowTexture:
           "radial-gradient(circle at 20% 24%, rgba(0,0,0,0.032) 0, rgba(0,0,0,0.032) 1px, transparent 1.7px), radial-gradient(circle at 76% 68%, rgba(0,0,0,0.022) 0, rgba(0,0,0,0.022) 1px, transparent 1.8px), linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(248,248,248,0.96) 100%)",

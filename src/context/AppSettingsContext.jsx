@@ -4,6 +4,7 @@ import {
   SETTINGS_STORAGE_KEY,
   DEFAULT_SETTINGS,
   applyDocumentSettings,
+  getAccentPageBg,
   normalizeSettings,
   resolveIsDark,
 } from "../lib/settings";
@@ -127,6 +128,11 @@ export function AppSettingsProvider({ children }) {
       );
     }
     root.dataset.accent = accent;
+    const nextIsDark = resolveIsDark(settingsRef.current.themeMode);
+    root.style.setProperty(
+      "--color-background",
+      getAccentPageBg(accent, nextIsDark),
+    );
     setSettings((prev) => ({ ...prev, accent }));
   }, []);
 

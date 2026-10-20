@@ -13,13 +13,50 @@ export const SETTINGS_STORAGE_KEY = "phoebe-site-settings";
 
 export const THEME_MODES = ["light", "dark", "system"];
 
+/** Accent pigments + matching page grounds (subtle tint of the accent). */
 export const ACCENTS = [
-  { id: "forest", light: "#526b61", dark: "#9aafa5" },
-  { id: "ink", light: "#4c6178", dark: "#a3b4c7" },
-  { id: "clay", light: "#94584a", dark: "#d4a698" },
-  { id: "plum", light: "#6b5a75", dark: "#bcaac4" },
-  { id: "ochre", light: "#80652e", dark: "#cdb27c" },
+  {
+    id: "forest",
+    light: "#526b61",
+    dark: "#9aafa5",
+    pageBgLight: "#f4f6f4",
+    pageBgDark: "#161816",
+  },
+  {
+    id: "ink",
+    light: "#4c6178",
+    dark: "#a3b4c7",
+    pageBgLight: "#f4f5f7",
+    pageBgDark: "#15171a",
+  },
+  {
+    id: "clay",
+    light: "#94584a",
+    dark: "#d4a698",
+    pageBgLight: "#f7f4f2",
+    pageBgDark: "#1a1716",
+  },
+  {
+    id: "plum",
+    light: "#6b5a75",
+    dark: "#bcaac4",
+    pageBgLight: "#f6f4f7",
+    pageBgDark: "#18161a",
+  },
+  {
+    id: "ochre",
+    light: "#80652e",
+    dark: "#cdb27c",
+    pageBgLight: "#f7f5ef",
+    pageBgDark: "#1a1814",
+  },
 ];
+
+export function getAccentPageBg(accentId, isDark) {
+  const accent =
+    ACCENTS.find((entry) => entry.id === accentId) ?? ACCENTS[0];
+  return isDark ? accent.pageBgDark : accent.pageBgLight;
+}
 
 export const DEFAULT_SETTINGS = {
   language: "en",
@@ -109,5 +146,7 @@ export function applyDocumentSettings({ isDark, accent, language }) {
   root.dataset.theme = isDark ? "dark" : "light";
   root.dataset.accent = accent;
   root.style.colorScheme = isDark ? "dark" : "light";
+  // Page ground follows the accent so the whole site shifts with 主题色.
+  root.style.setProperty("--color-background", getAccentPageBg(accent, isDark));
   if (language) root.lang = language === "zh" ? "zh-Hans" : "en";
 }

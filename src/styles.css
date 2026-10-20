@@ -5643,14 +5643,18 @@ body {
   top: var(--context-column-top);
   align-self: start;
   display: grid;
-  /* Identity and metadata keep fixed heights from the panel top; system
-     status pins near the panel bottom with breathing room below it — a
-     floating dock, not a footer. The flexible spacer between metadata
-     and system status absorbs viewport height (never less than
-     var(--space-6)), so the whitespace stays intentional. Divider
-     positions are identical across pages at the same viewport size. */
-  grid-template-rows: 232px 336px minmax(var(--space-6), 1fr) auto;
-  min-height: calc(100vh - var(--context-column-top));
+  /* Section-based rhythm: identity (A), page/project context (B) and
+     personal information (C) each size to their content. The flexible
+     spacer below them absorbs viewport height (never less than
+     var(--space-6)), so system status rests near the panel bottom and
+     the lower sidebar breathes instead of stretching sections apart. */
+  grid-template-rows: auto auto minmax(var(--space-6), 1fr) auto;
+  /* Full-height so the spacer can anchor system status near the bottom;
+     on short viewports the panel scrolls internally (scrollbar hidden
+     below) instead of clipping or overlapping. */
+  height: calc(100dvh - var(--context-column-top));
+  overflow-y: auto;
+  scrollbar-width: none;
   gap: 0;
   color: var(--color-text);
   font-family: var(--font-sans);
@@ -5663,11 +5667,10 @@ body {
   background: transparent;
 }
 
-/* Fixed information panel: identity and metadata keep fixed heights from
-   the panel top; system status pins near the panel bottom; a flexible
-   spacer between metadata and system status absorbs viewport height.
-   Divider positions are identical across pages at the same viewport
-   size; only the content inside each region changes per route. */
+/* Section-based information panel: identity, context and personal
+   sections size to their content from the panel top; system status pins
+   near the panel bottom below a flexible spacer. Only the content inside
+   each section changes per route — never the panel geometry. */
 .context-column__region {
   box-sizing: border-box;
   min-height: 0;
@@ -5681,7 +5684,6 @@ body {
    purpose: the logo reads as a signature, not an icon, with generous
    whitespace above it and between each line. Calm and intentional. */
 .context-column__region--identity {
-  height: 232px;
   padding-top: var(--space-4);
   padding-bottom: var(--space-3);
   /* Persistent chrome: route transitions must not crossfade the identity
@@ -5689,11 +5691,15 @@ body {
   view-transition-name: context-identity;
 }
 
+.context-column::-webkit-scrollbar {
+  display: none;
+}
+
 .context-column__logo {
   display: block;
   width: 56px;
   height: auto;
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-2);
   object-fit: contain;
   opacity: 0.85;
 }
@@ -5703,22 +5709,19 @@ body {
 }
 
 .context-column__region--metadata {
-  /* Sized for the densest directory (Version History: seven section
-     links) so nothing clips. Every page shares this height — content
-     changes, the panel never moves. */
-  height: 336px;
-  /* No divider below the metadata: the system status region needs no
-     dividing line above it — it sits directly on the panel, separated
-     by whitespace. */
+  /* Sizes to the sections inside it (context + personal) so nothing is
+     stretched or clipped on short viewports. No divider below: the
+     system status region sits directly on the panel, separated by the
+     flexible whitespace of the spacer row. */
   border-bottom: 0;
+  overflow: visible;
   /* The section and its divider stay static; only the inner content swaps. */
 }
 
 /* Inner metadata content: remounts on page change (keyed by page) and
-   slides in the direction of tab navigation. Content stays top-aligned;
-   the region's fixed height is shared by every page. */
+   slides in the direction of tab navigation. Content stays top-aligned. */
 .context-column__metadata-swap {
-  height: 100%;
+  height: auto;
 }
 
 .context-column__metadata-swap--forward {
@@ -5793,11 +5796,11 @@ body {
   }
 }
 
-/* One spacing system for every page: the densest directory (Version
-   History, seven section links) fits the fixed region with the same gaps
-   as the rest. */
+/* One spacing system for every page: consistent gaps within each
+   information group; larger gaps live between sections (see
+   site-chrome.css). */
 .context-column__region--metadata .context-column__metadata {
-  gap: var(--space-3);
+  gap: 1.25rem;
 }
 
 /* System status: pinned near the panel bottom (grid row 4, below the
@@ -5828,7 +5831,7 @@ body {
 
 /* Two parallel professional identities with equal visual importance. */
 .context-column__roles {
-  margin-top: var(--space-2);
+  margin-top: var(--space-1);
 }
 
 .context-column__role {
@@ -5874,25 +5877,27 @@ body {
   }
 }
 
-/* Sidebar type system — one scale for every page.
-   Labels: 12px / medium (500) / secondary text.
-   Values: 17px / semibold (600) / primary text.
-   Label -> value gap: 7px. Item gap: var(--space-3), identical everywhere. */
+/* Sidebar type system — three levels on every page.
+   Primary: the personal name (see the identity rules).
+   Secondary: information values, 15px / 500 / primary text.
+   Tertiary: section + field labels, 11px uppercase / 500 / secondary
+   text with restrained letter spacing. Label -> value gap: 6px. */
 .context-metadata dt {
   color: var(--color-text-secondary);
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 500;
   line-height: 1.4;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .context-metadata dd {
-  margin: 7px 0 0;
+  margin: 6px 0 0;
   color: var(--color-text);
-  font-size: 1.0625rem;
-  font-weight: 600;
-  line-height: 1.45;
-  letter-spacing: -0.01em;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
 }
 
 /* Case Studies sidebar directory: section links stacked under one heading.
@@ -5934,18 +5939,19 @@ body {
 
 .context-metadata__detail-label {
   color: var(--color-text-secondary);
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 500;
   line-height: 1.4;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .context-metadata__detail-value {
   color: var(--color-text);
-  font-size: 1.0625rem;
-  font-weight: 600;
-  line-height: 1.45;
-  letter-spacing: -0.01em;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -5977,10 +5983,10 @@ body {
   gap: var(--space-1);
   margin: var(--space-3) 0 0;
   color: var(--color-text);
-  font-size: 1.0625rem;
-  font-weight: 600;
-  line-height: 1.45;
-  letter-spacing: -0.01em;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
 }
 
 .context-metadata--status .context-column__availability {
@@ -6021,7 +6027,7 @@ body {
    separated by middle dots, no label. Secondary voice; the underline
    voice comes from .ds-link. */
 .context-column__contact-line {
-  margin: var(--space-1) 0 0;
+  margin: 0.75rem 0 0;
   color: var(--color-text-secondary);
   font-size: var(--type-caption);
   line-height: 1.45;
@@ -6223,6 +6229,8 @@ body {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: none;
     min-height: 0;
+    height: auto;
+    overflow-y: visible;
     gap: 0 var(--space-3);
     width: 100%;
     border-bottom: 1px solid var(--color-divider);

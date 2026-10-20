@@ -13,8 +13,11 @@ export default function SharedLayout({
   metadataDirection = "none",
   metadataSwapKey,
 }) {
-  const { isDarkMode } = useAppSettings();
-  const themeColors = useMemo(() => getThemeColors(isDarkMode), [isDarkMode]);
+  const { isDarkMode, accent } = useAppSettings();
+  const themeColors = useMemo(
+    () => getThemeColors(isDarkMode, accent),
+    [isDarkMode, accent],
+  );
   // Home and Desk share the same fixed application grid. Page-specific
   // content changes must never move the persistent chrome.
   const isStageView = page === "desk" || page === "home";

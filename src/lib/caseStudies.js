@@ -13,11 +13,11 @@ export const VIBE_PROJECTS = [
     timeline: "2026",
     tagline:
       "Turning a one-shot AI prototype into a situated, interactive digital place.",
-    taglineZh: "把一次性的 AI 原型，打磨成一个有身临感的可交互数字场所。",
+    taglineZh: "把一次性的 AI 原型，打磨成一个能身临其境的可交互数字场所。",
     description:
       "An interactive web experience inspired by my 2023 graduation trip to Onomichi, Japan — translating the memory and atmosphere of a place into wind, chimes, and wishes.",
     descriptionZh:
-      "受 2023 年日本尾道毕业旅行启发的可交互网页体验——把一个地方的记忆与氛围，翻译成风、铃与愿望。",
+      "受 2023 年日本尾道毕业旅行启发的可交互网页——把一个地方的记忆和氛围，译成风、铃与愿望。",
     tags: ["Interactive Web", "Vibe Coded"],
     liveUrl: "https://qinlyismoon.github.io/onomichi-furin/",
     notesUrl:
@@ -37,14 +37,14 @@ export const VIBE_PROJECTS = [
     },
     detailZh: {
       background:
-        "2023 年毕业旅行时我去了尾道。留在记忆里的是一些细小的瞬间：沿着山腰的寺庙小径散步，俯瞰大海与小镇，听见风铃声，遇见在寺庙里打盹和闲逛的猫。",
-      question: "一个地方的记忆与氛围，如何被翻译成可交互的数字环境？",
+        "2023 年毕业旅行时我去了尾道。留在记忆里的是一些细小的瞬间：沿着山腰的寺庙小径散步，俯瞰大海和小镇，听见风铃声，遇见在寺庙里打盹、闲逛的猫。",
+      question: "一个地方的记忆和氛围，怎样译成可交互的数字环境？",
       visual:
-        "朱红、鹅黄、群青与暖白，把尾道的天空、大海、小镇和建筑抽象成柔和晕染的色块；受吴冠中启发的墨色线条，勾勒出悬挂的铁丝、细绳、山水与风铃。",
+        "朱红、鹅黄、群青与暖白，把尾道的天空、大海、小镇和建筑收成柔和晕染的色块；受吴冠中启发的墨色线条，勾出悬挂的铁丝、细绳、山水与风铃。",
       interaction:
-        "划过风铃让它们响起，点击纸条阅读上面的愿望，点击「風」对着麦克风吹气，搅动一阵风。",
+        "划过风铃让它们响，点纸条读上面的愿望，点「風」对着麦克风吹气，搅起一阵风。",
       process:
-        "用 vibe coding 构建：直接向 AI 编程助手描述视觉语言、物理行为、声音与交互规则，再逐步打磨成一个有身临感的数字场所。",
+        "用 vibe coding 做：直接向 AI 编程助手描述视觉语言、物理行为、声音和交互规则，再一点点打磨成能身临其境的数字场所。",
     },
   },
 ];
@@ -64,7 +64,7 @@ export const SELECTED_PROJECTS = [
     description:
       "A shared plant-care app that makes a care handoff legible: the caregiver knows when to act, how, and when to flag a problem, and the owner can finally let go of the follow-up. Designed and built as a working prototype.",
     descriptionZh:
-      "一款共享植物养护应用，让照料的交接变得清楚可读：临时照料者知道何时行动、如何操作、何时需要上报异常，主人也终于可以放下远程的跟进。从设计到代码，做成了可运行的原型。",
+      "一款共享植物养护应用，把照料的交接说清楚：临时照料者知道什么时候动手、怎么做、什么时候该报异常，主人也能真正放下远程跟进。从设计到代码，做成了能跑的原型。",
     tags: ["Product Design", "Design Engineering"],
     url: "https://app.notion.com/p/Leaf-Note-3c77fb6b97a580628279feb164c27446?source=copy_link",
     thumbnail: "/leaf-note-thumb.png",
@@ -79,7 +79,7 @@ export const SELECTED_PROJECTS = [
     description:
       "An interactive data visualization experience that turns emotional records into a living garden, helping people explore patterns, relationships, and everyday experiences over time.",
     descriptionZh:
-      "一个交互式数据可视化体验，把情绪记录变成一座生长的花园，帮助人们探索随时间展开的模式、关联与日常经历。",
+      "一个交互式数据可视化体验，把情绪记录变成一座会生长的花园，帮人看见随时间展开的模式、关联和日常经历。",
     tags: ["Data Visualization", "Interaction Design"],
     url: "https://app.notion.com/p/Emotion-Graden-3f67fb6b97a580f395e5d6099d671d31?source=copy_link",
     liveUrl: "https://emotion-garden-sooty.vercel.app/",
@@ -97,11 +97,18 @@ export const SELECTED_PROJECTS = [
     timeline: "2026",
     detail: {
       overview:
-        "Emotion Garden explores how personal emotional data can become a living visual landscape. Through a flower-based visual language, interactive timelines, and reflective insights, the experience allows people to explore emotional patterns across time and everyday contexts.",
+        "Emotion Garden is one project within my thesis research on emotional personal informatics. It asks how personal emotional data can become a living visual landscape—something people can read, revisit, and make sense of over time.",
+      question:
+        "How can emotional records become something people can interpret and reflect on?",
+      visual:
+        "Each emotional moment appears as a flower. Color, form, and size carry feeling, context, and duration; categories of everyday life—work and study, relationships, own time, body and health—sit along the garden so patterns read as a landscape.",
     },
     detailZh: {
       overview:
-        "Emotion Garden 探索个人情绪数据如何成为一片有生命的视觉景观。通过以花为单位的视觉语言、可交互的时间线与反思性的洞察，人们可以在时间与日常情境中探索自己的情绪模式。",
+        "Emotion Garden 是我论文研究（情绪个人信息化）中的一个项目。它想弄清：个人情绪数据能不能变成一片有生命的视觉景观——让人可以读、可以回看，也能慢慢理解。",
+      question: "情绪记录怎样成为人们可以解读、可以反思的东西？",
+      visual:
+        "每一个情绪时刻都以一朵花呈现。颜色、形态与大小承载感受、情境与时长；日常生活的类别——工作与学习、人际关系、属于自己的时间、身体与健康——排布在花园里，让模式像风景一样被读出来。",
     },
   },
   {
@@ -110,7 +117,7 @@ export const SELECTED_PROJECTS = [
     description:
       "A savings-goal redesign that shows what each goal requires, where you stand this month, and how a change ripples through the plan, so people can act without doing the math themselves.",
     descriptionZh:
-      "一个储蓄目标的改版设计：让人看清每个目标需要什么、这个月进行到哪里，以及一次修改会如何影响整个计划——不必自己算，也能做出决定。",
+      "一个储蓄目标的改版：让人看清每个目标需要什么、这个月进展到哪里，以及改一处会怎样影响整个计划——不必自己算，也能做出决定。",
     tags: ["Product Design", "Usability Testing"],
     url: "https://app.notion.com/p/Money-Map-3aa7fb6b97a5804aa621f9657a47f5d3?source=copy_link",
     thumbnail: "/money-map-thumb.png",
@@ -124,7 +131,7 @@ export const SELECTED_PROJECTS = [
     description:
       "An AR reading experience that turns key moments of Oscar et la Dame Rose into spatial interactions, keeping the physical book at the center while a digital layer helps readers step into the story. Designed and built in Unity for iOS.",
     descriptionZh:
-      "一个 AR 阅读体验，把《Oscar et la Dame Rose》中的关键时刻变成空间交互：纸质书始终是中心，数字层帮助读者走进故事。在 Unity 中设计并实现，运行于 iOS。",
+      "一个 AR 阅读体验，把《Oscar et la Dame Rose》里的关键时刻变成空间交互：纸质书始终在中心，数字层帮读者走进故事。在 Unity 里设计并实现，运行于 iOS。",
     tags: ["AR", "Interaction Design"],
     url: "https://app.notion.com/p/Oscar-et-la-Dame-Rose-Turning-reading-into-participation-through-AR-8917fb6b97a583e7a5ab01fb84401ea8?source=copy_link",
     thumbnail: "/oscar-ar-thumb.png",

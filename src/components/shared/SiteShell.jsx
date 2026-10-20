@@ -58,7 +58,7 @@ const CONTEXT_PAGES = {
 export default function SiteShell() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isMuted, isDarkMode, language } = useAppSettings();
+  const { isMuted, isDarkMode, language, accent } = useAppSettings();
   const { playSound, playLoopingSound, pauseSound } = useSound(isMuted);
   const [viewState, setViewState] = useState(() =>
     viewStateFromPath(location.pathname),
@@ -161,7 +161,7 @@ export default function SiteShell() {
     isWorkspaceActive: viewState === "workspace",
   };
 
-  const themeColors = getThemeColors(isDarkMode);
+  const themeColors = getThemeColors(isDarkMode, accent);
   const sceneIsDark = isDarkMode;
   const deskPalette = useMemo(() => getDeskPalette(sceneIsDark), [sceneIsDark]);
   const workspaceStyle = useMemo(
@@ -187,11 +187,36 @@ export default function SiteShell() {
 
   const layoutContext = useMemo(() => {
     const base = getPageContext(language, contextPage);
-    if (contextPage === "home" && metadataOverride?.items?.length) {
-      return { ...base, metadata: [...(base.metadata ?? []), ...metadataOverride.items] };
-    }
-    if (contextPage === "caseStudies" && metadataOverride?.items?.length) {
-      return { ...base, metadata: metadataOverride.items };
+    if (
+      (contextPage === "home" || contextPage === "caseStudies") &&
+      metadataOverride?.items?.length
+    ) {
+      // Section merge: the page's context section (Section B) always
+      // stays as authored, while the personal section (Section C) keeps
+      // the page's own fields first and gains the override's personal
+      // fields (a hovered project's role / timeline).
+      const baseMetadata = base.metadata ?? [];
+      const overrideItems = metadataOverride.items;
+      const contextItems = overrideItems.filter(
+        (item) => item.section !== "personal",
+      );
+      const personalItems = [
+        ...baseMetadata.filter((item) => item.section === "personal"),
+        ...overrideItems.filter((item) => item.section === "personal"),
+      ];
+      // On Case Studies the default context is a directory; on Home there
+      // is none, so fall back to the page's context items when the
+      // override carries only personal fields.
+      const hasContextOverride = contextItems.length > 0;
+      return {
+        ...base,
+        metadata: [
+          ...(hasContextOverride
+            ? contextItems
+            : baseMetadata.filter((item) => item.section !== "personal")),
+          ...personalItems,
+        ],
+      };
     }
     if (contextPage !== "desk") return base;
 

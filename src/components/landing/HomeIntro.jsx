@@ -1,7 +1,12 @@
 import AboutChineseName from "../about/AboutChineseName";
 import { PORTFOLIO_LINKS } from "../../lib/links";
+import { useAppSettings } from "../../context/AppSettingsContext";
 
 export default function HomeIntro({ copy }) {
+  const { language } = useAppSettings();
+  // Chinese uses a full stop (。); English keeps the ASCII period.
+  const roleStop = language === "zh" ? "。" : ". ";
+
   return (
     <main className="home-index">
       <section className="home-hero" aria-labelledby="home-title">
@@ -15,7 +20,9 @@ export default function HomeIntro({ copy }) {
             />
           </div>
           <p className="home-identity__introduction">
-            {copy.role}. {copy.statement} {copy.detail}
+            {copy.role}
+            {roleStop}
+            {copy.statement} {copy.detail}
           </p>
           <p className="home-identity__links">
             <a href={PORTFOLIO_LINKS.email}>{copy.email}</a>

@@ -22,9 +22,9 @@ const LABELS = {
     close: "关闭项目详情",
     viewDetails: (title) => `查看${title}的详情`,
     technologies: "技术",
-    visitLive: "访问体验网站",
+    visitLive: "打开体验网站",
     projectNotes: "项目笔记",
-    overview: "项目概述",
+    overview: "概述",
     background: "背景",
     question: "核心问题",
     visual: "视觉语言",
@@ -57,8 +57,9 @@ export default function VibeProjectDetail({ project, onClose }) {
   const detail = isZh && project.detailZh ? project.detailZh : project.detail ?? {};
   const tagline = isZh && project.taglineZh ? project.taglineZh : project.tagline;
   const showImage = project.thumbnail && !imageFailed;
-  // Optional per-project action labels (v2.2.1); vibe projects keep the
-  // shared defaults.
+  // Optional per-project action labels (v2.2.1+); vibe projects keep the
+  // shared defaults. Emotion Garden (v2.2.2) also fills question / visual /
+  // interaction in the same section slots.
   const liveLabel =
     (isZh ? project.liveLabelZh : project.liveLabel) ?? labels.visitLive;
   const notesLabel =

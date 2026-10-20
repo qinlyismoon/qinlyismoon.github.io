@@ -11,15 +11,41 @@
  * ochre 5.1 in light; ≥ 7.0 in dark). Values mirror ACCENTS in
  * src/lib/settings.js — change both together. Forest is the default and
  * already lives on :root in styles.css. */
-:root[data-accent="ink"] { --color-accent: #4c6178; }
-:root[data-accent="clay"] { --color-accent: #94584a; }
-:root[data-accent="plum"] { --color-accent: #6b5a75; }
-:root[data-accent="ochre"] { --color-accent: #80652e; }
+:root[data-accent="forest"] { --color-background: #f4f6f4; }
+:root[data-accent="ink"] {
+  --color-accent: #4c6178;
+  --color-background: #f4f5f7;
+}
+:root[data-accent="clay"] {
+  --color-accent: #94584a;
+  --color-background: #f7f4f2;
+}
+:root[data-accent="plum"] {
+  --color-accent: #6b5a75;
+  --color-background: #f6f4f7;
+}
+:root[data-accent="ochre"] {
+  --color-accent: #80652e;
+  --color-background: #f7f5ef;
+}
 
-:root[data-theme="dark"][data-accent="ink"] { --color-accent: #a3b4c7; }
-:root[data-theme="dark"][data-accent="clay"] { --color-accent: #d4a698; }
-:root[data-theme="dark"][data-accent="plum"] { --color-accent: #bcaac4; }
-:root[data-theme="dark"][data-accent="ochre"] { --color-accent: #cdb27c; }
+:root[data-theme="dark"][data-accent="forest"] { --color-background: #161816; }
+:root[data-theme="dark"][data-accent="ink"] {
+  --color-accent: #a3b4c7;
+  --color-background: #15171a;
+}
+:root[data-theme="dark"][data-accent="clay"] {
+  --color-accent: #d4a698;
+  --color-background: #1a1716;
+}
+:root[data-theme="dark"][data-accent="plum"] {
+  --color-accent: #bcaac4;
+  --color-background: #18161a;
+}
+:root[data-theme="dark"][data-accent="ochre"] {
+  --color-accent: #cdb27c;
+  --color-background: #1a1814;
+}
 
 /* Surfaces that used to hardcode the teal timeline voice now follow the
  * accent, so every pigment reaches the whole system. */

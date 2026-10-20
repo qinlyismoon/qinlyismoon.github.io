@@ -27,7 +27,7 @@ export default function FolderAvatar() {
   const [minimizeExit, setMinimizeExit] = useState({ x: 0, y: 0, scale: 0.2 });
   const [isZoomed, setIsZoomed] = useState(false);
   const [windowPosition, setWindowPosition] = useState({ x: 0, y: 0 });
-  const { language, isDarkMode, isMuted } = useAppSettings();
+  const { language, isDarkMode, isMuted, accent } = useAppSettings();
   const { playSound, playLoopingSound, pauseSound } = useSound(isMuted);
 
   const typingHoverCountRef = useRef(0);
@@ -109,7 +109,10 @@ export default function FolderAvatar() {
   }, [isMuted, stopTypingSound, pauseSound]);
 
   const copy = useMemo(() => getHomeCopy(language), [language]);
-  const themeColors = useMemo(() => getThemeColors(isDarkMode), [isDarkMode]);
+  const themeColors = useMemo(
+    () => getThemeColors(isDarkMode, accent),
+    [isDarkMode, accent],
+  );
 
   const handleWindowPointerDown = (event) => {
     event.stopPropagation();

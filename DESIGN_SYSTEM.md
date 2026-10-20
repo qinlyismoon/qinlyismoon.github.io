@@ -207,7 +207,7 @@ column structure. The Context Column is informational,
 not navigational, and owns the shared contact links.
 
 The home page closes with a single versioned copyright line (`.home-copyright`,
-`© 2026 Phoebe Qin · v2.1.2`) after the work index. It is set in the sidebar
+`© 2026 Longyue Qin · v2.2.2`) after the work index. It is set in the sidebar
 label voice (12px/500/secondary) and aligned to the documentation content
 width — a quiet colophon, never a footer bar. It is language-neutral, so
 it lives directly in `HomeIntro.jsx` rather than the localization copy.
@@ -1032,6 +1032,69 @@ The site version is v2.2.1. It appears in `package.json` /
 `package-lock.json`, the Home footer (`LandingPage.jsx`) and the sidebar
 `Current version` on About (`pageContext.js`, EN and ZH). Bump all of
 them together.
+
+## v2.2.2 system additions
+
+### Copy: natural without losing precision
+
+Bilingual About / Home / Case Studies copy was revised so Chinese stays
+natural without sliding into vague slang, and English avoids the same
+overclaims. Rules that landed in this release:
+
+- Home intro ends the role with a language-aware stop (`。` in Chinese,
+  `.` in English) in `HomeIntro.jsx` — never a hard-coded ASCII period
+  after Chinese.
+- Asking questions opens options for people working together; it must
+  not read as managerial team leadership.
+- Perspective copy names standpoint + first-person view, not a vague
+  “standing over there.”
+- Making examples use professional terms (`interactive prototype` /
+  `可交互的原型`), not “clickable” shorthand.
+- Emotion Garden is framed as one project within thesis research on
+  emotional personal informatics — never as the whole thesis.
+- Emotion Garden’s detail modal carries overview, question, and visual
+  language (no interaction section).
+- Prefer affirmative phrasing; avoid “不是……而是……” / “not X but Y”
+  contrast frames in both languages.
+
+### Live weather (Desk)
+
+`useDeskEnvironment` fetches current temperature + WMO weather code from
+Open-Meteo for Phoebe’s written current location (Columbus, OH in
+`SITE_LOCATION` / pageContext) — never the visitor’s geolocation, so no
+browser permission prompt. The sidebar label and the Desk window (sky
+tint, clouds, rain, snow) both read from the same `weather.kind`.
+Refresh every 15 minutes.
+
+### Accent-tinted page ground
+
+Each accent in `settings.js` carries `pageBgLight` / `pageBgDark`.
+`applyDocumentSettings` and `getThemeColors(isDark, accent)` set
+`--color-background` / shell backgrounds so changing 主题色 retints the
+whole page ground—not only accent-painted UI.
+
+### Sidebar: section-based information panel
+
+The sidebar is three sections, never fixed-height rows:
+A identity (signature, name, roles, contact line) → B page
+context → C personal information, then a flexible spacer and the
+`EN · Settings` controls near the bottom. Metadata items carry a
+`section` field (`pageContext.js`); `ContextColumn` renders B and C as
+separate `<dl>` groups with one subtle divider between them (only when
+both exist), uppercase 11px tertiary labels, 15px secondary values, and
+the personal name as the primary level. There is no "currently viewing"
+project entry: on Case Studies (and Home's embedded work), hovering or
+clicking a card never puts the project in Section B — hover only adds
+the project's role / timeline to Section C, which stays mounted so its
+values swap in place. Sections size to content; the
+panel scrolls internally (hidden scrollbar) on short viewports instead
+of clipping.
+
+### Version
+
+The site version is v2.2.2. Bump `package.json` / `package-lock.json`,
+the Home footer (`LandingPage.jsx`), and sidebar `Current version`
+(`pageContext.js`, EN and ZH) together.
 
 ## Localization
 

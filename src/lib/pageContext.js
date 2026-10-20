@@ -18,8 +18,13 @@ const PAGE_CONTEXT = {
     contactLabels: { email: "Email", github: "GitHub", linkedin: "LinkedIn" },
     home: {
       metadata: [
-        { label: "Current location", value: "Columbus, Ohio" },
         {
+          section: "personal",
+          label: "Current location",
+          value: "Columbus, Ohio",
+        },
+        {
+          section: "personal",
           key: "availability",
           label: "Current availability",
           value: "Open to opportunities",
@@ -29,27 +34,50 @@ const PAGE_CONTEXT = {
     },
     desk: {
       metadata: [
-        { key: "localTime", label: "Current time", dynamic: "localTime" },
+        {
+          section: "context",
+          key: "localTime",
+          label: "Current time",
+          dynamic: "localTime",
+        },
         // Note: on the desk page SiteShell overrides this static value at
         // runtime with useDeskEnvironment().weather.label — edit the hook,
         // not this line, to change what the sidebar shows.
-        { key: "weather", label: "Current weather", value: "22°C · Sunny" },
-        { key: "currentStatus", label: "Current status", value: "Lamp off" },
+        {
+          section: "context",
+          key: "weather",
+          label: "Current weather",
+          value: "22°C · Sunny",
+        },
+        {
+          section: "context",
+          key: "currentStatus",
+          label: "Current status",
+          value: "Lamp off",
+        },
       ],
     },
     versionHistory: {
       metadata: [
-        { label: "Current chapter", value: "Designing in the Age of AI" },
-        { label: "Current version", value: "v2.2.1" },
+        {
+          section: "context",
+          label: "Current chapter",
+          value: "Designing in the Age of AI",
+        },
+        { section: "context", label: "Current version", value: "v2.2.2" },
       ],
     },
     teaching: {
-      // A status line (the role) over a small directory of the page's
-      // sections — the document-page exception to the status vocabulary
-      // (see Case Studies). Links smooth-scroll to each section.
+      // Section B holds the page directory; Section C holds the personal
+      // role. Links smooth-scroll to each section.
       metadata: [
-        { label: "Current role", value: "Graduate Teaching Associate" },
         {
+          section: "personal",
+          label: "Current role",
+          value: "Graduate Teaching Associate",
+        },
+        {
+          section: "context",
           label: "Teaching Portfolio",
           links: [
             { label: "Introduction", target: "teaching-introduction" },
@@ -60,17 +88,30 @@ const PAGE_CONTEXT = {
       ],
     },
     caseStudies: {
-      // Default (non-hover) state: a small directory of the page's
-      // sections. Each link smooth-scrolls to its section. Hovering a
-      // project card temporarily replaces this with that project's
-      // role and timeline (see LibraryPage).
+      // Default (non-hover) Section B: a small directory of the page's
+      // sections. Hovering a project card replaces only that section with
+      // the project context (see LibraryPage); the personal section below
+      // stays mounted and gains the project's role / timeline there.
       metadata: [
         {
+          section: "context",
           label: "Project Collection",
           links: [
             { label: "Selected Work", target: "selected-work" },
             { label: "Vibe Coding", target: "vibe-coding" },
           ],
+        },
+        {
+          section: "personal",
+          label: "Current location",
+          value: "Columbus, Ohio",
+        },
+        {
+          section: "personal",
+          key: "availability",
+          label: "Current availability",
+          value: "Open to opportunities",
+          status: true,
         },
       ],
     },
@@ -80,8 +121,13 @@ const PAGE_CONTEXT = {
     contactLabels: { email: "邮箱", github: "GitHub", linkedin: "LinkedIn" },
     home: {
       metadata: [
-        { label: "当前位置", value: "俄亥俄州哥伦布市" },
         {
+          section: "personal",
+          label: "当前位置",
+          value: "俄亥俄州哥伦布市",
+        },
+        {
+          section: "personal",
           key: "availability",
           label: "当前求职状态",
           value: "正在寻找新的机会",
@@ -91,27 +137,51 @@ const PAGE_CONTEXT = {
     },
     desk: {
       metadata: [
-        { key: "localTime", label: "当前时间", dynamic: "localTime" },
+        {
+          section: "context",
+          key: "localTime",
+          label: "当前时间",
+          dynamic: "localTime",
+        },
         // Note: on the desk page SiteShell overrides this static value at
         // runtime with useDeskEnvironment().weather.label — edit the hook,
         // not this line, to change what the sidebar shows.
-        { key: "weather", label: "当前天气", value: "22°C · 晴" },
-        { key: "currentStatus", label: "当前状态", value: "台灯关闭" },
+        {
+          section: "context",
+          key: "weather",
+          label: "当前天气",
+          value: "22°C · 晴",
+        },
+        {
+          section: "context",
+          key: "currentStatus",
+          label: "当前状态",
+          value: "台灯关闭",
+        },
       ],
     },
     versionHistory: {
       // Chinese status labels pending the user's approval — fall back to
       // English rather than inventing translations.
       metadata: [
-        { label: "Current chapter", value: "Designing in the Age of AI" },
-        { label: "当前版本", value: "v2.2.1" },
+        {
+          section: "context",
+          label: "Current chapter",
+          value: "Designing in the Age of AI",
+        },
+        { section: "context", label: "当前版本", value: "v2.2.2" },
       ],
     },
     teaching: {
       // Chinese labels are a draft pending the user's approval.
       metadata: [
-        { label: "当前角色", value: "研究生助教" },
         {
+          section: "personal",
+          label: "当前角色",
+          value: "研究生助教",
+        },
+        {
+          section: "context",
           label: "教学档案",
           links: [
             { label: "介绍", target: "teaching-introduction" },
@@ -124,11 +194,24 @@ const PAGE_CONTEXT = {
     caseStudies: {
       metadata: [
         {
+          section: "context",
           label: "作品集",
           links: [
             { label: "精选作品", target: "selected-work" },
             { label: "Vibe Coding", target: "vibe-coding" },
           ],
+        },
+        {
+          section: "personal",
+          label: "当前位置",
+          value: "俄亥俄州哥伦布市",
+        },
+        {
+          section: "personal",
+          key: "availability",
+          label: "当前求职状态",
+          value: "正在寻找新的机会",
+          status: true,
         },
       ],
     },

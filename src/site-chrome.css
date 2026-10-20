@@ -372,6 +372,25 @@ body[data-page="desk"] .viewport-top-nav {
   }
 }
 
+/* --- Sidebar sections (A identity / B context / C personal) ---------------
+ * Larger gaps between sections, smaller consistent gaps inside a group.
+ * One subtle divider between B and C (and the existing one below A);
+ * never a divider between individual fields. The personal section only
+ * draws its divider when a context section actually precedes it. */
+.context-column__section--context + .context-column__section--personal {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-divider);
+}
+
+@media (max-width: 680px) {
+  /* Sections stack inside the metadata column; keep the B/C divider. */
+  .context-column__section--context + .context-column__section--personal {
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+  }
+}
+
 /* --- Theme transition -------------------------------------------------------- */
 
 /* Modern browsers crossfade two complete page snapshots. Unlike per-element

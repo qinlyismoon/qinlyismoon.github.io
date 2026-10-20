@@ -61,17 +61,17 @@ export default function LibraryPage({ embedded = false }) {
     };
   }, [activeProject]);
 
-  // Hovering (or keyboard-focusing) a card swaps the sidebar's metadata
-  // items to that project's role and timeline, replacing the default
-  // section directory. Labels come from the controlled pageContext
-  // vocabulary; only the values change. Missing values are skipped.
+  // Hovering (or keyboard-focusing) a card adds only that project's role
+  // and timeline to the sidebar's personal section (Section C). There is
+  // no "currently viewing" project entry: the context section (Section B)
+  // keeps showing the page directory, on hover and on click alike.
   const handleCardHover = (project) => {
     window.clearTimeout(hoverLeaveTimerRef.current);
 
     if (!project) {
       // Moving from one card to the next fires leave before enter. Defer the
-      // directory restore briefly so the next card can cancel it; this keeps
-      // Project role / Timeline mounted and updates only their values.
+      // restore briefly so the next card can cancel it; this keeps the
+      // role / timeline fields mounted and updates only their values.
       hoverLeaveTimerRef.current = window.setTimeout(() => {
         setMetadataOverride(null);
       }, 80);
@@ -86,6 +86,7 @@ export default function LibraryPage({ embedded = false }) {
     const timelineCandidates = HOVER_PROJECTS.map((p) => p.timeline);
     if (role) {
       items.push({
+        section: "personal",
         label: isZh ? "项目角色" : "Project role",
         value: role,
         reserve: roleCandidates,
@@ -93,6 +94,7 @@ export default function LibraryPage({ embedded = false }) {
     }
     if (project.timeline) {
       items.push({
+        section: "personal",
         label: isZh ? "时间线" : "Timeline",
         value: project.timeline,
         reserve: timelineCandidates,

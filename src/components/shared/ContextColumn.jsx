@@ -281,14 +281,14 @@ function ContextMetadata({ item }) {
 }
 
 /**
- * Fixed information panel: three regions (identity / page metadata /
- * system status). Divider positions never move between pages — only
- * the content inside each region changes per route (the system status
- * region is identical on every page). The handwritten logo, name, roles
- * and contact links form one identity block with no divider between
- * them. Generous whitespace between metadata and system status is
- * intentional — the sidebar reads as an editorial margin, not a filled
- * panel.
+ * Section-based information panel:
+ *   A — identity (signature, name, roles, contact links);
+ *   B — page context (a directory, or live desk values);
+ *   C — personal information (location, availability, role, timeline…).
+ * Sections size to their content — no fixed heights — and a flexible
+ * spacer keeps the system controls near the bottom. Content inside a
+ * section changes per route; on project hover only Section C gains the
+ * project's role / timeline — Section B never shows the project.
  */
 export default function ContextColumn({
   identity,
@@ -301,11 +301,13 @@ export default function ContextColumn({
   const headingId = useId();
   const previousMetadataStateRef = useRef({ page, mode: null });
   const roles = identity.roles ?? [];
+  const contextItems = metadata.filter((item) => item.section !== "personal");
+  const personalItems = metadata.filter((item) => item.section === "personal");
   const metadataMode =
     page === "caseStudies"
-      ? metadata.some((item) => item.links)
+      ? contextItems.some((item) => item.links)
         ? "directory"
-        : "project"
+        : "context"
       : page;
   const shouldAnimateMetadataMode =
     previousMetadataStateRef.current.page === page &&
@@ -356,37 +358,48 @@ export default function ContextColumn({
         </p>
       </section>
 
+      {/* Sections B + C share one region: the region and its top divider
+          stay static; only the context section's inner content swaps on
+          page change or project hover. The personal section below it
+          never remounts, so its values update in place. */}
       <section
         className="context-column__region context-column__region--metadata"
         aria-label="Page information"
       >
-        {/* The section (and its divider) stays static; only the inner
-            content remounts and slides on page change — or vertically on
-            hover-driven overrides. */}
         <div
           key={metadataSwapKey ?? page}
           className={`context-column__metadata-swap context-column__metadata-swap--${direction}`}
         >
-          {metadata.length ? (
-            <dl
-              key={metadataMode}
-              className={`context-column__metadata${
-                page === "caseStudies"
-                  ? " context-column__metadata--case-study-mode"
-                  : ""
-              }${
-                shouldAnimateMetadataMode
-                  ? " context-column__metadata--mode-transition"
-                  : ""
-              }`}
-            >
-              {metadata.map((item) => (
-                <ContextMetadata item={item} key={item.key ?? item.label} />
-              ))}
-            </dl>
+          {contextItems.length ? (
+            <div className="context-column__section context-column__section--context">
+              <dl
+                key={metadataMode}
+                className={`context-column__metadata${
+                  page === "caseStudies"
+                    ? " context-column__metadata--case-study-mode"
+                    : ""
+                }${
+                  shouldAnimateMetadataMode
+                    ? " context-column__metadata--mode-transition"
+                    : ""
+                }`}
+              >
+                {contextItems.map((item) => (
+                  <ContextMetadata item={item} key={item.key ?? item.label} />
+                ))}
+              </dl>
+            </div>
           ) : null}
 
-
+          {personalItems.length ? (
+            <div className="context-column__section context-column__section--personal">
+              <dl className="context-column__metadata">
+                {personalItems.map((item) => (
+                  <ContextMetadata item={item} key={item.key ?? item.label} />
+                ))}
+              </dl>
+            </div>
+          ) : null}
         </div>
       </section>
 
