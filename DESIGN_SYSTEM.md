@@ -207,7 +207,7 @@ column structure. The Context Column is informational,
 not navigational, and owns the shared contact links.
 
 The home page closes with a single versioned copyright line (`.home-copyright`,
-`© 2026 Longyue Qin · v2.2.2`) after the work index. It is set in the sidebar
+`© 2026 Longyue Qin · v2.3.1`) after the work index. It is set in the sidebar
 label voice (12px/500/secondary) and aligned to the documentation content
 width — a quiet colophon, never a footer bar. It is language-neutral, so
 it lives directly in `HomeIntro.jsx` rather than the localization copy.
@@ -552,6 +552,13 @@ sections, in this order:
 
 1. **Selected Work** — a short note, a responsive card grid (`.vibe-grid`)
    of case studies, and the "View all work ↗" exit link.
+   Every document page shares one reading width: Home's column joins
+   About and Teaching at `--content-max-width` (760px), so the grid —
+   `auto-fill` at a 22rem minimum — seats two cards per row on
+   desktop and falls back to one column by itself when the measure
+   is unavailable (no column-count media queries). Cards in a row
+   share one height and pin their tag chips to the card foot, so
+   English and Chinese descriptions of different lengths still align.
    Selected-work cards reuse the vibe card visual system (`.ds-card`
    treatment, quiet accent-border hover, 1.125rem/medium titles, serif
    descriptions, rectangular chip tags). A card opens the native detail

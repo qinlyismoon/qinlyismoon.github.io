@@ -793,7 +793,7 @@ body {
 }
 
 .explore-index {
-  width: min(100%, var(--documentation-content-width));
+  width: min(100%, var(--content-max-width));
 }
 
 .explore-item {
@@ -6393,8 +6393,11 @@ body {
 
 .home-layout__grid {
   display: grid;
+  /* One reading width for every document page: Home joins About and
+     Teaching at --content-max-width (760px), so the work grid below
+     fits two 22rem cards per row instead of one wide card per row. */
   grid-template-columns:
-    minmax(0, var(--documentation-content-width))
+    minmax(0, var(--content-max-width))
     minmax(7rem, 1fr);
   align-items: start;
   width: 100%;
@@ -6405,7 +6408,7 @@ body {
   grid-column: 1;
   min-width: 0;
   width: 100%;
-  max-width: var(--documentation-content-width);
+  max-width: var(--content-max-width);
 }
 
 .home-layout--library .home-layout__grid,
@@ -7140,6 +7143,7 @@ body {
 
 .vibe-card {
   margin: 0;
+  height: 100%;
 }
 
 /* Shared card surface for button cards (open a modal) and link cards
@@ -7147,8 +7151,10 @@ body {
    lift or shadow. */
 .vibe-card__button,
 .vibe-card__link {
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  height: 100%;
   padding: 0;
   border: 1px solid var(--color-divider);
   border-radius: 8px;
@@ -7231,7 +7237,13 @@ body {
   letter-spacing: 0.08em;
 }
 
+/* Cards in a row share one height: the body grows to fill the card
+   and the tags pin to the foot, so a longer English description and
+   a shorter Chinese one still land their chips on the same line. */
 .vibe-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   padding: var(--space-2) var(--space-2) var(--space-3);
   transition: transform 160ms ease;
 }
@@ -7260,6 +7272,7 @@ body {
   column-gap: var(--space-1);
   list-style: none;
   margin: 0;
+  margin-top: auto;
   padding: 0;
 }
 

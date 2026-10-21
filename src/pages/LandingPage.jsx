@@ -15,7 +15,7 @@ export default function LandingPage() {
         <HomeIntro copy={copy} />
         <EditorialThread note={copy.editorialThreadNote} />
         <LibraryPage embedded />
-        <p className="home-copyright">© 2026 Longyue Qin · v2.3.0</p>
+        <p className="home-copyright">© 2026 Longyue Qin · v2.3.1</p>
       </div>
     </HomeLayout>
   );

@@ -23,6 +23,12 @@ export const VIBE_PROJECTS = [
     descriptionZh:
       "一个个人游泳规划工具，把目标、可用时间和训练反馈变成可执行的训练计划。用 AI 在大约三小时内设计并做成了能用的 SwiftUI 应用。",
     tags: ["SwiftUI", "Personal Informatics", "Vibe Coded"],
+    // The detail's one way out: a video introduction on YouTube —
+    // a click-out link (unlike Oscar's embedded player), offered as
+    // the header's primary action.
+    liveUrl: "https://www.youtube.com/watch?v=OFN8XVHJ8wQ",
+    liveLabel: "Watch the video introduction",
+    liveLabelZh: "观看视频介绍",
     thumbnail: "/swim-balance/cover.png",
     // Contents-bar crop: only the cover's sky, so no phone ever leaks
     // into the bar. Sized by height (not width) so the slice stays in
@@ -507,7 +513,7 @@ export const SELECTED_PROJECTS = [
       "一款共享植物养护应用，把照料的交接说清楚：临时照料者知道什么时候动手、怎么做、什么时候该报异常，主人也能真正放下远程跟进。从设计到代码，做成了能跑的原型。",
     tags: ["Product Design", "Design Engineering"],
     url: "https://app.notion.com/p/Leaf-Note-3c77fb6b97a580628279feb164c27446?source=copy_link",
-    thumbnail: "/leaf-note-thumb.png",
+    thumbnail: "/leaf-note-thumb.jpg",
     role: "Product Designer & Engineer",
     roleZh: "产品设计师 & 工程实现",
     timeline: "2026",
