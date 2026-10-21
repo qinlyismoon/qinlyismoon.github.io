@@ -18,6 +18,7 @@ import {
   isLibraryPath,
   isTeachingPath,
   isLegacyDeskPath,
+  projectIdFromPath,
 } from "../../lib/routes";
 import AboutPage from "../../pages/AboutPage";
 import LandingPage from "../../pages/LandingPage";
@@ -34,7 +35,7 @@ import { SidebarOverrideContext } from "../../context/SidebarOverrideContext";
 function viewStateFromPath(pathname) {
   if (isAboutPath(pathname)) return "about";
   if (isTeachingPath(pathname)) return "teaching";
-  if (isLibraryPath(pathname)) return "library";
+  if (isLibraryPath(pathname) || projectIdFromPath(pathname)) return "library";
   if (isDeskPath(pathname)) return "workspace";
   return "landing";
 }
@@ -80,7 +81,20 @@ export default function SiteShell() {
 
     if (routeTransitionRef.current) return;
     const nextView = viewStateFromPath(location.pathname);
-    if (nextView !== viewState) setViewState(nextView);
+    if (nextView === viewState) return;
+    // Opening a project detail: hold the visitor's current page
+    // behind the overlay while the backdrop settles and the panel
+    // lands (0.35s + 0.22s + 0.45s), and only then swap the
+    // collection layer in under the settled backdrop. Switching at
+    // the route change would open the detail over the collection
+    // grid's top — the first project — instead of the page and
+    // scroll position the visitor is actually on; closing reverses
+    // the same courtesy (destination first, reveal second).
+    if (nextView === "library" && projectIdFromPath(location.pathname)) {
+      const timer = window.setTimeout(() => setViewState("library"), 700);
+      return () => window.clearTimeout(timer);
+    }
+    setViewState(nextView);
   }, [location.pathname, navigate, viewState]);
 
   const transitionTo = useCallback(
@@ -187,6 +201,24 @@ export default function SiteShell() {
 
   const layoutContext = useMemo(() => {
     const base = getPageContext(language, contextPage);
+    // While a project detail is open (/<id>) the sidebar drops
+    // the collection directory (Section B): the reading is about one
+    // project, whose role / timeline the personal section carries. The
+    // directory returns with the collection.
+    if (
+      contextPage === "caseStudies" &&
+      projectIdFromPath(location.pathname)
+    ) {
+      return {
+        ...base,
+        metadata: [
+          ...(base.metadata ?? []).filter((item) => item.section === "personal"),
+          ...(metadataOverride?.items ?? []).filter(
+            (item) => item.section === "personal",
+          ),
+        ],
+      };
+    }
     if (
       (contextPage === "home" || contextPage === "caseStudies") &&
       metadataOverride?.items?.length
@@ -237,7 +269,7 @@ export default function SiteShell() {
         return item;
       }),
     };
-  }, [contextPage, environment.weather.label, isLampOn, language, metadataOverride]);
+  }, [contextPage, environment.weather.label, isLampOn, language, location.pathname, metadataOverride]);
 
   useEffect(() => {
     if (contextPage !== "caseStudies" && contextPage !== "home") setMetadataOverride(null);

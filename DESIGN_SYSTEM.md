@@ -551,16 +551,18 @@ The Case Studies page is a document page (no horizontal scroll) with two
 sections, in this order:
 
 1. **Selected Work** — a short note, a responsive card grid (`.vibe-grid`)
-   of Notion-hosted case studies, and the "View all work ↗" exit link.
+   of case studies, and the "View all work ↗" exit link.
    Selected-work cards reuse the vibe card visual system (`.ds-card`
    treatment, quiet accent-border hover, 1.125rem/medium titles, serif
-   descriptions, rectangular chip tags) but are external-link cards: the
-   whole card is an anchor opening the Notion page in a new tab, so the
-   title carries a quiet secondary ↗. The thumbnail is optional: when
+   descriptions, rectangular chip tags). A card opens the native detail
+   whenever the project carries native content (`detail` /
+   `detailSections`) or a `liveUrl`; only projects with neither keep
+   the external-link form — the whole card an anchor opening the
+   Notion page in a new tab, the title carrying a quiet secondary ↗.
+   The thumbnail is optional: when
    artwork is provided it renders in the 16:10 block with the same image
    error fallback as vibe cards; when missing, no thumbnail block renders
-   at all — never an empty placeholder. No modal: with no live
-   URL and all content in Notion, a modal would be a hollow middleman.
+   at all — never an empty placeholder.
    Hovering/focusing a card swaps the sidebar metadata to its role and
    timeline (missing values are skipped, never blank rows). Button cards
    and link cards share one card-surface base
@@ -860,7 +862,10 @@ timeline, 82% on details). Phones step reading body and section titles to
   instance. It runs on the Web Animations API, not CSS transitions, so it
   keeps playing during the route crossfade; the old CSS transition was
   frozen by `.page-transitioning` and the underline jumped (the reported
-  nav flicker).
+  nav flicker). During a page view-transition itself the hook lands the
+  line instantly instead: the live bar sits under a static snapshot of
+  its final state for the turn, so a glide still running at the reveal
+  would jump back and catch up — the same flicker wearing new clothes.
 
 ### Inline Choice (`InlineChoice.jsx`, `.ds-choice`)
 
@@ -1022,8 +1027,14 @@ A Selected Work project that has a `liveUrl` (e.g. Emotion Garden) opens
 the same introduction modal as Vibe Coding projects instead of linking
 straight out. The modal offers the live site as the primary action and the
 case study as the secondary one; labels can be set per project
-(`liveLabel` / `notesLabel` and their `Zh` variants). Projects without a
-`liveUrl` keep the direct Notion link. Order: Leaf Note → Emotion Garden
+(`liveLabel` / `notesLabel` and their `Zh` variants). Projects with
+native detail content take the same modal path — Oscar et la Dame
+Rose (v2.2.2) carries full `detailSections` rewritten from its Notion
+page, self-hosted sketches and system diagram, and no outbound action
+at all: its prototype video is embedded in the detail (see the item
+`video` shape under Case Studies), never Notion. Only projects
+with neither a `liveUrl` nor native content keep the direct Notion
+link. Order: Leaf Note → Emotion Garden
 → Money Map → Oscar et la Dame Rose.
 
 ### Version
@@ -1081,12 +1092,22 @@ context → C personal information, then a flexible spacer and the
 `EN · Settings` controls near the bottom. Metadata items carry a
 `section` field (`pageContext.js`); `ContextColumn` renders B and C as
 separate `<dl>` groups with one subtle divider between them (only when
-both exist), uppercase 11px tertiary labels, 15px secondary values, and
+both exist; Teaching is the exception — its portfolio directory and
+current role read as one block, separated by whitespace only),
+uppercase 11px tertiary labels, 15px secondary values, and one
+spacing scale throughout: fields inside a group sit `--space-3`
+apart, and the gap between sections is always `--space-2` of air on
+each side of the divider (32px total) — never two stacked section
+tokens, never off-scale values like `1.25rem`. And
 the personal name as the primary level. There is no "currently viewing"
 project entry: on Case Studies (and Home's embedded work), hovering or
 clicking a card never puts the project in Section B — hover only adds
 the project's role / timeline to Section C, which stays mounted so its
-values swap in place. Sections size to content; the
+values swap in place. The timeline text is `year · duration` from the
+project's one `duration` field (the same fact the detail footer calls
+out), identical on hover and with the detail open — opening a project
+re-asserts the hover's exact items, reserves included, and never
+clears them first, so the block cannot blink. Sections size to content; the
 panel scrolls internally (hidden scrollbar) on short viewports instead
 of clipping.
 
@@ -1095,6 +1116,150 @@ of clipping.
 The site version is v2.2.2. Bump `package.json` / `package-lock.json`,
 the Home footer (`LandingPage.jsx`), and sidebar `Current version`
 (`pageContext.js`, EN and ZH) together.
+
+### Vibe case-study detail (Swim Balance, added after v2.2.2)
+
+A vibe project may carry a `caseStudy` / `caseStudyZh` object in
+`caseStudies.js` (problem → experience loop → build process → design
+decisions, with self-hosted images/videos under `public/<project>/`).
+When present, `VibeProjectDetail` renders the long-form case-study
+layout instead of the short generic sections, and the detail surface
+uses the project's own `background` color sampled from its imagery
+(Swim Balance: `#eef5f8`) so photos and page read as one surface.
+Notion-hosted asset URLs expire, so case-study media is always
+self-hosted. Ordering within Vibe Coding: Swim Balance first (product
+thinking, native SwiftUI build, design judgment with AI), then
+Onomichi Furin (creative/atmospheric counterpoint).
+
+Detail-view rules for every project, case study or not:
+
+- One width: `calc(var(--content-max-width) + 2 * var(--space-5))`.
+  Short and long details align on the same reading measure; the
+  case-study variant is not wider.
+- Typography comes only from the shared type tokens, as one ladder
+  for every detail (long case study and short section list alike):
+  project title sans `--type-h2`; chapter titles serif `--type-h2`
+  under their pale numeral; item titles sans `--type-body` semibold;
+  body serif `--type-reading` in `--color-reading`; the shared pull
+  quote. Chapter and item titles never share a style. The case-study
+  layout adds no font sizes, weights, or colors of its own — layout
+  only (media grids, figures, spacing). Section figures keep the
+  full measure; figures inside an item are height-capped and
+  centered, so portrait artifacts (a moment's sketch) stay
+  reading-sized instead of pushing the next paragraph a screen
+  away. Generic sections keep one item rhythm: every item earns
+  `--space-5` before its title wherever it starts (after copy,
+  after the section figure, after another item — never a collapsed
+  0 from `:first-of-type`), and consecutive paragraphs take a
+  `--space-2` beat; Swim's hand-written `.case-study__section`
+  chapters keep their own looser rhythm and are never matched by
+  the generic scope. Three opt-in item/figure shapes, set in the
+  data: a `split: true` item pairs its copy with its artwork in a
+  balanced two-column grid (copy wider, figure narrower, stacking
+  on narrow screens) for portrait artifacts like a moment's
+  sketch; a section figure with `size: "contained"` stays at a
+  28rem reading size, centered, so small-drawn diagrams stay sharp
+  instead of upscaled and soft; an item `video` embeds a 16:9
+  player that plays in the page where it is discussed (the working
+  prototype), so a demo never needs an outbound link. While a detail is open the
+  shell tucks its fixed top navigation under the detail's backdrop
+  (`body[data-project-detail="open"]`, set by the overlay), so the
+  overlay and its sticky contents bar own the full viewport.
+- A sticky contents bar sits under the hero, generated from the
+  sections actually present (short labels before the em dash), in the
+  editorial-tab voice: bare caption text on a hairline, the section
+  being read marked by the one persistent accent underline driven by
+  `useSlidingIndicator` (see "Underline voice and motion") — never a
+  per-item border or a CSS transition. Clicking scrolls to the
+  section, which lands below the bar via `scroll-margin-top`. The bar
+  itself stays solid page ground; the project's hero image breathes
+  in only at the bar's right edge, masked out before it can reach
+  the words, so every project — not only one with artwork drawn for
+  it — stays identifiable after the hero scrolls away. The close
+  control keeps its circled form in both of its homes: on the hero at
+  rest, and at the bar's right end once the bar sticks (it fades in
+  as the hero's copy scrolls away, keeping its slot so items never
+  shift). It is the one navigation pattern for details.
+- Nav-art crop rule: choose the slice of the hero with the least
+  information that still identifies the project — one quiet signature
+  drawn from the project's subject itself (Emotion Garden's flowers,
+  not its decorative sun), never the whole scene. Never a face,
+  device, or text cut through the middle; that reads as clutter at
+  bar height. Record the choice
+  per project as `navArtPosition`, with the reason in a comment (Swim
+  Balance: top sky slice, wave marks; Onomichi: chime tops on gold,
+  just below the top; Emotion Garden: the flower rows at mid-height —
+  the subject itself, not the decorative sun; Oscar: the spiral rose
+  at the end of the hero's top vine, pushed past the bar's right edge
+  with a negative `right` offset so a left-of-frame motif can sit in
+  the revealed window). Position
+  is not "always the top" — it is wherever that quiet signature
+  lives. If a hero has no such slice, the right-edge mask alone must
+  keep the bar quiet. Detail-nav hover is color only, no background
+  wash: the bar sits on artwork, and a block would read as a patch.
+- Detail sections are chapters, marked by number rather than rules —
+  in every detail view, the long case study and the short section
+  lists alike: a large pale numeral (`--type-display`, sans, medium,
+  14% text ink) above each heading, its lower end dissolving into
+  the page via a mask fade so it reads as atmosphere, with the
+  heading tucked into the fade. No hairlines between chapters; the
+  numeral plus a full breath of space is the boundary.
+- Swim Balance's detail carries no separate area line and no Notion
+  action — the page is the case study.
+- The panel closes with a scene footer, not a fading tail of body
+  copy and never with divider lines: a quiet slice of the project's
+  own artwork (the `navArtPosition` crop — or the project's own
+  `footerArtPosition` when the footer keeps a different crop, as
+  Oscar's does — masked in from the right
+  at low strength) settles behind the record at the lower left —
+  title · year, role, the shared tag chips (outlined so they hold
+  on the faint ground) — with the next project (label over title,
+  plain arrow) at the lower right. A project may carry a `duration`
+  (Swim Balance: "Built in ~3 hours") — the one fact the meta line
+  calls out, in accent. Whitespace and the artwork do the
+  separating; values come from the project object only, never
+  invented. Switching projects remounts only the panel (soft
+  0.45s rise) over the persistent overlay — the backdrop never
+  flashes.
+- Every project detail also lives at a shareable URL, `/<id>`
+  (`projectIdFromPath` in `routes.js`; legacy `/library/<id>` links
+  still resolve; the 404 copy in the build keeps deep links working).
+  Project URLs hang directly off Home — the page the projects live
+  on; there is no intermediate collection route in the address. The
+  URL changes, the presentation does not: the route opens the same
+  full-screen modal overlay as a card click — never an embedded
+  document inside the shell. Closing (×, backdrop, Escape) returns to
+  Home, restoring the scroll position saved at card-open (restore on
+  a short timer, not `requestAnimationFrame` — the grid needs a beat
+  to settle or the browser clamps to 0). While a detail is open the
+  document title is `<Title> — Longyue Qin` and the sidebar drops its
+  Project Collection directory, keeping the project's role /
+  timeline; both return on close. Only projects with native detail
+  content get a route; the rest keep linking out to Notion from the
+  card.
+- Detail handoffs are choreographed, never cut, and strictly
+  sequential in both directions: the two contents are never
+  mid-fade at the same time. Opening, the backdrop (dim + blur)
+  settles first on the shared soft curve over the page the visitor
+  is actually on, then the panel rises over the calmed page, and
+  the collection layer swaps in only once the panel has landed —
+  never at the route change, or the detail would open over the
+  grid's top instead of the visitor's place. While a detail is
+  open the page layers behind switch instantly — crossfading
+  them ghosts two pages over each other — and the top navigation
+  drops below the backdrop and melts with the page: it never
+  fades as its own band above the blur, which drew a hard
+  horizontal partition under the tabs.
+  Closing reverses the reveal, not the route: Home (scroll restored)
+  lands under the still-opaque backdrop first, then the backdrop
+  eases out over the destination (0.3s) — a fade over whatever page
+  sits behind the detail flashes that page's top before Home
+  arrives. Switching projects keeps the backdrop and swaps only
+  the panel. Reduced-motion preferences turn all of it off.
+  Generic sections accept
+  `detailSections` / `detailSectionsZh` (paragraphs, pull quote,
+  titled items, a self-hosted figure per section); legacy
+  `detail` / `detailZh` fields map onto the same shape.
 
 ## Localization
 

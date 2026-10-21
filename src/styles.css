@@ -5800,7 +5800,7 @@ body {
    information group; larger gaps live between sections (see
    site-chrome.css). */
 .context-column__region--metadata .context-column__metadata {
-  gap: 1.25rem;
+  gap: var(--space-3);
 }
 
 /* System status: pinned near the panel bottom (grid row 4, below the
@@ -6355,8 +6355,12 @@ body {
 
 /* Home shares the stage container with Desk: the grid padding is removed for
    both so switching views never shifts the layout. The home reading content
-   gets the padding back here, inside the peel mask. */
-.shared-layout--desk .home-layout:not(.home-layout--library) {
+   gets the padding back here, inside the peel mask. Scoped to the home
+   LAYER, not to whichever page is active: gating it on the stage class
+   made Home silently lose its right/bottom padding (64px) behind any
+   other view — project details included — and regain it on return,
+   which jumped the cards. The layer keeps its frame in every view. */
+.app-content-layer--home .home-layout:not(.home-layout--library) {
   padding: var(--page-shell-top) var(--viewport-page-padding)
     var(--viewport-page-padding) 0;
   box-sizing: border-box;
@@ -7285,33 +7289,110 @@ body {
   background: rgba(20, 20, 18, 0.55);
   backdrop-filter: blur(6px);
   overflow-y: auto;
-  animation: vibe-detail-fade 0.25s ease;
+  animation: vibe-detail-fade 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* The dim and the blur arrive together, gradually — the page behind
+   softens into the detail instead of snapping out of focus. */
 @keyframes vibe-detail-fade {
   from {
     opacity: 0;
+    backdrop-filter: blur(0);
+    -webkit-backdrop-filter: blur(0);
   }
   to {
     opacity: 1;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+}
+
+/* Detail open/close choreography — one handoff, in this order:
+   opening is strictly sequential: the backdrop (dim + blur)
+   settles first, then the panel rises over the calmed page — the
+   two contents are never mid-fade together. While a detail is
+   open the page layers behind it switch instantly (no crossfade,
+   so outgoing and incoming pages never overlap as ghosts). Closing reverses the reveal, not the
+   route: the destination (Home, scroll restored) lands under the
+   still-opaque backdrop first, then the backdrop eases out over it.
+   Fading out over whatever page sits behind the detail would flash
+   that page's top before the destination arrives. The overlay is
+   portaled to the body so it survives its own page layer switching
+   off beneath it. Project-to-project switches keep the backdrop
+   and swap only the panel. */
+body[data-project-detail="open"] .app-content-layer {
+  transition: none;
+}
+
+.vibe-detail__overlay.is-closing {
+  animation: vibe-detail-fade-out 0.3s ease forwards;
+  pointer-events: none;
+}
+
+.vibe-detail__overlay.is-closing .vibe-detail {
+  animation: vibe-detail-settle 0.3s ease forwards;
+}
+
+@keyframes vibe-detail-fade-out {
+  from {
+    opacity: 1;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0);
+    -webkit-backdrop-filter: blur(0);
+  }
+}
+
+@keyframes vibe-detail-settle {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vibe-detail__overlay,
+  .vibe-detail__overlay.is-closing,
+  .vibe-detail {
+    animation: none;
   }
 }
 
 .vibe-detail {
   position: relative;
   width: 100%;
-  max-width: 44rem;
+  /* One width for every project detail: the reading measure plus the
+     body padding on both sides, so text lines up on the same measure
+     whether the page is a short section list or a long case study. */
+  max-width: calc(var(--content-max-width) + 2 * var(--space-5));
   margin: auto;
   background: var(--color-surface);
   border-radius: 16px;
-  overflow: hidden;
-  animation: vibe-detail-rise 0.3s ease;
+  /* Visible (not hidden) so the sticky contents bar can travel; the hero
+     clips its own top corners instead. */
+  overflow: visible;
+  /* Soft ease for first open and for project-to-project switches
+     (the panel remounts, the overlay behind it never does). The
+     rise waits until the backdrop has fully settled (0.35s), so
+     the panel's content and the page behind are never mid-fade at
+     the same time — two half-transparent contents read as a fight;
+     the closing side avoids the same overlap by landing its
+     destination first. See the choreography note at
+     .vibe-detail__overlay. */
+  animation: vibe-detail-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.22s backwards;
 }
 
 @keyframes vibe-detail-rise {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -7340,10 +7421,37 @@ body {
   background: rgba(20, 20, 18, 0.75);
 }
 
+/* The same circled close, riding at the contents bar's right end. It
+   keeps its slot (so the items never shift) and fades in only once the
+   bar has stuck and the hero's own close has scrolled away. */
+.vibe-detail__close--nav {
+  position: relative;
+  top: auto;
+  right: auto;
+  flex: none;
+  margin-left: auto;
+  width: 2rem;
+  height: 2rem;
+  font-size: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.vibe-detail__close--nav.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
 .vibe-detail__hero {
   aspect-ratio: 16 / 9;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-divider);
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
 }
 
 .vibe-detail__image {
@@ -7355,6 +7463,128 @@ body {
 
 .vibe-detail__body {
   padding: var(--space-4);
+}
+
+/* Scene footer: no divider lines anywhere. The panel settles onto
+   a quiet slice of the project's own artwork — the same per-project
+   crop the contents bar uses (navArtPosition), masked in from the
+   right at low strength so it reads as atmosphere, not a banner.
+   The record sits at the lower left (title · year, role, the shared
+   tag chips); the next project waits at the lower right. */
+.vibe-detail__footer {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  border-radius: 0 0 16px 16px;
+  background: color-mix(in srgb, var(--color-text) 3.5%, transparent);
+  padding: var(--space-6) var(--space-5) var(--space-5);
+}
+
+.vibe-detail__footer-art {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  opacity: 0.45;
+  mask-image: linear-gradient(to right, transparent 34%, black 88%);
+  -webkit-mask-image: linear-gradient(to right, transparent 34%, black 88%);
+  pointer-events: none;
+}
+
+.vibe-detail__footer-info,
+.vibe-detail__next {
+  position: relative;
+}
+
+.vibe-detail__footer-meta {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--type-body);
+  font-weight: var(--weight-medium);
+  line-height: 1.5;
+  color: var(--color-text-strong);
+}
+
+.vibe-detail__footer-role {
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-regular);
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+/* A project's headline duration (Swim: built in ~3 hours) is the one
+   fact the meta line calls out — accent, same weight as the title. */
+.vibe-detail__footer-duration {
+  font-weight: var(--weight-medium);
+  color: var(--color-accent);
+}
+
+.vibe-detail__footer-tags {
+  margin: var(--space-3) 0 0;
+}
+
+/* On the footer's faint ground the shared chips need their edge
+   spelled out, or they wash into the panel on light projects. */
+.vibe-detail__footer-tags .vibe-detail__tag {
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-divider);
+  color: var(--color-text);
+}
+
+.vibe-detail__next {
+  flex: none;
+  display: grid;
+  gap: 0.125rem;
+  justify-items: end;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: right;
+}
+
+.vibe-detail__next-label {
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-regular);
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__next-title {
+  font-family: var(--font-sans);
+  font-size: var(--type-body);
+  font-weight: var(--weight-medium);
+  line-height: 1.35;
+  color: var(--color-text-strong);
+  transition: color 0.2s ease;
+}
+
+.vibe-detail__next-arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.vibe-detail__next:hover .vibe-detail__next-title {
+  color: var(--color-accent);
+}
+
+.vibe-detail__next:hover .vibe-detail__next-arrow {
+  transform: translateX(3px);
+}
+
+@media (max-width: 680px) {
+  .vibe-detail__footer {
+    padding: var(--space-4) var(--space-2) var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .vibe-detail__footer-art {
+    opacity: 0.3;
+  }
 }
 
 .vibe-detail__kicker {
@@ -7446,22 +7676,9 @@ body {
   gap: var(--space-3);
 }
 
-.vibe-detail__section dt {
-  font-family: var(--font-sans);
-  font-size: var(--type-caption);
-  font-weight: var(--weight-medium);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
-  margin-bottom: var(--space-1);
-}
-
+/* Section titles and body copy are styled once, with the Reading
+   primitives below — no competing definitions here. */
 .vibe-detail__section dd {
-  font-family: var(--font-serif);
-  font-size: var(--type-body);
-  line-height: 1.7;
-  /* Body copy stays secondary; only titles use the primary text color. */
-  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -7474,6 +7691,316 @@ body {
 @media (max-width: 640px) {
   .vibe-detail__body {
     padding: var(--space-3) var(--space-2);
+  }
+}
+
+/* Case-study detail variant (Swim Balance): the same reading surface and
+ * width as every other detail, on the pale blue of the project's artwork
+ * (#eef5f8, set inline from the project data) so cover, images and
+ * recordings blend into the page. Typography is NOT set here — it comes
+ * from the shared Reading primitives below, like every other detail. */
+.vibe-detail--case-study .vibe-detail__hero {
+  background: transparent;
+  border-bottom: 0;
+}
+
+.vibe-detail--case-study .vibe-detail__tag {
+  background: rgba(255, 255, 255, 0.65);
+}
+
+/* Sticky contents bar, in the editorial-tab voice of the design system:
+   bare caption text on a hairline baseline, the current section marked
+   by one accent underline. The underline is a single persistent line
+   driven by useSlidingIndicator (see "Underline voice and motion" in
+  DESIGN_SYSTEM.md) — never a per-item border. The bar wears a strip of
+   the project's own hero image under a wash that fades toward the page
+   ground (both set inline from the project data), so every project —
+   not only ones with artwork drawn for it — stays identifiable after
+   the hero scrolls away. The items row scrolls sideways on narrow
+   screens; the close never scrolls. */
+.vibe-detail__nav {
+  position: sticky;
+  /* The overlay's own top padding would otherwise hold the bar 32px
+     below the viewport edge; pull it up to the true top. */
+  top: calc(-1 * var(--space-4));
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-5);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-divider);
+  isolation: isolate;
+}
+
+/* The hero image itself, breathing in only at the bar's right edge:
+   the left of the bar stays solid page ground for the words, and a
+   mask melts the image out before it can reach them. The crop picks
+   the calmest band of the hero (per-project `navArtPosition`) — sky or
+   negative space, never a subject cut through the middle. */
+.vibe-detail__nav-art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-size: cover;
+  mask-image: linear-gradient(to right, transparent 46%, black 82%);
+  -webkit-mask-image: linear-gradient(to right, transparent 46%, black 82%);
+}
+
+.vibe-detail__nav-items {
+  position: relative;
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.vibe-detail__nav-items::-webkit-scrollbar {
+  display: none;
+}
+
+/* One continuous active indicator, positioned by useSlidingIndicator
+   (Web Animations) so the inchworm glide survives scroll and resize. */
+.vibe-detail__nav-indicator {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 100%;
+  bottom: 0;
+  height: 2px;
+  background: var(--color-accent);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.vibe-detail__nav-item {
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  padding: var(--space-1) 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+/* Hover is color only — the bar sits on artwork, so a background block
+   would read as a patch floating over the image. */
+.vibe-detail__nav-item:hover {
+  color: var(--color-text);
+}
+
+.vibe-detail__nav-item[aria-current="true"] {
+  color: var(--color-text);
+}
+
+.vibe-detail__nav-item:focus-visible,
+.vibe-detail__close--nav:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Jumped-to sections land below the sticky bar, never under it. */
+.case-study__section,
+.vibe-detail__section {
+  scroll-margin-top: 4.5rem;
+}
+
+/* Sections are chapters, marked by number, not by rules: a large,
+   pale numeral in the display size sits above each heading, its lower
+   end dissolving (mask fade) into the page so it reads as atmosphere,
+   not as another heading competing with the title. */
+.case-study {
+  display: grid;
+  gap: 0;
+  margin-top: var(--space-5);
+}
+
+.case-study__section + .case-study__section {
+  margin-top: var(--space-10);
+}
+
+.vibe-detail__index {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: var(--type-display);
+  font-weight: var(--weight-medium);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: color-mix(in srgb, var(--color-text) 14%, transparent);
+  mask-image: linear-gradient(to bottom, black 52%, transparent 96%);
+  -webkit-mask-image: linear-gradient(to bottom, black 52%, transparent 96%);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* The heading tucks into the numeral's faded lower end. */
+.vibe-detail__index + h3,
+.vibe-detail__index + dt {
+  position: relative;
+  margin-top: -0.65em;
+}
+
+.case-study__section p {
+  margin: 0 0 var(--space-3);
+}
+
+.case-study__section .vibe-detail__quote {
+  margin: var(--space-3) 0 0;
+}
+
+.case-study__videos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.case-study__video {
+  margin: 0;
+}
+
+.case-study__video video {
+  display: block;
+  width: 100%;
+  /* The Swim Balance recordings are 1200 × 1600 (3:4). */
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.case-study__video figcaption,
+.case-study__figure figcaption {
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-1);
+}
+
+.case-study__figure {
+  margin: var(--space-3) 0 0;
+}
+
+.case-study__figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Figures inside an item (a moment's sketch, a decision's still)
+   stay reading-sized: tall portrait artwork is height-capped and
+   centered instead of filling the whole measure and pushing the
+   next paragraph a screen away. Landscape media already sits
+   under the cap and is untouched. */
+.case-study__decision .case-study__figure img {
+  width: auto;
+  max-width: 100%;
+  max-height: 30rem;
+  margin-inline: auto;
+}
+
+/* A contained figure keeps a reading size instead of stretching to
+   the measure: artwork drawn small (Oscar's system diagram) stays
+   small and sharp rather than upscaled, tall, and soft. */
+.case-study__figure--contained {
+  max-width: 28rem;
+  margin-inline: auto;
+}
+
+/* Split items pair copy with their artwork: the title spans, the
+   copy takes the wider column and the figure the narrower one —
+   balanced, not halved — and the pairing stacks on narrow screens. */
+.case-study__decision--split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  column-gap: var(--space-4);
+  align-items: start;
+}
+
+.case-study__decision--split h4 {
+  grid-column: 1 / -1;
+}
+
+.case-study__decision--split .case-study__figure {
+  margin-top: 0;
+}
+
+.case-study__decision--split .case-study__figure img {
+  max-height: 26rem;
+}
+
+/* Embedded video keeps a 16:9 stage inside the panel: the
+   prototype plays where it is discussed instead of sending the
+   reader out to a link. */
+.case-study__embed {
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.case-study__embed iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.case-study__decision {
+  margin-top: var(--space-8);
+}
+
+.case-study__decision:first-of-type {
+  margin-top: 0;
+}
+
+/* One item rhythm for every generic section: an item earns the
+   same --space-5 before its title wherever it starts — after body
+   copy, after the section figure, or after another item — so a
+   captioned figure never hands its heading a collapsed gap while
+   later items sit a chasm away. (Swim's hand-written sections,
+   .case-study__section, keep their own rhythm; this scope never
+   matches them.) */
+.vibe-detail__section .case-study__decision {
+  margin-top: var(--space-5);
+}
+
+/* Paragraphs inside a generic section are separate blocks, not
+   one continuous run: a --space-2 beat between them keeps
+   consecutive paragraphs reading as paragraphs. */
+.vibe-detail__section dd + dd {
+  margin-top: var(--space-2);
+}
+
+@media (max-width: 640px) {
+  .vibe-detail__nav {
+    padding-inline: var(--space-2);
+  }
+
+  .case-study__videos {
+    grid-template-columns: 1fr;
+    max-width: 17rem;
+    margin-inline: auto;
+  }
+
+  /* Split items stack on narrow screens: copy first, then the
+     artwork under it at the usual figure offset. */
+  .case-study__decision--split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .case-study__decision--split .case-study__figure {
+    margin-top: var(--space-3);
+  }
+
+  .case-study__section + .case-study__section {
+    margin-top: var(--space-8);
   }
 }
 
@@ -7699,6 +8226,7 @@ body {
   .shared-layout__content { height: calc(100dvh - var(--page-shell-top)); }
   .app-content-layer--desk { padding-top: 0; }
   .shared-layout--desk .home-layout:not(.home-layout--library) { padding: 0; }
+  .app-content-layer--home .home-layout:not(.home-layout--library) { padding: 0; }
   .home-layout__grid { display: block; }
   .home-layout__reading { max-width: none; }
 
@@ -8237,6 +8765,7 @@ body:not([data-page="home"]) .editorial-thread {
 .log-philosophy > p:last-child,
 .log-process > p,
 .teaching-prose > p,
+.case-study__section p,
 .vibe-detail__section dd {
   max-width: var(--content-max-width);
   font-family: var(--font-serif);
@@ -8253,8 +8782,7 @@ body:not([data-page="home"]) .editorial-thread {
 }
 
 .log-philosophy h2,
-.log-process h2,
-.vibe-detail__section dt {
+.log-process h2 {
   margin: 0 0 var(--space-2);
   font-family: var(--font-serif);
   font-size: var(--type-reading);
@@ -8263,6 +8791,35 @@ body:not([data-page="home"]) .editorial-thread {
   letter-spacing: 0;
   text-transform: none;
   color: var(--color-text);
+}
+
+/* Project detail hierarchy — one ladder for every project detail,
+   long case study or short section list alike, built only from the
+   shared type tokens:
+     L1 project title  — sans, --type-h2 (see .vibe-detail__title)
+     L2 chapter title  — serif, --type-h2, under its pale numeral
+     L3 item title     — sans, --type-body, semibold
+     L4 body           — serif, --type-reading (above)
+   Chapter and item titles must never share a style again: that flat
+   pairing is what made the hierarchy unreadable. */
+.case-study__section h3,
+.vibe-detail__section dt {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-serif);
+  font-size: var(--type-h2);
+  font-weight: var(--weight-medium);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--color-text-strong);
+}
+
+.case-study__decision h4 {
+  margin: 0 0 var(--space-1);
+  font-family: var(--font-sans);
+  font-size: var(--type-body);
+  font-weight: var(--weight-medium);
+  line-height: 1.45;
+  color: var(--color-text-strong);
 }
 
 .journey-reflection__quote,
@@ -8311,8 +8868,9 @@ body:not([data-page="home"]) .editorial-thread {
   padding: var(--space-5);
 }
 
+/* Numbered chapters need the same full breath as the case study. */
 .vibe-detail__sections {
-  gap: var(--space-5);
+  gap: var(--space-8);
 }
 
 @media (max-width: 680px) {
@@ -8323,10 +8881,17 @@ body:not([data-page="home"]) .editorial-thread {
   .teaching-prose > p,
   .log-philosophy h2,
   .log-process h2,
-  .vibe-detail__section dt,
+  .case-study__section p,
   .vibe-detail__section dd {
     font-size: 1.05rem;
     line-height: 1.68;
+  }
+
+  /* Detail titles keep the ladder on small screens: chapters step
+     down, items stay at body size in sans. */
+  .case-study__section h3,
+  .vibe-detail__section dt {
+    font-size: 1.35rem;
   }
 
   .vibe-detail__body {

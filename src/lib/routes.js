@@ -39,6 +39,31 @@ export function isTeachingPath(pathname) {
   return pathname === TEACHING_PATH;
 }
 
+/** Top-level paths that are never a project id. */
+const RESERVED_SEGMENTS = new Set([
+  "about",
+  "teaching",
+  "desk",
+  "phoebes-desk",
+  "workspace",
+  "library",
+]);
+
+/**
+ * Shareable project route: /<project-id> (one case study), hanging
+ * directly off Home — the page the projects live on — so closing a
+ * detail returns there. The legacy /library/<project-id> shape still
+ * resolves for links shared before the move.
+ */
+export function projectIdFromPath(pathname) {
+  const legacy = pathname.match(/^\/library\/([^/]+)\/?$/);
+  if (legacy) return decodeURIComponent(legacy[1]);
+  const match = pathname.match(/^\/([^/]+)\/?$/);
+  if (!match) return null;
+  const id = decodeURIComponent(match[1]);
+  return RESERVED_SEGMENTS.has(id) ? null : id;
+}
+
 export function isLibraryPath(pathname) {
   return pathname === LIBRARY_PATH;
 }
@@ -55,6 +80,7 @@ export function viewIdFromPath(pathname) {
   if (isAboutPath(pathname)) return "about";
   if (isTeachingPath(pathname)) return "teaching";
   if (isLibraryPath(pathname)) return "caseStudies";
+  if (projectIdFromPath(pathname)) return "caseStudies";
   if (isDeskPath(pathname)) return "desk";
   return "home";
 }

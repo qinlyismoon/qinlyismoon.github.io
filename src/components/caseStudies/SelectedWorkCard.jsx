@@ -19,8 +19,10 @@ export default function SelectedWorkCard({ project, onHover, onOpen }) {
 
   // v2.2.1: projects with a live website follow the vibe card pattern —
   // the card is a button that opens the introduction modal, which then
-  // offers the live site and the case study.
-  if (project.liveUrl && onOpen) {
+  // offers the live site and the case study. Native detail content
+  // (detail / detailSections) takes the same path — the card opens
+  // the in-site detail and never sends the reader out to Notion.
+  if ((project.liveUrl || project.detail || project.detailSections) && onOpen) {
     return (
       <article className="vibe-card">
         <button

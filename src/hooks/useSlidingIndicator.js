@@ -101,9 +101,17 @@ export default function useSlidingIndicator({
       );
     };
 
+    // During a page view-transition the live nav sits under a static
+    // snapshot of its final state; a glide still running when the
+    // snapshot lifts would visibly jump back and catch up, which
+    // reads as a flicker around the labels. Land instantly instead —
+    // the glide is invisible under the snapshot anyway.
+    const pageTurning = document.documentElement.classList.contains(
+      "page-transitioning",
+    );
     const isNewSelection =
       placedKeyRef.current !== null && placedKeyRef.current !== activeKey;
-    place(isNewSelection);
+    place(isNewSelection && !pageTurning);
     placedKeyRef.current = activeKey;
 
     // Re-place only when the container really changes size (the observer

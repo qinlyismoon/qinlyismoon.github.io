@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSettings } from "../context/AppSettingsContext";
 import { useSidebarOverride } from "../context/SidebarOverrideContext";
 import HomeLayout from "../components/layouts/HomeLayout";
@@ -6,12 +7,57 @@ import VibeProjectCard from "../components/caseStudies/VibeProjectCard";
 import SelectedWorkCard from "../components/caseStudies/SelectedWorkCard";
 import VibeProjectDetail from "../components/caseStudies/VibeProjectDetail";
 import { VIBE_PROJECTS, SELECTED_PROJECTS } from "../lib/caseStudies";
+import { HOME_PATH, projectIdFromPath } from "../lib/routes";
 import { PORTFOLIO_LINKS } from "../lib/links";
+
+// Projects with a native case-study detail at /<id>: the vibe
+// projects and any selected project carrying native detail content.
+// The rest keep linking out to their Notion case study from the card.
+const DETAIL_PROJECTS = [
+  ...VIBE_PROJECTS,
+  ...SELECTED_PROJECTS.filter(
+    (project) => project.detail || project.detailSections,
+  ),
+];
 
 // Every project that can drive the sidebar on hover. Their role and
 // timeline values are passed as `reserve` candidates so the sidebar slot is
 // always sized to the longest one (no jump when moving between cards).
 const HOVER_PROJECTS = [...SELECTED_PROJECTS, ...VIBE_PROJECTS];
+
+/** The sidebar's timeline text for a project: year · duration, from the
+ *  same `duration` field the detail footer calls out — one source, so
+ *  hover, the open detail, and the footer can never disagree. */
+function projectTimelineValue(project, isZh) {
+  const duration =
+    isZh && project.durationZh ? project.durationZh : project.duration;
+  return [project.timeline, duration].filter(Boolean).join(" · ");
+}
+
+/** Role / timeline items a project lends the sidebar's personal
+ *  section — identical for hover and for the open detail, reserves
+ *  included, so opening a project never resizes or swaps the block. */
+function projectSidebarItems(project, isZh) {
+  const items = [];
+  const role = isZh ? project.roleZh : project.role;
+  if (role) {
+    items.push({
+      section: "personal",
+      label: isZh ? "项目角色" : "Project role",
+      value: role,
+      reserve: HOVER_PROJECTS.map((p) => (isZh ? p.roleZh : p.role)),
+    });
+  }
+  if (project.timeline) {
+    items.push({
+      section: "personal",
+      label: isZh ? "时间线" : "Timeline",
+      value: projectTimelineValue(project, isZh),
+      reserve: HOVER_PROJECTS.map((p) => projectTimelineValue(p, isZh)),
+    });
+  }
+  return items;
+}
 
 const LABELS = {
   en: {
@@ -37,29 +83,76 @@ const LABELS = {
 export default function LibraryPage({ embedded = false }) {
   const { language } = useAppSettings();
   const labels = LABELS[language] ?? LABELS.en;
-  const [activeProject, setActiveProject] = useState(null);
   const { setMetadataOverride } = useSidebarOverride();
   const hoverLeaveTimerRef = useRef(null);
+  const contentRef = useRef(null);
+  const savedScrollRef = useRef(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(
     () => () => window.clearTimeout(hoverLeaveTimerRef.current),
     [],
   );
 
-  // Project details are a focused reading surface. Publish that state to the
-  // shared chrome layer so the persistent navigation is removed while the
-  // modal is open, then restored on close/unmount.
-  useEffect(() => {
-    if (!activeProject) {
-      delete document.body.dataset.projectDetail;
-      return undefined;
-    }
+  // A project detail is a real route (/<id>) so one case study can be
+  // shared by link. The id comes from the URL, never local state.
+  const routeProjectId = projectIdFromPath(location.pathname);
+  const routeProject = useMemo(
+    () =>
+      routeProjectId
+        ? DETAIL_PROJECTS.find((project) => project.id === routeProjectId) ??
+          null
+        : null,
+    [routeProjectId],
+  );
 
-    document.body.dataset.projectDetail = "open";
+  // The project the overlay shows while it is closing: the route has
+  // already returned Home (so the destination settles, scroll and
+  // all, under the backdrop), but the overlay keeps this snapshot
+  // until its fade-out finishes and it unmounts.
+  const [closingProject, setClosingProject] = useState(null);
+  const displayedProject = routeProject ?? closingProject;
+
+  const getScroller = () => contentRef.current?.closest(".home-layout");
+
+  // A project route (/<id>) opens the detail as the original
+  // full-screen overlay; the URL is what makes it shareable, the
+  // presentation stays the modal. Entering titles the document after
+  // the project and lets the sidebar carry its role / timeline.
+  useEffect(() => {
+    if (!routeProject || embedded) return undefined;
+    const previousTitle = document.title;
+    document.title = `${routeProject.title} — Longyue Qin`;
+    if (!embedded) {
+      const items = projectSidebarItems(routeProject, language === "zh");
+      if (items.length) {
+        setMetadataOverride({ id: routeProject.id, items });
+      }
+    }
     return () => {
-      delete document.body.dataset.projectDetail;
+      document.title = previousTitle;
+      if (!embedded) setMetadataOverride(null);
     };
-  }, [activeProject]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routeProject?.id]);
+
+  // Coming back (close or browser Back): restore this instance's
+  // scroll position saved when the card was opened — Home's embedded
+  // instance restores the Home scroll, the Library instance its own.
+  useEffect(() => {
+    if (routeProject || savedScrollRef.current === null) return;
+    const y = savedScrollRef.current;
+    savedScrollRef.current = null;
+    // The grid remounts on return; give its layout a beat to settle
+    // before restoring, or the browser clamps the offset back to 0.
+    const timer = window.setTimeout(
+      () => getScroller()?.scrollTo({ top: y }),
+      60,
+    );
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routeProject]);
 
   // Hovering (or keyboard-focusing) a card adds only that project's role
   // and timeline to the sidebar's personal section (Section C). There is
@@ -69,6 +162,9 @@ export default function LibraryPage({ embedded = false }) {
     window.clearTimeout(hoverLeaveTimerRef.current);
 
     if (!project) {
+      // While a detail is open the overlay covers the card, which reads
+      // as a leave — never clear the open project's sidebar block for it.
+      if (routeProject) return;
       // Moving from one card to the next fires leave before enter. Defer the
       // restore briefly so the next card can cancel it; this keeps the
       // role / timeline fields mounted and updates only their values.
@@ -77,39 +173,41 @@ export default function LibraryPage({ embedded = false }) {
       }, 80);
       return;
     }
-    const isZh = language === "zh";
-    const items = [];
-    const role = isZh ? project.roleZh : project.role;
-    const roleCandidates = HOVER_PROJECTS.map((p) =>
-      isZh ? p.roleZh : p.role,
-    );
-    const timelineCandidates = HOVER_PROJECTS.map((p) => p.timeline);
-    if (role) {
-      items.push({
-        section: "personal",
-        label: isZh ? "项目角色" : "Project role",
-        value: role,
-        reserve: roleCandidates,
-      });
-    }
-    if (project.timeline) {
-      items.push({
-        section: "personal",
-        label: isZh ? "时间线" : "Timeline",
-        value: project.timeline,
-        reserve: timelineCandidates,
-      });
-    }
+    const items = projectSidebarItems(project, language === "zh");
     setMetadataOverride(items.length ? { id: project.id, items } : null);
   };
 
   const handleCardOpen = (project) => {
-    setMetadataOverride(null);
-    setActiveProject(project);
+    // Keep the hovered project's sidebar block exactly as it is — the
+    // entering effect re-asserts the identical items for the open
+    // detail. Clearing it here first made the block blink on open.
+    window.clearTimeout(hoverLeaveTimerRef.current);
+    const scroller = getScroller();
+    if (scroller) savedScrollRef.current = scroller.scrollTop;
+    navigate(`/${project.id}`);
   };
 
+  // Details hang off Home, the page the projects live on: closing one
+  // returns there, never to a separate collection stop in between.
+  // The return starts the moment closing does — Home lands under the
+  // backdrop while the overlay is still fading (see closingProject),
+  // so the fade reveals the destination, never the grid behind.
+  const handleDetailCloseStart = () => {
+    if (routeProject) setClosingProject(routeProject);
+    navigate(HOME_PATH);
+  };
+  const handleDetailClosed = () => setClosingProject(null);
+
+  const nextProject = displayedProject
+    ? DETAIL_PROJECTS[
+        (DETAIL_PROJECTS.findIndex((p) => p.id === displayedProject.id) +
+          1) %
+          DETAIL_PROJECTS.length
+      ]
+    : null;
+
   const content = (
-    <div className={embedded ? "home-work" : ""}>
+    <div ref={contentRef} className={embedded ? "home-work" : ""}>
       <section
         id="selected-work"
         className="case-studies__section"
@@ -158,14 +256,23 @@ export default function LibraryPage({ embedded = false }) {
         </div>
       </section>
 
-      {activeProject ? (
-        <VibeProjectDetail
-          project={activeProject}
-          onClose={() => setActiveProject(null)}
-        />
-      ) : null}
     </div>
   );
 
-  return embedded ? content : <HomeLayout className="home-layout--library">{content}</HomeLayout>;
+  if (embedded) return content;
+
+  return (
+    <HomeLayout className="home-layout--library">
+      {content}
+      {displayedProject ? (
+        <VibeProjectDetail
+          project={displayedProject}
+          onCloseStart={handleDetailCloseStart}
+          onClosed={handleDetailClosed}
+          nextProject={nextProject}
+          onOpenNext={handleCardOpen}
+        />
+      ) : null}
+    </HomeLayout>
+  );
 }
