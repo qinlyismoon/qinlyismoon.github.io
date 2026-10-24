@@ -583,14 +583,10 @@ export const SELECTED_PROJECTS = [
     descriptionZh:
       "把情绪记录铺成一座可以走进去的花园：颜色、形态、时间排开，不用对着表格也能看出起伏。",
     tags: ["Interactive Data Visualization", "Motion Design"],
-    url: "https://app.notion.com/p/Emotion-Graden-3f67fb6b97a580f395e5d6099d671d31?source=copy_link",
+    // Native intro only — live site, no outbound Notion case study.
     liveUrl: "https://emotion-garden-sooty.vercel.app/",
-    notesUrl:
-      "https://app.notion.com/p/Emotion-Graden-3f67fb6b97a580f395e5d6099d671d31?source=copy_link",
     liveLabel: "Experience Website",
     liveLabelZh: "体验网站",
-    notesLabel: "View Case Study",
-    notesLabelZh: "查看案例研究",
     // Screen recording of the live sample garden: ambient motion plus
     // hovering flowers to reveal each moment's feeling, time and duration.
     thumbnail: "/emotion-garden-thumb.gif",

@@ -7430,6 +7430,9 @@ body {
   padding: var(--space-4) var(--space-2);
   background: rgba(20, 20, 18, 0.55);
   backdrop-filter: blur(6px);
+  /* Tables and wide boards must not widen the overlay into a
+     horizontal scroll that spills past the dimmed backdrop. */
+  overflow-x: hidden;
   overflow-y: auto;
   animation: vibe-detail-fade 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -7510,6 +7513,9 @@ body[data-project-detail="open"] .app-content-layer {
 .vibe-detail {
   position: relative;
   width: 100%;
+  /* Flex item default min-width:auto lets wide tables/boards force the
+     panel past the viewport; zero it so max-width can hold. */
+  min-width: 0;
   /* One width for every project detail: the reading measure plus the
      body padding on both sides, so text lines up on the same measure
      whether the page is a short section list or a long case study. */
@@ -7518,8 +7524,10 @@ body[data-project-detail="open"] .app-content-layer {
   background: var(--color-surface);
   border-radius: 16px;
   /* Visible (not hidden) so the sticky contents bar can travel; the hero
-     clips its own top corners instead. */
-  overflow: visible;
+     clips its own top corners instead. Clip only the x-axis so wide
+     children stay inside the panel. */
+  overflow-x: clip;
+  overflow-y: visible;
   /* Soft ease for first open and for project-to-project switches
      (the panel remounts, the overlay behind it never does). The
      rise waits until the backdrop has fully settled (0.35s), so
@@ -7613,6 +7621,8 @@ body[data-project-detail="open"] .app-content-layer {
 
 .vibe-detail__body {
   padding: var(--space-4);
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* Scene footer: no divider lines anywhere. The panel settles onto
@@ -7631,6 +7641,11 @@ body[data-project-detail="open"] .app-content-layer {
   border-radius: 0 0 16px 16px;
   background: color-mix(in srgb, var(--color-text) 3.5%, transparent);
   padding: var(--space-6) var(--space-5) var(--space-5);
+}
+
+/* Keep Next on the right even when the meta block wraps the row. */
+.vibe-detail__footer .vibe-detail__next {
+  margin-left: auto;
 }
 
 .vibe-detail__footer-art {
@@ -7734,6 +7749,13 @@ body[data-project-detail="open"] .app-content-layer {
 
   .vibe-detail__footer-art {
     opacity: 0.3;
+  }
+
+  /* Wrapped Next would otherwise sit at the start of its flex line. */
+  .vibe-detail__footer .vibe-detail__next {
+    flex: 1 1 100%;
+    align-self: flex-end;
+    margin-left: 0;
   }
 }
 
@@ -7840,6 +7862,8 @@ body[data-project-detail="open"] .app-content-layer {
   margin: 0;
   display: grid;
   gap: var(--space-3);
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* Section titles and body copy are styled once, with the Reading
@@ -7989,6 +8013,8 @@ body[data-project-detail="open"] .app-content-layer {
 .case-study__section,
 .vibe-detail__section {
   scroll-margin-top: 4.5rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* Sections are chapters, marked by number, not by rules: a large,
@@ -8048,13 +8074,16 @@ body[data-project-detail="open"] .app-content-layer {
 
 .case-study__table-wrap {
   margin-top: var(--space-3);
+  max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 
 .case-study__table {
   width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
   font-family: var(--font-sans);
   font-size: var(--type-caption);
   line-height: 1.45;
@@ -8067,12 +8096,14 @@ body[data-project-detail="open"] .app-content-layer {
   padding: 0.65rem 0.75rem;
   text-align: left;
   vertical-align: top;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .case-study__table thead th {
   font-weight: var(--weight-medium);
   background: color-mix(in srgb, var(--color-background) 72%, var(--color-surface));
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .case-study__table--row-head tbody th {
@@ -8097,6 +8128,8 @@ body[data-project-detail="open"] .app-content-layer {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-5);
+  max-width: 100%;
+  min-width: 0;
 }
 
 .case-study__figures .case-study__figure {
@@ -8206,6 +8239,8 @@ body[data-project-detail="open"] .app-content-layer {
   grid-template-columns: minmax(0, 1fr) auto;
   column-gap: var(--space-5);
   align-items: center;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .case-study__decision--split h4 {
@@ -8289,6 +8324,18 @@ body[data-project-detail="open"] .app-content-layer {
    consecutive paragraphs reading as paragraphs. */
 .vibe-detail__section dd + dd {
   margin-top: var(--space-2);
+}
+
+@media (max-width: 720px) {
+  /* Stack phone demos earlier than the general 640 breakpoint so
+     copy + 18rem handset cannot force the panel wider than the phone. */
+  .case-study__decision--split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .case-study__decision--split .case-study__figure {
+    margin-top: var(--space-3);
+  }
 }
 
 @media (max-width: 640px) {
