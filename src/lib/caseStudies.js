@@ -1,6 +1,6 @@
-// Vibe coding projects and selected design work showcased on the
-// Case Studies page. Vibe projects open a native detail view with a link
-// to the live site; selected projects link out to their Notion case study.
+// Vibe coding, selected design work, and Research & Craft showcased on
+// the Case Studies page. Vibe / native-detail projects open in-site;
+// selected projects without native content still link out to Notion.
 
 import {
   LEAF_NOTE_DETAIL_SECTIONS,
@@ -10,6 +10,14 @@ import {
   MONEY_MAP_DETAIL_SECTIONS,
   MONEY_MAP_DETAIL_SECTIONS_ZH,
 } from "./moneyMapCaseStudy";
+import {
+  PROCEDURAL_ANIMATION_DETAIL_SECTIONS,
+  PROCEDURAL_ANIMATION_DETAIL_SECTIONS_ZH,
+} from "./proceduralAnimationCaseStudy";
+import {
+  WHOSE_DREAMS_DETAIL_SECTIONS,
+  WHOSE_DREAMS_DETAIL_SECTIONS_ZH,
+} from "./whoseDreamsCaseStudy";
 
 export const VIBE_PROJECTS = [
   {
@@ -1063,5 +1071,58 @@ export const SELECTED_PROJECTS = [
     timeline: "2026",
     detailSections: MONEY_MAP_DETAIL_SECTIONS,
     detailSectionsZh: MONEY_MAP_DETAIL_SECTIONS_ZH,
+  },
+];
+
+// Research & Craft — between Selected Work and Vibe Coding. Two parallel
+// practices (not research→craft): co-design first, then procedural motion.
+// Same card + native detail grammar as Selected Work.
+export const RESEARCH_CRAFT_PROJECTS = [
+  {
+    id: "whose-dreams",
+    title: "Whose Dreams Shape Tomorrow?",
+    subtitle: "Co-design · Youth & Sustainability",
+    tagline: "High-school students build and film a 2050 town.",
+    taglineZh: "高中生搭一座 2050 的小镇，再拍下来。",
+    description:
+      "Two co-design workshops with a robotics team—and Sustaintown, the short film they made.",
+    descriptionZh:
+      "和机器人队做的两场共创工作坊，以及他们拍的短片 Sustaintown。",
+    tags: ["Co-design", "Workshop", "Design Research"],
+    // Still cover — workshop affinity boards (research feel); film lives in the detail.
+    thumbnail: "/research-craft/whose-dreams/cover.jpg",
+    navArtPosition: "42% 48%",
+    navArtSize: "auto 36rem",
+    footerArtPosition: "55% 52%",
+    footerArtSize: "auto 60rem",
+    role: "Co-design Team Member",
+    roleZh: "共创团队成员",
+    timeline: "2025",
+    detailSections: WHOSE_DREAMS_DETAIL_SECTIONS,
+    detailSectionsZh: WHOSE_DREAMS_DETAIL_SECTIONS_ZH,
+  },
+  {
+    id: "procedural-animation",
+    title: "Procedural Animation",
+    subtitle: "Houdini · Node-Based Motion",
+    tagline: "Four Houdini studies built as node graphs.",
+    taglineZh: "四个用节点图搭起来的 Houdini 习作。",
+    description:
+      "Shrine, train, hotpot, snowman—parameters, signals, and simulation in Houdini.",
+    descriptionZh:
+      "神社、火车、火锅、雪人——在 Houdini 里用参数、信号和模拟做成。",
+    tags: ["Procedural Animation", "Houdini", "Motion Design"],
+    thumbnail: "/research-craft/procedural/cover.jpg",
+    // Card + hero: hotpot effect reel — clean render, no Houdini chrome.
+    heroVideo: "/research-craft/procedural/03-hotpot.mp4",
+    navArtPosition: "50% 45%",
+    navArtSize: "auto 28rem",
+    footerArtPosition: "50% 40%",
+    footerArtSize: "auto 50rem",
+    role: "Technical Artist & Designer",
+    roleZh: "技术美术 & 设计师",
+    timeline: "2024",
+    detailSections: PROCEDURAL_ANIMATION_DETAIL_SECTIONS,
+    detailSectionsZh: PROCEDURAL_ANIMATION_DETAIL_SECTIONS_ZH,
   },
 ];

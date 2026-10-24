@@ -42,11 +42,11 @@ const ABOUT_PAGE_COPY = {
     hero: {
       greeting: "Hi, I’m Phoebe.",
       kicker: "Design engineer · product designer",
-      // v2.3.2 — About shows who I am: how I think, whose eyes I look
-      // through, how I find answers, and who I am underneath. Each section
-      // leads with a trait; examples are light anchors, never the point.
-      // quote + one-line roadmap → portrait → questions → other
-      // people's perspectives (see, then speak) → making (+ loop) →
+      // About shows who I am: how I think, whose eyes I look through,
+      // how I decide, how I find answers, and who I am underneath. Each
+      // section leads with a trait; examples are light anchors, never
+      // the point. quote + roadmap → portrait → questions → other
+      // people's perspectives → map possibilities → making (+ loop) →
       // staying true to myself.
       essay: {
         quote: {
@@ -54,7 +54,7 @@ const ABOUT_PAGE_COPY = {
           translation: "I doubt, therefore I think, therefore I am.",
         },
         roadmap:
-          "This line is closest to how I work: questions start my thinking, stepping into other people’s perspectives widens it and helps me bring a direction to the people I work with, and making turns it into something real.",
+          "This line is closest to how I work: questions start my thinking; other people’s perspectives widen it; laying out the possibilities deepens the choice; making turns it into something real.",
         sections: [
           {
             id: "doubt",
@@ -69,7 +69,15 @@ const ABOUT_PAGE_COPY = {
             title: "Seeing from every side",
             paragraphs: [
               "Before I settle on a direction, I try to take each relevant person’s standpoint—and look through their first-person view: the person handing something over and the person receiving it, the operator and the team behind the platform, the student who sees things differently from me. Once I understand what each of them cares about and worries about, and hold those views side by side, the real problem usually shows up.",
-              "That understanding is also how I talk with the people I work with. When I bring an idea to the table, I try to name what each side needs and where the tensions sit, so the direction is something we can follow, push on, and share together.",
+              "That understanding is also how I talk with the people I work with. When I bring an idea to the table, I try to name what each side needs and where the tensions sit, so the direction is something we can follow, push on, and stand behind together.",
+            ],
+          },
+          {
+            id: "possibilities",
+            title: "I lay out the possibilities before I choose",
+            paragraphs: [
+              "Intuition and taste matter in design—I trust them. But I also try to think a decision through with some structure: name the options, see how they relate, then choose. Sometimes that means sorting cases into a matrix, or walking a set of conditions one by one, so fewer paths stay invisible.",
+              "Even when I land on the same choice my first instinct pointed to, the path is different. Having walked the field, I know what I turned down and why. That depth is what I want the decision to rest on.",
             ],
           },
           {
@@ -139,7 +147,7 @@ const ABOUT_PAGE_COPY = {
           translation: "我怀疑，故我思；我思，故我在。",
         },
         roadmap:
-          "这句话最贴近我做事的方式：提问让我开始思考，带入不同立场的第一视角让想法变宽，也让我能把方向带回给一起工作的人；动手去做，才把它变成真实的东西。",
+          "这句话最贴近我做事的方式：提问让我开始思考；带入不同立场的第一视角让想法变宽；把可能摆清楚，让选择更深；动手去做，才把它变成真实的东西。",
         sections: [
           {
             id: "doubt",
@@ -154,7 +162,15 @@ const ABOUT_PAGE_COPY = {
             title: "站在每一方的立场上看",
             paragraphs: [
               "定方案之前，我会试着站在每个相关的人的立场上，带入他们的第一视角：交出一件事的人和接手的人，运营商和平台背后的团队，想法跟我不一样的学生。看清他们各自在意什么、担心什么，再把这些视角放在一起，真正的问题往往就浮现了。",
-              "这份理解，也是我和一起工作的人沟通的方式。把想法拿到桌上时，我会试着说清每一方需要什么、张力在哪里，让方向变成我们可以一起跟上、一起推敲、一起共有的东西。",
+              "这份理解，也是我和一起工作的人沟通的方式。把想法拿到桌上时，我会试着说清每一方需要什么、张力在哪里，让方向变成我们能一起跟上、一起推敲、也一起站得住的东西。",
+            ],
+          },
+          {
+            id: "possibilities",
+            title: "先把可能摆清楚，再做决定",
+            paragraphs: [
+              "直觉和审美对设计很重要，我也信它们。但我也会试着用更有结构的方式把决定想一遍：把可能的情况列出来，看清它们怎么彼此牵连，再选择。有时像把选项排进一张矩阵，有时像顺着一组条件往下推，好少留一些看不见的路。",
+              "就算最后选的，和第一眼觉得对的那条一样，走过的路径也不一样。把整片可能走过一遍，我才清楚自己放下了什么、为什么放下。我想让决定落在这种深度上。",
             ],
           },
           {

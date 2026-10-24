@@ -221,7 +221,7 @@ column structure. The Context Column is informational,
 not navigational, and owns the shared contact links.
 
 The home page closes with a single versioned copyright line (`.home-copyright`,
-`© 2026 Longyue Qin · v2.4.3`) after the work index. It is set in the sidebar
+`© 2026 Longyue Qin · v2.5.0`) after the work index. It is set in the sidebar
 label voice (12px/500/secondary) and aligned to the documentation content
 width — a quiet colophon, never a footer bar. It is language-neutral, so
 it lives directly in `HomeIntro.jsx` rather than the localization copy.
@@ -561,7 +561,7 @@ scene while the viewport scrolls.
 
 ### Case Studies page
 
-The Case Studies page is a document page (no horizontal scroll) with two
+The Case Studies page is a document page (no horizontal scroll) with three
 sections, in this order:
 
 1. **Selected Work** — a short note, a responsive card grid (`.vibe-grid`)
@@ -589,7 +589,13 @@ sections, in this order:
    and link cards share one card-surface base
    (`.vibe-card__button, .vibe-card__link`) — never two copies of the
    hover/focus treatment.
-2. **Vibe Coding** — a responsive card grid (`.vibe-grid`) of interactive
+2. **Research & Craft** — two parallel practices, not research→craft:
+   co-design research and procedural Houdini motion. Same card grid and
+   native detail grammar as Selected Work. Order matches the title:
+   Whose Dreams → Procedural Animation. Section note states the parallel
+   explicitly. Procedural cards may use a looping clip; co-design uses a
+   still research photograph. Film and study reels live in native detail.
+3. **Vibe Coding** — a responsive card grid (`.vibe-grid`) of interactive
    projects. Each card (`.vibe-card`) shows a 16:10 thumbnail, title
    (sans), one-line description (serif, secondary), and quiet category
    tags.
@@ -619,8 +625,9 @@ surface/secondary tokens, never raw hex colors. Card buttons carry the
 system `:focus-visible` treatment (2px accent outline, 3px offset).
 
 In its default state the sidebar's Page Metadata region is a small
-directory of the page's sections, headed `Project Collection`: two links
-(`Selected Work`, `Vibe Coding`) in the value type treatment (17px / 600),
+directory of the page's sections, headed `Project Collection`: three links
+(`Selected Work`, `Research & Craft`, `Vibe Coding`) in the value type
+treatment (17px / 600),
 stacked with the standard item gap. Hover is quiet — accent color only, no
 underline, matching the card hover language. Clicking a link smooth-scrolls
 its section into view (`scrollIntoView`, honoring `prefers-reduced-motion`);

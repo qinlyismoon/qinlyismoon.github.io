@@ -6,24 +6,34 @@ import HomeLayout from "../components/layouts/HomeLayout";
 import VibeProjectCard from "../components/caseStudies/VibeProjectCard";
 import SelectedWorkCard from "../components/caseStudies/SelectedWorkCard";
 import VibeProjectDetail from "../components/caseStudies/VibeProjectDetail";
-import { VIBE_PROJECTS, SELECTED_PROJECTS } from "../lib/caseStudies";
+import {
+  VIBE_PROJECTS,
+  SELECTED_PROJECTS,
+  RESEARCH_CRAFT_PROJECTS,
+} from "../lib/caseStudies";
 import { HOME_PATH, projectIdFromPath } from "../lib/routes";
 import { PORTFOLIO_LINKS } from "../lib/links";
 
-// Projects with a native case-study detail at /<id>: the vibe
-// projects and any selected project carrying native detail content.
-// The rest keep linking out to their Notion case study from the card.
+// Projects with a native case-study detail at /<id>: vibe, selected with
+// native detail, and Research & Craft.
+// Order matches the page sections so “Next project” walks Selected →
+// Research & Craft → Vibe Coding.
 const DETAIL_PROJECTS = [
-  ...VIBE_PROJECTS,
   ...SELECTED_PROJECTS.filter(
     (project) => project.detail || project.detailSections,
   ),
+  ...RESEARCH_CRAFT_PROJECTS,
+  ...VIBE_PROJECTS,
 ];
 
 // Every project that can drive the sidebar on hover. Their role and
 // timeline values are passed as `reserve` candidates so the sidebar slot is
 // always sized to the longest one (no jump when moving between cards).
-const HOVER_PROJECTS = [...SELECTED_PROJECTS, ...VIBE_PROJECTS];
+const HOVER_PROJECTS = [
+  ...SELECTED_PROJECTS,
+  ...RESEARCH_CRAFT_PROJECTS,
+  ...VIBE_PROJECTS,
+];
 
 /** The sidebar's timeline text for a project: year · duration, from the
  *  same `duration` field the detail footer calls out — one source, so
@@ -65,6 +75,9 @@ const LABELS = {
     selectedWork: "Selected Work",
     selectedWorkNote:
       "Case studies in making complex systems understandable, from research and product strategy to working code.",
+    researchCraft: "Research & Craft",
+    researchCraftNote:
+      "Two kinds of work side by side: co-design with people, and procedural motion in Houdini.",
     vibeCoding: "Vibe Coding",
     vibeCodingNote:
       "Interactive experiments designed and built with AI coding agents — best experienced live.",
@@ -74,6 +87,9 @@ const LABELS = {
     selectedWork: "精选作品",
     selectedWorkNote:
       "让复杂系统变得可理解的案例——从研究、产品策略到可运行的代码。",
+    researchCraft: "研究与制作",
+    researchCraftNote:
+      "两种并列的工作：和人一起共创，以及在 Houdini 里做程序化运动。",
     vibeCoding: "Vibe Coding",
     vibeCodingNote:
       "与 AI 编程助手共同设计并构建的互动实验——建议亲自体验。",
@@ -227,6 +243,25 @@ export default function LibraryPage({ embedded = false }) {
         <p className="case-studies__section-note">{labels.selectedWorkNote}</p>
         <div className="vibe-grid">
           {SELECTED_PROJECTS.map((project) => (
+            <SelectedWorkCard
+              key={project.id}
+              project={project}
+              onOpen={handleCardOpen}
+              onHover={handleCardHover}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section
+        id="research-craft"
+        className="case-studies__section"
+        aria-label={labels.researchCraft}
+      >
+        <h2 className="case-studies__section-title">{labels.researchCraft}</h2>
+        <p className="case-studies__section-note">{labels.researchCraftNote}</p>
+        <div className="vibe-grid">
+          {RESEARCH_CRAFT_PROJECTS.map((project) => (
             <SelectedWorkCard
               key={project.id}
               project={project}

@@ -64,7 +64,7 @@ const PAGE_CONTEXT = {
           label: "Current chapter",
           value: "Designing in the Age of AI",
         },
-        { section: "context", label: "Current version", value: "v2.4.3" },
+        { section: "context", label: "Current version", value: "v2.5.0" },
       ],
     },
     teaching: {
@@ -98,6 +98,7 @@ const PAGE_CONTEXT = {
           label: "Project Collection",
           links: [
             { label: "Selected Work", target: "selected-work" },
+            { label: "Research & Craft", target: "research-craft" },
             { label: "Vibe Coding", target: "vibe-coding" },
           ],
         },
@@ -169,7 +170,7 @@ const PAGE_CONTEXT = {
           label: "Current chapter",
           value: "Designing in the Age of AI",
         },
-        { section: "context", label: "当前版本", value: "v2.4.3" },
+        { section: "context", label: "当前版本", value: "v2.5.0" },
       ],
     },
     teaching: {
@@ -198,6 +199,7 @@ const PAGE_CONTEXT = {
           label: "作品集",
           links: [
             { label: "精选作品", target: "selected-work" },
+            { label: "研究与制作", target: "research-craft" },
             { label: "Vibe Coding", target: "vibe-coding" },
           ],
         },

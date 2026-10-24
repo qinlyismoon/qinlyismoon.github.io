@@ -296,7 +296,10 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
     null;
   const tagline = isZh && project.taglineZh ? project.taglineZh : project.tagline;
   const showImage = project.thumbnail && !imageFailed;
-  const showHeroVideo = Boolean(project.heroVideo);
+  // Card may use a short loop (`heroVideo`); detail can swap in a longer
+  // cut via `detailHeroVideo` (e.g. full workshop film).
+  const detailHeroSrc = project.detailHeroVideo || project.heroVideo;
+  const showHeroVideo = Boolean(detailHeroSrc);
   const showHero = showHeroVideo || showImage;
   // Optional per-project action labels (v2.2.1+); vibe projects keep the
   // shared defaults. Emotion Garden (v2.2.2) also fills question / visual /
@@ -390,7 +393,7 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
             {showHeroVideo ? (
               <CaseStudyVideo
                 className="vibe-detail__image vibe-detail__hero-video"
-                src={project.heroVideo}
+                src={detailHeroSrc}
                 poster={project.thumbnail || undefined}
                 controls={false}
               />
@@ -594,7 +597,10 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
                               : ""
                           }`}
                         >
-                          <CaseStudyVideo src={video.src} />
+                          <CaseStudyVideo
+                            src={video.src}
+                            withSound={Boolean(video.withSound)}
+                          />
                           {video.caption ? (
                             <figcaption>{video.caption}</figcaption>
                           ) : null}
@@ -624,6 +630,13 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
                           <dd key={paragraph.slice(0, 24)}>{paragraph}</dd>
                         ))
                       )}
+                      {item.list?.length ? (
+                        <ul className="case-study__list">
+                          {item.list.map((entry) => (
+                            <li key={entry}>{entry}</li>
+                          ))}
+                        </ul>
+                      ) : null}
                       {item.image ? (
                         <figure className="case-study__figure">
                           <img
@@ -635,6 +648,22 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
                             <figcaption>{item.image.caption}</figcaption>
                           ) : null}
                         </figure>
+                      ) : null}
+                      {item.images?.length ? (
+                        <div className="case-study__figures">
+                          {item.images.map((image) => (
+                            <figure key={image.src} className="case-study__figure">
+                              <img
+                                src={image.src}
+                                alt={image.alt ?? ""}
+                                loading="lazy"
+                              />
+                              {image.caption ? (
+                                <figcaption>{image.caption}</figcaption>
+                              ) : null}
+                            </figure>
+                          ))}
+                        </div>
                       ) : null}
                       {/* Local mp4 or external embed. Portrait clips
                           (phone recordings) use a tall stage so the

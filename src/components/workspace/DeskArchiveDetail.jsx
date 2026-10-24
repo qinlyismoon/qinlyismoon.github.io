@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useAppSettings } from "../../context/AppSettingsContext";
 import { getAboutPageCopy } from "../../lib/aboutContent";
 import AboutHeroCollage from "../about/AboutHeroCollage";
@@ -26,30 +27,53 @@ export default function DeskArchiveDetail({ panel, onClose }) {
   const copy = getAboutPageCopy(language);
   const labels = LABELS[language] ?? LABELS.en;
 
+  // Same shell contract as project details: portal to body so the overlay
+  // is not trapped under Desk's stacking context, and drop the fixed top
+  // nav below the backdrop via data-project-detail.
   useEffect(() => {
     if (!panel) return undefined;
-    const onKey = (event) => { if (event.key === "Escape") onClose(); };
+    const onKey = (event) => {
+      if (event.key === "Escape") onClose();
+    };
     window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
     document.body.dataset.projectDetail = "open";
     return () => {
       window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
       delete document.body.dataset.projectDetail;
     };
   }, [panel, onClose]);
 
   if (!panel) return null;
   const isBoard = panel === "board";
-  return (
-    <div className="vibe-detail__overlay desk-archive__overlay" role="dialog" aria-modal="true" onClick={onClose}>
+  return createPortal(
+    <div
+      className="vibe-detail__overlay desk-archive__overlay"
+      role="dialog"
+      aria-modal="true"
+      onClick={onClose}
+    >
       <div
         className={`vibe-detail desk-archive${isDarkMode ? " about-page--dark" : ""}`}
         onClick={(event) => event.stopPropagation()}
       >
-        <button type="button" className="vibe-detail__close" onClick={onClose} aria-label={labels.close}>×</button>
+        <button
+          type="button"
+          className="vibe-detail__close"
+          onClick={onClose}
+          aria-label={labels.close}
+        >
+          ×
+        </button>
         <header className="desk-archive__header">
           <p className="vibe-detail__kicker">Phoebe’s Desk</p>
-          <h2 className="vibe-detail__title">{isBoard ? labels.boardTitle : labels.timelineTitle}</h2>
-          <p className="vibe-detail__tagline">{isBoard ? labels.boardBody : labels.timelineBody}</p>
+          <h2 className="vibe-detail__title">
+            {isBoard ? labels.boardTitle : labels.timelineTitle}
+          </h2>
+          <p className="vibe-detail__tagline">
+            {isBoard ? labels.boardBody : labels.timelineBody}
+          </p>
         </header>
         <div className={`desk-archive__content desk-archive__content--${panel}`}>
           {isBoard ? (
@@ -59,6 +83,7 @@ export default function DeskArchiveDetail({ panel, onClose }) {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
