@@ -15,7 +15,40 @@ export default function SelectedWorkCard({ project, onHover, onOpen }) {
   // language, so they are read directly with no Zh variant.
   const tags = project.tags;
   const [imageFailed, setImageFailed] = useState(false);
-  const showImage = project.thumbnail && !imageFailed;
+  const showVideo = Boolean(project.heroVideo);
+  const showImage = !showVideo && project.thumbnail && !imageFailed;
+  const showThumb = showVideo || showImage || Boolean(project.placeholder);
+
+  const thumbnail = showThumb ? (
+    <div className="vibe-card__thumbnail" aria-hidden="true">
+      {showVideo ? (
+        <video
+          className="vibe-card__image vibe-card__video"
+          src={project.heroVideo}
+          poster={project.thumbnail || undefined}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+        />
+      ) : showImage ? (
+        <img
+          src={project.thumbnail}
+          alt=""
+          className="vibe-card__image"
+          loading="lazy"
+          onError={() => setImageFailed(true)}
+        />
+      ) : (
+        <div className="vibe-card__placeholder">
+          <span className="vibe-card__placeholder-mark">
+            {project.placeholder}
+          </span>
+        </div>
+      )}
+    </div>
+  ) : null;
 
   // v2.2.1: projects with a live website follow the vibe card pattern —
   // the card is a button that opens the introduction modal, which then
@@ -35,25 +68,7 @@ export default function SelectedWorkCard({ project, onHover, onOpen }) {
           onBlur={() => onHover?.(null)}
           aria-label={`View details for ${project.title}`}
         >
-          {showImage || project.placeholder ? (
-            <div className="vibe-card__thumbnail" aria-hidden="true">
-              {showImage ? (
-                <img
-                  src={project.thumbnail}
-                  alt=""
-                  className="vibe-card__image"
-                  loading="lazy"
-                  onError={() => setImageFailed(true)}
-                />
-              ) : (
-                <div className="vibe-card__placeholder">
-                  <span className="vibe-card__placeholder-mark">
-                    {project.placeholder}
-                  </span>
-                </div>
-              )}
-            </div>
-          ) : null}
+          {thumbnail}
           <div className="vibe-card__body">
             <h3 className="vibe-card__title">{project.title}</h3>
             <p className="vibe-card__description">{description}</p>
@@ -85,17 +100,7 @@ export default function SelectedWorkCard({ project, onHover, onOpen }) {
         onBlur={() => onHover?.(null)}
         aria-label={`Read the ${project.title} case study on Notion`}
       >
-        {showImage ? (
-          <div className="vibe-card__thumbnail" aria-hidden="true">
-            <img
-              src={project.thumbnail}
-              alt=""
-              className="vibe-card__image"
-              loading="lazy"
-              onError={() => setImageFailed(true)}
-            />
-          </div>
-        ) : null}
+        {thumbnail}
         <div className="vibe-card__body">
           <h3 className="vibe-card__title">
             {project.title}

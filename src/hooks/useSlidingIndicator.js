@@ -9,10 +9,14 @@ import { useLayoutEffect, useRef } from "react";
  * with a decisive settle. The line stretches across the gap and lands —
  * smooth in travel, with a small, tactile beat on arrival.
  *
- * Driven by the Web Animations API (not CSS transitions) so it keeps
- * playing while a route change crossfades the page — the page-transition
- * freeze (`.page-transitioning * { transition: none }`) used to make the
- * tab underline jump, which read as a flicker.
+ * Driven by the Web Animations API (not CSS transitions) so the glide is
+ * not killed by the route freeze (`.page-transitioning * { transition: none }`).
+ *
+ * Route View Transitions paint a static nav snapshot, so a glide under the
+ * overlay is invisible — and finishing mid-flight when the snapshot lifts
+ * used to flicker. While `page-transitioning` is on we keep the line on the
+ * previous tab (so the new snapshot matches); when the class lifts we run
+ * the inchworm to the new tab.
  */
 export const INDICATOR_MOTION = {
   lead: { duration: 240, easing: "cubic-bezier(0.2, 0.9, 0.1, 1)" },
@@ -101,28 +105,45 @@ export default function useSlidingIndicator({
       );
     };
 
-    // During a page view-transition the live nav sits under a static
-    // snapshot of its final state; a glide still running when the
-    // snapshot lifts would visibly jump back and catch up, which
-    // reads as a flicker around the labels. Land instantly instead —
-    // the glide is invisible under the snapshot anyway.
     const pageTurning = document.documentElement.classList.contains(
       "page-transitioning",
     );
     const isNewSelection =
       placedKeyRef.current !== null && placedKeyRef.current !== activeKey;
-    place(isNewSelection && !pageTurning);
-    placedKeyRef.current = activeKey;
 
-    // Re-place only when the container really changes size (the observer
-    // also fires once on observe, which must not cancel the glide).
     let lastWidth = container.clientWidth;
-    const observer = new ResizeObserver(() => {
+    const resizeObserver = new ResizeObserver(() => {
       if (container.clientWidth === lastWidth) return;
       lastWidth = container.clientWidth;
       place(false);
     });
-    observer.observe(container);
-    return () => observer.disconnect();
+    resizeObserver.observe(container);
+
+    // Hold the previous slot through the VT snapshot, then glide once the
+    // overlay lifts so the motion is actually visible.
+    if (pageTurning && isNewSelection) {
+      placedKeyRef.current = activeKey;
+      const glideWhenSettled = () => {
+        if (document.documentElement.classList.contains("page-transitioning")) {
+          return;
+        }
+        classObserver.disconnect();
+        place(true);
+      };
+      const classObserver = new MutationObserver(glideWhenSettled);
+      classObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+      return () => {
+        classObserver.disconnect();
+        resizeObserver.disconnect();
+      };
+    }
+
+    place(isNewSelection);
+    placedKeyRef.current = activeKey;
+
+    return () => resizeObserver.disconnect();
   }, [containerRef, indicatorRef, activeKey, layoutKey]);
 }

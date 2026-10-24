@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useAppSettings } from "../../context/AppSettingsContext";
 import useSlidingIndicator from "../../hooks/useSlidingIndicator";
+import CaseStudyVideo from "./CaseStudyVideo";
 
 const LABELS = {
   en: {
@@ -202,19 +203,25 @@ function CaseStudyBody({ caseStudy }) {
           </span>
           <h3>{experience.heading}</h3>
           {experience.loop ? <p>{experience.loop}</p> : null}
-          {experience.videos?.length ? (
+          {/* Prefer crisp stills (PDF exports) when present; fall back
+              to screen recordings for motion demos. */}
+          {experience.images?.length ? (
+            <div className="case-study__videos">
+              {experience.images.map((image) => (
+                <figure
+                  key={image.src}
+                  className="case-study__video case-study__video--still"
+                >
+                  <img src={image.src} alt={image.alt ?? ""} loading="lazy" />
+                  {image.caption ? <figcaption>{image.caption}</figcaption> : null}
+                </figure>
+              ))}
+            </div>
+          ) : experience.videos?.length ? (
             <div className="case-study__videos">
               {experience.videos.map((video) => (
                 <figure key={video.src} className="case-study__video">
-                  <video
-                    src={video.src}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    controls
-                    preload="metadata"
-                  />
+                  <CaseStudyVideo src={video.src} />
                   <figcaption>{video.caption}</figcaption>
                 </figure>
               ))}
@@ -289,6 +296,8 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
     null;
   const tagline = isZh && project.taglineZh ? project.taglineZh : project.tagline;
   const showImage = project.thumbnail && !imageFailed;
+  const showHeroVideo = Boolean(project.heroVideo);
+  const showHero = showHeroVideo || showImage;
   // Optional per-project action labels (v2.2.1+); vibe projects keep the
   // shared defaults. Emotion Garden (v2.2.2) also fills question / visual /
   // interaction in the same section slots.
@@ -296,9 +305,16 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
     (isZh ? project.liveLabelZh : project.liveLabel) ?? labels.visitLive;
   const notesLabel =
     (isZh ? project.notesLabelZh : project.notesLabel) ?? labels.projectNotes;
+  const livePendingLabel =
+    (isZh ? project.livePendingLabelZh : project.livePendingLabel) ??
+    (isZh ? "即将上线" : "Coming soon");
   const chips = caseStudy?.skills?.length ? caseStudy.skills : project.tags;
   const role = isZh && project.roleZh ? project.roleZh : project.role;
-  const hasActions = Boolean(project.liveUrl || project.notesUrl);
+  const hasActions = Boolean(
+    project.liveUrl || project.notesUrl || project.livePending,
+  );
+  const panelBackground =
+    project.panelBackground ?? caseStudy?.background ?? null;
 
   // Rich per-project sections (detailSections) when present; otherwise
   // the legacy detail fields in their fixed slots. Both feed the same
@@ -349,11 +365,11 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
 
   return (
       <div
-        className={`vibe-detail${caseStudy ? " vibe-detail--case-study" : ""}`}
+        className={`vibe-detail${caseStudy ? " vibe-detail--case-study" : ""}${
+          panelBackground ? " vibe-detail--tinted" : ""
+        }`}
         style={
-          caseStudy?.background
-            ? { background: caseStudy.background }
-            : undefined
+          panelBackground ? { background: panelBackground } : undefined
         }
         onClick={(event) => event.stopPropagation()}
       >
@@ -365,14 +381,27 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
         >
           ×
         </button>
-        {showImage ? (
-          <div className="vibe-detail__hero">
-            <img
-              src={project.thumbnail}
-              alt=""
-              className="vibe-detail__image"
-              onError={() => setImageFailed(true)}
-            />
+        {showHero ? (
+          <div
+            className={`vibe-detail__hero${
+              showHeroVideo ? " vibe-detail__hero--video" : ""
+            }`}
+          >
+            {showHeroVideo ? (
+              <CaseStudyVideo
+                className="vibe-detail__image vibe-detail__hero-video"
+                src={project.heroVideo}
+                poster={project.thumbnail || undefined}
+                controls={false}
+              />
+            ) : (
+              <img
+                src={project.thumbnail}
+                alt=""
+                className="vibe-detail__image"
+                onError={() => setImageFailed(true)}
+              />
+            )}
           </div>
         ) : null}
         <DetailNav
@@ -380,7 +409,7 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
           art={showImage ? project.thumbnail : null}
           artPosition={project.navArtPosition}
           artSize={project.navArtSize}
-          fade={caseStudy?.background ?? "var(--color-surface)"}
+          fade={panelBackground ?? "var(--color-surface)"}
           label={labels.contents}
           closeLabel={labels.close}
           onClose={onClose}
@@ -409,6 +438,17 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
                 >
                   {liveLabel} ↗
                 </a>
+              ) : project.livePending ? (
+                <span
+                  className="vibe-detail__action vibe-detail__action--primary vibe-detail__action--pending"
+                  aria-disabled="true"
+                >
+                  {liveLabel}
+                  <span className="vibe-detail__action-note">
+                    {" "}
+                    · {livePendingLabel}
+                  </span>
+                </span>
               ) : null}
               {project.notesUrl ? (
                 <a
@@ -449,9 +489,9 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
                   {typeof section.quote === "string" ? (
                     <dd className="vibe-detail__quote">{section.quote}</dd>
                   ) : null}
-                  {/* The section figure leads its items (an overview
-                      diagram introduces the moments it summarizes);
-                      item figures stay with their own item below. */}
+                  {/* Evidence before synthesis: section figures/images
+                      lead tables so research boards aren't interrupted
+                      by a summary table sitting above them. */}
                   {section.image ? (
                     <figure
                       className={`case-study__figure${
@@ -469,6 +509,98 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
                         <figcaption>{section.image.caption}</figcaption>
                       ) : null}
                     </figure>
+                  ) : null}
+                  {section.images?.length ? (
+                    <div className="case-study__figures">
+                      {section.images.map((image) => (
+                        <figure key={image.src} className="case-study__figure">
+                          <img
+                            src={image.src}
+                            alt={image.alt ?? ""}
+                            loading="lazy"
+                          />
+                          {image.caption ? (
+                            <figcaption>{image.caption}</figcaption>
+                          ) : null}
+                        </figure>
+                      ))}
+                    </div>
+                  ) : null}
+                  {section.tables?.map((table) => (
+                    <div
+                      key={table.caption ?? table.headers?.join("-")}
+                      className="case-study__table-wrap"
+                    >
+                      <table
+                        className={`case-study__table${
+                          table.headerColumn ? " case-study__table--row-head" : ""
+                        }`}
+                      >
+                        {table.headers?.length ? (
+                          <thead>
+                            <tr>
+                              {table.headers.map((header) => (
+                                <th key={header} scope="col">
+                                  {header}
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                        ) : null}
+                        <tbody>
+                          {table.rows?.map((row) => (
+                            <tr key={row.join("|").slice(0, 48)}>
+                              {row.map((cell, cellIndex) =>
+                                table.headerColumn && cellIndex === 0 ? (
+                                  <th key={cellIndex} scope="row">
+                                    {cell}
+                                  </th>
+                                ) : (
+                                  <td key={cellIndex}>{cell}</td>
+                                ),
+                              )}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {table.caption ? (
+                        <p className="case-study__table-caption">{table.caption}</p>
+                      ) : null}
+                    </div>
+                  ))}
+                  {section.list?.length ? (
+                    <ul className="case-study__list">
+                      {section.list.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  {/* Local screen recordings (mp4), same stage as Swim
+                      Balance — a section can carry a short loop of clips. */}
+                  {section.videos?.length ? (
+                    <div
+                      className={`case-study__videos${
+                        section.videos.some((video) => video.aspect === "landscape")
+                          ? " case-study__videos--stack"
+                          : ""
+                      }`}
+                    >
+                      {section.videos.map((video) => (
+                        <figure
+                          key={video.src}
+                          className={`case-study__video${
+                            video.aspect === "landscape"
+                              ? " case-study__video--landscape"
+                              : ""
+                          }`}
+                        >
+                          <CaseStudyVideo src={video.src} />
+                          {video.caption ? (
+                            <figcaption>{video.caption}</figcaption>
+                          ) : null}
+                        </figure>
+                      ))}
+                    </div>
                   ) : null}
                   {section.items?.map((item) => (
                     <div
@@ -504,20 +636,35 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
                           ) : null}
                         </figure>
                       ) : null}
-                      {/* An embedded video plays where it is discussed
-                          (the working prototype), in a 16:9 stage —
-                          no outbound link needed. */}
+                      {/* Local mp4 or external embed. Portrait clips
+                          (phone recordings) use a tall stage so the
+                          frame fills without pillarbox bars; landscape
+                          stays 16:9. Playback is shared: in-view play. */}
                       {item.video ? (
                         <figure className="case-study__figure case-study__figure--video">
-                          <div className="case-study__embed">
-                            <iframe
-                              src={item.video.src}
-                              title={item.video.title ?? item.title}
-                              loading="lazy"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                              allowFullScreen
-                              referrerPolicy="strict-origin-when-cross-origin"
-                            />
+                          <div
+                            className={`case-study__embed${
+                              item.video.aspect === "portrait"
+                                ? " case-study__embed--portrait"
+                                : ""
+                            }`}
+                          >
+                            {/\.(mp4|webm|ogg)(\?|$)/i.test(item.video.src) ? (
+                              <CaseStudyVideo
+                                src={item.video.src}
+                                title={item.video.title ?? item.title}
+                                withSound={Boolean(item.video.withSound)}
+                              />
+                            ) : (
+                              <iframe
+                                src={item.video.src}
+                                title={item.video.title ?? item.title}
+                                loading="lazy"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowFullScreen
+                                referrerPolicy="strict-origin-when-cross-origin"
+                              />
+                            )}
                           </div>
                           {item.video.caption ? (
                             <figcaption>{item.video.caption}</figcaption>
@@ -526,6 +673,13 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
                       ) : null}
                     </div>
                   ))}
+                  {/* Closing quote after evidence/items (e.g. Leaf Note
+                      self-analysis insight that follows the four issues). */}
+                  {typeof section.closingQuote === "string" ? (
+                    <dd className="vibe-detail__quote vibe-detail__quote--closing">
+                      {section.closingQuote}
+                    </dd>
+                  ) : null}
                 </div>
               ))}
             </dl>

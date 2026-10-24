@@ -20,6 +20,7 @@ function loadSettings() {
   applyDocumentSettings({
     isDark: resolveIsDark(settings.themeMode),
     accent: settings.accent,
+    typeVoice: settings.typeVoice,
     language: settings.language,
   });
   return settings;
@@ -90,6 +91,7 @@ export function AppSettingsProvider({ children }) {
     applyDocumentSettings({
       isDark: isDarkMode,
       accent: settings.accent,
+      typeVoice: settings.typeVoice,
       language: settings.language,
     });
   }, [settings, isDarkMode]);
@@ -98,7 +100,11 @@ export function AppSettingsProvider({ children }) {
     const next = { ...settingsRef.current, ...patch };
     const nextIsDark = resolveIsDark(next.themeMode);
     runThemeTransition(() => {
-      applyDocumentSettings({ isDark: nextIsDark, accent: next.accent });
+      applyDocumentSettings({
+        isDark: nextIsDark,
+        accent: next.accent,
+        typeVoice: next.typeVoice,
+      });
       flushSync(() => setSettings((prev) => ({ ...prev, ...patch })));
     });
   }, []);
@@ -110,6 +116,42 @@ export function AppSettingsProvider({ children }) {
     },
     [commitVisual],
   );
+
+  // Type voice must never use View Transition crossfade: stacking an
+  // old-font snapshot over a new-font page doubles every glyph. Fade
+  // the root out, swap, then fade in — the same out-then-in grammar
+  // as a route change, never two readable frames at once.
+  const typeVoiceTimerRef = useRef(0);
+  const setTypeVoice = useCallback((typeVoice) => {
+    if (typeVoice === settingsRef.current.typeVoice) return;
+    const root = document.documentElement;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const apply = () => {
+      applyDocumentSettings({
+        isDark: resolveIsDark(settingsRef.current.themeMode),
+        accent: settingsRef.current.accent,
+        typeVoice,
+      });
+      flushSync(() => setSettings((prev) => ({ ...prev, typeVoice })));
+    };
+
+    if (reduceMotion) {
+      apply();
+      return;
+    }
+
+    window.clearTimeout(typeVoiceTimerRef.current);
+    root.classList.add("type-voice-shifting", "theme-fallback-out");
+    typeVoiceTimerRef.current = window.setTimeout(() => {
+      apply();
+      root.classList.remove("theme-fallback-out");
+      root.classList.add("theme-fallback-in");
+      typeVoiceTimerRef.current = window.setTimeout(() => {
+        root.classList.remove("theme-fallback-in", "type-voice-shifting");
+      }, 220);
+    }, 140);
+  }, []);
 
   // Accent is a paint change, not a scene change: no page crossfade (it
   // made photos blink). Accent-painted colors ease in place on the 200ms
@@ -141,6 +183,7 @@ export function AppSettingsProvider({ children }) {
       language: settings.language,
       themeMode: settings.themeMode,
       accent: settings.accent,
+      typeVoice: settings.typeVoice,
       isDarkMode,
       isMuted: settings.isMuted,
       toggleLanguage: () =>
@@ -150,12 +193,13 @@ export function AppSettingsProvider({ children }) {
         })),
       setThemeMode,
       setAccent,
+      setTypeVoice,
       // Kept for callers that only flip light/dark.
       toggleTheme: () => setThemeMode(isDarkMode ? "light" : "dark"),
       setMuted: (isMuted) => setSettings((prev) => ({ ...prev, isMuted })),
       toggleMute: () => setSettings((prev) => ({ ...prev, isMuted: !prev.isMuted })),
     }),
-    [settings, isDarkMode, setThemeMode, setAccent],
+    [settings, isDarkMode, setThemeMode, setAccent, setTypeVoice],
   );
 
   return (

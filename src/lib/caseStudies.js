@@ -2,6 +2,15 @@
 // Case Studies page. Vibe projects open a native detail view with a link
 // to the live site; selected projects link out to their Notion case study.
 
+import {
+  LEAF_NOTE_DETAIL_SECTIONS,
+  LEAF_NOTE_DETAIL_SECTIONS_ZH,
+} from "./leafNoteCaseStudy";
+import {
+  MONEY_MAP_DETAIL_SECTIONS,
+  MONEY_MAP_DETAIL_SECTIONS_ZH,
+} from "./moneyMapCaseStudy";
+
 export const VIBE_PROJECTS = [
   {
     id: "swim-balance",
@@ -15,13 +24,12 @@ export const VIBE_PROJECTS = [
     duration: "Built in ~3 hours",
     durationZh: "约 3 小时建成",
     tagline:
-      "A personal swim planner that turns goals, available time, and workout feedback into actionable training plans.",
-    taglineZh:
-      "一个个人游泳规划工具，把目标、可用时间和每次训练的反馈，变成下一次可以照着做的训练计划。",
+      "Plan the next swim from your goals, the time you have, and how the last workout went.",
+    taglineZh: "按目标、今天有多少时间、上次游得怎样，排下一次该怎么游。",
     description:
-      "A personal swim planner that turns goals, available time, and workout feedback into actionable training plans. Designed and built as a working SwiftUI app in about three hours, with AI.",
+      "A personal swim planner I built in about three hours with AI — it uses goals, available time, and workout feedback to shape the next session, as a working SwiftUI app.",
     descriptionZh:
-      "一个个人游泳规划工具，把目标、可用时间和训练反馈变成可执行的训练计划。用 AI 在大约三小时内设计并做成了能用的 SwiftUI 应用。",
+      "用 AI 大约三小时做成的个人游泳规划：看目标、可用时间和训练反馈，排出下一次课表。能跑的 SwiftUI 应用。",
     tags: ["SwiftUI", "Personal Informatics", "Vibe Coded"],
     // The detail's one way out: a video introduction on YouTube —
     // a click-out link (unlike Oscar's embedded player), offered as
@@ -53,15 +61,28 @@ export const VIBE_PROJECTS = [
           "I spent about three hours building Swim Balance with AI.",
         ],
         quote:
-          "How might I make swim training more intentional and adaptable to my schedule?",
+          "How might I plan swims that fit the week I actually have — and the stroke I’m still learning?",
       },
       experience: {
         heading: "The Experience — What It Does",
         loop: "Plan → Swim → Reflect & Adjust",
-        videos: [
-          { src: "/swim-balance/plan.mp4", caption: "Plan" },
-          { src: "/swim-balance/follow.mp4", caption: "Follow and swim" },
-          { src: "/swim-balance/reflect.mp4", caption: "Reflect and Action" },
+        // PDF exports at 2× — sharper than the compressed screen recordings.
+        images: [
+          {
+            src: "/swim-balance/plan.png",
+            alt: "Plan: set strokes, goals, time, and days for the week",
+            caption: "Plan",
+          },
+          {
+            src: "/swim-balance/follow.png",
+            alt: "Follow: swim the session with the plan on screen",
+            caption: "Follow and swim",
+          },
+          {
+            src: "/swim-balance/reflect.png",
+            alt: "Reflect: review the swim and choose a next action",
+            caption: "Reflect and Action",
+          },
         ],
       },
       process: {
@@ -115,18 +136,31 @@ export const VIBE_PROJECTS = [
         heading: "问题——我为什么做它",
         paragraphs: [
           "我经常游泳，最近在练自由泳。但我常在两件事之间拉扯：练新学的泳姿，和保证足够的总体运动量。每天能用的时间也不一样。",
-          "我希望它帮我更用心地规划训练；游了多远，只是记录的一部分。",
+          "我想要的是能帮我排好训练的东西；游了多远，只是记录的一部分。",
           "我用 AI 做了大约三小时，做出 Swim Balance。",
         ],
-        quote: "怎样让游泳训练更用心，也能跟着我的日程调整？",
+        quote:
+          "How might I：怎样按我这周真正有的时间来排游泳——还要顾上正在练的泳姿？",
       },
       experience: {
         heading: "体验——它能做什么",
         loop: "计划 → 游泳 → 反思与调整",
-        videos: [
-          { src: "/swim-balance/plan.mp4", caption: "计划" },
-          { src: "/swim-balance/follow.mp4", caption: "跟着游" },
-          { src: "/swim-balance/reflect.mp4", caption: "反思与行动" },
+        images: [
+          {
+            src: "/swim-balance/plan.png",
+            alt: "计划：设定泳姿、目标、时间和训练日",
+            caption: "计划",
+          },
+          {
+            src: "/swim-balance/follow.png",
+            alt: "跟着游：按计划完成这一次训练",
+            caption: "跟着游",
+          },
+          {
+            src: "/swim-balance/reflect.png",
+            alt: "反思：回看这次游泳并选择下一步",
+            caption: "反思与行动",
+          },
         ],
       },
       process: {
@@ -181,13 +215,12 @@ export const VIBE_PROJECTS = [
     role: "Design Engineer",
     roleZh: "设计工程师",
     timeline: "2026",
-    tagline:
-      "Turning a one-shot AI prototype into a situated, interactive digital place.",
-    taglineZh: "把一次性的 AI 原型，打磨成一个能身临其境的可交互数字场所。",
+    tagline: "From a one-shot AI prototype to a place you can hang around in.",
+    taglineZh: "从一次性的 AI 原型，磨成可以多待一会儿的地方。",
     description:
-      "An interactive web experience inspired by my 2023 graduation trip to Onomichi, Japan — translating the memory and atmosphere of a place into wind, chimes, and wishes.",
+      "An interactive web piece from my 2023 graduation trip to Onomichi — wind, chimes, and wishes drawn from how that place still sits in memory.",
     descriptionZh:
-      "受 2023 年日本尾道毕业旅行启发的可交互网页——把一个地方的记忆和氛围，译成风、铃与愿望。",
+      "受 2023 年尾道毕业旅行启发的可交互网页：风、铃、愿望，都来自那个地方还留在记忆里的样子。",
     tags: ["Interactive Web", "Vibe Coded"],
     liveUrl: "https://qinlyismoon.github.io/onomichi-furin/",
     thumbnail: "/onomichi-furin-thumb.gif",
@@ -208,7 +241,7 @@ export const VIBE_PROJECTS = [
           "Years later, I returned to these memories as the starting point for this project. Instead of reproducing the landscape realistically, I began asking:",
         ],
         quote:
-          "How can the memory and atmosphere of a place be translated into an interactive digital environment?",
+          "How do you bring the feel of a place into an interactive screen — without rebuilding the landscape?",
         image: {
           src: "/onomichi/memory.jpg",
           alt: "Glass wind chimes with paper wish strips hanging above Onomichi, looking down over the sea and the hillside town",
@@ -265,22 +298,22 @@ export const VIBE_PROJECTS = [
         id: "iteration",
         label: "Designing Through Iteration",
         paragraphs: [
-          "With AI-assisted coding, I quickly built a functional prototype. But it raised a more interesting question: what is the designer's role when AI can produce a functional prototype before the interaction system has been fully designed?",
-          "Instead of treating the first generation as a finished solution, I used it as a working prototype to critique and redesign. My method: Generate → Test → Critique → Define → Iterate. Rather than asking AI to simply “make it better,” I defined what was not working, established new rules, and then used AI to implement and test those decisions.",
+          "AI got me a working wall quickly. What it didn’t give me was judgment about what felt wrong once I could click around — so I treated the first build as something to push against, not ship.",
+          "I named what bothered me, set a rule, then asked AI to implement that rule and tried it again. The four passes below are the ones that changed the wall most.",
         ],
         items: [
           {
             title: "Control vs. Information",
             paragraphs: [
-              "Before: “Sound On” and the Onomichi time indicator appeared with similar visual weight, even though one was an interactive control and the other was environmental information.",
-              "Iteration: I kept Sound On as a clear control while making Onomichi local time quieter and visually separate. Interactive elements should communicate action, while environmental information should remain readable without suggesting that it can be clicked.",
+              "Before: “Sound On” and the Onomichi time sat at similar weight — one is a control, the other is just place info.",
+              "After: Sound On stays obvious; local time gets quieter and separate, so it doesn’t look clickable.",
             ],
           },
           {
             title: "Wish Modal Hierarchy",
             paragraphs: [
-              "Before: The generated wish modal used large rounded corners and generic form controls. Its visual language felt closer to a standard web interface than the angular, paper-based environment behind it.",
-              "Iteration: I moved toward a more structured paper-card language: square outer edges and CTA buttons, restrained rounding for inputs, and smaller-radius cards only where selection needed to be communicated. The geometry now communicates hierarchy while connecting the interface more closely to the physical wish papers hanging in the scene.",
+              "Before: The wish modal had soft round corners and generic form controls — it looked like a website, not like the paper hanging behind it.",
+              "After: Square edges on the card and CTA, quieter rounding on inputs. It reads as paper in the scene, not as a floating form.",
             ],
             image: {
               src: "/onomichi/wish-modal.jpg",
@@ -290,15 +323,15 @@ export const VIBE_PROJECTS = [
           {
             title: "Object-based Selection",
             paragraphs: [
-              "Before: Choosing a glass color functioned like a conventional UI color picker, separating the choice from the object the visitor was actually creating.",
-              "Iteration: I replaced abstract color choices with illustrated glass wind chimes, showing the color directly on the object. Visitors are choosing what their wind chime will look like on the wall.",
+              "Before: Glass color was a regular color picker — abstract chips, disconnected from the chime you’d hang.",
+              "After: You pick illustrated chimes instead. You’re choosing how yours will look on the wall.",
             ],
           },
           {
             title: "Wind Feedback",
             paragraphs: [
-              "Before: The early pointer trail was dark and visually heavy. It clearly showed the cursor path, but felt more like a debug trace than part of the environment.",
-              "Iteration: I redesigned the feedback around three interaction states — Press → soft ripple; Drag → light dotted wind trail; Release → drift and fade. Instead of visualizing the cursor itself, the feedback now communicates the origin, direction, and dissipation of wind.",
+              "Before: The pointer trail was dark and heavy — readable, but more like a debug path than wind.",
+              "After: Press softens into a ripple, drag leaves a light dotted trail, release drifts away. It shows where the wind started and where it went, not the cursor itself.",
             ],
           },
         ],
@@ -355,7 +388,7 @@ export const VIBE_PROJECTS = [
           "2023 年毕业旅行时我去了尾道。留在记忆里的是一些细小的瞬间：沿着山腰的寺庙小径散步，俯瞰大海和小镇，听见风铃声，遇见在寺庙里打盹、闲逛的猫。",
           "几年后，我回到这些记忆，把它们当作这个项目的起点。比起真实地复刻那片风景，我更想先问一个问题：",
         ],
-        quote: "一个地方的记忆和氛围，怎样译成可交互的数字环境？",
+        quote: "怎样把一个地方的感觉带到屏幕上——又不用把风景重建一遍？",
         image: {
           src: "/onomichi/memory.jpg",
           alt: "挂满纸愿望的玻璃风铃，下方是尾道的海与山间小镇",
@@ -370,13 +403,13 @@ export const VIBE_PROJECTS = [
         ],
         items: [
           {
-            title: "颜色即氛围",
+            title: "颜色当氛围",
             paragraphs: [
               "朱红、鹅黄、群青与暖白，把尾道的天空、大海、小镇和建筑收成柔和晕染的色块。",
             ],
           },
           {
-            title: "线条即结构",
+            title: "线条当结构",
             paragraphs: [
               "受吴冠中启发的墨色线条，勾出悬挂的铁丝、细绳、山水与风铃。",
             ],
@@ -396,7 +429,7 @@ export const VIBE_PROJECTS = [
           {
             title: "吹气与划动",
             paragraphs: [
-              "访客可以对着麦克风吹气，或者用指针划过风铃来唤起这面墙。麦克风的频率分析把吹气译成风力，指针的速度生成有方向的推力。",
+              "访客可以对着麦克风吹气，或者用指针划过风铃来唤起这面墙。麦克风的频率分析把吹气变成风力，指针的速度生成有方向的推力。",
             ],
           },
           {
@@ -411,22 +444,22 @@ export const VIBE_PROJECTS = [
         id: "iteration",
         label: "在迭代中设计",
         paragraphs: [
-          "在 AI 的协助下，我很快做出了一个能跑的原型。但它带来了一个更有意思的问题：当 AI 能在交互系统被完整设计出来之前就生成可用的原型时，设计师的角色是什么？",
-          "我把第一次生成当作可以批评和重做的原型，用它来检验视觉传达、交互回应、环境行为和底层数据结构，再逐层迭代。我的方法是：生成 → 测试 → 批评 → 定义 → 迭代。我先说清楚哪里不对、定下新规则，再让 AI 实现和验证这些决定，很少只说一句「做得更好」。",
+          "AI 很快搭出一面能点的墙。它给不了的是：点开之后哪里别扭——所以我把第一版当成拿来顶的东西，而不是拿来上线的东西。",
+          "先说出哪里不对、定一条规则，再让 AI 按规则改，自己再试。下面四次，是对墙面改动最大的几步。",
         ],
         items: [
           {
             title: "控件与信息",
             paragraphs: [
-              "之前：「Sound On」和尾道时间指示的视觉权重差不多，但一个是可交互的控件，一个是环境信息。",
-              "迭代：我让 Sound On 保持明确的控件样子，把尾道当地时间放得更安静、与控件分开。可交互的元素应该传达「可以点」，环境信息保持可读，同时不暗示自己能点。",
+              "之前：「Sound On」和尾道时间差不多重——一个是控件，一个只是地方信息。",
+              "之后：Sound On 仍清楚可点；当地时间变安静、与控件分开，看起来就不像能点。",
             ],
           },
           {
             title: "许愿弹窗的层级",
             paragraphs: [
-              "之前：生成的许愿弹窗用大圆角和通用表单控件，视觉语言更接近标准网页界面，和身后那个有棱角、以纸为基础的环境不属于同一种语言。",
-              "迭代：我改用更结构化的纸卡语言：外缘和 CTA 按钮用直角，输入框只保留克制的圆角，小圆角卡片只用在需要表达选择的地方。几何形态把层级说清楚，也让界面和场景里挂着的纸愿望属于同一种语言。",
+              "之前：许愿弹窗大圆角、通用表单，像网页，不像身后挂着的纸。",
+              "之后：卡片和 CTA 用直角，输入框圆角收一点。读起来是场景里的纸，不是飘着的表单。",
             ],
             image: {
               src: "/onomichi/wish-modal.jpg",
@@ -436,15 +469,15 @@ export const VIBE_PROJECTS = [
           {
             title: "落在物件上的选择",
             paragraphs: [
-              "之前：选玻璃颜色是一个常规的 UI 取色器，选择和人真正在做的物件被分开了。",
-              "迭代：我用插画里的玻璃风铃替代抽象色块，颜色直接长在物件上。访客挑的，是自己那只风铃挂上墙的样子。",
+              "之前：玻璃颜色是普通取色器——抽象色块，跟要挂上墙的铃没关系。",
+              "之后：改成选插画风铃。挑的是自己那只挂上去会长什么样。",
             ],
           },
           {
             title: "风的反馈",
             paragraphs: [
-              "之前：早期的指针轨迹又深又重，能看清光标路径，但更像调试用的描线，属于环境之外的东西。",
-              "迭代：我把反馈重做成三个交互状态——按下 → 柔和涟漪；拖动 → 浅色点状风轨；松开 → 漂移消散。反馈传达的是风的起点、方向和消散，画面里留下的不是光标本身。",
+              "之前：指针轨迹又深又重，能看清路径，但更像调试线，不像风。",
+              "之后：按下起一点涟漪，拖出浅色点迹，松开就散掉。留下的是风从哪来、往哪去，不是光标本身。",
             ],
           },
         ],
@@ -495,8 +528,8 @@ export const VIBE_PROJECTS = [
   },
 ];
 
-// Selected design work. These live in Notion (no live URL to experience),
-// so cards link straight out to the case study instead of opening a modal.
+// Selected design work. Projects with detailSections open a native case-study
+// page; others with only a Notion url still link out.
 // v2.1.2: descriptions are rewritten from the Notion case studies around
 // the positioning "help people understand complexity" — each line names the
 // complexity and what the design makes understandable.
@@ -507,26 +540,49 @@ export const SELECTED_PROJECTS = [
   {
     id: "leaf-note",
     title: "Leaf Note",
+    subtitle: "Shared Plant Care · Coded Prototype",
+    tagline: "Know when to water. Hand off the rest.",
+    taglineZh: "知道什么时候浇。剩下的交给别人。",
     description:
-      "A shared plant-care app that makes a care handoff legible: the caregiver knows when to act, how, and when to flag a problem, and the owner can finally let go of the follow-up. Designed and built as a working prototype.",
+      "Shared plant care for when you’re away: the person covering knows what to do next, and you can stop chasing updates. Designed and built as a working prototype.",
     descriptionZh:
-      "一款共享植物养护应用，把照料的交接说清楚：临时照料者知道什么时候动手、怎么做、什么时候该报异常，主人也能真正放下远程跟进。从设计到代码，做成了能跑的原型。",
-    tags: ["Product Design", "Design Engineering"],
-    url: "https://app.notion.com/p/Leaf-Note-3c77fb6b97a580628279feb164c27446?source=copy_link",
-    thumbnail: "/leaf-note-thumb.jpg",
+      "出门时把植物交给别人用的共享照料：替班的人知道下一步做什么，你也不用一直追问。从设计到代码，做成了能跑的原型。",
+    tags: ["Product Design", "Design Engineering", "UX Research"],
+    // Exact sage wash from the UI boards (#eef2e9) so media sits flush
+    // on the same ground as the case-study page.
+    panelBackground: "#eef2e9",
+    liveUrl: "https://qinlyismoon.github.io/leaf-note/",
+    liveLabel: "Experience Prototype",
+    liveLabelZh: "体验原型",
+    // Still used for the Selected Work card, contents-bar crop, and footer.
+    thumbnail: "/leaf-note/cover.png",
+    // Detail hero — looping cover video (replaces the static cover image).
+    heroVideo: "/leaf-note/cover.mp4",
+    // Contents-bar crop: only the cover's sage wash, so the phone
+    // cluster never leaks into the bar. Anchored top-right and sized
+    // by height so phones (lower-right) stay below the visible slice.
+    navArtPosition: "100% 0%",
+    navArtSize: "auto 44rem",
+    // Footer: same calm band, scaled taller so phones stay out.
+    footerArtPosition: "100% 0%",
+    footerArtSize: "auto 90rem",
     role: "Product Designer & Engineer",
     roleZh: "产品设计师 & 工程实现",
     timeline: "2026",
+    // Full case study (research tables, journey maps, evaluation,
+    // coded experience, UI boards) — see leafNoteCaseStudy.js.
+    detailSections: LEAF_NOTE_DETAIL_SECTIONS,
+    detailSectionsZh: LEAF_NOTE_DETAIL_SECTIONS_ZH,
   },
   {
     id: "emotion-garden",
     title: "Emotion Garden",
     subtitle: "Data Visualization · Interaction Design · Personal Informatics",
     description:
-      "An interactive data visualization experience that turns emotional records into a living garden, helping people explore patterns, relationships, and everyday experiences over time.",
+      "Emotional records laid out as a garden you can walk through — color, form, and time, so patterns show up without a spreadsheet.",
     descriptionZh:
-      "一个交互式数据可视化体验，把情绪记录变成一座会生长的花园，帮人看见随时间展开的模式、关联和日常经历。",
-    tags: ["Data Visualization", "Interaction Design"],
+      "把情绪记录铺成一座可以走进去的花园：颜色、形态、时间排开，不用对着表格也能看出起伏。",
+    tags: ["Interactive Data Visualization", "Motion Design"],
     url: "https://app.notion.com/p/Emotion-Graden-3f67fb6b97a580f395e5d6099d671d31?source=copy_link",
     liveUrl: "https://emotion-garden-sooty.vercel.app/",
     notesUrl:
@@ -548,50 +604,37 @@ export const SELECTED_PROJECTS = [
     timeline: "2026",
     detail: {
       overview:
-        "Emotion Garden is one project within my thesis research on emotional personal informatics. It asks how personal emotional data can become a living visual landscape—something people can read, revisit, and make sense of over time.",
-      question:
-        "How can emotional records become something people can interpret and reflect on?",
+        "Emotion Garden sits inside my thesis on emotional personal informatics. I wanted personal feeling-data to look like a place you could return to — not a chart you decode once.",
+      question: "What would it take for an emotional record to feel readable — and worth coming back to?",
       visual:
-        "Each emotional moment appears as a flower. Color, form, and size carry feeling, context, and duration; categories of everyday life—work and study, relationships, own time, body and health—sit along the garden so patterns read as a landscape.",
+        "Each moment is a flower. Color, shape, and size hold the feeling, the context, and how long it lasted. Work, relationships, time alone, body and health sit along the garden so the week reads as a landscape.",
     },
     detailZh: {
       overview:
-        "Emotion Garden 是我论文研究（情绪个人信息化）中的一个项目。它想弄清：个人情绪数据能不能变成一片有生命的视觉景观——让人可以读、可以回看，也能慢慢理解。",
-      question: "情绪记录怎样成为人们可以解读、可以反思的东西？",
+        "Emotion Garden 是我论文里做情绪个人信息化的其中一个项目。我想让自己的情绪数据看起来像一个可以回去的地方——不是解一次就扔的图表。",
+      question: "怎样让一份情绪记录读得懂，也值得再回来看？",
       visual:
-        "每一个情绪时刻都以一朵花呈现。颜色、形态与大小承载感受、情境与时长；日常生活的类别——工作与学习、人际关系、属于自己的时间、身体与健康——排布在花园里，让模式像风景一样被读出来。",
+        "每一个时刻是一朵花。颜色、形态、大小带着感受、情境和持续多久。工作学习、人际关系、自己的时间、身体与健康排在花园里，一个星期读起来像一片景。",
     },
-  },
-  {
-    id: "money-map",
-    title: "Money Map",
-    description:
-      "A savings-goal redesign that shows what each goal requires, where you stand this month, and how a change ripples through the plan, so people can act without doing the math themselves.",
-    descriptionZh:
-      "一个储蓄目标的改版：让人看清每个目标需要什么、这个月进展到哪里，以及改一处会怎样影响整个计划——不必自己算，也能做出决定。",
-    tags: ["Product Design", "Usability Testing"],
-    url: "https://app.notion.com/p/Money-Map-3aa7fb6b97a5804aa621f9657a47f5d3?source=copy_link",
-    thumbnail: "/money-map-thumb.png",
-    role: "Product Designer",
-    roleZh: "产品设计师",
-    timeline: "2026",
   },
   {
     id: "oscar-ar",
     title: "Oscar et la Dame Rose",
     subtitle: "AR Reading · Unity for iOS",
     description:
-      "An AR reading experience that turns key moments of Oscar et la Dame Rose into spatial interactions, keeping the physical book at the center while a digital layer helps readers step into the story. Designed and built in Unity for iOS.",
+      "AR for Oscar et la Dame Rose: a few story moments open on the printed page, so the book stays the main thing. Built in Unity for iOS.",
     descriptionZh:
-      "一个 AR 阅读体验，把《Oscar et la Dame Rose》里的关键时刻变成空间交互：纸质书始终在中心，数字层帮读者走进故事。在 Unity 里设计并实现，运行于 iOS。",
-    tagline:
-      "Turning reading into participation — the book's key moments become spatial interactions on the printed page.",
-    taglineZh: "让阅读变成参与——书里的关键时刻，在纸页上化作空间交互。",
+      "为《Oscar et la Dame Rose》做的 AR：几个故事时刻在纸页上展开，书仍是主线。Unity 做的，跑在 iOS 上。",
+    tagline: "Read the book. Step into a few of its moments.",
+    taglineZh: "还是在读书。只是有几个时刻，可以走进去。",
     tags: ["AR", "Interaction Design"],
     // The detail is fully native (detailSections below), never the
     // Notion page; the working-prototype video is embedded in the
     // system section, so there is no outbound action.
+    // Still used for Selected Work fallback poster, contents-bar crop, footer.
     thumbnail: "/oscar-ar-thumb.jpg",
+    // Card + detail hero — looping cover-flip video.
+    heroVideo: "/oscar-ar/cover.mp4",
     // Contents-bar crop: the vine rose from the hero's top band
     // (the spiral rose at the vine's right end), framed whole at
     // the bar's revealed right edge — the image is pushed past the
@@ -618,10 +661,10 @@ export const SELECTED_PROJECTS = [
         paragraphs: [
           "Oscar et la Dame Rose follows a terminally ill child who imagines living an entire lifetime over twelve days. Its themes — illness, aging, connection, and death — are emotionally rich but abstract, especially for younger readers.",
           "I looked at the experience from both sides of a parent–child reading relationship. For the parent, the challenge is introducing difficult topics while keeping the experience supportive and open to conversation. For the child, it is staying engaged with a text-based story while making sense of ideas that can feel distant or abstract.",
-          "This led me to treat AR as a way to create small moments of participation within the reading experience, appearing at chosen moments while the book stays a book.",
+          "I was curious about AR — that was real. What made it the right fit here is how it can sit on the printed page: a few moments of participation that appear, then step back. For a story this abstract, that felt closer to reading than another screen or a longer explanation. The book stays the book; AR is there when a moment needs a body.",
         ],
         quote:
-          "How might AR help readers participate in emotionally significant moments of the story, while keeping the physical book at the center of the experience?",
+          "AR fit because it could stay with the book — present for a moment, then out of the way.",
       },
       {
         id: "principles",
@@ -652,13 +695,14 @@ export const SELECTED_PROJECTS = [
         id: "moments",
         label: "Five Moments",
         paragraphs: [
-          "I selected moments where reader participation could reinforce the meaning of the narrative instead of recreating the book as a series of animated scenes. For each moment I asked what the reader could do that would make it more meaningful, and the design process shifted from illustrating the story to designing actions within it.",
-          "Across the experience, those actions gradually change as Oscar's journey unfolds:",
+          "The book holds many scenes worth pausing on. I didn’t try to cover them all. The filter was interaction: where could a reader’s action deepen what the moment means, instead of turning the page into an animated illustration?",
+          "That decision shaped the set below — five moments I chose to build. Others could work; these were the ones where participation felt earned. For each, I asked what the reader could do, and the work shifted from drawing the story to designing actions inside it. As Oscar’s journey unfolds, those actions change:",
         ],
         image: {
           src: "/oscar-ar/moments.png",
           alt: "Five colored chevrons in sequence: 1 Enter, cross the threshold; 2 Listen, share a moment; 3 Connect, offer support; 4 Care, express care; 5 Let go, say goodbye",
-          caption: "Five moments, one arc: enter, listen, connect, care, let go.",
+          caption:
+            "Five I chose to build — enter, listen, connect, care, let go — not the only possible set.",
         },
         items: [
           {
@@ -776,20 +820,22 @@ export const SELECTED_PROJECTS = [
             },
           },
           {
-            title: "From editor to device",
-            paragraphs: [
-              "I built the Unity project for iOS through Xcode and tested the experience with the physical book on a phone. Moving from the editor to a real device changed how I evaluated the design: camera angle, tracking stability, viewing distance, object scale, and the way the reader holds both the book and the phone all became part of the interaction.",
-            ],
-          },
-          {
             title: "The working prototype",
+            // Phone beside the copy — same split rhythm as the moment sketches.
+            split: true,
             paragraphs: [
-              "Five narrative moments, connected through one physical book and an interactive AR layer.",
+              "I built the Unity project for iOS through Xcode and tested it with the physical book on a phone. On a real device, camera angle, tracking, viewing distance, object scale, and holding both book and phone all became part of the interaction.",
+              "The five moments I built, held together by one physical book and an interactive AR layer.",
             ],
             video: {
-              src: "https://www.youtube-nocookie.com/embed/sJ8vCeXCPzo",
+              src: "/oscar-ar/working-prototype.mp4",
+              // Phone recording (590×1280) — portrait stage, no side bars.
+              aspect: "portrait",
+              // Nutcracker bed mixed in; try unmuted when scrolled into view.
+              withSound: true,
               title: "Oscar et la Dame Rose — working AR prototype",
-              caption: "The working prototype, running on iOS with the printed book.",
+              caption:
+                "On iOS, with the printed book. Music: Dance of the Sugar Plum Fairy (Kevin MacLeod, CC BY) — from The Nutcracker.",
             },
           },
         ],
@@ -798,9 +844,8 @@ export const SELECTED_PROJECTS = [
         id: "take-forward",
         label: "What I Took Forward",
         paragraphs: [
-          "Peer critique pointed to three areas to grow: refining the visual and modeling language so the scenes support the story's tone more consistently; testing in real parent–child reading contexts, where pacing, clarity, and emotional engagement can be observed as shared reading actually happens; and richer animation and sound, guiding attention and deepening emotional resonance at key moments.",
-          "Building this project gave me an early opportunity to work across interaction design and implementation. As I moved from sketches into Unity, each interaction became more specific: a gesture required input logic, an animation required states and timing, and an AR scene required careful relationships between physical and digital space. Working through these details helped me understand interaction at the level of behavior — how an experience responds, transitions, and communicates feedback, and how technical decisions shape what the reader ultimately experiences.",
-          "This project also established a workflow that I continue to develop today: moving between design intent, interaction behavior, and implementation, and using working prototypes to explore these relationships together. As AI tools continue to lower the barrier to building, I find this ability increasingly important — being able to define how an experience should behave, translate that intent into a working system, and critically evaluate what gets built.",
+          "Critique from peers was practical: the look of the scenes should match the story’s tone more evenly; I still need to watch real parent–child reading, not only studio demos; and a few moments want more animation and sound so attention lands where it should.",
+          "This was an early project where I designed the interaction and built it. In Unity, a sketch stops being a sketch — a gesture needs input, an animation needs states, an AR scene has to sit on a real page. That back-and-forth is still how I work: decide how it should behave, make a version you can hold, then judge it.",
         ],
       },
     ],
@@ -811,10 +856,9 @@ export const SELECTED_PROJECTS = [
         paragraphs: [
           "《奥斯卡与玫瑰奶奶》讲的是一个身患绝症的孩子，在十二天里想象自己活完了一生。疾病、衰老、连结与死亡，这些主题情感很浓，对年幼的读者来说却相当抽象。",
           "我从亲子共读的两端来看这个体验。对家长来说，难处是在引入沉重话题时，让整个过程有支持感、能打开对话；对孩子来说，难处是跟住一个以文字为主的故事，同时理解那些遥远又抽象的观念。",
-          "这让我把 AR 看作在阅读中创造小小参与时刻的方式：它只在选定的时刻出现，书仍然是书。",
+          "想试 AR，这件事是有的。但放在这个故事里，它合适的地方在于：能直接落在纸页上——几个参与时刻出现，用完就退开。对这么抽象的主题来说，这比再开一块屏幕、或多解释几句，更贴阅读本身。书还是书；AR 只在「需要身体一下」的时候在。",
         ],
-        quote:
-          "AR 怎样帮助读者参与故事中情感重要的时刻，同时让纸质书留在体验的中心？",
+        quote: "合适，是因为它能跟着书走——来一下，再让开。",
       },
       {
         id: "principles",
@@ -845,13 +889,14 @@ export const SELECTED_PROJECTS = [
         id: "moments",
         label: "五个时刻",
         paragraphs: [
-          "我没有把这本书做成一连串的动画场景，而是挑出那些读者参与能加强叙事意义的时刻。每一个时刻，我都先问：读者能做一件什么事，让这一刻更有意义？设计过程也由此从呈现故事，转向在故事里设计动作。",
-          "随着 Oscar 的旅程展开，这些动作也在逐渐变化：",
+          "书里值得停一停的地方很多，我没有打算全做。筛选标准是互动性：哪里让读者动一下，能加深这一刻的意思，而不是把书页做成动画插图？",
+          "下面这五个，是按这个标准选出来去做的。别的瞬间也可以成立；我选的是「参与说得通」的那些。每一个，我都先问读者能做什么，工作也就从画故事，变成在故事里设计动作。随着 Oscar 的旅程展开，这些动作也在变：",
         ],
         image: {
           src: "/oscar-ar/moments.png",
           alt: "五个彩色箭头依次排列：1 进入，跨过门槛；2 聆听，分享一个时刻；3 连结，给予支持；4 关照，表达关心；5 放手，说再见",
-          caption: "五个时刻，一条弧线：进入、聆听、连结、关照、放手。",
+          caption:
+            "我选出来做的五个——进入、聆听、连结、关照、放手——不是唯一可能的一组。",
         },
         items: [
           {
@@ -969,20 +1014,19 @@ export const SELECTED_PROJECTS = [
             },
           },
           {
-            title: "从编辑器到真机",
-            paragraphs: [
-              "我通过 Xcode 把 Unity 项目构建到 iOS，在手机上拿着实体书测试。从编辑器走到真实设备，改变了我评估设计的方式：摄像头角度、追踪稳定性、观看距离、物件大小，还有读者同时拿着一本书和一部手机这件事本身，都成了交互的一部分。",
-            ],
-          },
-          {
             title: "跑起来的原型",
+            split: true,
             paragraphs: [
-              "五个叙事时刻，由一本实体书和一个可交互的 AR 层连在一起。",
+              "我通过 Xcode 把 Unity 项目构建到 iOS，在手机上拿着实体书测。到了真机上，摄像头角度、追踪稳不稳、观看距离、物件大小，还有同时拿着书和手机这件事，都成了交互的一部分。",
+              "我做出来的五个时刻，由一本实体书和一个可交互的 AR 层连在一起。",
             ],
             video: {
-              src: "https://www.youtube-nocookie.com/embed/sJ8vCeXCPzo",
+              src: "/oscar-ar/working-prototype.mp4",
+              aspect: "portrait",
+              withSound: true,
               title: "Oscar et la Dame Rose——跑起来的 AR 原型",
-              caption: "跑起来的原型：在 iOS 上配合实体书运行。",
+              caption:
+                "iOS 上配合实体书。配乐：Dance of the Sugar Plum Fairy（Kevin MacLeod，CC BY）——选自《胡桃夹子》。",
             },
           },
         ],
@@ -991,11 +1035,37 @@ export const SELECTED_PROJECTS = [
         id: "take-forward",
         label: "带走的收获",
         paragraphs: [
-          "同伴评审指出了三个可以继续打磨的方向：让场景的视觉与建模语言更统一地承载故事的语气；在真实的亲子共读场景中测试，观察共同阅读实际发生时，节奏、清晰度和情感投入是否成立；在关键时刻用更丰富的动画和声音，引导注意力，加深情感共鸣。",
-          "这个项目让我很早就同时做交互设计和实现。从草图走进 Unity，每个交互都变得具体：一个手势需要输入逻辑，一个动画需要状态和时机，一个 AR 场景需要仔细处理物理空间与数字空间之间的关系。把这些细节一一做下来，让我在行为的层面上理解交互——一个体验如何回应、如何过渡、如何传递反馈，以及技术决定如何塑造读者最终感受到的东西。",
-          "它也定下了一个我沿用至今的工作方式：在设计意图、交互行为和实现之间来回移动，用能跑起来的原型把这三者放在一起探索。随着 AI 工具不断降低构建的门槛，我越来越觉得这种能力重要：能够定义一个体验应该如何行为，把意图译成能运作的系统，并审慎地评估最终做出来的东西。",
+          "同伴的意见很具体：场景的样子要更贴故事的语气；还得去看真实的亲子共读，不能只停在工作室演示；有几个时刻需要更多动画和声音，注意力才落在该落的地方。",
+          "这是我很早同时做交互和实现的项目。进了 Unity，草图就不再只是草图——手势要有输入，动画要有状态，AR 场景得落在真的书页上。来回这一下，到现在还是我的做法：先想清楚它该怎么动，做出能拿在手里的一版，再判断。",
         ],
       },
     ],
+  },
+  {
+    id: "money-map",
+    title: "Money Map",
+    subtitle: "Savings Goals · Product Design",
+    tagline: "See what the goal asks. Act without doing the math.",
+    taglineZh: "看清目标要什么。不必自己算，也能行动。",
+    description:
+      "A savings-goal redesign that shows what each goal requires, where you stand this month, and how a change ripples through the plan, so people can act without doing the math themselves.",
+    descriptionZh:
+      "一个储蓄目标的改版：让人看清每个目标需要什么、这个月进展到哪里，以及改一处会怎样影响整个计划——不必自己算，也能做出决定。",
+    tags: ["Product Design", "Usability Testing"],
+    // Soft gray wash from the cover so hero and boards share one ground.
+    panelBackground: "#eef0f2",
+    // Native detail (personas → HMW → three priorities → prototype clips
+    // → usability plan) — see moneyMapCaseStudy.js.
+    thumbnail: "/money-map/cover.png",
+    // Contents-bar / footer: phone + soft blue circle on the right.
+    navArtPosition: "88% 42%",
+    navArtSize: "auto 26rem",
+    footerArtPosition: "80% 40%",
+    footerArtSize: "auto 55rem",
+    role: "Product Designer",
+    roleZh: "产品设计师",
+    timeline: "2026",
+    detailSections: MONEY_MAP_DETAIL_SECTIONS,
+    detailSectionsZh: MONEY_MAP_DETAIL_SECTIONS_ZH,
   },
 ];

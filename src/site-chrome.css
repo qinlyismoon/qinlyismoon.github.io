@@ -43,10 +43,10 @@
  * edge aligns to the content column — sidebar margin + sidebar width +
  * grid gap (see .shared-layout__grid). On mobile the grid is a single
  * column, so the anchor falls back to the page padding.
- * The nav is its own header section: a solid page-ground band from the
- * viewport top through the tab baseline plus one quiet breath below, so
- * scrolling content slides cleanly underneath instead of showing through
- * the tabs. Same ground as the page, so at rest it reads as no band. */
+ * The nav is a transparent header over the shared ambient canvas — never a
+ * solid page-ground strip (that drew a hard white band across the glow).
+ * Tabs sit above the atmosphere; scrolling content uses scroll-margin so it
+ * clears the tab row rather than reading through the labels. */
 .viewport-top-nav {
   justify-content: flex-start;
   padding-left: calc(
@@ -57,7 +57,7 @@
   top: 0;
   padding-top: var(--viewport-top-nav-top);
   padding-bottom: var(--space-2);
-  background: var(--color-background);
+  background: transparent;
   /* Fixed global chrome: route content changes underneath this layer, while
      its position and opacity remain stable. */
   view-transition-name: global-navigation;
@@ -445,6 +445,17 @@ body[data-page="teaching"] .context-column__section--context + .context-column__
   transition: none !important;
 }
 
+/* Theme is one page paint. Named layers (nav band, identity, system status,
+   sidebar metadata) exist so route changes can keep chrome still — during a
+   theme swap they become separate rectangles and leave a hard seam under the
+   tab row. Fold them into root so light/dark crossfades as one surface. */
+html.theme-transitioning .viewport-top-nav,
+html.theme-transitioning .context-column__region--identity,
+html.theme-transitioning .context-column__region--system-status,
+html.theme-transitioning .context-column__region--metadata {
+  view-transition-name: none !important;
+}
+
 /* Route changes crossfade two complete page snapshots. Freeze component-level
    motion while the new snapshot is captured so content and Sidebar metadata
    arrive as one coherent frame instead of animating independently. */
@@ -497,7 +508,8 @@ html.page-transitioning::view-transition-new(global-navigation) {
  *     rises in 200ms after 110ms;
  *   - navigation, identity and system status stay perfectly still.
  * Theme changes keep the no-dip crossfade above (new over an opaque old),
- * because a theme change must never pass through an empty page. */
+ * with chrome names cleared so the whole page is one root snapshot —
+ * a theme change must never pass through an empty page or show a nav seam. */
 .context-column__region--metadata {
   view-transition-name: context-metadata;
 }
@@ -520,16 +532,6 @@ html.page-transitioning::view-transition-old(context-metadata) {
 
 html.page-transitioning::view-transition-new(context-metadata) {
   animation: metadata-in 200ms cubic-bezier(0, 0, 0.2, 1) 110ms both;
-}
-
-/* Theme changes: the metadata layer joins the page's no-dip crossfade. */
-html.theme-transitioning::view-transition-old(context-metadata) {
-  animation: none;
-  opacity: 1;
-}
-
-html.theme-transitioning::view-transition-new(context-metadata) {
-  animation: theme-page-fade-in 360ms cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 @keyframes route-out {
@@ -562,7 +564,9 @@ html.theme-transitioning::view-transition-new(context-metadata) {
 }
 
 /* API-free fallback: fade the one application root out, switch every theme
-   value at the invisible midpoint, then fade the complete new page in. */
+   value at the invisible midpoint, then fade the complete new page in.
+   Type-voice changes reuse this path (never View Transition): crossfading
+   two font snapshots stacks letterforms and reads as overlapping text. */
 html.theme-fallback-out #root {
   opacity: 0;
   transition: opacity 140ms cubic-bezier(0.4, 0, 1, 1) !important;
@@ -571,6 +575,12 @@ html.theme-fallback-out #root {
 html.theme-fallback-in #root {
   opacity: 1;
   transition: opacity 220ms cubic-bezier(0, 0, 0.2, 1) !important;
+}
+
+html.type-voice-shifting *,
+html.type-voice-shifting *::before,
+html.type-voice-shifting *::after {
+  transition: none !important;
 }
 
 /* --- Responsive ---------------------------------------------------------- */

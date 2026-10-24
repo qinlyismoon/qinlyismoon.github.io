@@ -6,12 +6,19 @@
  * the single active voice of the interface (open tab, hovered link, live
  * status); every option is a quiet natural pigment that belongs on a desk
  * — plant green, fountain-pen ink, terracotta, plum, pencil ochre — and
- * passes WCAG AA (≥ 4.5:1) on the page and surface in both modes.
+ * passes WCAG AA (≥ 4.5:1) on the page and surface in both modes. Type
+ * voice chooses Geometric (Urbanist, default) or Editorial (Zalando +
+ * STIX), never a free-form font picker.
  */
 
 export const SETTINGS_STORAGE_KEY = "phoebe-site-settings";
 
 export const THEME_MODES = ["light", "dark", "system"];
+
+/** Type voices: two named presets, not a font picker.
+ *  geometric — Urbanist for UI and reading (default)
+ *  editorial — Zalando Sans + STIX Two Text (the previous default) */
+export const TYPE_VOICES = ["geometric", "editorial"];
 
 /** Accent pigments + matching page grounds (subtle tint of the accent). */
 export const ACCENTS = [
@@ -62,6 +69,7 @@ export const DEFAULT_SETTINGS = {
   language: "en",
   themeMode: "light",
   accent: "forest",
+  typeVoice: "geometric",
   isMuted: false,
 };
 
@@ -79,6 +87,9 @@ export function normalizeSettings(raw) {
     accent: ACCENTS.some((accent) => accent.id === raw.accent)
       ? raw.accent
       : DEFAULT_SETTINGS.accent,
+    typeVoice: TYPE_VOICES.includes(raw.typeVoice)
+      ? raw.typeVoice
+      : DEFAULT_SETTINGS.typeVoice,
     isMuted: Boolean(raw.isMuted),
   };
 }
@@ -113,6 +124,11 @@ const LABELS = {
       plum: "Plum",
       ochre: "Ochre",
     },
+    type: "Type",
+    typeVoices: {
+      geometric: "Geometric",
+      editorial: "Editorial",
+    },
     close: "Close settings",
     language: "Switch to Chinese",
   },
@@ -131,6 +147,11 @@ const LABELS = {
       plum: "梅紫",
       ochre: "赭黄",
     },
+    type: "字体",
+    typeVoices: {
+      geometric: "几何",
+      editorial: "编辑",
+    },
     close: "关闭设置",
     language: "Switch to English",
   },
@@ -140,11 +161,12 @@ export function getSettingsLabels(language) {
   return LABELS[language] ?? LABELS.en;
 }
 
-/** Applies mode + accent to <html> — the only place the DOM is touched. */
-export function applyDocumentSettings({ isDark, accent, language }) {
+/** Applies mode + accent + type voice to <html> — the only place the DOM is touched. */
+export function applyDocumentSettings({ isDark, accent, language, typeVoice }) {
   const root = document.documentElement;
   root.dataset.theme = isDark ? "dark" : "light";
   root.dataset.accent = accent;
+  if (typeVoice) root.dataset.typeVoice = typeVoice;
   root.style.colorScheme = isDark ? "dark" : "light";
   // Page ground follows the accent so the whole site shifts with 主题色.
   root.style.setProperty("--color-background", getAccentPageBg(accent, isDark));

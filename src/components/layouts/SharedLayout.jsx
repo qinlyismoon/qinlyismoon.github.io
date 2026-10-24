@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useAppSettings } from "../../context/AppSettingsContext";
 import { getThemeColors } from "../../lib/theme";
+import AmbientBackdrop from "../shared/AmbientBackdrop";
 import ContextColumn from "../shared/ContextColumn";
 import TopNavigation from "../shared/TopNavigation";
 import ViewportPortal from "../shared/ViewportPortal";
@@ -32,6 +33,7 @@ export default function SharedLayout({
         // page-specific artwork cannot visibly lead or lag one another.
       }}
     >
+      <AmbientBackdrop />
       <ViewportPortal>
         <div className="viewport-top-nav">
           <TopNavigation className="viewport-top-nav__bar" />

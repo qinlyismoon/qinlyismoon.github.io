@@ -1,0 +1,291 @@
+/* ---------------------------------------------------------------------------
+ * Airy ambient backdrop — one continuous live canvas behind every route.
+ *
+ * Route turns use document View Transition out-then-in for copy (never a
+ * crossfade — that ghosts text). Ambient has no view-transition-name; it
+ * rides in the root snapshots so it cannot paint above content. Pan eases
+ * only when page-transitioning is off (after the turn), so it never fights
+ * the out-then-in clock.
+ * ------------------------------------------------------------------------- */
+
+.ambient-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 1;
+  background: transparent;
+}
+
+.shared-layout {
+  isolation: isolate;
+}
+
+/* Content + chrome sit above the canvas. */
+.shared-layout__grid {
+  position: relative;
+  z-index: 1;
+}
+
+/* Continuous painting — larger than the viewport so pans never flash empty. */
+.ambient-backdrop__pan {
+  position: absolute;
+  width: 220%;
+  height: 200%;
+  left: -40%;
+  top: -40%;
+  transition: transform 600ms cubic-bezier(0.33, 0, 0.2, 1);
+  will-change: transform;
+  opacity: var(--ambient-strength, 1);
+}
+
+/* Instant pan while the route VT freezes transitions — new snapshot already
+   holds the destination frame; easing after the turn would look like a
+   delayed second move. */
+html.page-transitioning .ambient-backdrop__pan {
+  transition: none !important;
+}
+
+/* --- Page cameras (nav order: Home → About → Teaching → Desk) ------------
+ * Negative X slides the field left → glow drifts left in view
+ * (Home upper-right → About upper-left). */
+body[data-page="home"] .ambient-backdrop__pan {
+  transform: translate3d(0%, 0%, 0);
+  opacity: calc(var(--ambient-strength, 1) * 0.7);
+}
+
+body[data-page="versionHistory"] .ambient-backdrop__pan {
+  transform: translate3d(-42%, -3%, 0);
+}
+
+body[data-page="teaching"] .ambient-backdrop__pan {
+  /* Upper-right fringe — keep the wash off the reading column */
+  transform: translate3d(-12%, -10%, 0);
+}
+
+/* Teaching: smaller discs so they read as edge wash, not a blob in prose */
+body[data-page="teaching"] .ambient-backdrop__glow--a {
+  width: 14%;
+  height: 16%;
+  opacity: 0.24;
+}
+
+body[data-page="teaching"] .ambient-backdrop__glow--b {
+  width: 10%;
+  height: 12%;
+  opacity: 0.18;
+}
+
+body[data-page="desk"] .ambient-backdrop__pan {
+  transform: translate3d(-8%, 20%, 0);
+  opacity: calc(var(--ambient-strength, 1) * 0.65);
+}
+
+/* Home + Desk: tighter, quieter discs */
+body[data-page="home"] .ambient-backdrop__glow--a,
+body[data-page="desk"] .ambient-backdrop__glow--a {
+  width: 15%;
+  height: 17%;
+}
+
+body[data-page="home"] .ambient-backdrop__glow--b,
+body[data-page="desk"] .ambient-backdrop__glow--b {
+  width: 11%;
+  height: 13%;
+}
+
+body[data-page="caseStudies"] .ambient-backdrop__pan {
+  transform: translate3d(-14%, 8%, 0);
+}
+
+.ambient-backdrop__shift {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(
+    calc(var(--ambient-mx, 0) * 1px),
+    calc(var(--ambient-my, 0) * 1px),
+    0
+  );
+  animation: ambient-field-sway 18s ease-in-out infinite;
+  will-change: transform;
+}
+
+.ambient-backdrop__glow {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(64px);
+  will-change: transform, opacity;
+  transition: background-color 280ms ease;
+}
+
+/* --- Palette tokens -------------------------------------------------------- */
+html[data-accent="forest"],
+:root {
+  --ambient-primary: #7f9f8e;
+  --ambient-secondary: #e2d6bc;
+  --ambient-strength: 1;
+}
+
+html[data-theme="dark"][data-accent="forest"] {
+  --ambient-primary: #3e5348;
+  --ambient-secondary: #4a4034;
+  --ambient-strength: 0.85;
+}
+
+html[data-theme="light"][data-accent="ink"] {
+  --ambient-primary: #8fa4b8;
+  --ambient-secondary: #c8c4d4;
+}
+
+html[data-theme="dark"][data-accent="ink"] {
+  --ambient-primary: #3a4554;
+  --ambient-secondary: #3e3a48;
+  --ambient-strength: 0.85;
+}
+
+html[data-theme="light"][data-accent="clay"] {
+  --ambient-primary: #c4a090;
+  --ambient-secondary: #e0cfc4;
+}
+
+html[data-theme="dark"][data-accent="clay"] {
+  --ambient-primary: #5a4038;
+  --ambient-secondary: #4a3832;
+  --ambient-strength: 0.85;
+}
+
+html[data-theme="light"][data-accent="plum"] {
+  --ambient-primary: #a898b4;
+  --ambient-secondary: #dcc8d0;
+}
+
+html[data-theme="dark"][data-accent="plum"] {
+  --ambient-primary: #4a3e52;
+  --ambient-secondary: #4a3844;
+  --ambient-strength: 0.85;
+}
+
+html[data-theme="light"][data-accent="ochre"] {
+  --ambient-primary: #c4b48a;
+  --ambient-secondary: #e4d8c0;
+}
+
+html[data-theme="dark"][data-accent="ochre"] {
+  --ambient-primary: #524832;
+  --ambient-secondary: #4a4030;
+  --ambient-strength: 0.85;
+}
+
+.ambient-backdrop__glow--a {
+  width: 24%;
+  height: 28%;
+  top: 4%;
+  left: 38%;
+  background: var(--ambient-primary, transparent);
+  opacity: 0.34;
+  animation: ambient-drift-a 12s ease-in-out infinite;
+}
+
+.ambient-backdrop__glow--b {
+  width: 16%;
+  height: 20%;
+  top: 55%;
+  left: 52%;
+  background: var(--ambient-secondary, transparent);
+  opacity: 0.28;
+  animation: ambient-drift-b 15s ease-in-out infinite reverse;
+}
+
+@keyframes ambient-field-sway {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 1.2% -0.9%;
+  }
+}
+
+@keyframes ambient-drift-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.28;
+  }
+  25% {
+    transform: translate3d(-10%, 8%, 0) scale(1.14);
+    opacity: 0.4;
+  }
+  55% {
+    transform: translate3d(7%, -7%, 0) scale(0.9);
+    opacity: 0.22;
+  }
+  80% {
+    transform: translate3d(-3%, 4%, 0) scale(1.06);
+    opacity: 0.34;
+  }
+}
+
+@keyframes ambient-drift-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.3;
+  }
+  30% {
+    transform: translate3d(9%, -10%, 0) scale(1.12);
+    opacity: 0.42;
+  }
+  65% {
+    transform: translate3d(-7%, 6%, 0) scale(0.92);
+    opacity: 0.24;
+  }
+}
+
+.ambient-backdrop__grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.014;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='g' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.15' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.18 0 0 0 0 0.18 0 0 0 0 0.16 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 120px 120px;
+  background-repeat: repeat;
+  pointer-events: none;
+}
+
+html[data-theme="dark"] .ambient-backdrop__grain {
+  opacity: 0.04;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='g' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.15' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.85 0 0 0 0 0.85 0 0 0 0 0.82 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+.app-content-layer--history,
+.app-content-layer--library,
+.app-content-layer--teaching,
+.app-content-layer--desk,
+.app-content-layer--home,
+.about-page,
+.site-view--about,
+.version-history-layout,
+.teaching-layout,
+.content-viewport--narrative {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-backdrop__glow--a,
+  .ambient-backdrop__glow--b,
+  .ambient-backdrop__shift {
+    animation: none;
+  }
+
+  .ambient-backdrop__shift {
+    transform: none;
+  }
+
+  .ambient-backdrop__pan {
+    transition: none;
+  }
+}

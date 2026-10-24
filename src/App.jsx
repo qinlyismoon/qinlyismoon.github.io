@@ -7,6 +7,7 @@ import "./journey-version-tags.css";
 import "./teaching.css";
 import "./site-chrome.css";
 import "./settings.css";
+import "./ambient-backdrop.css";
 
 export default function App() {
   return (

@@ -90,6 +90,7 @@ const TEACHING_COPY_EN = {
         focus:
           "Visual communication, typography, hierarchy, and presentation design: developing ideas through visual thinking.",
         role: [
+          "Graduate Teaching Associate under Adam Fromme.",
           "Critiqued and evaluated student work.",
           "Supported classroom discussions and activities.",
         ],
@@ -97,7 +98,7 @@ const TEACHING_COPY_EN = {
           {
             title: "Review sessions",
             body: [
-              "The course holds a review session every week, and I lead sessions throughout the term. Each one is built around a single question, carried from the week's readings into students' own fields. The arc stays the same; only the question changes.",
+              "Under Adam Fromme’s guidance, the course runs a weekly review. I led some of those sessions across the term. Each one I led followed one arc: a single question carried from that week’s readings into each student’s own field. The shape stayed the same; only the question changed.",
             ],
             arc: [
               {
@@ -174,21 +175,21 @@ const TEACHING_COPY_EN = {
               "Projection mapping that turns movement into play (left); AR projects at Hayes Hall and for the Department of Design (right).",
           },
           {
-            title: "Sensor prototypes",
+            title: "Exploring directions for the course",
             body: [
-              "Alongside the projects, I explored which physical inputs could reliably trigger animation and video playback, and documented each prototype as I went.",
+              "To help shape where the course content could go, I explored physical inputs that could reliably trigger animation and video — light, buttons, distance — and logged each prototype along the way.",
             ],
             card: {
               title: "Sensor Prototypes for DESIGN 3106",
               description:
-                "A process log testing light, button, and distance inputs as triggers for animation and video playback.",
+                "A process log of that exploration: light, button, and distance as triggers for animation and video playback.",
               tags: ["Physical Computing", "Arduino", "Prototyping"],
               // Lead image of the Notion process log.
               thumbnail: "/teaching/sensor-prototypes.jpg",
               href: TEACHING_LINKS.sensorPrototypes,
             },
             reflection:
-              "Building and testing prototypes is how I come to understand a medium's possibilities, constraints, and behavior.",
+              "Prototyping was how I tested which directions felt worth bringing into the course — what a medium can do, where it breaks, how it behaves.",
           },
         ],
       },
@@ -262,12 +263,16 @@ const TEACHING_COPY_ZH = {
       {
         term: "2026 春季 / 2026 秋季",
         focus: "视觉传达、字体排印、层级与演示设计：用视觉思考把想法长出来。",
-        role: ["评阅并点评学生作业。", "支持课堂讨论与活动。"],
+        role: [
+          "在 Adam Fromme 指导下担任研究生助教。",
+          "评阅并点评学生作业。",
+          "支持课堂讨论与活动。",
+        ],
         work: [
           {
             title: "复习课",
             body: [
-              "这门课每周有一次复习课，我在学期中主讲其中一部分。每节课围着一个问题转，把它从当周的阅读带进学生自己的领域。结构差不多，变的只是问题。",
+              "在 Adam Fromme 的指导下，这门课每周有复习课。我在学期里带过其中几节。我带的那几节沿同一条线走：从一个问题出发，把当周阅读带进每位学生自己的领域。结构不变，变的只是问题。",
             ],
             arc: [
               { label: "提问", text: "一个宏观的问题" },
@@ -304,16 +309,16 @@ const TEACHING_COPY_ZH = {
               "左：把运动变成游戏的投影映射；右：在 Hayes Hall 与为设计学院做的 AR 项目。",
           },
           {
-            title: "传感器原型",
+            title: "为课程内容探方向",
             body: [
-              "项目之外，我试过哪些物理输入能稳定触发动画和视频播放，并在过程中记下每一个原型。",
+              "为了帮课程内容找可以走的方向，我试过哪些物理输入能稳定触发动画和视频——光、按钮、距离——并一路记下每个原型。",
             ],
             card: {
               description:
-                "一份过程记录：测试光线、按钮与距离输入，作为动画和视频播放的触发方式。",
+                "那次探索的过程记录：用光线、按钮与距离输入，触发动画和视频播放。",
             },
             reflection:
-              "动手搭、动手测，是我弄清一种媒介能做什么、做不到什么、会怎么动的方式。",
+              "动手搭、动手测，是我判断哪些方向值得带进课里的方式——一种媒介能做什么、卡在哪里、会怎么动。",
           },
         ],
       },

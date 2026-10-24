@@ -16,8 +16,28 @@ html {
   background: transparent;
 }
 
+:root[data-type-voice="editorial"] {
+  --font-sans: "Zalando Sans", Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: "STIX Two Text", Georgia, "Times New Roman", serif;
+  --reading-letter-spacing: 0;
+  --reading-line-height: 1.72;
+  --weight-reading-title: var(--weight-medium);
+}
+
+/* Geometric reading compensation: Urbanist is tighter and more even than
+   a reading serif, so long copy gets a touch more tracking and leading,
+   and section titles step up a weight so hierarchy doesn't flatten.
+   Defaults live on :root below (Geometric is the site default); Editorial
+   resets the reading tokens above. */
+:root[data-type-voice="geometric"] {
+  --reading-letter-spacing: 0.012em;
+  --reading-line-height: 1.8;
+  --weight-reading-title: 650;
+}
+
 body {
-  /* Serif is the reading face; UI chrome opts into --font-sans explicitly. */
+  /* Reading face follows --font-serif (Urbanist in geometric, STIX in
+     editorial); UI chrome opts into --font-sans explicitly. */
   font-family: var(--font-serif);
   font-size: var(--type-body);
   font-weight: var(--weight-regular);
@@ -27,13 +47,31 @@ body {
   overflow: hidden;
 }
 
+/* Urbanist — geometric type voice (self-hosted under public/fonts/). */
+@font-face {
+  font-family: "Urbanist";
+  src: url("/fonts/Urbanist/Urbanist-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Urbanist";
+  src: url("/fonts/Urbanist/Urbanist-Italic-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   color-scheme: light;
-  /* Three-face type system: Zalando Sans for UI/headings, STIX Two Text
-     for reading, JetBrains Mono for code/data. Caveat is reserved for the
-     handwritten logo only. */
-  --font-sans: "Zalando Sans", Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-serif: "STIX Two Text", Georgia, "Times New Roman", serif;
+  /* Type voices (Settings → Type). Geometric is the default: one
+     Urbanist face for UI and reading. Editorial restores the previous
+     pair — Zalando Sans for chrome, STIX Two Text for reading.
+     Mono and the Caveat logo stay the same in both voices. */
+  --font-sans: "Urbanist", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: "Urbanist", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, "Courier New", monospace;
 
   /* Publication palette */
@@ -46,6 +84,13 @@ body {
   --color-text-secondary: #6f6f6b;
   --color-divider: #deded9;
   --color-accent: #526b61;
+  /* Soft floating project cards — neutral elevation above the ambient wash */
+  --vibe-card-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.018),
+    0 16px 40px rgba(0, 0, 0, 0.035);
+  --vibe-card-shadow-hover:
+    0 6px 16px rgba(0, 0, 0, 0.022),
+    0 22px 52px rgba(0, 0, 0, 0.05);
 
   /* 8pt spacing system */
   --space-1: 0.5rem;
@@ -67,6 +112,11 @@ body {
   --type-caption: 0.875rem;
   --weight-regular: 400;
   --weight-medium: 600;
+  /* Reading rhythm — Geometric (default) opens tracking/leading a hair
+     so long Urbanist copy doesn't feel packed; Editorial resets these. */
+  --reading-letter-spacing: 0.012em;
+  --reading-line-height: 1.8;
+  --weight-reading-title: 650;
 
   /* Shared page grid */
   --page-max-width: 1200px;
@@ -114,6 +164,12 @@ body {
   --color-text-secondary: #a3a3a0;
   --color-divider: #393936;
   --color-accent: #9aafa5;
+  --vibe-card-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.22),
+    0 16px 40px rgba(0, 0, 0, 0.3);
+  --vibe-card-shadow-hover:
+    0 6px 18px rgba(0, 0, 0, 0.26),
+    0 22px 52px rgba(0, 0, 0, 0.38);
 }
 
 .site-shell {
@@ -715,8 +771,11 @@ body {
 
 .home-identity {
   display: grid;
-  width: min(100%, var(--documentation-content-width));
-  max-width: 720px;
+  /* Same measure as the work grid below — never the old 80ch / 720px
+     cap, which left the intro short of Selected Work (and drifted with
+     font `ch` when switching type voices). */
+  width: min(100%, var(--content-max-width));
+  max-width: var(--content-max-width);
   gap: var(--space-1);
 }
 
@@ -858,7 +917,7 @@ body {
   position: absolute;
   bottom: var(--space-4);
   left: 0;
-  width: min(100%, var(--documentation-content-width));
+  width: min(100%, var(--content-max-width));
   margin: 0;
   font-family: var(--font-sans);
   font-size: 0.75rem;
@@ -977,10 +1036,13 @@ body {
   outline-offset: 3px;
 }
 
-/* Same name-card behavior, quieter publication styling. */
+/* Same name-card behavior, quieter publication styling. Width is
+   also set inline by the placer (viewport clientWidth − pads) so
+   100vw never overruns the visible edge on phones. */
 .about-aka__card,
 .about-page--dark .about-aka__card {
-  width: min(276px, calc(100vw - 32px));
+  width: min(276px, calc(100% - 32px));
+  max-width: min(276px, calc(100dvw - 32px));
   padding: 0.5rem 0.625rem;
   border-color: color-mix(in srgb, var(--color-divider) 72%, transparent);
   border-radius: 8px;
@@ -996,11 +1058,12 @@ body {
 
 .about-aka__glyph {
   width: 2.75rem;
-  min-height: 3.25rem;
+  min-height: 3.85rem;
   background: color-mix(in srgb, var(--color-text) 4%, transparent);
 }
 
 .about-aka__pinyin,
+.about-aka__say,
 .about-aka__meaning {
   color: var(--color-text-secondary);
 }
@@ -1200,13 +1263,19 @@ body {
   position: fixed;
   z-index: 230;
   box-sizing: border-box;
-  width: min(320px, calc(100vw - 32px));
-  max-width: calc(100vw - 32px);
-  padding: 0.7rem 0.75rem;
-  border: 1px solid rgba(29, 27, 24, 0.1);
-  border-radius: 10px;
-  background: #f7f4ee;
-  box-shadow: 0 6px 18px rgba(29, 27, 24, 0.06);
+  /* Portaled to body — theme tokens live on the card itself, not
+     via `.home-identity .about-aka__card` parent selectors (those
+     no longer match after the portal, and were accidentally
+     falling back to a cream Timeline background). Inline width
+     from the placer wins; dvw is the CSS fallback. */
+  width: min(276px, calc(100dvw - 32px));
+  max-width: calc(100dvw - 32px);
+  padding: 0.5rem 0.625rem;
+  border: 1px solid color-mix(in srgb, var(--color-divider) 72%, transparent);
+  border-radius: 8px;
+  background: var(--color-surface);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-text) 7%, transparent);
+  color: var(--color-text);
   opacity: 0;
   transform: translateY(4px);
   pointer-events: none;
@@ -1236,20 +1305,29 @@ body {
 }
 
 .about-aka__entry + .about-aka__entry {
-  border-top: 1px solid rgba(29, 27, 24, 0.08);
+  border-top: 1px solid var(--color-divider);
 }
 
 .about-aka__glyph {
   display: grid;
   place-items: center;
   align-content: center;
-  gap: 0.42rem;
+  gap: 0.35rem;
   box-sizing: border-box;
-  width: 3.15rem;
+  width: 3rem;
   min-height: 3.85rem;
-  padding: 0.45rem 0.2rem;
+  padding: 0.4rem 0.15rem;
   border-radius: 6px;
-  background: rgba(29, 27, 24, 0.05);
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+}
+
+/* Pinyin + /say-as/ stacked above the character. */
+.about-aka__reading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.12rem;
+  line-height: 1;
 }
 
 .about-aka__pinyin {
@@ -1257,20 +1335,32 @@ body {
   font-weight: 500;
   letter-spacing: 0.02em;
   line-height: 1;
-  color: rgba(29, 27, 24, 0.48);
+  color: var(--color-text-secondary);
+}
+
+/* English-friendly pronunciation in /slashes/, so it reads apart
+   from the pinyin above — a quiet respelling, not IPA. */
+.about-aka__say {
+  font-family: var(--font-sans);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  color: var(--color-text-secondary);
+  opacity: 0.85;
 }
 
 .about-aka__character {
-  font-size: 1.35rem;
+  font-size: 1.125rem;
   font-weight: 600;
   line-height: 1;
-  color: rgba(29, 27, 24, 0.88);
+  color: var(--color-text);
 }
 
 .about-aka__meaning {
   font-size: 0.82rem;
   line-height: 1.45;
-  color: rgba(29, 27, 24, 0.62);
+  color: var(--color-text-secondary);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3824,28 +3914,41 @@ body {
   border-bottom-color: currentColor;
 }
 
+/* Dark About surface — applied as a class on the portaled card
+   (parent `.about-page--dark` no longer wraps it). */
+.about-aka__card--dark,
 .about-page--dark .about-aka__card {
   background: #2c2722;
   border-color: rgba(230, 223, 212, 0.12);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
 }
 
+.about-aka__card--dark .about-aka__entry + .about-aka__entry,
 .about-page--dark .about-aka__entry + .about-aka__entry {
   border-top-color: rgba(230, 223, 212, 0.1);
 }
 
+.about-aka__card--dark .about-aka__glyph,
 .about-page--dark .about-aka__glyph {
   background: rgba(230, 223, 212, 0.08);
 }
 
+.about-aka__card--dark .about-aka__pinyin,
 .about-page--dark .about-aka__pinyin {
   color: rgba(230, 223, 212, 0.48);
 }
 
+.about-aka__card--dark .about-aka__say,
+.about-page--dark .about-aka__say {
+  color: rgba(230, 223, 212, 0.4);
+}
+
+.about-aka__card--dark .about-aka__character,
 .about-page--dark .about-aka__character {
   color: rgba(230, 223, 212, 0.92);
 }
 
+.about-aka__card--dark .about-aka__meaning,
 .about-page--dark .about-aka__meaning {
   color: rgba(230, 223, 212, 0.62);
 }
@@ -5573,7 +5676,8 @@ body {
 /* Homepage name-card surface override must follow the legacy Timeline styles. */
 .home-identity .about-aka__card,
 .about-page .about-aka__card {
-  width: min(276px, calc(100vw - 32px));
+  width: min(276px, calc(100dvw - 32px));
+  max-width: min(276px, calc(100dvw - 32px));
   padding: 0.5rem 0.625rem;
   border-color: color-mix(in srgb, var(--color-divider) 72%, transparent);
   border-radius: 8px;
@@ -5590,16 +5694,27 @@ body {
 
 .home-identity .about-aka__glyph,
 .about-page .about-aka__glyph {
-  width: 2.75rem;
-  min-height: 3.25rem;
+  width: 3rem;
+  min-height: 3.85rem;
   background: color-mix(in srgb, var(--color-text) 4%, transparent);
 }
 
 .home-identity .about-aka__pinyin,
+.home-identity .about-aka__say,
 .home-identity .about-aka__meaning,
 .about-page .about-aka__pinyin,
+.about-page .about-aka__say,
 .about-page .about-aka__meaning {
   color: var(--color-text-secondary);
+}
+
+.home-identity .about-aka__say,
+.about-page .about-aka__say {
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1;
 }
 
 .home-identity .about-aka__character,
@@ -7146,9 +7261,8 @@ body {
   height: 100%;
 }
 
-/* Shared card surface for button cards (open a modal) and link cards
-   (open an external page): quiet hover is accent border only, never
-   lift or shadow. */
+/* Soft floating surface: one continuous card (image + body), elevated
+   above the ambient wash by neutral shadow — no border, no image frame. */
 .vibe-card__button,
 .vibe-card__link {
   display: flex;
@@ -7156,29 +7270,28 @@ body {
   width: 100%;
   height: 100%;
   padding: 0;
-  border: 1px solid var(--color-divider);
+  border: none;
   border-radius: 8px;
   background: var(--color-surface);
+  box-shadow: var(--vibe-card-shadow);
   cursor: pointer;
   text-align: left;
   overflow: hidden;
   box-sizing: border-box;
-  transition: border-color 0.2s ease, transform 160ms ease;
+  transition:
+    box-shadow 300ms ease,
+    transform 300ms ease;
 }
 
 .vibe-card__button:hover,
 .vibe-card__button:focus-visible,
 .vibe-card__link:hover,
 .vibe-card__link:focus-visible {
-  border-color: var(--color-accent);
-  transform: translateX(3px);
+  transform: translateY(-3px);
+  box-shadow: var(--vibe-card-shadow-hover);
 }
 
-/* Card hover: the whole card — frame included — nudges right as one
-   unit, exactly like the inline-link and explore-row hover. A transform
-   never disturbs the grid: siblings stay put, only the hovered card
-   paints 3px to the right. The title warms to the accent voice and the
-   border keeps its quiet accent shift. */
+/* Title warms to the accent on hover; image stays still (no zoom). */
 .vibe-card__button:hover .vibe-card__title,
 .vibe-card__button:focus-visible .vibe-card__title,
 .vibe-card__link:hover .vibe-card__title,
@@ -7190,6 +7303,21 @@ body {
 .vibe-card__link:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vibe-card__button,
+  .vibe-card__link {
+    transition: none;
+  }
+
+  .vibe-card__button:hover,
+  .vibe-card__button:focus-visible,
+  .vibe-card__link:hover,
+  .vibe-card__link:focus-visible {
+    transform: none;
+    box-shadow: var(--vibe-card-shadow);
+  }
 }
 
 /* Anchor cards need the link resets that buttons get for free. */
@@ -7209,9 +7337,7 @@ body {
 .vibe-card__thumbnail {
   aspect-ratio: 16 / 10;
   background: var(--color-surface);
-  border-bottom: 1px solid var(--color-divider);
   overflow: hidden;
-  transition: transform 160ms ease;
 }
 
 .vibe-card__image {
@@ -7219,6 +7345,10 @@ body {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.vibe-card__video {
+  pointer-events: none;
 }
 
 .vibe-card__placeholder {
@@ -7245,7 +7375,6 @@ body {
   display: flex;
   flex-direction: column;
   padding: var(--space-2) var(--space-2) var(--space-3);
-  transition: transform 160ms ease;
 }
 
 .vibe-card__title {
@@ -7467,11 +7596,19 @@ body[data-project-detail="open"] .app-content-layer {
   overflow: hidden;
 }
 
+.vibe-detail__hero--video {
+  border-bottom: 0;
+}
+
 .vibe-detail__image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.vibe-detail__hero-video {
+  pointer-events: none;
 }
 
 .vibe-detail__body {
@@ -7683,6 +7820,22 @@ body[data-project-detail="open"] .app-content-layer {
   border-color: var(--color-text);
 }
 
+/* Live prototype reserved but not linked yet — visible, not clickable. */
+.vibe-detail__action--pending {
+  opacity: 0.58;
+  cursor: default;
+  pointer-events: none;
+}
+
+.vibe-detail__action--pending:hover {
+  opacity: 0.58;
+}
+
+.vibe-detail__action-note {
+  font-weight: var(--weight-regular);
+  opacity: 0.85;
+}
+
 .vibe-detail__sections {
   margin: 0;
   display: grid;
@@ -7719,6 +7872,22 @@ body[data-project-detail="open"] .app-content-layer {
 
 .vibe-detail--case-study .vibe-detail__tag {
   background: rgba(255, 255, 255, 0.65);
+}
+
+/* Leaf Note (and other tinted details): panel wash from project data
+   so UI boards sit on the same sage ground as their artwork. */
+.vibe-detail--tinted .vibe-detail__hero {
+  background: transparent;
+  border-bottom: 0;
+}
+
+.vibe-detail--tinted .vibe-detail__tag {
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.vibe-detail--tinted .case-study__figure img,
+.vibe-detail--tinted .case-study__video video {
+  background: transparent;
 }
 
 /* Sticky contents bar, in the editorial-tab voice of the design system:
@@ -7865,11 +8034,97 @@ body[data-project-detail="open"] .app-content-layer {
   margin: var(--space-3) 0 0;
 }
 
+.case-study__list {
+  margin: var(--space-2) 0 0;
+  padding-left: 1.15em;
+  display: grid;
+  gap: 0.45em;
+  font-family: var(--font-serif);
+  font-size: var(--type-reading);
+  line-height: var(--reading-line-height);
+  letter-spacing: var(--reading-letter-spacing);
+  color: var(--color-reading, var(--color-text));
+}
+
+.case-study__table-wrap {
+  margin-top: var(--space-3);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.case-study__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+.case-study__table th,
+.case-study__table td {
+  border: 1px solid var(--color-divider);
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.case-study__table thead th {
+  font-weight: var(--weight-medium);
+  background: color-mix(in srgb, var(--color-background) 72%, var(--color-surface));
+  white-space: nowrap;
+}
+
+.case-study__table--row-head tbody th {
+  font-weight: var(--weight-medium);
+  background: color-mix(in srgb, var(--color-background) 55%, var(--color-surface));
+  min-width: 9.5rem;
+}
+
+.case-study__table-caption {
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+}
+
+/* Research boards and multi-image sections stack full-width — side-by-side
+   made journey-map type too small to read. A larger gap keeps each board
+   a beat of its own instead of one continuous sheet. */
+.case-study__figures {
+  margin-top: var(--space-4);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+}
+
+.case-study__figures .case-study__figure {
+  margin-top: 0;
+}
+
+.case-study__figures + .case-study__table-wrap,
+.case-study__table-wrap + .vibe-detail__quote--closing,
+.case-study__figures + .vibe-detail__quote--closing {
+  margin-top: var(--space-5);
+}
+
+.vibe-detail__quote--closing {
+  margin-top: var(--space-5);
+}
+
 .case-study__videos {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-2);
   margin-top: var(--space-3);
+}
+
+/* Landscape recordings (Leaf Note): one clip per row so the UI stays readable. */
+.case-study__videos--stack {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  max-width: 40rem;
 }
 
 .case-study__video {
@@ -7882,8 +8137,25 @@ body[data-project-detail="open"] .app-content-layer {
   /* The Swim Balance recordings are 1200 × 1600 (3:4). */
   aspect-ratio: 3 / 4;
   object-fit: cover;
-  border-radius: 8px;
+  /* Portrait phone clips — device-like radius. */
+  border-radius: 1.85rem;
   background: rgba(255, 255, 255, 0.5);
+}
+
+/* PDF-exported stills already include phone chrome + caption; show
+   the full board without cropping, on a quiet wash. */
+.case-study__video--still img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+/* Leaf Note (and similar) screen recordings are 1920 × 1440. */
+.case-study__video--landscape video {
+  aspect-ratio: 4 / 3;
+  border-radius: 1rem;
 }
 
 .case-study__video figcaption,
@@ -7903,7 +8175,7 @@ body[data-project-detail="open"] .app-content-layer {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 8px;
+  border-radius: 1rem;
 }
 
 /* Figures inside an item (a moment's sketch, a decision's still)
@@ -7926,14 +8198,14 @@ body[data-project-detail="open"] .app-content-layer {
   margin-inline: auto;
 }
 
-/* Split items pair copy with their artwork: the title spans, the
-   copy takes the wider column and the figure the narrower one —
-   balanced, not halved — and the pairing stacks on narrow screens. */
+/* Split items pair copy with a phone: the title spans; copy takes the
+   flexible column; the phone column is only as wide as the handset —
+   so a short paragraph doesn't leave a half-empty second column. */
 .case-study__decision--split {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  column-gap: var(--space-4);
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--space-5);
+  align-items: center;
 }
 
 .case-study__decision--split h4 {
@@ -7948,21 +8220,49 @@ body[data-project-detail="open"] .app-content-layer {
   max-height: 26rem;
 }
 
-/* Embedded video keeps a 16:9 stage inside the panel: the
-   prototype plays where it is discussed instead of sending the
-   reader out to a link. */
+/* Portrait phone demo beside copy: large enough to read, radius like
+   a real device bezel so the crop doesn't feel clipped-square. */
+.case-study__decision--split .case-study__embed--portrait {
+  width: min(18rem, 42vw);
+  max-width: 18rem;
+  margin-inline: 0;
+}
+
+.case-study__decision--split .case-study__figure--video figcaption {
+  max-width: 18rem;
+}
+
+/* Embedded video: landscape demos stay 16:9; phone recordings use
+   a portrait stage (item.video.aspect === "portrait") so the frame
+   fills without black side bars. */
 .case-study__embed {
   aspect-ratio: 16 / 9;
-  border-radius: 8px;
+  border-radius: 1.25rem;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.5);
 }
 
-.case-study__embed iframe {
+/* Oscar AR / Money Map phone recordings — match device aspect and
+   a pronounced handset radius. */
+.case-study__embed--portrait {
+  aspect-ratio: 590 / 1280;
+  max-width: 22rem;
+  width: 100%;
+  border-radius: 1.85rem;
+  background: transparent;
+}
+
+.case-study__embed iframe,
+.case-study__embed video {
   display: block;
   width: 100%;
   height: 100%;
   border: 0;
+}
+
+.case-study__embed video {
+  object-fit: cover;
+  background: transparent;
 }
 
 .case-study__decision {
@@ -8000,6 +8300,12 @@ body[data-project-detail="open"] .app-content-layer {
     grid-template-columns: 1fr;
     max-width: 17rem;
     margin-inline: auto;
+  }
+
+  /* Landscape stack (Leaf Note): keep the wider reading measure. */
+  .case-study__videos--stack {
+    max-width: none;
+    margin-inline: 0;
   }
 
   /* Split items stack on narrow screens: copy first, then the
@@ -8282,11 +8588,12 @@ body[data-project-detail="open"] .app-content-layer {
 }
 
 .home-identity__introduction {
-  max-width: 62ch;
+  max-width: var(--content-max-width);
   margin: var(--space-4) 0 0;
   font-family: var(--font-serif);
   font-size: var(--type-reading);
-  line-height: 1.72;
+  line-height: var(--reading-line-height, 1.72);
+  letter-spacing: var(--reading-letter-spacing, 0);
   color: var(--color-text-secondary);
 }
 
@@ -8418,7 +8725,7 @@ body:not([data-page="home"]) .editorial-thread {
   font-family: var(--font-serif);
   font-size: var(--type-reading);
   line-height: 1.72;
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-reading-title);
   color: var(--color-text);
 }
 
@@ -8477,11 +8784,14 @@ body:not([data-page="home"]) .editorial-thread {
   .vibe-grid,
   .vibe-card { min-width: 0; }
 
-  /* Touch focus must not shift a full-width card out of its clipping area. */
+  /* Touch: keep elevation, skip the lift so the card stays in its slot. */
   .vibe-card__button:hover,
   .vibe-card__button:focus-visible,
   .vibe-card__link:hover,
-  .vibe-card__link:focus-visible { transform: none; }
+  .vibe-card__link:focus-visible {
+    transform: none;
+    box-shadow: var(--vibe-card-shadow);
+  }
 }
 
 .desk-archive {
@@ -8783,7 +9093,8 @@ body:not([data-page="home"]) .editorial-thread {
   max-width: var(--content-max-width);
   font-family: var(--font-serif);
   font-size: var(--type-reading);
-  line-height: 1.72;
+  line-height: var(--reading-line-height);
+  letter-spacing: var(--reading-letter-spacing);
   color: var(--color-reading);
 }
 
@@ -8799,7 +9110,7 @@ body:not([data-page="home"]) .editorial-thread {
   margin: 0 0 var(--space-2);
   font-family: var(--font-serif);
   font-size: var(--type-reading);
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-reading-title);
   line-height: 1.72;
   letter-spacing: 0;
   text-transform: none;
@@ -8820,7 +9131,7 @@ body:not([data-page="home"]) .editorial-thread {
   margin: 0 0 var(--space-2);
   font-family: var(--font-serif);
   font-size: var(--type-h2);
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-reading-title);
   line-height: 1.3;
   letter-spacing: -0.01em;
   color: var(--color-text-strong);

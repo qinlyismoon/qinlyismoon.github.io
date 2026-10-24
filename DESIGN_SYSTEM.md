@@ -13,13 +13,27 @@ primitives.
 
 Three faces, each with one role:
 
-- Sans: `--font-sans` (`Zalando Sans`) — UI chrome, headings, labels, metadata.
-  Used for `--type-display`, `--type-h1`, `--type-h2`, `--type-caption`,
+- Type voices (Settings → Type): two named presets on `data-type-voice`,
+  not a font picker. **Geometric** (default) sets both `--font-sans` and
+  `--font-serif` to self-hosted `Urbanist` (`public/fonts/Urbanist/`).
+  **Editorial** restores the previous pair: Zalando Sans for chrome,
+  STIX Two Text for reading. Switching is stored with the other site
+  settings and applied before paint. Geometric opens long-copy rhythm
+  slightly (`--reading-letter-spacing`, `--reading-line-height`,
+  `--weight-reading-title`) so Urbanist does not read as packed or flat;
+  Editorial resets those to the serif defaults.
+- Home identity (name + intro + links) shares `--content-max-width` with
+  Selected Work — never a separate `80ch` / `720px` cap that drifted under
+  Editorial’s `ch` metric.
+- Sans: `--font-sans` — UI chrome, headings, labels, metadata
+  (`Urbanist` in geometric; `Zalando Sans` in editorial). Used for
+  `--type-display`, `--type-h1`, `--type-h2`, `--type-caption`,
   navigation, sidebar, buttons, and Desk object labels/tooltips. The one
-deliberate exception is the Log page title and its closing heading:
-serif, so the document never borrows the identity's voice.
-- Serif: `--font-serif` (`STIX Two Text`) — reading. The `body` base font;
-  used for long-form copy, quotes, and editorial text.
+  deliberate exception is the Log page title and its closing heading:
+  serif, so the document never borrows the identity's voice.
+- Serif: `--font-serif` — reading. The `body` base font; long-form
+  copy, quotes, and editorial text (`Urbanist` in geometric;
+  `STIX Two Text` in editorial).
 - Mono: `--font-mono` (`JetBrains Mono`) — code, data, and technical labels.
 - Handwritten: `Caveat` — reserved for the logo only, never for UI or body.
 - Display: `--type-display`, used once for a page-level introduction.
@@ -207,7 +221,7 @@ column structure. The Context Column is informational,
 not navigational, and owns the shared contact links.
 
 The home page closes with a single versioned copyright line (`.home-copyright`,
-`© 2026 Longyue Qin · v2.3.1`) after the work index. It is set in the sidebar
+`© 2026 Longyue Qin · v2.4.0`) after the work index. It is set in the sidebar
 label voice (12px/500/secondary) and aligned to the documentation content
 width — a quiet colophon, never a footer bar. It is language-neutral, so
 it lives directly in `HomeIntro.jsx` rather than the localization copy.
@@ -840,8 +854,8 @@ per page.
 
 | Role          | Voice |
 |---------------|-------|
-| Reading body  | serif · `--type-reading` · 1.72 · `--color-reading` · measure `--content-max-width` |
-| Section title | serif · `--type-reading` · medium · `--color-text` |
+| Reading body  | serif · `--type-reading` · `--reading-line-height` · `--reading-letter-spacing` · `--color-reading` · measure `--content-max-width` |
+| Section title | serif · `--type-reading` · `--weight-reading-title` · `--color-text` |
 | Pull quote    | serif upright · `clamp(1.125rem, 1.5vw, 1.25rem)` · `--color-text` · 2px accent rule |
 | Button        | 8px card radius (the radius set is 0 / 4 / 8 / 16 / 50%; no pills, no 6px) |
 

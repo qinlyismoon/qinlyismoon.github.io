@@ -56,6 +56,7 @@ const CONTEXT_PAGES = {
   teaching: "teaching",
 };
 
+
 export default function SiteShell() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -114,6 +115,9 @@ export default function SiteShell() {
       ).matches;
       const root = document.documentElement;
 
+      // Document-level VT + out-then-in (see site-chrome.css). Scoped grid
+      // VT was tried so ambient could stay live, but it fell back to a
+      // crossfade and ghosted page text on top of itself — never do that.
       if (!reduceMotion && typeof document.startViewTransition === "function") {
         routeTransitionRef.current = true;
         root.classList.add("page-transitioning");

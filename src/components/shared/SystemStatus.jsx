@@ -2,7 +2,12 @@ import { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useAppSettings } from "../../context/AppSettingsContext";
 import { useMusic } from "../../context/MusicContext";
-import { ACCENTS, THEME_MODES, getSettingsLabels } from "../../lib/settings";
+import {
+  ACCENTS,
+  THEME_MODES,
+  TYPE_VOICES,
+  getSettingsLabels,
+} from "../../lib/settings";
 import InlineChoice from "./InlineChoice";
 
 /**
@@ -21,11 +26,13 @@ export default function SystemStatus() {
     language,
     themeMode,
     accent,
+    typeVoice,
     isDarkMode,
     isMuted,
     toggleLanguage,
     setThemeMode,
     setAccent,
+    setTypeVoice,
     setMuted,
   } = useAppSettings();
   const { isMusicPlaying, pauseMusic } = useMusic();
@@ -113,6 +120,18 @@ export default function SystemStatus() {
             value={themeMode}
             onChange={setThemeMode}
             options={THEME_MODES.map((id) => ({ id, label: labels.modes[id] }))}
+          />
+        </div>
+        <div className="settings-panel__group">
+          <p className="settings-panel__label">{labels.type}</p>
+          <InlineChoice
+            ariaLabel={labels.type}
+            value={typeVoice}
+            onChange={setTypeVoice}
+            options={TYPE_VOICES.map((id) => ({
+              id,
+              label: labels.typeVoices[id],
+            }))}
           />
         </div>
         <div className="settings-panel__group">

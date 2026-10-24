@@ -42,18 +42,19 @@ const ABOUT_PAGE_COPY = {
     hero: {
       greeting: "Hi, I’m Phoebe.",
       kicker: "Design engineer · product designer",
-      // v2.2.2 — About shows who I am: how I think, whose eyes I look
+      // v2.3.2 — About shows who I am: how I think, whose eyes I look
       // through, how I find answers, and who I am underneath. Each section
       // leads with a trait; examples are light anchors, never the point.
       // quote + one-line roadmap → portrait → questions → other
-      // people's perspectives → making (+ loop) → staying true to myself.
+      // people's perspectives (see, then speak) → making (+ loop) →
+      // staying true to myself.
       essay: {
         quote: {
           original: "Dubito, ergo cogito, ergo sum.",
           translation: "I doubt, therefore I think, therefore I am.",
         },
         roadmap:
-          "This line is closest to how I work: questions start my thinking, stepping into other people’s perspectives widens it, and making turns it into something real.",
+          "This line is closest to how I work: questions start my thinking, stepping into other people’s perspectives widens it and helps me bring a direction to the people I work with, and making turns it into something real.",
         sections: [
           {
             id: "doubt",
@@ -68,6 +69,7 @@ const ABOUT_PAGE_COPY = {
             title: "Seeing from every side",
             paragraphs: [
               "Before I settle on a direction, I try to take each relevant person’s standpoint—and look through their first-person view: the person handing something over and the person receiving it, the operator and the team behind the platform, the student who sees things differently from me. Once I understand what each of them cares about and worries about, and hold those views side by side, the real problem usually shows up.",
+              "That understanding is also how I talk with the people I work with. When I bring an idea to the table, I try to name what each side needs and where the tensions sit, so the direction is something we can follow, push on, and share together.",
             ],
           },
           {
@@ -137,7 +139,7 @@ const ABOUT_PAGE_COPY = {
           translation: "我怀疑，故我思；我思，故我在。",
         },
         roadmap:
-          "这句话最贴近我做事的方式：提问让我开始思考，带入不同立场的第一视角让想法变宽，动手去做，才把它变成真实的东西。",
+          "这句话最贴近我做事的方式：提问让我开始思考，带入不同立场的第一视角让想法变宽，也让我能把方向带回给一起工作的人；动手去做，才把它变成真实的东西。",
         sections: [
           {
             id: "doubt",
@@ -152,6 +154,7 @@ const ABOUT_PAGE_COPY = {
             title: "站在每一方的立场上看",
             paragraphs: [
               "定方案之前，我会试着站在每个相关的人的立场上，带入他们的第一视角：交出一件事的人和接手的人，运营商和平台背后的团队，想法跟我不一样的学生。看清他们各自在意什么、担心什么，再把这些视角放在一起，真正的问题往往就浮现了。",
+              "这份理解，也是我和一起工作的人沟通的方式。把想法拿到桌上时，我会试着说清每一方需要什么、张力在哪里，让方向变成我们可以一起跟上、一起推敲、一起共有的东西。",
             ],
           },
           {
