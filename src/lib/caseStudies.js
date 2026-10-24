@@ -555,9 +555,9 @@ export const SELECTED_PROJECTS = [
     liveLabel: "Experience Prototype",
     liveLabelZh: "体验原型",
     // Still used for the Selected Work card, contents-bar crop, and footer.
-    thumbnail: "/leaf-note/cover.png",
+    thumbnail: "/work/leaf-note/cover.png",
     // Detail hero — looping cover video (replaces the static cover image).
-    heroVideo: "/leaf-note/cover.mp4",
+    heroVideo: "/work/leaf-note/cover.mp4",
     // Contents-bar crop: only the cover's sage wash, so the phone
     // cluster never leaks into the bar. Anchored top-right and sized
     // by height so phones (lower-right) stay below the visible slice.

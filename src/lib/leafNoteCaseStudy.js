@@ -148,12 +148,12 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
     ],
     images: [
       {
-        src: "/leaf-note/research-everyday.png",
+        src: "/work/leaf-note/research-everyday.png",
         alt: "Journey map of everyday plant care: noticing, deciding, watering, and the mental load in between",
         caption: "1. Everyday care — examining my own routine",
       },
       {
-        src: "/leaf-note/research-handoff.png",
+        src: "/work/leaf-note/research-handoff.png",
         alt: "Journey map of handing off plant care while traveling, from preparing instructions to remote follow-up",
         caption: "2. Care handoff while traveling",
       },
@@ -256,19 +256,19 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
     ],
     videos: [
       {
-        src: "/leaf-note/01-owner-hand-off.mp4",
+        src: "/work/leaf-note/01-owner-hand-off.mp4",
         aspect: "landscape",
         caption:
           "Preparing the handoff — owner: select plants, set the care period, assign a caregiver, clarify pot setup, and share the plan.",
       },
       {
-        src: "/leaf-note/02-caregiver-care.mp4",
+        src: "/work/leaf-note/02-caregiver-care.mp4",
         aspect: "landscape",
         caption:
           "Carrying out care — caregiver: review tasks, follow watering cues, confirm routine care, and report an abnormal condition with a photo.",
       },
       {
-        src: "/leaf-note/03-owner-follow-along.mp4",
+        src: "/work/leaf-note/03-owner-follow-along.mp4",
         aspect: "landscape",
         caption:
           "Following along — owner: stay oriented on what happened while away without reclaiming day-to-day follow-up.",
@@ -288,7 +288,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
           "Select which plants are included, set the care window, assign a caregiver, and review the plan before it leaves the owner’s hands.",
         ],
         image: {
-          src: "/leaf-note/ui-owner-handoff.png",
+          src: "/work/leaf-note/ui-owner-handoff.png",
           alt: "UI board: owner prepares a plant-care handoff across phone screens",
           caption: "Owner · preparing the handoff",
         },
@@ -299,7 +299,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
           "Current and upcoming tasks, observable watering cues, routine confirmation, and a clearer path when something looks wrong.",
         ],
         image: {
-          src: "/leaf-note/ui-caregiver.png",
+          src: "/work/leaf-note/ui-caregiver.png",
           alt: "UI board: caregiver care tasks and confirmation flows",
           caption: "Caregiver · carrying out care",
         },
@@ -310,7 +310,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
           "Once care is shared, the owner no longer does the checks — but can still see what is due and nudge once a day. The caregiver gets one clear prompt that leads straight into the check, and a lightweight update closes the loop when the work is done.",
         ],
         image: {
-          src: "/leaf-note/ui-responsibility.png",
+          src: "/work/leaf-note/ui-responsibility.png",
           alt: "UI board: after handoff, owner sees overdue care and reminds once; caregiver gets a prompt into the check; an update closes the loop",
           caption: "Shared care · responsibility after the handoff",
         },
@@ -321,7 +321,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
           "Plant profiles and care details stay modular, so the same information can appear in everyday care and in a handoff without being rewritten from scratch.",
         ],
         image: {
-          src: "/leaf-note/ui-managing.png",
+          src: "/work/leaf-note/ui-managing.png",
           alt: "UI board: managing plant profiles and care details",
           caption: "Managing plants",
         },
@@ -332,7 +332,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
           "A lightweight record of what happened, updates between owner and caregiver, and a library that keeps plants findable after the handoff ends.",
         ],
         image: {
-          src: "/leaf-note/ui-history.png",
+          src: "/work/leaf-note/ui-history.png",
           alt: "UI board: care history, updates, and plant library",
           caption: "History, updates, and library",
         },
@@ -346,7 +346,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
       "A shared visual and interaction system keeps care information, inputs, and status language consistent across owner and caregiver views — so building in code stayed coherent as the flows grew.",
     ],
     image: {
-      src: "/leaf-note/design-system.png",
+      src: "/work/leaf-note/design-system.png",
       alt: "Leaf Note design system: type, color, components, and status patterns",
       caption: "Design system for the coded prototype",
     },
@@ -380,12 +380,12 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
     ],
     images: [
       {
-        src: "/leaf-note/research-everyday.png",
+        src: "/work/leaf-note/research-everyday.png",
         alt: "日常植物照料旅程图：察觉、决定、浇水，以及其间的心理负担",
         caption: "1. 日常照料——审视自己的习惯",
       },
       {
-        src: "/leaf-note/research-handoff.png",
+        src: "/work/leaf-note/research-handoff.png",
         alt: "出行时交接植物照料的旅程图：从准备说明到远程跟进",
         caption: "2. 出行时的照料交接",
       },
@@ -487,19 +487,19 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
     ],
     videos: [
       {
-        src: "/leaf-note/01-owner-hand-off.mp4",
+        src: "/work/leaf-note/01-owner-hand-off.mp4",
         aspect: "landscape",
         caption:
           "准备交接——主人：选择植物、设定照料时段、指定照料者、说明花盆设置，并分享计划。",
       },
       {
-        src: "/leaf-note/02-caregiver-care.mp4",
+        src: "/work/leaf-note/02-caregiver-care.mp4",
         aspect: "landscape",
         caption:
           "执行照料——照料者：查看任务、跟随浇水线索、确认日常照料，并用照片报告异常。",
       },
       {
-        src: "/leaf-note/03-owner-follow-along.mp4",
+        src: "/work/leaf-note/03-owner-follow-along.mp4",
         aspect: "landscape",
         caption:
           "远程跟进——主人：出门在外仍能看清发生了什么，而不必收回日常跟进。",
@@ -519,7 +519,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
           "选择纳入交接的植物、设定照料窗口、指定照料者，并在计划离开主人之手以前完成确认。",
         ],
         image: {
-          src: "/leaf-note/ui-owner-handoff.png",
+          src: "/work/leaf-note/ui-owner-handoff.png",
           alt: "界面板：主人准备植物照料交接",
           caption: "主人 · 准备交接",
         },
@@ -530,7 +530,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
           "当前与即将到来的任务、可观察的浇水线索、日常确认，以及看起来不对时更清楚的上报路径。",
         ],
         image: {
-          src: "/leaf-note/ui-caregiver.png",
+          src: "/work/leaf-note/ui-caregiver.png",
           alt: "界面板：照料者任务与确认流程",
           caption: "照料者 · 执行照料",
         },
@@ -541,7 +541,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
           "照料已经共享之后，主人不再亲自做检查——但仍能看到到期事项，并每天提醒一次。照料者收到一条清楚提示，直接进入检查；做完后用一条轻量更新把闭环收住。",
         ],
         image: {
-          src: "/leaf-note/ui-responsibility.png",
+          src: "/work/leaf-note/ui-responsibility.png",
           alt: "界面板：交接之后，主人看到逾期并提醒一次；照料者收到提示进入检查；更新收住闭环",
           caption: "共享照料 · 交接之后的责任",
         },
@@ -552,7 +552,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
           "植物档案与照料信息保持模块化，同一套信息既能用于日常照料，也能用于交接，而不必重写一遍。",
         ],
         image: {
-          src: "/leaf-note/ui-managing.png",
+          src: "/work/leaf-note/ui-managing.png",
           alt: "界面板：管理植物档案与照料细节",
           caption: "管理植物",
         },
@@ -563,7 +563,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
           "轻量记录发生过什么、主人与照料者之间的更新，以及交接结束后仍能找到植物的资料库。",
         ],
         image: {
-          src: "/leaf-note/ui-history.png",
+          src: "/work/leaf-note/ui-history.png",
           alt: "界面板：照料历史、更新与植物资料库",
           caption: "历史、更新与资料库",
         },
@@ -577,7 +577,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
       "共享的视觉与交互系统，让照料信息、输入与状态语言在主人与照料者视图之间保持一致——流程变多时，用代码搭建仍能连贯。",
     ],
     image: {
-      src: "/leaf-note/design-system.png",
+      src: "/work/leaf-note/design-system.png",
       alt: "Leaf Note 设计系统：字体、色彩、组件与状态模式",
       caption: "编码原型的设计系统",
     },
