@@ -64,7 +64,7 @@ const PAGE_CONTEXT = {
           label: "Current chapter",
           value: "Designing in the Age of AI",
         },
-        { section: "context", label: "Current version", value: "v2.4.2" },
+        { section: "context", label: "Current version", value: "v2.4.3" },
       ],
     },
     teaching: {
@@ -169,7 +169,7 @@ const PAGE_CONTEXT = {
           label: "Current chapter",
           value: "Designing in the Age of AI",
         },
-        { section: "context", label: "当前版本", value: "v2.4.2" },
+        { section: "context", label: "当前版本", value: "v2.4.3" },
       ],
     },
     teaching: {
