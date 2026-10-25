@@ -3,8 +3,72 @@
 // link to the Notion case study, so the title carries the external-link
 // arrow. The thumbnail falls back to a text-only card if the image is
 // missing.
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppSettings } from "../../context/AppSettingsContext";
+
+/** Defer hero-video bytes until the card is near the viewport. */
+function LazyHeroVideo({ src, poster }) {
+  const hostRef = useRef(null);
+  const videoRef = useRef(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!host) return undefined;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduceMotion) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "240px 0px" },
+    );
+    observer.observe(host);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!shouldLoad) return undefined;
+    const video = videoRef.current;
+    if (!video) return undefined;
+    video.play().catch(() => {});
+    return undefined;
+  }, [shouldLoad]);
+
+  return (
+    <div ref={hostRef} className="vibe-card__thumbnail" aria-hidden="true">
+      {shouldLoad ? (
+        <video
+          ref={videoRef}
+          className="vibe-card__image vibe-card__video"
+          src={src}
+          poster={poster || undefined}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+        />
+      ) : poster ? (
+        <img
+          src={poster}
+          alt=""
+          className="vibe-card__image"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <div className="vibe-card__placeholder" />
+      )}
+    </div>
+  );
+}
 
 export default function SelectedWorkCard({ project, onHover, onOpen }) {
   const { language } = useAppSettings();
@@ -20,34 +84,28 @@ export default function SelectedWorkCard({ project, onHover, onOpen }) {
   const showThumb = showVideo || showImage || Boolean(project.placeholder);
 
   const thumbnail = showThumb ? (
-    <div className="vibe-card__thumbnail" aria-hidden="true">
-      {showVideo ? (
-        <video
-          className="vibe-card__image vibe-card__video"
-          src={project.heroVideo}
-          poster={project.thumbnail || undefined}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-        />
-      ) : showImage ? (
-        <img
-          src={project.thumbnail}
-          alt=""
-          className="vibe-card__image"
-          loading="lazy"
-          onError={() => setImageFailed(true)}
-        />
-      ) : (
-        <div className="vibe-card__placeholder">
-          <span className="vibe-card__placeholder-mark">
-            {project.placeholder}
-          </span>
-        </div>
-      )}
-    </div>
+    showVideo ? (
+      <LazyHeroVideo src={project.heroVideo} poster={project.thumbnail} />
+    ) : (
+      <div className="vibe-card__thumbnail" aria-hidden="true">
+        {showImage ? (
+          <img
+            src={project.thumbnail}
+            alt=""
+            className="vibe-card__image"
+            loading="lazy"
+            decoding="async"
+            onError={() => setImageFailed(true)}
+          />
+        ) : (
+          <div className="vibe-card__placeholder">
+            <span className="vibe-card__placeholder-mark">
+              {project.placeholder}
+            </span>
+          </div>
+        )}
+      </div>
+    )
   ) : null;
 
   // v2.2.1: projects with a live website follow the vibe card pattern —

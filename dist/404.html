@@ -118,16 +118,26 @@
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Non-blocking: Urbanist is self-hosted; these families load after first paint. -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Zalando+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap"
       rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Zalando+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      media="print"
+      onload="this.media='all'"
     />
-    <script type="module" crossorigin src="/assets/index-f1cJ3GzW.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-xUxXRjpT.css">
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Zalando+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      />
+    </noscript>
+    <script type="module" crossorigin src="/assets/index-RDew0fds.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/react-Cd6geEgh.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-ByIdcy5V.css">
   </head>
   <body>
     <div id="site-loader" role="status" aria-label="Loading website">
-      <img src="/name-logo.png" alt="" />
+      <img src="/name-logo.png" alt="" width="56" height="46" />
       <p>Initializing workspace…</p>
     </div>
     <div id="root"></div>

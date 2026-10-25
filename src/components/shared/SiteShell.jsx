@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { flushSync } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSettings } from "../../context/AppSettingsContext";
@@ -20,17 +28,20 @@ import {
   isLegacyDeskPath,
   projectIdFromPath,
 } from "../../lib/routes";
-import AboutPage from "../../pages/AboutPage";
 import LandingPage from "../../pages/LandingPage";
-import LibraryPage from "../../pages/LibraryPage";
-import TeachingPage from "../../pages/TeachingPage";
-import WorkspacePage from "../../pages/WorkspacePage";
 import SharedLayout from "../layouts/SharedLayout";
 import DeskLayout from "../layouts/DeskLayout";
 import VersionHistoryLayout from "../layouts/VersionHistoryLayout";
 import TeachingLayout from "../layouts/TeachingLayout";
 import { PageTransitionContext } from "../../context/PageTransitionContext";
 import { SidebarOverrideContext } from "../../context/SidebarOverrideContext";
+
+// Home is the first paint; other routes load on demand so About media,
+// Desk scene, and Teaching content stay out of the initial JS graph.
+const AboutPage = lazy(() => import("../../pages/AboutPage"));
+const LibraryPage = lazy(() => import("../../pages/LibraryPage"));
+const TeachingPage = lazy(() => import("../../pages/TeachingPage"));
+const WorkspacePage = lazy(() => import("../../pages/WorkspacePage"));
 
 function viewStateFromPath(pathname) {
   if (isAboutPath(pathname)) return "about";
@@ -295,9 +306,14 @@ export default function SiteShell() {
           className="site-shell site-shell--scene-lock"
           style={{ background: themeColors.pageBg }}
         >
-          <audio ref={hoverSoundRef} preload="auto" src="/hover-pop.mp3" />
-          <audio ref={clickSoundRef} preload="auto" src="/folder-click.mp3" />
-          <audio ref={typingSoundRef} preload="auto" src="/typing-loop.mp3" loop />
+          <audio ref={hoverSoundRef} preload="metadata" src="/hover-pop.mp3" />
+          <audio ref={clickSoundRef} preload="metadata" src="/folder-click.mp3" />
+          <audio
+            ref={typingSoundRef}
+            preload="none"
+            src="/typing-loop.mp3"
+            loop
+          />
 
           <SharedLayout
             context={layoutContext}
@@ -312,56 +328,74 @@ export default function SiteShell() {
                 }`}
                 aria-hidden={!isLanding}
               >
-                <LandingPage />
+                {/* Keep Home mounted under project details so close can
+                    reveal the same scroll position without remounting. */}
+                {(isLanding || Boolean(projectIdFromPath(location.pathname))) && (
+                  <LandingPage />
+                )}
               </div>
 
-              <div
-                className={`app-content-layer app-content-layer--route app-content-layer--desk${
-                  isWorkspace ? " is-active" : ""
-                }`}
-                aria-hidden={!isWorkspace}
-              >
-                <DeskLayout style={workspaceStyle} isActive={isWorkspace}>
-                  <WorkspacePage
-                    environment={environment}
-                    isLampOn={isLampOn}
-                    onLampToggle={() => setIsLampOn((value) => !value)}
-                    isNight={sceneIsDark}
-                    isActive={isWorkspace}
-                  />
-                </DeskLayout>
-              </div>
+              {isWorkspace ? (
+                <div
+                  className="app-content-layer app-content-layer--route app-content-layer--desk is-active"
+                  aria-hidden={false}
+                >
+                  <DeskLayout style={workspaceStyle} isActive={isWorkspace}>
+                    <Suspense fallback={null}>
+                      <WorkspacePage
+                        environment={environment}
+                        isLampOn={isLampOn}
+                        onLampToggle={() => setIsLampOn((value) => !value)}
+                        isNight={sceneIsDark}
+                        isActive={isWorkspace}
+                      />
+                    </Suspense>
+                  </DeskLayout>
+                </div>
+              ) : null}
 
-              <div
-                className={`app-content-layer app-content-layer--route app-content-layer--history about-page${
-                  isDarkMode ? " about-page--dark" : ""
-                }${isAbout ? " is-active" : ""}`}
-                aria-hidden={!isAbout}
-              >
-                <VersionHistoryLayout>
-                  <AboutPage />
-                </VersionHistoryLayout>
-              </div>
+              {isAbout ? (
+                <div
+                  className={`app-content-layer app-content-layer--route app-content-layer--history about-page is-active${
+                    isDarkMode ? " about-page--dark" : ""
+                  }`}
+                  aria-hidden={false}
+                >
+                  <VersionHistoryLayout>
+                    <Suspense fallback={null}>
+                      <AboutPage />
+                    </Suspense>
+                  </VersionHistoryLayout>
+                </div>
+              ) : null}
 
-              <div
-                className={`app-content-layer app-content-layer--route app-content-layer--teaching${
-                  isTeaching ? " is-active" : ""
-                }`}
-                aria-hidden={!isTeaching}
-              >
-                <TeachingLayout>
-                  <TeachingPage />
-                </TeachingLayout>
-              </div>
+              {isTeaching ? (
+                <div
+                  className="app-content-layer app-content-layer--route app-content-layer--teaching is-active"
+                  aria-hidden={false}
+                >
+                  <TeachingLayout>
+                    <Suspense fallback={null}>
+                      <TeachingPage />
+                    </Suspense>
+                  </TeachingLayout>
+                </div>
+              ) : null}
 
-              <div
-                className={`app-content-layer app-content-layer--route app-content-layer--library${
-                  isLibrary ? " is-active" : ""
-                }`}
-                aria-hidden={!isLibrary}
-              >
-                <LibraryPage />
-              </div>
+              {/* Mount when the library view is active, or whenever a
+                  project route is open — detail portals from this page. */}
+              {isLibrary || Boolean(projectIdFromPath(location.pathname)) ? (
+                <div
+                  className={`app-content-layer app-content-layer--route app-content-layer--library${
+                    isLibrary ? " is-active" : ""
+                  }`}
+                  aria-hidden={!isLibrary}
+                >
+                  <Suspense fallback={null}>
+                    <LibraryPage />
+                  </Suspense>
+                </div>
+              ) : null}
             </div>
           </SharedLayout>
         </div>

@@ -398,28 +398,36 @@ export default function InteractiveWorkspace({
       contentClassName="desk-scene__viewport"
       style={{ "--desk-caption": palette.caption, "--desk-tooltip-text": palette.inkSoft }}
     >
-      <audio ref={matchaStirRef} preload="auto" src="/matcha-stir.mp3" />
-      <audio ref={lampToggleRef} preload="auto" src={soundSrc(WORKSPACE_SOUNDS.lampToggle)} />
-      <audio ref={pageFlipRef} preload="auto" src={soundSrc(WORKSPACE_SOUNDS.pageFlip)} />
+      <audio ref={matchaStirRef} preload="none" src="/matcha-stir.mp3" />
+      <audio
+        ref={lampToggleRef}
+        preload="metadata"
+        src={soundSrc(WORKSPACE_SOUNDS.lampToggle)}
+      />
+      <audio
+        ref={pageFlipRef}
+        preload="metadata"
+        src={soundSrc(WORKSPACE_SOUNDS.pageFlip)}
+      />
       <audio
         ref={cameraShutterRef}
-        preload="auto"
+        preload="metadata"
         src={soundSrc(WORKSPACE_SOUNDS.cameraShutter)}
       />
       <audio
         ref={clockTickRef}
-        preload="auto"
+        preload="none"
         src={soundSrc(WORKSPACE_SOUNDS.clockTick)}
         loop
       />
       <audio
         ref={plantDropsRef}
-        preload="auto"
+        preload="none"
         src={soundSrc(WORKSPACE_SOUNDS.plantDrops)}
       />
       <audio
         ref={natureRef}
-        preload="auto"
+        preload="none"
         src={soundSrc(WORKSPACE_SOUNDS.nature)}
         loop
       />

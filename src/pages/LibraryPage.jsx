@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSettings } from "../context/AppSettingsContext";
 import { useSidebarOverride } from "../context/SidebarOverrideContext";
 import HomeLayout from "../components/layouts/HomeLayout";
 import VibeProjectCard from "../components/caseStudies/VibeProjectCard";
 import SelectedWorkCard from "../components/caseStudies/SelectedWorkCard";
-import VibeProjectDetail from "../components/caseStudies/VibeProjectDetail";
 import {
   VIBE_PROJECTS,
   SELECTED_PROJECTS,
@@ -13,6 +12,10 @@ import {
 } from "../lib/caseStudies";
 import { HOME_PATH, projectIdFromPath } from "../lib/routes";
 import { PORTFOLIO_LINKS } from "../lib/links";
+
+const VibeProjectDetail = lazy(() =>
+  import("../components/caseStudies/VibeProjectDetail"),
+);
 
 // Projects with a native case-study detail at /<id>: vibe, selected with
 // native detail, and Research & Craft.
@@ -300,13 +303,15 @@ export default function LibraryPage({ embedded = false }) {
     <HomeLayout className="home-layout--library">
       {content}
       {displayedProject ? (
-        <VibeProjectDetail
-          project={displayedProject}
-          onCloseStart={handleDetailCloseStart}
-          onClosed={handleDetailClosed}
-          nextProject={nextProject}
-          onOpenNext={handleCardOpen}
-        />
+        <Suspense fallback={null}>
+          <VibeProjectDetail
+            project={displayedProject}
+            onCloseStart={handleDetailCloseStart}
+            onClosed={handleDetailClosed}
+            nextProject={nextProject}
+            onOpenNext={handleCardOpen}
+          />
+        </Suspense>
       ) : null}
     </HomeLayout>
   );

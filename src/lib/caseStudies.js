@@ -231,7 +231,7 @@ export const VIBE_PROJECTS = [
       "受 2023 年尾道毕业旅行启发的可交互网页：风、铃、愿望，都来自那个地方还留在记忆里的样子。",
     tags: ["Interactive Web", "Vibe Coded"],
     liveUrl: "https://qinlyismoon.github.io/onomichi-furin/",
-    thumbnail: "/onomichi-furin-thumb.gif",
+    thumbnail: "/onomichi-furin-thumb.jpg",
     // Contents-bar crop: just below the top — chime tops and strings
     // against the gold sky. Calm, no UI, no strip text, still
     // unmistakably the furin wall.
@@ -546,7 +546,9 @@ export const VIBE_PROJECTS = [
 // and the Notion case study, instead of linking straight out.
 export const SELECTED_PROJECTS = [
   {
-    id: "leaf-note",
+    // Detail route is /leaf-note-case so it does not collide with the
+    // live prototype at https://qinlyismoon.github.io/leaf-note/.
+    id: "leaf-note-case",
     title: "Leaf Note",
     subtitle: "Shared Plant Care · Coded Prototype",
     tagline: "Know when to water. Hand off the rest.",
@@ -597,7 +599,7 @@ export const SELECTED_PROJECTS = [
     liveLabelZh: "体验网站",
     // Screen recording of the live sample garden: ambient motion plus
     // hovering flowers to reveal each moment's feeling, time and duration.
-    thumbnail: "/emotion-garden-thumb.gif",
+    thumbnail: "/emotion-garden-thumb.jpg",
     // Contents-bar crop: the flower rows — the project's subject.
     // Mid-height, right end: flower heads over their stems, above the
     // busy timeline text at the bottom. The sun was rejected: it is
