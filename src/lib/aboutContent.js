@@ -6,6 +6,7 @@ import swim from "../assets/about/about-swim.jpg";
 import vr from "../assets/about/about-vr.jpg";
 import product from "../assets/about/about-product.jpg";
 import teaching from "../assets/about/about-teaching.jpg";
+import { PORTFOLIO_LINKS } from "./links";
 
 export const ABOUT_IMAGES = {
   portrait: "/Collage%20Portrait.png",
@@ -77,7 +78,18 @@ const ABOUT_PAGE_COPY = {
             id: "making",
             title: "Clarity comes from making",
             paragraphs: [
-              "When I have an idea, I start making right away: a sketch, an interactive prototype, a rough build in code. That is where my questions get answered. Emotion Garden—one project within my thesis research—went through more than a hundred versions before its visual language settled, and each version showed me what the next should change.",
+              [
+                {
+                  t: "When I have an idea, I start making right away: a sketch, an interactive prototype, a rough build in code. That is where my questions get answered. ",
+                },
+                {
+                  t: "Emotion Garden",
+                  href: PORTFOLIO_LINKS.emotionGarden,
+                },
+                {
+                  t: "—one project within my thesis research—went through more than a hundred versions before its visual language settled, and each version showed me what the next should change.",
+                },
+              ],
               "Working with AI speeds up the scaffolding — but only if I’m very clear about what I need. That bar is higher than it sounds: it asks more of how I communicate, how I research, and how tightly I hold the brief. Start unclear, and you go way off fast. Get clear first, and the frame goes up quickly; the detail still takes time. I’m the kind of person who stays with those details — I’ll spend the extra hours until the polish holds.",
               "Put together, it becomes a loop:",
             ],
@@ -165,7 +177,18 @@ const ABOUT_PAGE_COPY = {
             id: "making",
             title: "在做的过程中找到清晰",
             paragraphs: [
-              "有了想法，我会马上动手：一张草图、一个可交互的原型、一个用代码搭的粗糙版本。疑问常常是在做的过程中才有答案。Emotion Garden——论文研究里的一个项目——改了一百多个版本，才找到自己的视觉语言，每一版都告诉我下一版该改什么。",
+              [
+                {
+                  t: "有了想法，我会马上动手：一张草图、一个可交互的原型、一个用代码搭的粗糙版本。疑问常常是在做的过程中才有答案。",
+                },
+                {
+                  t: "Emotion Garden",
+                  href: PORTFOLIO_LINKS.emotionGarden,
+                },
+                {
+                  t: "——论文研究里的一个项目——改了一百多个版本，才找到自己的视觉语言，每一版都告诉我下一版该改什么。",
+                },
+              ],
               "和 AI 一起工作，能更快搭起基础框架——但前提是你非常清楚自己要什么。这个要求其实更严：对沟通、表达、调研，以及对问题本身的把握，都不能含糊。一开始不清楚，就很容易越走越偏；先弄清楚，框架会很快立起来，细节却仍要继续扣。我就是那种会在细节上多花时间的人——打磨到站得住为止。",
               "把这些放在一起，就是一个循环：",
             ],

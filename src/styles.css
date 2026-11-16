@@ -158,6 +158,10 @@ body {
      Theme-aware: never hardcode a raw black/white for text. */
   --color-text-strong: #000000;
   --color-text-secondary: #6f6f6b;
+  /* Descriptive body copy (page notes, section notes, card and tile
+     descriptions) — one gray site-wide. Long-form article text stays
+     --color-text. Resolves per theme through --color-text-secondary. */
+  --color-text-description: var(--color-text-secondary);
   --color-divider: #d6d6d4;
   --color-accent: #526b61;
   /* Soft floating project cards — neutral elevation above the ambient wash */
@@ -7327,7 +7331,8 @@ body {
 .case-studies__section-note {
   font-family: var(--font-reading);
   font-size: var(--type-body);
-  color: var(--color-text-secondary);
+  line-height: 1.55;
+  color: var(--color-text-description);
   margin: 0 0 var(--space-2);
   max-width: none;
   width: 100%;
@@ -7496,7 +7501,7 @@ body {
   font-family: var(--font-reading);
   font-size: var(--type-caption);
   line-height: 1.6;
-  color: var(--color-text-secondary);
+  color: var(--color-text-description);
   margin: 0 0 var(--space-2);
 }
 
@@ -8086,7 +8091,7 @@ body[data-project-detail="open"] .app-content-layer {
   font-size: var(--type-body);
   line-height: var(--reading-line-height, 1.65);
   letter-spacing: var(--reading-letter-spacing, normal);
-  color: var(--color-text);
+  color: var(--color-text-description);
 }
 
 .vibe-detail__intro .vibe-detail__title,
@@ -8756,10 +8761,10 @@ body[data-project-detail="open"] .app-content-layer {
   display: grid;
   gap: 0.45em;
   font-family: var(--font-reading);
-  font-size: var(--type-reading);
-  line-height: var(--reading-line-height);
-  letter-spacing: var(--reading-letter-spacing);
-  color: var(--color-reading, var(--color-text));
+  font-size: var(--type-body);
+  line-height: var(--reading-line-height, 1.65);
+  letter-spacing: var(--reading-letter-spacing, normal);
+  color: var(--color-text-description);
 }
 
 .case-study__list--ordered {
@@ -8874,14 +8879,24 @@ body[data-project-detail="open"] .app-content-layer {
   margin-top: 0;
 }
 
-.case-study__figures + .case-study__table-wrap,
-.case-study__table-wrap + .vibe-detail__quote--closing,
-.case-study__figures + .vibe-detail__quote--closing {
+.case-study__figures + .case-study__table-wrap {
   margin-top: var(--space-5);
 }
 
-.vibe-detail__quote--closing {
-  margin-top: var(--space-5);
+/* How-might-we / closing pull: one clear beat after whatever precedes it —
+   prose, list, media, or a titled item. Never the tight paragraph gap. */
+.vibe-detail__quote--closing,
+.vibe-detail__section dd + .vibe-detail__quote--closing,
+.case-study__list + .vibe-detail__quote--closing,
+.case-study__decision + .vibe-detail__quote--closing,
+.case-study__table-wrap + .vibe-detail__quote--closing,
+.case-study__figures + .vibe-detail__quote--closing,
+.case-study__figure + .vibe-detail__quote--closing,
+.case-study__screens-wrap + .vibe-detail__quote--closing,
+.case-study__videos + .vibe-detail__quote--closing,
+.flow-media-rail + .vibe-detail__quote--closing,
+.case-study__widget + .vibe-detail__quote--closing {
+  margin-top: var(--space-8);
 }
 
 .case-study__videos {
@@ -8963,7 +8978,7 @@ body[data-project-detail="open"] .app-content-layer {
   margin: var(--space-6) 0 0;
 }
 
-/* Copy / list → any media block: one shared breath across case studies. */
+/* Copy / list / titled item → any media block: one shared breath. */
 .vibe-detail__section > .case-study__figure,
 .vibe-detail__section > .case-study__figures,
 .vibe-detail__section > .case-study__screens-wrap,
@@ -8976,7 +8991,14 @@ body[data-project-detail="open"] .app-content-layer {
 .case-study__list + .case-study__figures,
 .case-study__list + .flow-media-rail,
 .case-study__list + .case-study__videos,
-.case-study__list + .case-study__widget {
+.case-study__list + .case-study__widget,
+.case-study__decision + .case-study__screens-wrap,
+.case-study__decision + .case-study__figures,
+.case-study__decision + .case-study__figure,
+.case-study__decision + .flow-media-rail,
+.case-study__decision + .case-study__videos,
+.case-study__decision + .case-study__widget,
+.case-study__decision + .case-study__table-wrap {
   margin-top: var(--space-6);
 }
 
@@ -9077,6 +9099,22 @@ body[data-project-detail="open"] .app-content-layer {
 .flow-media-rail--boards .flow-media-rail__card {
   flex: 0 0 min(28rem, 78cqi);
   width: min(28rem, 78cqi);
+}
+
+/* Short sets that fit in one view — no peek, no edge fade, no scroll. */
+.flow-media-rail--fit .flow-media-rail__scroller {
+  overflow-x: hidden;
+  scroll-snap-type: none;
+}
+
+.flow-media-rail--fit .flow-media-rail__track {
+  width: 100%;
+}
+
+.flow-media-rail--fit.flow-media-rail--screens .flow-media-rail__card {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
 }
 
 .flow-media-rail__fade {
@@ -9252,37 +9290,40 @@ body[data-project-detail="open"] .app-content-layer {
   background: transparent;
 }
 
-.case-study__decision {
-  margin-top: var(--space-8);
-}
-
-.case-study__decision:first-of-type {
-  margin-top: 0;
-}
-
-/* One item rhythm for every generic section: an item earns the
-   same --space-5 before its title wherever it starts — after body
-   copy, after the section figure, or after another item — so a
-   captioned figure never hands its heading a collapsed gap while
-   later items sit a chasm away. (Swim's hand-written sections,
-   .case-study__section, keep their own rhythm; this scope never
-   matches them.) */
+/* Case-study vertical rhythm (every project detail):
+     prose ↔ prose     → --space-2
+     titled item       → --space-5  (after prose, media, or prior item)
+     copy ↔ media      → --space-6
+     pull / HMW quote  → --space-8
+   Swim’s hand-written .case-study__section keeps its own rhythm. */
 .vibe-detail__section .case-study__decision {
   margin-top: var(--space-5);
 }
 
-/* Paragraphs inside a generic section are separate blocks, not
-   one continuous run: a --space-2 beat between them keeps
-   consecutive paragraphs reading as paragraphs. Screens / widgets
-   are excluded — they use the shared copy→media beat, otherwise
-   this rule (higher specificity) collapses them to --space-2. */
-.vibe-detail__section dd + dd:not(.case-study__screens-wrap):not(.case-study__widget) {
+.vibe-detail__section .case-study__decision:first-of-type {
+  margin-top: var(--space-5);
+}
+
+/* Paragraphs are separate blocks. Media / facts / pull quotes are
+   excluded — they keep the media or pull beat, not --space-2. */
+.vibe-detail__section dd + dd:not(.case-study__screens-wrap):not(.case-study__widget):not(.case-study__facts-wrap):not(.vibe-detail__quote--closing) {
   margin-top: var(--space-2);
 }
 
 .vibe-detail__section dd + .case-study__screens-wrap,
-.vibe-detail__section dd + .case-study__widget {
+.vibe-detail__section dd + .case-study__widget,
+.vibe-detail__section dd + .case-study__facts-wrap {
   margin-top: var(--space-6);
+}
+
+/* Media → titled item uses the item beat (not a collapsed gap). */
+.vibe-detail__section > .case-study__figure + .case-study__decision,
+.vibe-detail__section > .case-study__figures + .case-study__decision,
+.vibe-detail__section > .case-study__screens-wrap + .case-study__decision,
+.vibe-detail__section > .flow-media-rail + .case-study__decision,
+.vibe-detail__section > .case-study__videos + .case-study__decision,
+.vibe-detail__section > .case-study__table-wrap + .case-study__decision {
+  margin-top: var(--space-5);
 }
 
 @media (max-width: 720px) {
@@ -10165,7 +10206,7 @@ body:not([data-page="home"]) .editorial-thread {
 }
 
 .case-study__decision h4 {
-  margin: 0 0 var(--space-1);
+  margin: 0 0 var(--space-2);
   font-family: var(--font-ui);
   font-size: var(--type-body);
   font-weight: var(--weight-medium);
@@ -11306,4 +11347,26 @@ body:not([data-page="home"]) .editorial-thread {
 
 .vibe-detail__main .mm-moves__layer.is-on {
   visibility: visible;
+}
+
+/* --------------------------------------------------------------------------
+   Case-study detail — body copy uses the shared description gray, same as
+   Projects / Teaching / Home. Headings, pull quotes and table headers stay
+   in --color-text so the hierarchy still reads.
+   -------------------------------------------------------------------------- */
+.case-study__section p,
+.case-study__table td,
+.case-study__fact dd {
+  color: var(--color-text-description);
+}
+
+.vibe-detail__main :is(dd, p, blockquote).vibe-detail__quote,
+.vibe-detail__main .vibe-detail__chapter-sections dd.vibe-detail__quote,
+.vibe-detail__main .vibe-detail__sections > dd.vibe-detail__quote,
+.vibe-detail__main .vibe-detail__quote p,
+.vibe-detail__main .case-study__table-caption,
+.vibe-detail__main .mm-flow__label,
+.vibe-detail__main .mm-moves__title,
+.case-study__table th {
+  color: var(--color-text);
 }

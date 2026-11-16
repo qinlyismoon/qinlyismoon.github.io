@@ -12,8 +12,12 @@ export const HOME_BENTO_COPY = {
     ],
     aboutTitle: "about",
     aboutMore: "more about me",
-    aboutLead:
-      "I make complex problems clear and actionable — then build them into something people can try.",
+    aboutLead: [
+      {
+        t: "I make complex problems clear and actionable — then build them into something people can try.",
+        strong: true,
+      },
+    ],
     aboutBody: [
       [
         { t: "I come from an engineering background. Currently an MFA student in Design at " },
@@ -21,13 +25,22 @@ export const HOME_BENTO_COPY = {
           t: "The Ohio State University",
           href: "https://design.osu.edu/",
         },
+        { t: ". I " },
         {
-          t: ". I design and build interactive products for messy problems, and this year I’ve also been a product design intern at ",
+          t: "design and build interactive products for messy problems",
+          strong: true,
         },
+        { t: ", and this year I’ve also been a product design intern at " },
         { t: "fAIshion", href: "https://faishion.ai/en" },
         { t: "." },
       ],
-      "Before that I worked in HCI research and other product internships. I also teach as a Graduate Teaching Associate — listening, taking another person’s standpoint, and figuring out how to explain.",
+      [
+        { t: "Before that I worked in " },
+        { t: "HCI research", strong: true },
+        {
+          t: " and other product internships. I also teach as a Graduate Teaching Associate — listening, taking another person’s standpoint, and figuring out how to explain.",
+        },
+      ],
       "I’m also drawn to where physical and digital meet — XR interaction, and research along that edge. Spatial complexity opens a lot of interesting ground: how bodies, places, and screens talk to each other.",
     ],
     experienceTitle: "Experience",
@@ -122,8 +135,12 @@ export const HOME_BENTO_COPY = {
     ],
     aboutTitle: "关于",
     aboutMore: "了解更多",
-    aboutLead:
-      "让复杂变得清晰、可行动，再做成别人能上手试的东西。",
+    aboutLead: [
+      {
+        t: "让复杂变得清晰、可行动，再做成别人能上手试的东西。",
+        strong: true,
+      },
+    ],
     aboutBody: [
       [
         { t: "我是工程背景。目前在" },
@@ -131,13 +148,22 @@ export const HOME_BENTO_COPY = {
           t: "俄亥俄州立大学设计系",
           href: "https://design.osu.edu/",
         },
+        { t: "读 MFA。" },
         {
-          t: "读 MFA。做交互产品，对付乱七八糟的真问题；今年也在 ",
+          t: "做交互产品，对付乱七八糟的真问题",
+          strong: true,
         },
+        { t: "；今年也在 " },
         { t: "fAIshion", href: "https://faishion.ai/en" },
         { t: " 做产品设计实习。" },
       ],
-      "以前做过 HCI 研究和产品实习，现在也当研究生助教——学会听、换位想，也学会怎么讲清楚。",
+      [
+        { t: "以前做过 " },
+        { t: "HCI 研究", strong: true },
+        {
+          t: "和产品实习，现在也当研究生助教——学会听、换位想，也学会怎么讲清楚。",
+        },
+      ],
       "我也对物理与数字交界的交互感兴趣，做过一些 XR 交互和研究。空间一复杂，就多出很多有趣的地带——身体、场所和屏幕怎样互相说话。",
     ],
     experienceTitle: "经历",

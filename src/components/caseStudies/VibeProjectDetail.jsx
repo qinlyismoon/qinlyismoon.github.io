@@ -752,7 +752,16 @@ function DetailSection({ section, index }) {
         <dd className="case-study__screens-wrap">
           <FlowMediaRail
             className="flow-media-rail--screens"
-            label={isZh ? "滑动查看流程截图" : "Scroll through the flow"}
+            fit={section.screensLayout === "fit"}
+            label={
+              section.screensLayout === "fit"
+                ? isZh
+                  ? "流程截图"
+                  : "Flow screens"
+                : isZh
+                  ? "滑动查看流程截图"
+                  : "Scroll through the flow"
+            }
           >
             {section.screens.map((screen, screenIndex) => {
               const caption = stripScreenIndex(screen.caption);

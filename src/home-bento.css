@@ -335,7 +335,7 @@
   margin: 0;
   max-width: none;
   width: 100%;
-  color: var(--color-text);
+  color: var(--color-text-description);
   font-family: var(--font-reading);
   font-size: 1rem;
   font-weight: 400;
@@ -449,7 +449,12 @@
   font-weight: 400;
   line-height: var(--reading-line-height, 1.62);
   letter-spacing: var(--reading-letter-spacing, -0.01em);
-  color: var(--color-text);
+  color: var(--color-text-description);
+}
+
+.home-about-tile__body--lead,
+.home-about-tile__strong {
+  color: var(--color-text-strong);
 }
 
 .home-about-tile__body:last-child {
@@ -1937,12 +1942,14 @@
   letter-spacing: -0.03em;
 }
 
+/* Page / section prose outside cards — one size. Inside tiles/files use
+   --type-caption so the block reads quieter than the page voice. */
 .projects-page__note {
   margin: 0;
-  color: var(--color-text-secondary);
+  color: var(--color-text-description);
   font-family: var(--font-reading);
-  font-size: 0.95rem;
-  line-height: 1.5;
+  font-size: var(--type-body);
+  line-height: 1.55;
 }
 
 .shared-layout--v3 .case-studies__section-title {
@@ -1956,6 +1963,9 @@
 .shared-layout--v3 .case-studies__section-note,
 .shared-layout--v3 .projects-page__note {
   font-family: var(--font-reading);
+  font-size: var(--type-body);
+  line-height: 1.55;
+  color: var(--color-text-description);
   max-width: none;
   width: 100%;
 }
@@ -2062,11 +2072,7 @@
 }
 
 .shared-layout--v3 .teaching-prose > p,
-.shared-layout--v3 .teaching-principles__description,
-.shared-layout--v3 .teaching-course__focus,
-.shared-layout--v3 .teaching-list,
-.shared-layout--v3 .teaching-work__body > p,
-.shared-layout--v3 .teaching-reflection p:not(.teaching-label) {
+.shared-layout--v3 .teaching-principles__description {
   max-width: none;
   font-size: 1rem;
   line-height: var(--reading-line-height);

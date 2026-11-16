@@ -13,4 +13,5 @@ export const PORTFOLIO_LINKS = {
   portfolio: "https://qinlyismoon.github.io/",
   osuDesign: "https://design.osu.edu/",
   faishion: "https://faishion.ai/en",
+  emotionGarden: "https://emotion-garden-sooty.vercel.app/",
 };

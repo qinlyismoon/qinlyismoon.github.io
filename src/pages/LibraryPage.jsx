@@ -118,7 +118,7 @@ const LABELS = {
       "Still a student, still stretching. From an AI fashion color-analysis internship and shared plant-care handoffs, to money goals that stay readable when plans change—then research, craft, and vibe-coded experiments you can open and try.",
     caseStudies: "Digital product design",
     caseStudiesNote:
-      "Internship and 0→1 product work—flows you can poke at, not only decks.",
+      "Internship and 0→1 product work—flows you can poke at.",
     researchCraft: "Research & Craft",
     researchCraftNote:
       "Co-design with people on one side; procedural motion in Houdini on the other.",
@@ -131,7 +131,7 @@ const LABELS = {
     pageNote:
       "还在学，也还在长。从 AI 时尚色彩测试实习、共享照料交接，到计划一变仍能看懂的存钱目标；再到研究、制作，以及能打开玩的 vibe coding 小实验。",
     caseStudies: "数字产品设计",
-    caseStudiesNote: "实习与 0→1 产品：能上手戳的流程，不只是提案页。",
+    caseStudiesNote: "实习与 0→1 产品：能上手戳的流程。",
     researchCraft: "研究与制作",
     researchCraftNote: "一边和人共创，一边在 Houdini 里做程序化运动。",
     vibeCoding: "Vibe Coding",

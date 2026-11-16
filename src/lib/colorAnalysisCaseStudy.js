@@ -146,6 +146,7 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS = [
     paragraphs: [
       "This step went through the most versions. Each one tried to get closer to sitting in front of a real drape: first a color block beside a cut-out face, then color filling the frame around the photo, then a full screen with a where-to-look guide and swatch buttons. I also tried a generated portrait with the drape color swapped in, and a drape-colored light laid over the photo. All of these were still pictures of a face.",
     ],
+    screensLayout: "fit",
     screens: [
       scr("evo-1-cutout", "V1 · A color block beside a cut-out face; tap a swatch"),
       scr("evo-2-fullframe", "V2 · Color fills the frame around the photo"),
@@ -316,6 +317,7 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS_ZH = [
     paragraphs: [
       "这一步迭代的版本最多，每一版都想更接近真的坐在色布前：最早是抠出的脸旁边一块颜色，然后让颜色铺满照片周围，再到整屏界面加上观察指引和色块按钮。我也试过根据用户照片生成人像再换成色布色，以及在照片上叠加和色布同色的光。这些看到的都还是一张静态的脸。",
     ],
+    screensLayout: "fit",
     screens: [
       scr("evo-1-cutout", "V1 · 抠出的脸旁边一块颜色，点击色块选择"),
       scr("evo-2-fullframe", "V2 · 颜色铺满照片周围"),

@@ -6,25 +6,36 @@ import headshot from "../../assets/about/professional-headshot.jpg";
 
 function AboutRichText({ parts }) {
   if (typeof parts === "string") return parts;
-  return parts.map((part, index) =>
-    part.href ? (
-      <a
-        key={`${part.t}-${index}`}
-        className="site-text-link"
-        href={part.href}
-        target="_blank"
-        rel="noreferrer"
-      >
+  return parts.map((part, index) => {
+    const className = [
+      part.href ? "site-text-link" : null,
+      part.strong ? "home-about-tile__strong" : null,
+    ]
+      .filter(Boolean)
+      .join(" ");
+    if (part.href) {
+      return (
+        <a
+          key={`${part.t}-${index}`}
+          className={className}
+          href={part.href}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {part.t}
+          <span className="external-arrow" aria-hidden="true">
+            {" "}
+            ↗︎
+          </span>
+        </a>
+      );
+    }
+    return (
+      <span key={`${part.t}-${index}`} className={className || undefined}>
         {part.t}
-        <span className="external-arrow" aria-hidden="true">
-          {" "}
-          ↗︎
-        </span>
-      </a>
-    ) : (
-      <span key={`${part.t}-${index}`}>{part.t}</span>
-    ),
-  );
+      </span>
+    );
+  });
 }
 
 export default function HomeAboutTile({ copy, onMore }) {
@@ -60,7 +71,9 @@ export default function HomeAboutTile({ copy, onMore }) {
           </figure>
         )}
         {copy.aboutLead ? (
-          <p className="home-about-tile__body">{copy.aboutLead}</p>
+          <p className="home-about-tile__body home-about-tile__body--lead">
+            <AboutRichText parts={copy.aboutLead} />
+          </p>
         ) : null}
         {copy.aboutBody.map((paragraph, index) => (
           <p key={index} className="home-about-tile__body">

@@ -2,18 +2,20 @@ import { useEffect, useRef } from "react";
 
 /**
  * Horizontal rail for a multi-step flow (screens, boards).
- * Peeks the next frame and shows a quiet scrollbar only while moving,
- * so a short visible set never reads as “that’s all there is.”
+ * Default: peeks the next frame so a long sequence never reads as complete.
+ * `fit`: every frame is visible — no scroll cue, no edge fade.
  */
 export default function FlowMediaRail({
   children,
   className = "",
   label,
+  fit = false,
 }) {
   const scrollerRef = useRef(null);
   const idleRef = useRef(null);
 
   useEffect(() => {
+    if (fit) return undefined;
     const scroller = scrollerRef.current;
     if (!scroller) return undefined;
     const onScroll = () => {
@@ -28,19 +30,21 @@ export default function FlowMediaRail({
       scroller.removeEventListener("scroll", onScroll);
       window.clearTimeout(idleRef.current);
     };
-  }, []);
+  }, [fit]);
 
   return (
-    <div className={`flow-media-rail ${className}`.trim()}>
+    <div
+      className={`flow-media-rail${fit ? " flow-media-rail--fit" : ""} ${className}`.trim()}
+    >
       <div
         ref={scrollerRef}
         className="flow-media-rail__scroller"
-        tabIndex={0}
+        tabIndex={fit ? undefined : 0}
         aria-label={label}
       >
         <div className="flow-media-rail__track">{children}</div>
       </div>
-      <div className="flow-media-rail__fade" aria-hidden="true" />
+      {fit ? null : <div className="flow-media-rail__fade" aria-hidden="true" />}
     </div>
   );
 }

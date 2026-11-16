@@ -1,18 +1,8 @@
 /* ---------------------------------------------------------------------------
- * Teaching page.
- *
- * Same document frame as About: route layer owns top offset / gutters,
- * `.teaching-layout` is the scroll surface. Type follows the site roles
- * (Settings → Type fills the faces — never hardcode serif/sans here):
- *   Display  --font-display · page + section + course titles
- *   Reading  --font-reading · all running text (+ voice rhythm tokens)
- *   UI       --font-ui · labels, kickers, principle/work subheads
- * Subheads stay body-sized UI medium (face/weight change, size does not).
- * Official course copy vs my role differ by color only. Exception: Caveat
- * on the thread. Structure from type and space, not rules.
+ * Teaching page — bubble board (same surface language as home bento).
+ * Soft tiles, quiet kickers, courses expand in place.
  * ------------------------------------------------------------------------- */
 
-/* --- Route layer + scroll surface ------------------------------------------ */
 .app-content-layer--teaching {
   padding: var(--page-shell-top) var(--viewport-page-padding)
     var(--viewport-page-padding) 0;
@@ -37,245 +27,502 @@
   display: none;
 }
 
-/* --- Page column ------------------------------------------------------------- */
+/* --- Page ------------------------------------------------------------------
+ * Header, section titles and notes come from the Projects page classes
+ * (.projects-page*, .case-studies__section*), so position, scale and color
+ * match by construction. Only Teaching-specific parts are styled here.
+ * ------------------------------------------------------------------------- */
 .teaching-page {
   container: teaching / inline-size;
-  width: 100%;
-  max-width: var(--content-max-width);
+  /* Same hover vocabulary as the Home bento tiles. */
+  --tile-hover-edge: color-mix(in srgb, var(--color-text) 10%, transparent);
+  --tile-hover-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  --tile-hover-bg: color-mix(in srgb, var(--color-surface) 88%, #fff);
+}
+
+.teaching-section .case-studies__section-note {
+  margin-bottom: var(--space-3);
+}
+
+/* --- Approach: principles as a card file ----------------------------------
+ * Tabs stay fully visible above the panel (never buried). Active tab + face
+ * share one fill; panel top is flat under the tab row, radius only on the
+ * free corners. Back layers peek only along the bottom — no side inset, so
+ * they don’t read as extra vertical tabs.
+ * ------------------------------------------------------------------------- */
+.teaching-file {
+  --file-radius: 1rem;
+  --file-tab-radius: 0.7rem;
+  --file-tab-h: 2.4rem;
+  --file-peek: 0.34rem;
+  --file-face: var(--color-surface);
+  --file-back: color-mix(in srgb, var(--color-text) 9%, var(--color-surface));
+  display: grid;
+  padding-bottom: calc(var(--file-peek) * (var(--file-count, 3) - 1));
+}
+
+.teaching-file__tabs {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 0.25rem;
   margin: 0;
-  padding: var(--space-8) 0 var(--section-space);
+  padding: 0;
 }
 
-.teaching-section {
-  scroll-margin-top: var(--space-3);
-}
-
-.teaching-section + .teaching-section {
-  margin-top: var(--section-space);
-}
-
-/* --- Type roles ------------------------------------------------------------------ */
-
-/* Body: every paragraph and list item on the page. */
-.teaching-prose > p,
-.teaching-principles__description,
-.teaching-course__focus,
-.teaching-list,
-.teaching-work__body > p,
-.teaching-reflection p:not(.teaching-label) {
-  max-width: var(--content-max-width);
+.teaching-file__tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  /* Equal share of the tab row — labels ellipsis if they run long. */
+  flex: 1 1 0%;
+  width: 0;
+  min-width: 0;
+  max-width: none;
+  height: calc(var(--file-tab-h) - 0.2rem);
   margin: 0;
-  font-family: var(--font-reading);
-  font-size: 1rem;
-  font-weight: 400;
-  font-style: normal;
-  line-height: var(--reading-line-height);
-  letter-spacing: var(--reading-letter-spacing);
+  padding: 0 0.9rem;
+  border: 0;
+  border-radius: var(--file-tab-radius) var(--file-tab-radius) 0 0;
+  background: var(--file-back);
+  color: var(--color-text-secondary);
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    height 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 220ms ease,
+    color 220ms ease;
+}
+
+.teaching-file__tab:hover {
   color: var(--color-text);
+  background: color-mix(in srgb, var(--color-text) 5%, var(--file-back));
 }
 
-/* Subheads: body size, UI medium — not display headings. */
-.teaching-principles__title,
-.teaching-work__title {
-  margin: 0;
+.teaching-file__tab.is-active {
+  height: var(--file-tab-h);
+  background: var(--file-face);
+  color: var(--color-text);
+  /* Cover the panel’s top edge so tab + face read as one piece. */
+  margin-bottom: -2px;
+  padding-bottom: 2px;
+}
+
+.teaching-file__tab:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: -2px;
+}
+
+.teaching-file__tab-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.teaching-file__stack {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  margin-top: -1px;
+}
+
+.teaching-file__card {
+  grid-area: 1 / 1;
+  z-index: calc(10 - var(--depth));
+  min-width: 0;
+  border: 0;
+  /* Same corner recipe as the front face so nothing peeks through the
+     top-right curve as a vertical sliver. */
+  border-radius: 0 var(--file-radius) var(--file-radius) var(--file-radius);
+  background: color-mix(
+    in srgb,
+    var(--color-text) calc(5% + var(--depth) * 2%),
+    var(--color-surface)
+  );
+  /* Bottom peek only. */
+  transform: translateY(calc(var(--file-peek) * var(--depth)));
+  box-shadow: none;
+  pointer-events: none;
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.teaching-file__card.is-active {
+  background: var(--file-face);
+  pointer-events: auto;
+}
+
+.teaching-file__card.is-active:hover,
+.teaching-file__card.is-active:focus-within {
+  background: var(--tile-hover-bg);
+  box-shadow: var(--tile-hover-shadow);
+}
+
+.teaching-file:has(.teaching-file__card.is-active:hover) .teaching-file__tab.is-active,
+.teaching-file:has(.teaching-file__card.is-active:focus-within) .teaching-file__tab.is-active {
+  background: var(--tile-hover-bg);
+}
+
+.teaching-file__content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1.2rem 1.35rem 1.1rem;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.teaching-file__card.is-active .teaching-file__content {
+  opacity: 1;
+  transition: opacity 320ms ease 120ms;
+}
+
+.teaching-file__title {
+  margin: 0 0 0.4rem;
   font-family: var(--font-ui);
   font-size: 1rem;
-  font-weight: var(--weight-medium);
-  line-height: 1.4;
+  font-weight: var(--weight-medium, 500);
   letter-spacing: -0.01em;
   color: var(--color-text);
 }
 
-/* Label: every piece of metadata. */
-.teaching-section__kicker,
-.teaching-section__note,
-.teaching-meta,
-.teaching-label,
-.teaching-caption,
-.teaching-arc__label,
-.teaching-arc__text {
+.teaching-file__text {
   margin: 0;
-  font-family: var(--font-ui);
+  max-width: 38rem;
+  /* Inside the file — one step quieter than page / section prose. */
+  font-family: var(--font-reading);
   font-size: var(--type-caption);
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  line-height: 1.5;
-  color: var(--color-text-secondary);
+  line-height: 1.6;
+  color: var(--color-text-description);
 }
 
-/* --- Section header ------------------------------------------------------------ */
-.teaching-section__kicker {
+.teaching-file__footer {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-1);
-  margin-bottom: var(--space-2);
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1.1rem;
 }
 
-.teaching-section__index,
-.teaching-principles__index,
-.teaching-arc__index {
-  color: var(--color-accent);
-}
-
-.teaching-section__slash {
-  color: var(--color-divider);
-}
-
-.teaching-section__title {
+.teaching-file__evidence,
+.teaching-file__next {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.35rem, 2.2vw, 1.65rem);
-  font-weight: var(--weight-reading-title);
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.teaching-file__evidence-kicker {
+  color: var(--color-text-secondary);
+  font-weight: 400;
+}
+
+.teaching-file__evidence .teaching-course__chevron {
+  transform: rotate(-90deg);
+}
+
+.teaching-file__evidence:hover .teaching-course__chevron,
+.teaching-file__evidence:focus-visible .teaching-course__chevron {
+  transform: rotate(-90deg) translateY(2px);
+}
+
+.teaching-file__next {
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  transition: color 200ms ease;
+}
+
+.teaching-file__next span {
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.teaching-file__next:hover {
   color: var(--color-text);
 }
 
-.teaching-section--intro .teaching-section__title {
-  font-size: clamp(1.65rem, 3vw, 2.1rem);
-  line-height: 1.15;
-  letter-spacing: -0.03em;
+.teaching-file__next:hover span {
+  transform: translateX(2px);
 }
 
-.teaching-section__note {
-  margin-top: var(--space-1);
+.teaching-file__evidence:focus-visible,
+.teaching-file__next:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 0.25rem;
 }
 
-/* --- Prose ------------------------------------------------------------------------ */
-.teaching-prose {
-  margin-top: var(--space-5);
-}
-
-.teaching-prose > p + p {
-  margin-top: var(--space-3);
-}
-
-/* --- Figures ---------------------------------------------------------------------- */
-.teaching-figure {
-  margin: 0;
-}
-
-.teaching-figure__frame {
-  overflow: hidden;
-  background: var(--color-surface);
-  border: 1px solid var(--color-divider);
-  border-radius: 8px;
-}
-
-.teaching-figure__frame img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.teaching-caption {
-  margin-top: var(--space-1);
-}
-
-/* --- Hand-drawn voice ------------------------------------------------------------ */
-/* The thread reuses the Home editorial thread's stroke, curve and breathing
-   (`.editorial-thread__line` in styles.css); only placement is local. */
-.teaching-thread {
-  position: relative;
-  height: clamp(var(--space-6), 7vh, var(--space-8));
-  margin: var(--space-8) 0;
-  pointer-events: none;
-}
-
-.teaching-thread__note {
-  position: absolute;
-  left: 72%;
-  top: 0.2rem;
-  color: color-mix(in srgb, var(--color-accent) 62%, transparent);
-  font-family: "Caveat", cursive;
-  font-size: 1.0625rem;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  line-height: 1;
-  white-space: nowrap;
-  transform: rotate(-1.5deg);
-}
-
-/* --- 02 Principles: stacked, so descriptions read at body size ------------------ */
-.teaching-principles {
+/* --- Courses: lifted cards that open downward ----------------------------- */
+.teaching-course-list {
   display: grid;
-  gap: var(--space-5);
-  margin: var(--space-6) 0 0;
-  padding: 0;
-  list-style: none;
+  gap: 0.9rem;
 }
 
-.teaching-principles__index {
-  display: inline-block;
-  width: 2.5rem;
-  font-family: var(--font-ui);
-  font-size: var(--type-caption);
-  font-weight: 500;
-  letter-spacing: 0.01em;
-}
-
-.teaching-principles__description {
-  margin-top: calc(var(--space-1) / 2);
-  padding-left: 2.5rem;
-}
-
-/* --- 03 Courses ------------------------------------------------------------------- */
-.teaching-courses {
-  display: grid;
-  gap: var(--space-12);
-  margin-top: var(--space-8);
-}
-
+/* Flat at rest like Home tiles; hover draws the edge and the soft lift. */
 .teaching-course {
-  scroll-margin-top: var(--space-3);
+  scroll-margin-top: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid transparent;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: none;
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease;
+}
+
+.teaching-course:hover,
+.teaching-course:focus-within,
+.teaching-course.is-open {
+  border-color: var(--tile-hover-edge);
+  box-shadow: var(--tile-hover-shadow);
+  background: var(--tile-hover-bg);
+}
+
+.teaching-course__hit {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: 0.85rem 1.15rem 0.85rem 0.85rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.teaching-course__hit:disabled {
+  cursor: default;
+}
+
+.teaching-course__hit:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+  border-radius: 1rem;
+}
+
+.teaching-course__thumb {
+  display: block;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 0.7rem;
+  object-fit: cover;
+  background: color-mix(in srgb, var(--color-text) 6%, #fff);
+  transform-origin: 50% 70%;
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Same tilt as the Home teaching tile thumbnail. */
+.teaching-course__hit:not(:disabled):hover .teaching-course__thumb,
+.teaching-course__hit:focus-visible .teaching-course__thumb {
+  transform: rotate(-5deg) translateY(-0.08rem);
+}
+
+.teaching-course__thumb--empty {
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--color-text) 6%, var(--color-surface));
+  color: var(--color-text-secondary);
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.teaching-course__copy {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
 }
 
 .teaching-course__title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.25rem, 1.9vw, 1.5rem);
-  font-weight: var(--weight-reading-title);
-  line-height: 1.25;
-  letter-spacing: -0.02em;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: var(--weight-medium, 500);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
   color: var(--color-text);
 }
 
-.teaching-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  margin-top: calc(var(--space-1) / 2);
-}
-
-.teaching-meta > * + *::before {
-  content: "·";
-  padding: 0 var(--space-1);
-  opacity: 0.6;
-}
-
-/* Official course content: body voice in secondary ink. */
 .teaching-course__focus {
-  margin-top: var(--space-3);
+  font-family: var(--font-reading);
+  font-size: var(--type-caption);
+  line-height: 1.6;
+  color: var(--color-text-description);
+}
+
+.teaching-course__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  align-self: end;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  transform-origin: right center;
+  transition:
+    color 0.25s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.teaching-course:hover .teaching-course__toggle {
+  transform: scale(1.04);
+}
+
+.teaching-course:hover .teaching-course__toggle,
+.teaching-course.is-open .teaching-course__toggle {
+  color: var(--color-text);
+}
+
+.teaching-course__chevron {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.teaching-course__chevron path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.teaching-course:hover:not(.is-open) .teaching-course__toggle .teaching-course__chevron {
+  transform: translateY(2px);
+}
+
+.teaching-course.is-open .teaching-course__toggle .teaching-course__chevron {
+  transform: rotate(180deg);
+}
+
+/* Height animates via grid rows (0fr → 1fr) — no measured heights. */
+.teaching-course__drawer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.teaching-course.is-open .teaching-course__drawer {
+  grid-template-rows: 1fr;
+}
+
+.teaching-course__drawer-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.teaching-course__panel {
+  display: grid;
+  min-width: 0;
+  margin: 0 1.15rem;
+  padding: 0 0 0.35rem;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 260ms ease,
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.teaching-course.is-open .teaching-course__panel {
+  opacity: 1;
+  transform: none;
+  transition-delay: 80ms;
+}
+
+/* Inside an open course: one column of blocks split by hairlines.
+   Hierarchy — label (12px) → block heading (15px) → body (14px gray). */
+.teaching-course__block {
+  display: grid;
+  gap: 0.55rem;
+  padding: 1.1rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+
+.teaching-work {
+  min-width: 0;
+}
+
+.teaching-work__title {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.teaching-work__body {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.teaching-work__body > p {
+  margin: 0;
+  font-family: var(--font-reading);
+  font-size: var(--type-caption);
+  line-height: 1.6;
+  color: var(--color-text-description);
+}
+
+.teaching-work > .teaching-figure,
+.teaching-work > .teaching-doc,
+.teaching-work > .teaching-reflection {
+  margin-top: 0.35rem;
+}
+
+.teaching-label {
+  margin: 0;
+  text-transform: lowercase;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   color: var(--color-text-secondary);
 }
 
-.teaching-course__role {
-  margin-top: var(--space-3);
-}
-
-.teaching-course__role .teaching-label {
-  margin-bottom: calc(var(--space-1) / 2);
-}
-
 .teaching-list {
+  margin: 0;
   padding: 0;
   list-style: none;
+  font-family: var(--font-reading);
+  font-size: var(--type-caption);
+  line-height: 1.6;
+  color: var(--color-text-description);
 }
 
 .teaching-list li {
   position: relative;
-  padding-left: 1.1em;
+  padding-left: 1.05em;
+}
+
+.teaching-list li + li {
+  margin-top: 0.25rem;
 }
 
 .teaching-list li::before {
@@ -285,56 +532,99 @@
   color: var(--color-text-secondary);
 }
 
-/* --- Work inside a course --------------------------------------------------------- */
-.teaching-work {
-  margin-top: var(--space-8);
+.teaching-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--color-text-secondary);
 }
 
-.teaching-work + .teaching-work {
-  margin-top: var(--space-10);
+.teaching-meta > * + *::before {
+  content: "·";
+  padding: 0 0.4rem;
+  opacity: 0.6;
 }
 
-.teaching-work__body {
-  margin-top: var(--space-1);
+/* --- Media inside an open course ----------------------------------------- */
+.teaching-figure {
+  margin: 0;
 }
 
-.teaching-work__body > p + p {
-  margin-top: var(--space-2);
+.teaching-figure__frame {
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
+  border-radius: 0.7rem;
 }
 
-.teaching-work__figure {
-  margin-top: var(--space-4);
+.teaching-figure__frame img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
-/* Gallery: a tall lead image beside a stack of wide ones; never cropped. */
-.teaching-gallery {
-  margin-top: var(--space-4);
+.teaching-caption {
+  margin: 0.4rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
 }
 
 .teaching-gallery__grid {
   display: grid;
   grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
-  gap: var(--space-2);
+  gap: 0.55rem;
   align-items: start;
 }
 
 .teaching-gallery__stack {
   display: grid;
-  gap: var(--space-2);
+  gap: 0.55rem;
 }
 
-/* Session arc: four real slides joined by small hand-drawn arrows. */
+/* Same scroll cue as Selected rail: ~58% step width so the next peeks.
+   min-width: 0 on the figure so the course’s overflow:hidden doesn’t steal
+   the scrollport — the steps row itself scrolls. */
 .teaching-arc {
-  margin-top: var(--space-4);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .teaching-arc__steps {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-3) var(--space-2);
+  container-type: inline-size;
+  display: flex;
+  gap: 1rem;
   margin: 0;
-  padding: 0;
+  padding: 0 1.1rem 0.35rem 0;
   list-style: none;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  touch-action: pan-x;
+}
+
+.teaching-arc__steps::-webkit-scrollbar {
+  display: none;
+}
+
+.teaching-arc__step {
+  flex: 0 0 max(13.5rem, 58cqi);
+  width: max(13.5rem, 58cqi);
+  min-width: 0;
+  scroll-snap-align: start;
 }
 
 .teaching-arc__media {
@@ -342,11 +632,10 @@
 }
 
 .teaching-arc__arrow {
-  display: none;
   position: absolute;
   top: 50%;
-  left: calc(var(--space-4) * -1 + 3px);
-  width: calc(var(--space-4) - 6px);
+  left: calc(-1rem + 2px);
+  width: calc(1rem - 4px);
   height: 16px;
   overflow: visible;
   transform: translateY(-50%);
@@ -354,103 +643,249 @@
 
 .teaching-arc__arrow path {
   fill: none;
-  stroke: color-mix(in srgb, var(--color-accent) 70%, transparent);
+  stroke: color-mix(in srgb, var(--color-text) 28%, transparent);
   stroke-width: 1.3;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
 
+.teaching-arc__step:first-child .teaching-arc__arrow {
+  display: none;
+}
+
 .teaching-arc__label {
-  margin-top: var(--space-1);
+  margin: 0.35rem 0 0;
+  font-size: var(--type-caption);
+  font-weight: 500;
   color: var(--color-text);
 }
 
-.teaching-arc .teaching-caption {
-  margin-top: var(--space-2);
+.teaching-arc__index {
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
 }
 
-@container teaching (min-width: 640px) {
-  .teaching-arc__steps {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--space-4);
-  }
-
-  .teaching-arc__arrow {
-    display: block;
-  }
+.teaching-arc__text {
+  margin: 0.1rem 0 0;
+  font-size: var(--type-caption);
+  color: var(--color-text-secondary);
 }
 
-/* External documentation: the Home Selected Work card at grid width. */
-.teaching-card {
-  max-width: 22rem;
-  margin-top: var(--space-4);
+.teaching-doc {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.55rem;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  background: var(--color-surface);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 220ms ease, box-shadow 220ms ease;
 }
 
-/* Reflection: body voice with the pull-quote accent rule. */
+.teaching-doc {
+  background: color-mix(in srgb, var(--color-text) 4%, var(--color-surface));
+}
+
+.teaching-doc:hover,
+.teaching-doc:focus-visible {
+  border-color: var(--tile-hover-edge);
+  box-shadow: var(--tile-hover-shadow);
+  background: var(--tile-hover-bg);
+}
+
+.teaching-doc:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.teaching-doc__thumb {
+  width: 5.5rem;
+  height: 3.5rem;
+  object-fit: cover;
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--color-text) 6%, #fff);
+}
+
+.teaching-doc__title {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.teaching-doc__desc {
+  margin: 0.25rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+
+.teaching-doc__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.teaching-doc__tags li {
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.3rem;
+  border: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+  font-size: 0.68rem;
+  color: var(--color-text-secondary);
+}
+
 .teaching-reflection {
-  margin: var(--space-5) 0 0;
-  padding: 0.15em 0 0.15em 1.25rem;
+  margin: 0;
+  padding: 0.15em 0 0.15em 0.9rem;
   border-left: 2px solid var(--color-accent);
 }
 
-.teaching-reflection .teaching-label {
-  margin-bottom: calc(var(--space-1) / 2);
-}
-
 .teaching-reflection p:not(.teaching-label) {
+  margin: 0;
+  font-family: var(--font-reading);
+  font-size: var(--type-caption);
+  line-height: 1.6;
   color: var(--color-text);
 }
 
-/* --- Narrow column (tablet portrait with sidebar, phones) ------------------------ */
+/* --- Narrow --------------------------------------------------------------- */
+@container teaching (max-width: 640px) {
+  .teaching-file__tabs {
+    gap: 0.2rem;
+  }
+
+  .teaching-file__tab {
+    padding: 0 0.65rem;
+    font-size: 0.75rem;
+  }
+
+  .teaching-file__content {
+    padding: 1.15rem 1.15rem 1.1rem;
+  }
+
+  .teaching-file__footer {
+    flex-wrap: wrap;
+  }
+}
+
 @container teaching (max-width: 560px) {
   .teaching-gallery__grid {
     grid-template-columns: 1fr;
   }
 
-  /* Metadata lines stack instead of wrapping, so a middle dot never
-     starts a line. */
-  .teaching-meta {
-    flex-direction: column;
-    align-items: flex-start;
+  .teaching-course__hit {
+    grid-template-columns: 3.6rem minmax(0, 1fr);
+    gap: 0.75rem;
   }
 
-  .teaching-meta > * + *::before {
-    content: none;
+  .teaching-course__thumb {
+    width: 3.6rem;
+    height: 3.6rem;
+  }
+
+  .teaching-course__toggle {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .teaching-doc {
+    grid-template-columns: 1fr;
+  }
+
+  .teaching-doc__thumb {
+    width: 100%;
+    height: 7rem;
   }
 }
 
-/* --- Responsive (viewport) ------------------------------------------------------ */
-@media (max-width: 680px) {
-  .app-content-layer--teaching {
-    padding: 0;
+@media (prefers-reduced-motion: reduce) {
+  .teaching-course__drawer,
+  .teaching-course__panel,
+  .teaching-course__chevron,
+  .teaching-file__tab,
+  .teaching-file__card,
+  .teaching-file__content {
+    transition: none;
+    animation: none;
   }
+}
 
-  .teaching-page {
-    padding: var(--space-5) 0 var(--space-10);
-  }
+/* Keep the front tab joined to its card on hover — fill only, no inset
+   strokes that redraw a seam under the tab. */
+.teaching-file:has(.teaching-file__card.is-active:hover) .teaching-file__tab.is-active,
+.teaching-file:has(.teaching-file__card.is-active:focus-within) .teaching-file__tab.is-active {
+  background: var(--tile-hover-bg);
+}
 
-  .teaching-section + .teaching-section {
-    margin-top: var(--space-12);
-  }
+/* --- Spacing rhythm inside an open course ----------------------------------
+ * Three steps only, so the eye can tell what belongs together:
+ *   tight  (0.5rem)  — a thing and its own label/caption/heading
+ *   group  (1.5rem)  — between pieces of one work (text → arc → photo → note)
+ *   block  (2rem)    — between blocks (my role | each work), split by a rule
+ * ------------------------------------------------------------------------- */
+.teaching-course__panel {
+  --gap-tight: 0.5rem;
+  --gap-group: 1.85rem;
+  --gap-block: 2.25rem;
+}
 
-  .teaching-courses {
-    gap: var(--space-10);
-  }
+.teaching-course__block {
+  gap: 0;
+  padding: var(--gap-block) 0;
+}
 
-  .teaching-principles__description {
-    padding-left: 0;
-  }
+.teaching-course__block:last-child {
+  padding-bottom: 1.5rem;
+}
 
-  .teaching-thread {
-    height: var(--space-6);
-    margin: var(--space-6) 0;
-  }
+.teaching-course__role .teaching-label {
+  margin-bottom: var(--gap-tight);
+}
 
-  .teaching-thread__note {
-    left: auto;
-    right: 6%;
-    top: 0;
-    font-size: 0.9375rem;
-  }
+.teaching-work__title {
+  margin-bottom: var(--gap-tight);
+}
+
+.teaching-work__body {
+  gap: var(--gap-tight);
+}
+
+.teaching-work > .teaching-figure,
+.teaching-work > .teaching-doc,
+.teaching-work > .teaching-reflection {
+  margin-top: var(--gap-group);
+}
+
+.teaching-caption {
+  margin-top: var(--gap-tight);
+}
+
+/* Arc: image → step label → one line; the caption sits a little lower so it
+   reads as the caption of the whole arc, not of the last step. */
+.teaching-arc__label {
+  margin-top: 0.85rem;
+}
+
+.teaching-arc__text {
+  margin-top: 0.3rem;
+  line-height: 1.45;
+}
+
+.teaching-arc > .teaching-caption {
+  margin-top: 1.35rem;
+}
+
+.teaching-reflection {
+  padding: 0.2rem 0 0.2rem 1rem;
+}
+
+.teaching-reflection .teaching-label {
+  margin-bottom: 0.3rem;
 }

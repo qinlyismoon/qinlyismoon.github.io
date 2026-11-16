@@ -37,14 +37,12 @@ const TEACHING_COPY_EN = {
     title: "Teaching",
     paragraphs: [
       "Since January 2025 I’ve been a Graduate Teaching Associate at The Ohio State University, supporting courses in design foundations, experiential media, and visual communication.",
-      "Teaching changed how I see my own process. When I explain an idea, I have to show the reasoning — what I’d do, and why. Working with students taught me to listen, adjust feedback, and leave room to experiment.",
+      "Teaching changed how I see my own process: to explain an idea, I have to show the reasoning — what I’d do, and why.",
     ],
-    // Handwritten note on the thread between Introduction and Philosophy.
-    threadNote: "make thinking visible",
   },
 
   philosophy: {
-    title: "How I Approach Teaching",
+    title: "How I approach teaching",
     subtitle: "A way of thinking that lasts past the course.",
     paragraphs: [
       "I teach for the moment after class ends — when someone hits a problem no assignment covered. What helps then is a habit of mind: question what you see, read the situation, trust your own judgment.",
@@ -53,21 +51,35 @@ const TEACHING_COPY_EN = {
       {
         index: "01",
         title: "Transferable Thinking",
+        tab: "Transferable",
         description:
           "A method sticks to one situation; the question behind it travels. I teach that question so students can rebuild a method when the assignment, the field, or the medium changes.",
+        // Where the principle shows up — links to a course on this page.
+        evidence: { courseId: "course-design-3505", label: "DESIGN 3505 · Review sessions" },
       },
       {
         index: "02",
-        title: "Responsibility for Accuracy",
+        title: "Decisions, Explained",
+        tab: "Decisions",
         description:
-          "Students take what I teach as true and build on it. So before class I check the terms, sources, and examples — I only bring in what I can stand behind.",
+          "In critique I ask for the why, not just the what. A choice a student can explain is one they can defend, revise, or carry into the next project — and I hold my own feedback to the same standard.",
+        evidence: { courseId: "course-design-fundamentals", label: "Design Fundamentals · Studio critiques" },
+      },
+      {
+        index: "03",
+        title: "Tested by Hand",
+        tab: "By Hand",
+        description:
+          "Before I bring a tool or a direction into a course, I build with it myself: what it can do, where it breaks, how it behaves. What I offer students comes from practice, not assumption.",
+        evidence: { courseId: "course-design-3106", label: "DESIGN 3106 · Sensor prototypes" },
       },
     ],
   },
 
 
   experience: {
-    title: "Teaching Experience",
+    title: "Teaching experience",
+    evidenceLabel: "Seen in",
     note: "Courses I have supported as a Graduate Teaching Associate, and the work that came out of each.",
     labels: {
       role: "My role",
@@ -81,6 +93,7 @@ const TEACHING_COPY_EN = {
         title: "Presentation as Thinking",
         number: "DESIGN 3505",
         term: "Spring 2026 / Autumn 2026",
+        thumbnail: "/teaching/design-3505.png",
         focus:
           "Visual communication, typography, hierarchy, and presentation design: developing ideas through visual thinking.",
         role: [
@@ -125,11 +138,6 @@ const TEACHING_COPY_EN = {
               },
             ],
             arcCaption: "The arc, shown with slides from a session I led.",
-            figure: {
-              src: "/teaching/review-session.jpg",
-              alt: "Recording still of Phoebe leading a review session over video, sharing the slide: How can we apply the five principles of flag design?",
-              caption: "Leading a review session, at the Apply step.",
-            },
             reflection:
               "Each session ends where students began: in their own fields. That is where an idea proves it can travel.",
           },
@@ -193,6 +201,7 @@ const TEACHING_COPY_EN = {
         // Course number not confirmed — intentionally omitted.
         number: null,
         term: "Spring 2025",
+        thumbnail: "/teaching/design-fundamentals.png",
         focus:
           "Foundational design principles, visual language, composition, and iterative process.",
         role: [
@@ -216,13 +225,12 @@ const TEACHING_COPY_ZH = {
     title: "教学",
     paragraphs: [
       "从 2025 年 1 月起，我在俄亥俄州立大学当研究生助教，带设计基础、体验媒体和视觉传达相关的课。",
-      "教学改了我对自己过程的看法。要把想法讲清楚，就得把理由摊开——怎么做、为什么。和学生一起，我更会听、会改反馈，也更敢留一点试错的空。",
+      "教学改了我对自己过程的看法：要把想法讲清楚，就得把理由摊开——怎么做、为什么。",
     ],
-    threadNote: "把想法摊开",
   },
 
   philosophy: {
-    title: "我怎么看教学",
+    title: "我怎么教",
     subtitle: "课上完了还能带走的思考方式。",
     paragraphs: [
       "我想教的是课结束之后：碰上从没练过的问题时，还有没有用的习惯——质疑所见、读懂情境、信自己的判断。",
@@ -232,17 +240,26 @@ const TEACHING_COPY_ZH = {
         title: "能带走的思考",
         description:
           "方法常常绑在某个情境里；背后的问题可以带走。我教那个问题，换了作业、领域或媒介，学生也能自己重搭方法。",
+        evidence: { label: "DESIGN 3505 · 复习课" },
       },
       {
-        title: "对讲的内容负责",
+        title: "把决定说清楚",
         description:
-          "学生会把我讲的当真，并接着往上做。进课堂前我会核对术语、出处和例子——讲出去的，我得站得住。",
+          "点评时我会追问「为什么」，而不只是「做了什么」。说得清的决定，才守得住、改得动，也带得进下一个项目——我给出的反馈，也按同一个标准要求自己。",
+        evidence: { label: "Design Fundamentals · 工作室点评" },
+      },
+      {
+        title: "先自己动手",
+        description:
+          "把一种工具或方向带进课堂之前，我会先自己做一遍：它能做什么、在哪里会坏、实际怎么表现。我给学生的，来自实践，而不是假设。",
+        evidence: { label: "DESIGN 3106 · 传感器原型" },
       },
     ],
   },
 
   experience: {
     title: "教学经历",
+    evidenceLabel: "见于",
     note: "我当助教带过的课，以及每门课里留下的工作。",
     labels: {
       role: "我的角色",
@@ -270,10 +287,6 @@ const TEACHING_COPY_ZH = {
               { label: "整合", text: "回到「演示即思考」" },
             ],
             arcCaption: "这个结构，用我主讲的一节复习课幻灯片来呈现。",
-            figure: {
-              alt: "Phoebe 在线上主讲复习课的录屏截图，正在讲解幻灯片：如何应用旗帜设计的五项原则？",
-              caption: "主讲复习课，正走到「应用」这一步。",
-            },
             reflection:
               "每节课都落回学生出发的地方：他们自己的领域。一个想法能不能走得更远，要在那里试。",
           },
