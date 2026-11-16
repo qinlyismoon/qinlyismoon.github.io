@@ -4,6 +4,7 @@
  * the course where it shows up. Courses expand downward in place.
  */
 import { useCallback, useId, useRef, useState } from "react";
+import PageCopyright from "../shared/PageCopyright";
 
 function Meta({ items }) {
   if (!items?.length) return null;
@@ -441,6 +442,8 @@ export default function TeachingBoard({ copy }) {
           ))}
         </div>
       </section>
+
+      <PageCopyright />
     </article>
   );
 }

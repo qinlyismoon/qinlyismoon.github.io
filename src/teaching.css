@@ -54,9 +54,10 @@
   --file-radius: 1rem;
   --file-tab-radius: 0.7rem;
   --file-tab-h: 2.4rem;
-  --file-peek: 0.34rem;
+  /* Enough bottom edge that two back sheets read as a stack, not a hairline. */
+  --file-peek: 0.55rem;
   --file-face: var(--color-surface);
-  --file-back: color-mix(in srgb, var(--color-text) 9%, var(--color-surface));
+  --file-back: color-mix(in srgb, var(--color-text) 14%, var(--color-surface));
   display: grid;
   padding-bottom: calc(var(--file-peek) * (var(--file-count, 3) - 1));
 }
@@ -68,7 +69,7 @@
   flex-wrap: nowrap;
   align-items: flex-end;
   justify-content: flex-start;
-  gap: 0.25rem;
+  gap: 0.28rem;
   margin: 0;
   padding: 0;
 }
@@ -82,34 +83,38 @@
   width: 0;
   min-width: 0;
   max-width: none;
-  height: calc(var(--file-tab-h) - 0.2rem);
+  /* Sit lower than the face so inactive tabs read as sheets behind. */
+  height: calc(var(--file-tab-h) - 0.35rem);
   margin: 0;
   padding: 0 0.9rem;
   border: 0;
   border-radius: var(--file-tab-radius) var(--file-tab-radius) 0 0;
   background: var(--file-back);
-  color: var(--color-text-secondary);
+  color: color-mix(in srgb, var(--color-text) 72%, transparent);
   font-family: var(--font-ui);
   font-size: 0.82rem;
   font-weight: 500;
   letter-spacing: -0.01em;
   text-align: left;
   cursor: pointer;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--color-text) 6%, transparent);
   transition:
     height 280ms cubic-bezier(0.22, 1, 0.36, 1),
     background 220ms ease,
-    color 220ms ease;
+    color 220ms ease,
+    box-shadow 220ms ease;
 }
 
 .teaching-file__tab:hover {
   color: var(--color-text);
-  background: color-mix(in srgb, var(--color-text) 5%, var(--file-back));
+  background: color-mix(in srgb, var(--color-text) 8%, var(--file-back));
 }
 
 .teaching-file__tab.is-active {
   height: var(--file-tab-h);
   background: var(--file-face);
   color: var(--color-text);
+  box-shadow: none;
   /* Cover the panel’s top edge so tab + face read as one piece. */
   margin-bottom: -2px;
   padding-bottom: 2px;
@@ -142,9 +147,10 @@
   /* Same corner recipe as the front face so nothing peeks through the
      top-right curve as a vertical sliver. */
   border-radius: 0 var(--file-radius) var(--file-radius) var(--file-radius);
+  /* Deeper sheets step darker so each bottom edge reads as its own layer. */
   background: color-mix(
     in srgb,
-    var(--color-text) calc(5% + var(--depth) * 2%),
+    var(--color-text) calc(8% + var(--depth) * 5%),
     var(--color-surface)
   );
   /* Bottom peek only. */

@@ -18,6 +18,7 @@ const VIBE_SECTION_PROJECTS = HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(
   Boolean,
 );
 import { HOME_PATH, LIBRARY_PATH, projectIdFromPath } from "../lib/routes";
+import PageCopyright from "../components/shared/PageCopyright";
 
 const VibeProjectDetail = lazy(() =>
   import("../components/caseStudies/VibeProjectDetail"),
@@ -348,6 +349,7 @@ export default function LibraryPage({ embedded = false }) {
         </div>
       </section>
 
+      {!embedded ? <PageCopyright /> : null}
     </div>
   );
 

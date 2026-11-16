@@ -759,10 +759,9 @@ a.about-experience__org {
   --u: 0.06rem;
 }
 
-/* Declared where used, so a smaller --u (the block in a tile corner)
-   rescales the whole block. */
-.about-bento,
-.toy-block-source {
+/* Blocks are one size everywhere — in a tile corner, in the tray, on the
+   tower — so a block never changes size as it travels. */
+.about-bento {
   --block-w: calc(var(--u) * 110);
   --block-h: calc(var(--u) * 34);
 }
@@ -826,7 +825,6 @@ a.about-experience__org {
 }
 
 .toy-block-source {
-  --u: 0.047rem;
   position: absolute;
   top: 1.3rem;
   right: 1.15rem;
@@ -834,8 +832,11 @@ a.about-experience__org {
   filter: drop-shadow(0 2px 3px rgba(40, 32, 24, 0.1));
 }
 
-.toy-block-source .toy-block {
-  font-size: 0.66rem;
+/* Questions and Possibilities keep a header row tall enough for the block,
+   whether or not it is still there — picking it up never shifts the text. */
+.about-tile--doubt .about-tile__kicker,
+.about-tile--possibilities .about-tile__kicker {
+  min-height: 2.3rem;
 }
 
 /* Making: the loop already fills the top-right, so its block rests in the
@@ -1034,9 +1035,10 @@ a.about-experience__org {
     min-height: 3lh;
   }
 
-  /* Narrow tiles: keep the block clear of a wrapping title. */
-  .about-tile__kicker {
-    min-height: 1.6rem;
+  /* Making stacks text over the loop here; give its block a row of its
+     own underneath while it is still in the tile. */
+  .about-tile--making {
+    padding-bottom: 4.4rem;
   }
 }
 

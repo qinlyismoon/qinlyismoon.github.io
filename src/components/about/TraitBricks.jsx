@@ -10,6 +10,8 @@ import { motion, useReducedMotion } from "framer-motion";
  * three in, the lamp lights: a lighthouse — it helps people see their way.
  */
 const IDS = ["doubt", "possibilities", "making"];
+// One unhurried glide for every move: tile → tray, tray → tower, and back.
+const MOVE = { layout: { duration: 0.95, ease: [0.22, 1, 0.36, 1] } };
 const COPY = {
   en: {
     labels: ["Questions", "Possibilities", "Making"],
@@ -158,6 +160,7 @@ export function BrickSource({ id, language, collected, onCollect }) {
       type="button"
       className="toy-block-source"
       layoutId={reduceMotion ? undefined : `toy-block-${id}`}
+      transition={MOVE}
       aria-label={`${copy.collect} · ${label}`}
       onClick={(event) => {
         // Keyboard activation: the button unmounts, so park focus on the title.
@@ -234,9 +237,7 @@ export function TraitBricks({ language, bricks, onPlace }) {
               layoutId={reduceMotion ? undefined : `toy-block-${id}`}
               className={`toy-block-wrap${placed ? " is-placed" : " is-loose"}`}
               style={{ "--tray": index, "--level": placed ? level : 0 }}
-              transition={{
-                layout: { type: "spring", stiffness: 420, damping: 32 },
-              }}
+              transition={MOVE}
               aria-label={`${placed ? copy.lift : copy.place} · ${label}`}
               onClick={() => onPlace(id)}
             >

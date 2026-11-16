@@ -1334,7 +1334,10 @@
   place-items: center;
   min-height: 14.75rem;
   padding: 1.6rem 0 0.5rem;
-  overflow: hidden;
+  /* Never clip here: the folder's soft shadow has to fade out on its own.
+     Clipping it at the stage box is what drew a hard edge around the
+     folder. The tile itself still clips at its rounded corners. */
+  overflow: visible;
 }
 
 .vibe-folder__back {
@@ -1468,7 +1471,7 @@
   transform-origin: 50% 100%;
   transform-style: preserve-3d;
   /* Soft ambient lift only — a tight drop-shadow reads as a hard underline. */
-  filter: drop-shadow(0 14px 22px rgba(40, 32, 18, 0.1));
+  filter: drop-shadow(0 10px 16px rgba(40, 32, 18, 0.09));
   transition:
     transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
     filter 380ms ease;
@@ -1518,7 +1521,7 @@
    No clip-path — a trapezoid cut squares the bottom corners. */
 .bento-tile--folder.is-expanded .vibe-folder__flap {
   transform: perspective(720px) rotateX(-36deg) translateY(0.15rem);
-  filter: drop-shadow(0 20px 28px rgba(40, 32, 18, 0.14));
+  filter: drop-shadow(0 14px 20px rgba(40, 32, 18, 0.12));
 }
 
 .bento-tile--folder.is-expanded .vibe-folder__body::after {
@@ -1901,10 +1904,14 @@
 .home-copyright--flow {
   position: static;
   width: auto;
-  margin-top: 0.25rem;
+  margin-top: 1.5rem;
   padding: 0 0.15rem;
   color: var(--color-text-secondary);
   font-size: 0.75rem;
+}
+
+.home-bento > .home-copyright--flow {
+  margin-top: 0.25rem;
 }
 
 .visually-hidden {

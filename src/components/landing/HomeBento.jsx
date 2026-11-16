@@ -20,6 +20,7 @@ import {
   getProjectById,
 } from "../../lib/caseStudies";
 import { ABOUT_PATH, LIBRARY_PATH } from "../../lib/routes";
+import PageCopyright from "../shared/PageCopyright";
 
 /** Selected Work on Home — Emotion Garden lives in the vibe folder only. */
 const HOME_SELECTED = SELECTED_PROJECTS.filter(
@@ -171,9 +172,7 @@ export default function HomeBento() {
         </div>
       </section>
 
-      <p className="home-copyright home-copyright--flow">
-        © 2026 {copy.name} · v3.0.0
-      </p>
+      <PageCopyright />
 
       <a className="visually-hidden" href={LIBRARY_PATH}>
         {bento.allProjects}
