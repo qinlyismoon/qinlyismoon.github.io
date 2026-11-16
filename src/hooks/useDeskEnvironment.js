@@ -26,6 +26,8 @@ const WEATHER_REFRESH_MS = 15 * 60_000;
 const FALLBACK_WEATHER = {
   kind: "sunny",
   temperatureC: null,
+  highC: null,
+  lowC: null,
 };
 
 export default function useDeskEnvironment(language = "en") {
@@ -52,6 +54,8 @@ export default function useDeskEnvironment(language = "en") {
           setWeather({
             kind: next.kind,
             temperatureC: next.temperatureC,
+            highC: next.highC,
+            lowC: next.lowC,
           });
         }
       } catch {
@@ -79,10 +83,19 @@ export default function useDeskEnvironment(language = "en") {
       weather: {
         kind,
         temperatureC: weather.temperatureC,
+        highC: weather.highC,
+        lowC: weather.lowC,
         // Single source of truth for the desk weather label — SiteShell
         // overrides the pageContext static value with this at runtime.
         label,
       },
     };
-  }, [dayPhase, language, weather.kind, weather.temperatureC]);
+  }, [
+    dayPhase,
+    language,
+    weather.kind,
+    weather.temperatureC,
+    weather.highC,
+    weather.lowC,
+  ]);
 }

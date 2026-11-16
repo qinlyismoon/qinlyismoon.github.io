@@ -10,11 +10,11 @@
          vocabulary as src/lib/settings.js (themeMode, accent page grounds). */
       (function () {
         var PAGE_BG = {
-          forest: { light: "#f4f6f4", dark: "#161816" },
-          ink: { light: "#f4f5f7", dark: "#15171a" },
-          clay: { light: "#f7f4f2", dark: "#1a1716" },
-          plum: { light: "#f6f4f7", dark: "#18161a" },
-          ochre: { light: "#f7f5ef", dark: "#1a1814" },
+          forest: { light: "#fafafa", dark: "#161816" },
+          ink: { light: "#fafafa", dark: "#15171a" },
+          clay: { light: "#fafafa", dark: "#1a1716" },
+          plum: { light: "#fafafa", dark: "#18161a" },
+          ochre: { light: "#fafafa", dark: "#1a1814" },
         };
         var TEXT = { light: "#20201f", dark: "#f2f2f0" };
         var root = document.documentElement;
@@ -52,8 +52,9 @@
           var accent =
             saved && PAGE_BG[saved.accent] ? saved.accent : "forest";
           root.dataset.typeVoice =
-            saved && saved.typeVoice === "editorial"
-              ? "editorial"
+            saved &&
+            ["serif", "geometric"].indexOf(saved.typeVoice) !== -1
+              ? saved.typeVoice
               : "geometric";
           apply(isDark ? "dark" : "light", accent);
         } catch (e) {
@@ -64,10 +65,11 @@
     </script>
     <style>
       :root {
-        --loader-background: #f4f6f4;
+        --loader-background: #fafafa;
         --loader-text: #20201f;
         --loader-logo-filter: none;
-        --color-background: #f4f6f4;
+        --color-background: #fafafa;
+        --color-surface: #efefef;
       }
 
       #site-loader {
@@ -79,7 +81,7 @@
         gap: 16px;
         color: var(--loader-text);
         background: var(--loader-background);
-        font: 400 16px/1.5 "Urbanist", "Zalando Sans", Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font: 400 16px/1.5 "Outfit", "Zalando Sans", Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         letter-spacing: 0.01em;
         text-align: center;
         opacity: 1;
@@ -109,31 +111,24 @@
         }
       }
     </style>
-    <link
-      rel="preload"
-      href="/fonts/Urbanist/Urbanist-VariableFont_wght.ttf"
-      as="font"
-      type="font/ttf"
-      crossorigin
-    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Non-blocking: Urbanist is self-hosted; these families load after first paint. -->
+    <!-- v3 default: Geist + Hedvig Letters Serif + Geist Mono (atom63-adjacent). -->
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Zalando+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Hedvig+Letters+Serif:opsz@12..24&family=Caveat:wght@500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Zalando+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap"
       media="print"
       onload="this.media='all'"
     />
     <noscript>
       <link
         rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Zalando+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Hedvig+Letters+Serif:opsz@12..24&family=Caveat:wght@500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Zalando+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap"
       />
     </noscript>
-    <script type="module" crossorigin src="/assets/index-RDew0fds.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/react-Cd6geEgh.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-ByIdcy5V.css">
+    <script type="module" crossorigin src="/assets/index-B8kKeG5l.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/react-BW16V7D8.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-LCy3mHhS.css">
   </head>
   <body>
     <div id="site-loader" role="status" aria-label="Loading website">

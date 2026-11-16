@@ -39,22 +39,22 @@ export const COLLAGE_ITEMS = [
 
 const ABOUT_PAGE_COPY = {
   en: {
+    pageTitle: "About",
     hero: {
       greeting: "Hi, I’m Phoebe.",
       kicker: "Design engineer · product designer",
-      // About shows who I am: how I think, whose eyes I look through,
-      // how I decide, how I find answers, and who I am underneath. Each
-      // section leads with a trait; examples are light anchors, never
-      // the point. quote + roadmap → portrait → questions → other
-      // people's perspectives → map possibilities → making (+ loop) →
-      // staying true to myself.
+      // About shows who I am: how I think, how I decide, how I find
+      // answers, and who I am underneath. Each section leads with a
+      // trait; examples are light anchors, never the point. quote +
+      // roadmap → portrait → questions → map possibilities (edge cases
+      // included) → making (+ loop) → staying true to myself.
       essay: {
         quote: {
           original: "Dubito, ergo cogito, ergo sum.",
           translation: "I doubt, therefore I think, therefore I am.",
         },
         roadmap:
-          "This line is closest to how I work: questions start my thinking; other people’s perspectives widen it; laying out the possibilities deepens the choice; making turns it into something real.",
+          "This line is closest to how I work: questions start my thinking; laying out the possibilities, edge cases included, deepens the choice; making turns it into something real.",
         sections: [
           {
             id: "doubt",
@@ -65,18 +65,11 @@ const ABOUT_PAGE_COPY = {
             ],
           },
           {
-            id: "perspectives",
-            title: "Seeing from every side",
-            paragraphs: [
-              "Before I settle on a direction, I try to take each relevant person’s standpoint—and look through their first-person view: the person handing something over and the person receiving it, the operator and the team behind the platform, the student who sees things differently from me. Once I understand what each of them cares about and worries about, and hold those views side by side, the real problem usually shows up.",
-              "That understanding is also how I talk with the people I work with. When I bring an idea to the table, I try to name what each side needs and where the tensions sit, so the direction is something we can follow, push on, and stand behind together.",
-            ],
-          },
-          {
             id: "possibilities",
             title: "I lay out the possibilities before I choose",
             paragraphs: [
               "Intuition and taste matter in design—I trust them. But I also try to think a decision through with some structure: name the options, see how they relate, then choose. Sometimes that means sorting cases into a matrix, or walking a set of conditions one by one, so fewer paths stay invisible.",
+              "I also go looking for the edge cases: the empty state, the extreme value, the moment something goes wrong, the person the usual flow forgets. A design that only holds on the happy path hasn’t really been decided yet.",
               "Even when I land on the same choice my first instinct pointed to, the path is different. Having walked the field, I know what I turned down and why. That depth is what I want the decision to rest on.",
             ],
           },
@@ -84,7 +77,8 @@ const ABOUT_PAGE_COPY = {
             id: "making",
             title: "Clarity comes from making",
             paragraphs: [
-              "When I have an idea, I start making right away: a sketch, an interactive prototype, a rough build in code. That is where my questions get answered. Emotion Garden—one project within my thesis research—went through more than a hundred versions before its visual language settled, and each version showed me what the next should change. Working with AI keeps shortening the distance between an idea and something people can try, which suits me well.",
+              "When I have an idea, I start making right away: a sketch, an interactive prototype, a rough build in code. That is where my questions get answered. Emotion Garden—one project within my thesis research—went through more than a hundred versions before its visual language settled, and each version showed me what the next should change.",
+              "Working with AI speeds up the scaffolding — but only if I’m very clear about what I need. That bar is higher than it sounds: it asks more of how I communicate, how I research, and how tightly I hold the brief. Start unclear, and you go way off fast. Get clear first, and the frame goes up quickly; the detail still takes time. I’m the kind of person who stays with those details — I’ll spend the extra hours until the polish holds.",
               "Put together, it becomes a loop:",
             ],
             diagram: true,
@@ -138,6 +132,7 @@ const ABOUT_PAGE_COPY = {
     },
   },
   zh: {
+    pageTitle: "关于",
     hero: {
       greeting: "你好，我是 Phoebe。",
       kicker: "设计工程师 · 产品设计师",
@@ -147,7 +142,7 @@ const ABOUT_PAGE_COPY = {
           translation: "我怀疑，故我思；我思，故我在。",
         },
         roadmap:
-          "这句话最贴近我做事的方式：提问让我开始思考；带入不同立场的第一视角让想法变宽；把可能摆清楚，让选择更深；动手去做，才把它变成真实的东西。",
+          "这句话最贴近我做事的方式：提问让我开始思考；把可能摆清楚，连极端情况也算进去，让选择更深；动手去做，才把它变成真实的东西。",
         sections: [
           {
             id: "doubt",
@@ -158,18 +153,11 @@ const ABOUT_PAGE_COPY = {
             ],
           },
           {
-            id: "perspectives",
-            title: "站在每一方的立场上看",
-            paragraphs: [
-              "定方案之前，我会试着站在每个相关的人的立场上，带入他们的第一视角：交出一件事的人和接手的人，运营商和平台背后的团队，想法跟我不一样的学生。看清他们各自在意什么、担心什么，再把这些视角放在一起，真正的问题往往就浮现了。",
-              "这份理解，也是我和一起工作的人沟通的方式。把想法拿到桌上时，我会试着说清每一方需要什么、张力在哪里，让方向变成我们能一起跟上、一起推敲、也一起站得住的东西。",
-            ],
-          },
-          {
             id: "possibilities",
             title: "先把可能摆清楚，再做决定",
             paragraphs: [
               "直觉和审美对设计很重要，我也信它们。但我也会试着用更有结构的方式把决定想一遍：把可能的情况列出来，看清它们怎么彼此牵连，再选择。有时像把选项排进一张矩阵，有时像顺着一组条件往下推，好少留一些看不见的路。",
+              "我也会主动去找极端情况：空状态、极端的数值、出错的那一刻、常规流程里被忘掉的那个人。只在顺利路径上成立的设计，其实还没有真正想定。",
               "就算最后选的，和第一眼觉得对的那条一样，走过的路径也不一样。把整片可能走过一遍，我才清楚自己放下了什么、为什么放下。我想让决定落在这种深度上。",
             ],
           },
@@ -177,7 +165,8 @@ const ABOUT_PAGE_COPY = {
             id: "making",
             title: "在做的过程中找到清晰",
             paragraphs: [
-              "有了想法，我会马上动手：一张草图、一个可交互的原型、一个用代码搭的粗糙版本。疑问常常是在做的过程中才有答案。Emotion Garden——论文研究里的一个项目——改了一百多个版本，才找到自己的视觉语言，每一版都告诉我下一版该改什么。现在和 AI 一起工作，从想法到别人能试用的东西，距离越来越短，这很适合我。",
+              "有了想法，我会马上动手：一张草图、一个可交互的原型、一个用代码搭的粗糙版本。疑问常常是在做的过程中才有答案。Emotion Garden——论文研究里的一个项目——改了一百多个版本，才找到自己的视觉语言，每一版都告诉我下一版该改什么。",
+              "和 AI 一起工作，能更快搭起基础框架——但前提是你非常清楚自己要什么。这个要求其实更严：对沟通、表达、调研，以及对问题本身的把握，都不能含糊。一开始不清楚，就很容易越走越偏；先弄清楚，框架会很快立起来，细节却仍要继续扣。我就是那种会在细节上多花时间的人——打磨到站得住为止。",
               "把这些放在一起，就是一个循环：",
             ],
             diagram: true,
@@ -773,18 +762,18 @@ export const JOURNEY_STAGES = [
       zh: "fAIshion",
     },
     role: {
-      en: "Product Designer",
-      zh: "产品设计师",
+      en: "Product Design Intern",
+      zh: "产品设计实习生",
     },
     body: {
       en: [
-        "Working in an early-stage AI startup introduced me to a different pace and way of designing. I have been helping shape an AI-powered fashion experience from its early ideas into a connected product.",
+        "Interning at an early-stage AI startup introduced me to a different pace and way of designing. I have been helping shape an AI-powered fashion experience from its early ideas into a connected product.",
         "My work spans user research, product strategy, interaction design, and rapid prototyping—from onboarding and personal style discovery to wardrobe management, AI-generated style reports, stylist recommendations, and conversational experiences.",
         "Through vibe coding, I began moving more directly from design ideas to working experiences. Interactive prototypes became a way to test workflows, communicate ideas, and continuously refine the product through feedback.",
         "This experience is reshaping how I understand the role of a designer in the age of AI—designing AI-powered experiences, and using AI to explore, prototype, build, and participate more directly in taking a product from zero to one.",
       ],
       zh: [
-        "在早期 AI 创业公司工作，让我碰到另一种节奏和设计方式。我正在参与把一个 AI 驱动的时尚体验，从早期想法一点点推成连贯的产品。",
+        "在早期 AI 创业公司实习，让我碰到另一种节奏和设计方式。我正在参与把一个 AI 驱动的时尚体验，从早期想法一点点推成连贯的产品。",
         "工作覆盖用户研究、产品策略、交互设计和快速原型——从引导上手、个人风格探索，到衣橱管理、AI 风格报告、造型师推荐，还有对话式体验。",
         "靠 vibe coding，我开始更直接地从设计想法走到能用的体验。交互原型成了测流程、讲想法、再靠反馈一点点打磨产品的方式。",
         "这段经历正在改写我对 AI 时代设计师角色的理解——设计 AI 驱动的体验，也用 AI 去试、去搭、去做，更直接地参与把产品从 0 带到 1。",

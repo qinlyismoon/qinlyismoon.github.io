@@ -9,9 +9,15 @@ import {
   VIBE_PROJECTS,
   SELECTED_PROJECTS,
   RESEARCH_CRAFT_PROJECTS,
+  HOME_VIBE_FOLDER_IDS,
+  getProjectById,
 } from "../lib/caseStudies";
-import { HOME_PATH, projectIdFromPath } from "../lib/routes";
-import { PORTFOLIO_LINKS } from "../lib/links";
+
+/** Vibe coding catalogue — same order as the home folder. */
+const VIBE_SECTION_PROJECTS = HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(
+  Boolean,
+);
+import { HOME_PATH, LIBRARY_PATH, projectIdFromPath } from "../lib/routes";
 
 const VibeProjectDetail = lazy(() =>
   import("../components/caseStudies/VibeProjectDetail"),
@@ -20,14 +26,47 @@ const VibeProjectDetail = lazy(() =>
 // Projects with a native case-study detail at /<id>: vibe, selected with
 // native detail, and Research & Craft.
 // Order matches the page sections so “Next project” walks Selected →
-// Research & Craft → Vibe Coding.
+// Research & Craft → Vibe Coding (folder order).
 const DETAIL_PROJECTS = [
   ...SELECTED_PROJECTS.filter(
-    (project) => project.detail || project.detailSections,
+    (project) =>
+      (project.detail || project.detailSections) &&
+      project.id !== "emotion-garden",
   ),
   ...RESEARCH_CRAFT_PROJECTS,
-  ...VIBE_PROJECTS,
+  ...HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(Boolean),
 ];
+
+/** Home Selected Work rail order (Emotion Garden lives in the vibe folder). */
+const HOME_SELECTED_SEQUENCE = SELECTED_PROJECTS.filter(
+  (project) => project.id !== "emotion-garden",
+);
+
+const HOME_VIBE_SEQUENCE = HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(
+  Boolean,
+);
+
+function detailSequenceFor(from, projectId) {
+  if (from === "home") {
+    if (HOME_SELECTED_SEQUENCE.some((project) => project.id === projectId)) {
+      return HOME_SELECTED_SEQUENCE;
+    }
+    if (HOME_VIBE_SEQUENCE.some((project) => project.id === projectId)) {
+      return HOME_VIBE_SEQUENCE;
+    }
+  }
+  return DETAIL_PROJECTS;
+}
+
+/** Prefer router state; fall back to the underlay page (home vs projects). */
+function entryFromLocation(location, embedded) {
+  const fromState = location.state?.from;
+  if (fromState === "home" || fromState === "library") return fromState;
+  if (typeof document !== "undefined" && document.body.dataset.page === "home") {
+    return "home";
+  }
+  return embedded ? "home" : "library";
+}
 
 // Every project that can drive the sidebar on hover. Their role and
 // timeline values are passed as `reserve` candidates so the sidebar slot is
@@ -74,28 +113,29 @@ function projectSidebarItems(project, isZh) {
 
 const LABELS = {
   en: {
-    viewAll: "View all work",
-    selectedWork: "Selected Work",
-    selectedWorkNote:
-      "Case studies in making complex systems understandable, from research and product strategy to working code.",
+    pageTitle: "Projects",
+    pageNote:
+      "Still a student, still stretching. From an AI fashion color-analysis internship and shared plant-care handoffs, to money goals that stay readable when plans change—then research, craft, and vibe-coded experiments you can open and try.",
+    caseStudies: "Digital product design",
+    caseStudiesNote:
+      "Internship and 0→1 product work—flows you can poke at, not only decks.",
     researchCraft: "Research & Craft",
     researchCraftNote:
-      "Two kinds of work side by side: co-design with people, and procedural motion in Houdini.",
+      "Co-design with people on one side; procedural motion in Houdini on the other.",
     vibeCoding: "Vibe Coding",
     vibeCodingNote:
-      "Interactive experiments designed and built with AI coding agents — best experienced live.",
+      "Quick experiments with AI coding tools—start curious, end with something you can play with.",
   },
   zh: {
-    viewAll: "查看全部作品",
-    selectedWork: "精选作品",
-    selectedWorkNote:
-      "让复杂系统变得可理解的案例——从研究、产品策略到可运行的代码。",
+    pageTitle: "作品",
+    pageNote:
+      "还在学，也还在长。从 AI 时尚色彩测试实习、共享照料交接，到计划一变仍能看懂的存钱目标；再到研究、制作，以及能打开玩的 vibe coding 小实验。",
+    caseStudies: "数字产品设计",
+    caseStudiesNote: "实习与 0→1 产品：能上手戳的流程，不只是提案页。",
     researchCraft: "研究与制作",
-    researchCraftNote:
-      "两种并列的工作：和人一起共创，以及在 Houdini 里做程序化运动。",
+    researchCraftNote: "一边和人共创，一边在 Houdini 里做程序化运动。",
     vibeCoding: "Vibe Coding",
-    vibeCodingNote:
-      "与 AI 编程助手共同设计并构建的互动实验——建议亲自体验。",
+    vibeCodingNote: "和 AI 编程工具一起快速试——先好奇，再做出能玩的东西。",
   },
 };
 
@@ -196,56 +236,70 @@ export default function LibraryPage({ embedded = false }) {
     setMetadataOverride(items.length ? { id: project.id, items } : null);
   };
 
-  const handleCardOpen = (project) => {
+  const handleCardOpen = (project, options = {}) => {
     // Keep the hovered project's sidebar block exactly as it is — the
     // entering effect re-asserts the identical items for the open
     // detail. Clearing it here first made the block blink on open.
     window.clearTimeout(hoverLeaveTimerRef.current);
     const scroller = getScroller();
     if (scroller) savedScrollRef.current = scroller.scrollTop;
-    navigate(`/${project.id}`);
+    // Preserve entry origin across prev/next so Home Selected stays a
+    // Home walk, and Projects keeps the catalogue order.
+    const from = options.from ?? entryFromLocation(location, embedded);
+    navigate(`/${project.id}`, {
+      state: { from },
+    });
   };
 
-  // Details hang off Home, the page the projects live on: closing one
-  // returns there, never to a separate collection stop in between.
-  // The return starts the moment closing does — Home lands under the
-  // backdrop while the overlay is still fading (see closingProject),
-  // so the fade reveals the destination, never the grid behind.
+  // Close returns to wherever the card was opened — Home's featured
+  // strip, or the full Projects catalogue. Destination lands under the
+  // backdrop while the overlay is still fading (see closingProject).
   const handleDetailCloseStart = () => {
     if (routeProject) setClosingProject(routeProject);
-    navigate(HOME_PATH);
+    const from = entryFromLocation(location, embedded);
+    navigate(from === "library" ? LIBRARY_PATH : HOME_PATH);
   };
   const handleDetailClosed = () => setClosingProject(null);
 
-  const nextProject = displayedProject
-    ? DETAIL_PROJECTS[
-        (DETAIL_PROJECTS.findIndex((p) => p.id === displayedProject.id) +
-          1) %
-          DETAIL_PROJECTS.length
-      ]
-    : null;
+  const detailEntryFrom = entryFromLocation(location, embedded);
+  const detailSequence = displayedProject
+    ? detailSequenceFor(detailEntryFrom, displayedProject.id)
+    : DETAIL_PROJECTS;
+  const detailIndex = displayedProject
+    ? detailSequence.findIndex((p) => p.id === displayedProject.id)
+    : -1;
+  const nextProject =
+    detailIndex >= 0
+      ? detailSequence[(detailIndex + 1) % detailSequence.length]
+      : null;
+  const prevProject =
+    detailIndex >= 0
+      ? detailSequence[
+          (detailIndex - 1 + detailSequence.length) % detailSequence.length
+        ]
+      : null;
 
   const content = (
-    <div ref={contentRef} className={embedded ? "home-work" : ""}>
+    <div ref={contentRef} className={embedded ? "home-work" : "projects-page"}>
+      {!embedded ? (
+        <header className="projects-page__header">
+          <h1 className="projects-page__title">{labels.pageTitle}</h1>
+          <p className="projects-page__note">{labels.pageNote}</p>
+        </header>
+      ) : null}
       <section
-        id="selected-work"
+        id="case-studies"
         className="case-studies__section"
-        aria-label={labels.selectedWork}
+        aria-label={labels.caseStudies}
       >
-        <div className="case-studies__section-header">
-          <h2 className="case-studies__section-title">{labels.selectedWork}</h2>
-          <a
-            href={PORTFOLIO_LINKS.design}
-            target="_blank"
-            rel="noreferrer"
-            className="case-studies__view-all"
-          >
-            {labels.viewAll} <span className="external-arrow" aria-hidden="true">↗︎</span>
-          </a>
-        </div>
-        <p className="case-studies__section-note">{labels.selectedWorkNote}</p>
+        <h2 className="case-studies__section-title">{labels.caseStudies}</h2>
+        {labels.caseStudiesNote ? (
+          <p className="case-studies__section-note">{labels.caseStudiesNote}</p>
+        ) : null}
         <div className="vibe-grid">
-          {SELECTED_PROJECTS.map((project) => (
+          {SELECTED_PROJECTS.filter(
+            (project) => project.id !== "emotion-garden",
+          ).map((project) => (
             <SelectedWorkCard
               key={project.id}
               project={project}
@@ -283,7 +337,7 @@ export default function LibraryPage({ embedded = false }) {
         <h2 className="case-studies__section-title">{labels.vibeCoding}</h2>
         <p className="case-studies__section-note">{labels.vibeCodingNote}</p>
         <div className="vibe-grid">
-          {VIBE_PROJECTS.map((project) => (
+          {VIBE_SECTION_PROJECTS.map((project) => (
             <VibeProjectCard
               key={project.id}
               project={project}
@@ -309,7 +363,13 @@ export default function LibraryPage({ embedded = false }) {
             onCloseStart={handleDetailCloseStart}
             onClosed={handleDetailClosed}
             nextProject={nextProject}
-            onOpenNext={handleCardOpen}
+            prevProject={prevProject}
+            onOpenNext={(project) =>
+              handleCardOpen(project, { from: detailEntryFrom })
+            }
+            onOpenPrev={(project) =>
+              handleCardOpen(project, { from: detailEntryFrom })
+            }
           />
         </Suspense>
       ) : null}

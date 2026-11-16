@@ -28,7 +28,7 @@ const NAME_ENTRIES = [
 const VIEW_PAD = 16;
 const GAP = 10;
 const HIDE_DELAY_MS = 140;
-const CARD_MAX = 276;
+const CARD_MAX = 232;
 
 function viewportSize() {
   // clientWidth matches the layout viewport better than innerWidth /

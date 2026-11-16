@@ -5,6 +5,7 @@ import {
   DEFAULT_SETTINGS,
   applyDocumentSettings,
   getAccentPageBg,
+  loadTypeVoiceFonts,
   normalizeSettings,
   resolveIsDark,
 } from "../lib/settings";
@@ -117,17 +118,30 @@ export function AppSettingsProvider({ children }) {
     [commitVisual],
   );
 
-  // Type voice must never use View Transition crossfade: stacking an
-  // old-font snapshot over a new-font page doubles every glyph. Fade
-  // the root out, swap, then fade in — the same out-then-in grammar
-  // as a route change, never two readable frames at once.
+  // Type voice: the new faces load first, so the new voice never shows
+  // up in a fallback face and then jumps. With View Transitions the old
+  // page is held as a frozen snapshot while they load, then hands over
+  // out-then-in (site-chrome.css) — a true crossfade would stack two
+  // fonts' glyphs. The open Settings panel is lifted out of the fade so
+  // the control in hand never blinks. Rapid clicks: only the latest
+  // request applies, whatever order its fonts arrive in.
   const typeVoiceTimerRef = useRef(0);
+  const typeVoiceRequestRef = useRef(0);
+  const typeVoiceTargetRef = useRef(null);
   const setTypeVoice = useCallback((typeVoice) => {
-    if (typeVoice === settingsRef.current.typeVoice) return;
+    if (typeVoice === (typeVoiceTargetRef.current ?? settingsRef.current.typeVoice)) {
+      return;
+    }
+    typeVoiceTargetRef.current = typeVoice;
     const root = document.documentElement;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const request = ++typeVoiceRequestRef.current;
+    const isLatest = () => request === typeVoiceRequestRef.current;
+    const fontsReady = loadTypeVoiceFonts(typeVoice);
 
     const apply = () => {
+      if (!isLatest()) return;
+      typeVoiceTargetRef.current = null;
       applyDocumentSettings({
         isDark: resolveIsDark(settingsRef.current.themeMode),
         accent: settingsRef.current.accent,
@@ -137,20 +151,38 @@ export function AppSettingsProvider({ children }) {
     };
 
     if (reduceMotion) {
-      apply();
+      fontsReady.then(apply);
+      return;
+    }
+
+    if (typeof document.startViewTransition === "function") {
+      root.classList.add("type-voice-shifting", "type-voice-transitioning");
+      const transition = document.startViewTransition(async () => {
+        await fontsReady;
+        apply();
+      });
+      transition.finished.finally(() => {
+        if (!isLatest()) return;
+        root.classList.remove("type-voice-shifting", "type-voice-transitioning");
+      });
       return;
     }
 
     window.clearTimeout(typeVoiceTimerRef.current);
+    root.classList.remove("theme-fallback-in");
     root.classList.add("type-voice-shifting", "theme-fallback-out");
-    typeVoiceTimerRef.current = window.setTimeout(() => {
+    const faded = new Promise((resolve) => {
+      typeVoiceTimerRef.current = window.setTimeout(resolve, 160);
+    });
+    Promise.all([fontsReady, faded]).then(() => {
+      if (!isLatest()) return;
       apply();
       root.classList.remove("theme-fallback-out");
       root.classList.add("theme-fallback-in");
       typeVoiceTimerRef.current = window.setTimeout(() => {
         root.classList.remove("theme-fallback-in", "type-voice-shifting");
-      }, 220);
-    }, 140);
+      }, 260);
+    });
   }, []);
 
   // Accent is a paint change, not a scene change: no page crossfade (it

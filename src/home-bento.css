@@ -1,0 +1,2621 @@
+/**
+ * Home bento + V3 shell — Hudson breath, gray ground, dock-only chrome.
+ */
+
+.shared-layout--v3 {
+  /* Closer to Hudson / Dustin reading width (~700px), not a wide dashboard. */
+  --v3-content-max: 46rem;
+  --v3-page-inset: clamp(1.25rem, 5vw, 3.5rem);
+  /* Shared first-band offset — Home 龙月 height, Projects / Teaching match. */
+  --v3-page-start: clamp(1.35rem, 4.5vh, 3rem);
+}
+
+.shared-layout__content--v3 {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: none;
+  padding: clamp(1.75rem, 4vw, 3rem) var(--v3-page-inset)
+    calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+}
+
+.shared-layout__content--v3::-webkit-scrollbar {
+  display: none;
+}
+
+.shared-layout__content--desk {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Kill legacy document top inset on Desk — no white band above the scene. */
+.shared-layout--v3 .app-content-layer--desk {
+  padding: 0 !important;
+  background: transparent;
+}
+
+.shared-layout--v3 .app-content-layer--home,
+.shared-layout--v3 .app-content-layer--library,
+.shared-layout--v3 .app-content-layer--history,
+.shared-layout--v3 .app-content-layer--teaching {
+  padding: 0 !important;
+  overflow: visible;
+}
+
+.shared-layout--v3 .app-content-layer--home .home-layout:not(.home-layout--library),
+.shared-layout--v3 .app-content-layer--library .home-layout,
+.shared-layout--v3 .teaching-layout,
+.shared-layout--v3 .version-history-layout {
+  padding: 0 !important;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  max-width: none;
+}
+
+.shared-layout--v3 .app-content-stack {
+  height: auto;
+  min-height: 100%;
+}
+
+.shared-layout--v3 .app-content-layer--route:not(.is-active) {
+  display: none;
+}
+
+.shared-layout--v3 .app-content-layer--route.is-active {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Kill ambient flash if any remnant paints */
+.shared-layout--v3 .ambient-backdrop {
+  display: none !important;
+}
+
+.home-layout--bento .home-layout__grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.home-layout--bento .home-layout__reading {
+  max-width: none;
+}
+
+.home-layout--bento {
+  height: auto;
+  min-height: 100%;
+  overflow: visible;
+}
+
+.landing-page__hero--bento {
+  position: relative;
+  width: 100%;
+  max-width: none;
+}
+
+.home-bento,
+.home-bento button,
+.home-bento a,
+.selected-rail,
+.vibe-folder,
+.bento-tile {
+  font-family: var(--font-ui);
+  letter-spacing: -0.01em;
+}
+
+.home-bento__name-en,
+.vibe-folder__all,
+.selected-rail__card-sub,
+.teaching-tile__note,
+.bento-tile__square-label,
+.bento-tile__kicker {
+  font-family: var(--font-ui);
+  letter-spacing: -0.01em;
+}
+
+/* ——— Masthead: logo + Longyue, Hudson breath ——— */
+
+.home-bento {
+  display: grid;
+  /* Contact row → About: keep them in one band, not a second chapter. */
+  gap: clamp(1.1rem, 2.2vw, 1.65rem);
+  width: min(100%, var(--v3-content-max));
+  margin: 0 auto;
+}
+
+.home-bento__masthead {
+  /* Brand (name hero) → identity caption → quiet contact. */
+  display: grid;
+  gap: 0;
+  padding: var(--v3-page-start) 0 0;
+  width: 100%;
+  box-sizing: border-box;
+  justify-items: start;
+}
+
+.home-bento__brand {
+  display: grid;
+  gap: 0.7rem;
+  justify-items: start;
+  margin-bottom: clamp(0.85rem, 1.8vh, 1.15rem);
+}
+
+.home-bento__logo {
+  width: 3.65rem;
+  height: auto;
+  display: block;
+  opacity: 0.92;
+}
+
+.home-bento__name-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem 0.75rem;
+}
+
+.home-bento__name {
+  margin: 0;
+  font-size: clamp(2.55rem, 6.2vw, 3.7rem);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.home-bento__name-en {
+  color: color-mix(in srgb, var(--color-text-secondary) 78%, transparent);
+  font-size: 0.28em;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.home-bento__name-row .about-aka {
+  margin: 0;
+}
+
+.home-bento__name-row .about-aka__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.home-bento__name-row .about-aka__line {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: color-mix(in srgb, var(--color-text-secondary) 72%, transparent);
+}
+
+/* One identity band: role caption + living trait chip on the same row.
+   Traits annotate who you are — they should not stack as a second block. */
+.home-bento__identity {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.65rem;
+  max-width: 100%;
+  margin-bottom: 0.85rem;
+}
+
+.home-bento__role {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-secondary) 88%, transparent);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+}
+
+/* Low caption chip — hairline + whisper of tint, not a tall pill button. */
+.home-bento__tag {
+  --tag-pad-x: 0.55rem;
+  --tag-tint: transparent;
+  --tag-ink: var(--color-text);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0.12rem var(--tag-pad-x);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--tag-tint) 11%, var(--color-surface));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--tag-tint) 28%, transparent);
+  color: color-mix(in srgb, var(--tag-ink) 72%, var(--color-text));
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  overflow: hidden;
+  transition:
+    width 480ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 480ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 480ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 480ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* One muted hue per trait — same soft sage / slate / clay direction. */
+.home-bento__tag--try {
+  --tag-tint: #526b61;
+  --tag-ink: #3f564d;
+}
+
+.home-bento__tag--curious {
+  --tag-tint: #6a8498;
+  --tag-ink: #455868;
+}
+
+.home-bento__tag--adaptable {
+  --tag-tint: #8a7460;
+  --tag-ink: #5c4c3d;
+}
+
+:root[data-theme="dark"] .home-bento__tag--try {
+  --tag-tint: #9aafa5;
+  --tag-ink: #c5d4cc;
+}
+
+:root[data-theme="dark"] .home-bento__tag--curious {
+  --tag-tint: #8aa0b4;
+  --tag-ink: #c2d0dc;
+}
+
+:root[data-theme="dark"] .home-bento__tag--adaptable {
+  --tag-tint: #b5a08a;
+  --tag-ink: #e0d2c2;
+}
+
+.home-bento__tag-track {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 1.25em;
+}
+
+.home-bento__tag-text {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  white-space: nowrap;
+  opacity: 0;
+  /* Park below — next line rises into place. */
+  transform: translateY(0.85rem);
+  transition:
+    opacity 480ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.home-bento__tag-text.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Outgoing line exits upward so the swap reads as a clear vertical cut. */
+.home-bento__tag-text.is-leaving {
+  opacity: 0;
+  transform: translateY(-0.85rem);
+  pointer-events: none;
+}
+
+.home-bento__section-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+  font-weight: var(--weight-reading-title);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--color-text);
+  text-transform: lowercase;
+}
+
+.home-bento__bridge {
+  margin: 0;
+  max-width: none;
+  width: 100%;
+  color: var(--color-text);
+  font-family: var(--font-reading);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.home-bento__chapter {
+  display: grid;
+  gap: 1.15rem;
+  min-width: 0;
+}
+
+.home-bento__split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(13rem, 0.78fr);
+  gap: 0.9rem;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.home-bento__split > .bento-tile {
+  height: 100%;
+}
+
+.home-about-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(9.5rem, 11.5rem);
+  gap: 0.9rem;
+  align-items: stretch;
+}
+
+.home-about-row__side {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 0.9rem;
+  min-height: 0;
+  width: 100%;
+}
+
+.home-about-row__side .bento-tile--square {
+  aspect-ratio: auto;
+  height: 100%;
+  min-height: 0;
+}
+
+.home-about-row__side .bento-tile__button--square {
+  height: 100%;
+  min-height: 7.5rem;
+}
+
+.home-about-tile {
+  height: 100%;
+  padding: 1.15rem 1.15rem 1rem;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 0.7rem;
+}
+
+.home-about-tile__title {
+  margin: 0;
+  text-transform: lowercase;
+}
+
+.home-about-tile__flow {
+  min-width: 0;
+}
+
+.home-about-tile__photo {
+  float: right;
+  width: min(36%, 8.25rem);
+  margin: 0 0 0.85rem 1rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.85rem;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: color-mix(in srgb, var(--color-text) 6%, #fff);
+  shape-outside: margin-box;
+  display: block;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.home-about-tile__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  display: block;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-about-tile__photo:hover img,
+.home-about-tile__photo:focus-visible img {
+  transform: scale(1.06);
+}
+
+.home-about-tile__photo:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.home-about-tile__body {
+  margin: 0 0 0.75rem;
+  /* Follows Type voice (Sans vs Serif) — no heavy lead / no bold. */
+  font-family: var(--font-reading);
+  font-size: 0.92rem;
+  font-weight: 400;
+  line-height: var(--reading-line-height, 1.62);
+  letter-spacing: var(--reading-letter-spacing, -0.01em);
+  color: var(--color-text);
+}
+
+.home-about-tile__body:last-child {
+  margin-bottom: 0;
+}
+
+.home-about-tile__status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.95rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.4;
+  min-width: 0;
+}
+
+.home-about-tile__status-item {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.home-about-tile__status-item--open::before {
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: #2f9e64;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #2f9e64 18%, transparent);
+  flex-shrink: 0;
+  animation: open-to-work-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes open-to-work-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 3px color-mix(in srgb, #2f9e64 18%, transparent);
+  }
+  50% {
+    opacity: 0.55;
+    box-shadow: 0 0 0 6px color-mix(in srgb, #2f9e64 0%, transparent);
+  }
+}
+
+.home-about-tile__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  min-height: 1.2rem;
+  clear: both;
+}
+
+.home-about-tile__more {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  transition: color 0.25s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-about-tile__more-arrow {
+  font-size: 0.9em;
+  transform: translateY(-0.02em);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-about-tile__more:hover,
+.home-about-tile__more:focus-visible {
+  color: var(--color-text);
+  transform: scale(1.04);
+}
+
+.home-about-tile__more:hover .home-about-tile__more-arrow,
+.home-about-tile__more:focus-visible .home-about-tile__more-arrow {
+  transform: translateY(-0.02em) translateX(0.18rem);
+}
+
+.home-about-tile__experience {
+  display: grid;
+  gap: 0.7rem;
+  padding-top: 0.15rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+
+.home-about-tile__experience-title {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.home-about-tile__experience-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.home-xp {
+  display: grid;
+  grid-template-columns: 1.6rem minmax(0, 1fr);
+  gap: 0.55rem 0.7rem;
+  align-items: start;
+  padding: 0.7rem 0.75rem;
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--color-surface) 92%, var(--color-background));
+  border: 1px solid color-mix(in srgb, var(--color-text) 7%, transparent);
+}
+
+.home-xp__index {
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--color-text) 35%, transparent);
+  padding-top: 0.12rem;
+}
+
+.home-xp__body {
+  display: grid;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.home-xp__period {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+.home-xp__role {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--color-text);
+}
+
+.home-xp__org {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+
+.home-bento__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 1.45rem;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+}
+
+.home-bento__links--masthead {
+  margin: 0;
+}
+
+/* Shared quiet underline links (masthead, inline About, Experience). */
+.site-text-link,
+.home-bento__links a {
+  display: inline;
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-secondary) 92%, var(--color-text));
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: color-mix(in srgb, var(--color-text) 28%, transparent);
+  text-underline-offset: 0.22em;
+  transform-origin: left center;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
+}
+
+.home-bento__links a {
+  display: inline-block;
+}
+
+.site-text-link {
+  display: inline-block;
+}
+
+.site-text-link:hover,
+.site-text-link:focus-visible,
+.home-bento__links a:hover,
+.home-bento__links a:focus-visible {
+  /* Quiet utility — darken, don’t go accent-green. */
+  color: var(--color-text);
+  text-decoration-style: solid;
+  text-decoration-color: currentColor;
+  transform: scale(1.05);
+}
+
+.site-text-link .external-arrow,
+.home-bento__links .external-arrow {
+  opacity: 0.55;
+  font-size: 0.9em;
+}
+
+.home-about-tile__body .site-text-link {
+  color: inherit;
+  text-decoration-color: color-mix(in srgb, var(--color-text) 32%, transparent);
+}
+
+/* ——— Status: weather wash + analog clock (atom63 glance) ——— */
+
+.home-status {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+  width: 100%;
+}
+
+.home-status__tile {
+  position: relative;
+  display: grid;
+  aspect-ratio: 1 / 1.05;
+  min-height: 0;
+  padding: 1rem;
+  box-sizing: border-box;
+  border-radius: 1.15rem;
+  overflow: hidden;
+}
+
+.home-status__land {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 2.65rem;
+  height: 2.9rem;
+  color: currentColor;
+  opacity: 0.14;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.home-status__tile--weather .home-status__land {
+  opacity: 0.2;
+  color: #fff;
+}
+
+.home-status__tile--clock .home-status__land {
+  opacity: 0.13;
+}
+
+.home-status__land--chongqing {
+  width: 2.35rem;
+  height: 3.05rem;
+}
+
+.home-status__tile--weather {
+  grid-template-rows: auto 1fr auto;
+  color: #f4f6f8;
+  background: #6f8494;
+}
+
+.home-status__tile--weather.home-status__tile--sunny {
+  background: linear-gradient(160deg, #7f94a4 0%, #5f7688 100%);
+}
+
+.home-status__tile--weather.home-status__tile--cloudy {
+  background: linear-gradient(160deg, #7a8b99 0%, #5c6d7a 100%);
+}
+
+.home-status__tile--weather.home-status__tile--rainy {
+  background: linear-gradient(160deg, #5f7388 0%, #445668 100%);
+}
+
+.home-status__tile--weather.home-status__tile--snowy {
+  background: linear-gradient(160deg, #8a97a4 0%, #6a7886 100%);
+}
+
+.home-status__tile--clock {
+  /* Same band stack as weather: label top, face middle, meta bottom. */
+  grid-template-rows: auto 1fr auto;
+  align-items: stretch;
+  justify-items: stretch;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.home-status__place {
+  margin: 0;
+  max-width: calc(100% - 3.4rem);
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  line-height: 1.2;
+  opacity: 0.92;
+}
+
+.home-status__clock-face {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+}
+
+.home-status__date {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  opacity: 0.82;
+  color: inherit;
+}
+
+.home-status__temp {
+  margin: 0;
+  align-self: end;
+  font-family: var(--font-ui);
+  font-size: clamp(2.4rem, 5.5vw, 3.1rem);
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-status__weather-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.home-status__condition {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.home-status__range {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  opacity: 0.82;
+}
+
+.home-status__glyph {
+  width: 3.75rem;
+  height: 3.75rem;
+  flex-shrink: 0;
+  opacity: 0.95;
+}
+
+.home-status__glyph svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.home-status__analog {
+  width: min(100%, 9.5rem);
+  aspect-ratio: 1;
+}
+
+.home-status__analog-face {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.home-status__analog-face > circle {
+  stroke-opacity: 0.22;
+}
+
+.home-status__analog-face > line {
+  stroke-opacity: 0.55;
+}
+
+/* Hands follow ink so they stay readable on light and dark tiles. */
+.home-status__hour {
+  stroke: color-mix(in srgb, var(--color-text) 92%, transparent);
+}
+
+.home-status__minute {
+  stroke: color-mix(in srgb, var(--color-text) 68%, transparent);
+}
+
+.home-status__second {
+  stroke: #c24b45;
+}
+
+.home-status__hub {
+  fill: color-mix(in srgb, var(--color-text) 78%, transparent);
+}
+
+/* ——— Grid ——— */
+
+.bento-grid {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.bento-tile--compact .bento-tile__button--square {
+  min-height: 0;
+}
+
+.bento-grid__modules {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  width: 100%;
+  align-items: stretch;
+}
+
+.bento-grid__modules > .bento-tile {
+  height: 100%;
+}
+
+.bento-tile {
+  margin: 0;
+  min-width: 0;
+  border-radius: 1rem;
+  border: 0;
+  /* Gray text panels on a whiter page — Hudson / atom63 light stack. */
+  background: var(--color-surface);
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.bento-tile__button {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bento-tile__button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.bento-tile__kicker {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: lowercase;
+}
+
+/* ——— Squares ——— */
+
+.bento-tile--square {
+  aspect-ratio: 1;
+}
+
+.bento-tile__button--square {
+  position: relative;
+}
+
+.bento-tile__media--square {
+  position: absolute;
+  inset: 0;
+}
+
+.bento-tile__media--square .bento-tile__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.45s ease;
+}
+
+.bento-tile--desaturate .bento-tile__image {
+  filter: grayscale(1) contrast(1.02);
+}
+
+.bento-tile--square:hover .bento-tile__image,
+.bento-tile--square:focus-within .bento-tile__image {
+  transform: scale(1.06);
+}
+
+.bento-tile--desaturate:hover .bento-tile__image,
+.bento-tile--desaturate:focus-within .bento-tile__image {
+  filter: grayscale(0) contrast(1);
+}
+
+.bento-tile__desk-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, #dfe6e2 0%, #cfd8d3 42%, #b9c4be 100%);
+}
+
+.bento-tile__desk-sky {
+  position: absolute;
+  inset: 0 0 42% 0;
+  background:
+    radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.55), transparent 42%),
+    linear-gradient(180deg, #e8eef2 0%, #d5dde4 100%);
+}
+
+.bento-tile__desk-window {
+  position: absolute;
+  top: 14%;
+  left: 18%;
+  width: 38%;
+  height: 28%;
+  border-radius: 0.35rem;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.55), transparent 55%),
+    linear-gradient(180deg, #9eb0bc 0%, #7f93a1 100%);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.28);
+}
+
+.bento-tile__desk-monitor {
+  position: absolute;
+  left: 52%;
+  bottom: 38%;
+  width: 34%;
+  height: 26%;
+  border-radius: 0.28rem 0.28rem 0.12rem 0.12rem;
+  background: linear-gradient(180deg, #3a4146 0%, #23282c 100%);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.bento-tile__desk-monitor::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -18%;
+  width: 18%;
+  height: 18%;
+  transform: translateX(-50%);
+  background: #2d3337;
+}
+
+.bento-tile__desk-lamp {
+  position: absolute;
+  right: 14%;
+  bottom: 40%;
+  width: 0.35rem;
+  height: 28%;
+  border-radius: 999px;
+  background: #5a5046;
+}
+
+.bento-tile__desk-lamp::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -0.55rem;
+  width: 1.35rem;
+  height: 0.85rem;
+  transform: translateX(-70%) rotate(-18deg);
+  border-radius: 0.4rem 0.4rem 0.15rem 0.15rem;
+  background: #c9a46a;
+  box-shadow: 0 0 18px rgba(245, 196, 110, 0.45);
+}
+
+.bento-tile__desk-top {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 18%;
+  height: 14%;
+  border-radius: 0.35rem;
+  background: linear-gradient(180deg, #c4a07a 0%, #a98462 100%);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+}
+
+.bento-tile__square-caption {
+  position: absolute;
+  left: 0.85rem;
+  right: 0.85rem;
+  bottom: 0.75rem;
+  display: grid;
+  gap: 0.15rem;
+  color: #fff;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
+}
+
+.bento-tile--desk .bento-tile__square-caption {
+  color: #fff;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
+  z-index: 3;
+}
+
+.bento-tile--desk-curtain .bento-tile__image {
+  object-fit: cover;
+  /* Keep desk + floor in frame; crop the preview chrome above the scene. */
+  object-position: 48% 58%;
+  transform: scale(1.22);
+  transform-origin: 48% 58%;
+  /* Image only lives under the rod — nothing peeks above the stick. */
+  clip-path: inset(0.62rem 0 0 0);
+  filter: none;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bento-tile--square.bento-tile--desk-curtain:hover .bento-tile__image,
+.bento-tile--square.bento-tile--desk-curtain:focus-within .bento-tile__image {
+  transform: scale(1.28);
+}
+
+.bento-tile__curtain {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Solid valance above the rod — no desk illustration above the stick. */
+.bento-tile__curtain::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0.55rem;
+  background: #efe8dc;
+  z-index: 3;
+}
+
+.bento-tile__curtain-rod {
+  position: absolute;
+  top: 0.35rem;
+  left: 0;
+  right: 0;
+  height: 0.32rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #e0c9a8 0%, #c4a078 100%);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  z-index: 4;
+}
+
+.bento-tile__curtain-panel {
+  position: absolute;
+  top: 0.62rem;
+  bottom: 0;
+  width: 54%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in srgb, #d48a8a 86%, #7a3d3d) 0 10px,
+      color-mix(in srgb, #e0a0a0 84%, #8a4848) 10px 18px,
+      color-mix(in srgb, #c97878 88%, #6e3535) 18px 26px
+    );
+  box-shadow: inset 0 0 24px rgba(90, 30, 30, 0.18);
+  transition: transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 2;
+}
+
+.bento-tile__curtain-panel--left {
+  left: 0;
+  transform-origin: left center;
+  clip-path: polygon(0 0, 100% 0, 94% 100%, 0 100%);
+}
+
+.bento-tile__curtain-panel--right {
+  right: 0;
+  transform-origin: right center;
+  clip-path: polygon(6% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.bento-tile--desk-curtain:hover .bento-tile__curtain-panel--left,
+.bento-tile--desk-curtain:focus-within .bento-tile__curtain-panel--left {
+  transform: translateX(-78%);
+}
+
+.bento-tile--desk-curtain:hover .bento-tile__curtain-panel--right,
+.bento-tile--desk-curtain:focus-within .bento-tile__curtain-panel--right {
+  transform: translateX(78%);
+}
+
+.bento-tile__square-label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: lowercase;
+  opacity: 0.92;
+}
+
+.bento-tile__square-title {
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.bento-tile--furin-cta .bento-tile__square-label {
+  text-transform: none;
+  letter-spacing: 0.01em;
+  opacity: 0.88;
+}
+
+.bento-tile--furin-cta .bento-tile__square-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+/* ——— Hobby strips (beside vibe folder) ———
+   Four surface rows + kicker — no outer tray (matches Selected Work). */
+
+.hobby-stack {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.55rem;
+  height: 100%;
+  min-height: 19.5rem;
+  min-width: 0;
+}
+
+.hobby-stack__kicker {
+  margin: 0;
+  padding: 0 0.15rem;
+}
+
+.hobby-stack__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  gap: 0.55rem;
+  min-height: 0;
+}
+
+.hobby-stack__item {
+  min-height: 0;
+}
+
+.hobby-strip {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+  height: 100%;
+  min-height: 3.35rem;
+  padding: 0.45rem 0.75rem 0.45rem 0.55rem;
+  box-sizing: border-box;
+  background: var(--color-surface);
+  border: 1px solid transparent;
+  border-radius: 0.85rem;
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease;
+}
+
+.hobby-strip:hover,
+.hobby-strip:focus-within {
+  border-color: color-mix(in srgb, var(--color-text) 10%, transparent);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  background: color-mix(in srgb, var(--color-surface) 88%, #fff);
+}
+
+.hobby-strip__sticker {
+  display: block;
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: 0.18rem;
+  box-sizing: border-box;
+  border-radius: 0.4rem;
+  background: #fff;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 4px 10px rgba(40, 32, 24, 0.1);
+  transform: rotate(0deg);
+  transform-origin: 50% 60%;
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hobby-strip__sticker img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.22rem;
+}
+
+/* Straight at rest; only the hovered strip tilts. */
+.hobby-strip:hover .hobby-strip__sticker,
+.hobby-strip:focus-within .hobby-strip__sticker {
+  transform: rotate(var(--sticker-tilt, -4deg)) translateY(-0.1rem);
+}
+
+.hobby-strip__copy {
+  display: grid;
+  gap: 0.08rem;
+  min-width: 0;
+}
+
+.hobby-strip__title {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: var(--color-text);
+}
+
+.hobby-strip__note {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--color-text-secondary);
+}
+
+/* ——— Real folder ——— */
+
+.bento-tile--folder {
+  width: 100%;
+}
+
+.vibe-folder {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: 19.5rem;
+  padding: 1.35rem 1.25rem 1rem;
+  box-sizing: border-box;
+  background: var(--color-surface);
+  border: 1px solid transparent;
+  border-radius: 1rem;
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease;
+}
+
+.bento-tile--folder:hover .vibe-folder,
+.bento-tile--folder.is-expanded .vibe-folder,
+.bento-tile--folder:focus-within .vibe-folder {
+  border-color: color-mix(in srgb, var(--color-text) 10%, transparent);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.05);
+  background: color-mix(in srgb, var(--color-surface) 88%, #fff);
+}
+
+.vibe-folder__stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 14.75rem;
+  padding: 1.6rem 0 0.5rem;
+  overflow: hidden;
+}
+
+.vibe-folder__back {
+  position: absolute;
+  width: 16.5rem;
+  height: 10rem;
+  border-radius: 0.75rem;
+  /* Quieter folder paper — less loud yellow. */
+  background: linear-gradient(180deg, #e8d9b0, #d7c08a);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  transform: translateY(0.15rem);
+}
+
+.vibe-folder__covers {
+  position: relative;
+  /* Rest: under the flap so the folder front covers the tucked papers. */
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+  height: 11rem;
+  pointer-events: none;
+}
+
+.vibe-folder__cover-btn {
+  pointer-events: auto;
+}
+
+.vibe-folder__cover {
+  position: absolute;
+  left: 50%;
+  bottom: 1.35rem;
+  /* A bit wider than the old portrait, still tucks into the folder. */
+  width: 8.85rem;
+  height: 8.15rem;
+  margin: 0;
+  border-radius: 0.45rem;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+  /* Later covers sit in front within the stack (still under the flap at rest). */
+  z-index: calc(1 + var(--cover-i));
+  /* Peek more when collapsed — covers used to read too small. */
+  transform: translateX(calc(-50% + (var(--cover-i) - 1) * 1.55rem))
+    translateY(1.35rem) rotate(calc((var(--cover-i) - 1) * 5deg));
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 320ms ease;
+}
+
+.bento-tile--folder.is-expanded .vibe-folder__covers {
+  /* Fan is above the open flap so covers aren’t trapped under it. */
+  z-index: 4;
+}
+
+.bento-tile--folder.is-expanded .vibe-folder__cover {
+  /* Fan out without scale — keeps “vibe coding / all 3” from feeling zoomed. */
+  transform: translateX(calc(-50% + (var(--cover-i) - 1) * 7.85rem))
+    translateY(-1.55rem) rotate(0deg);
+  z-index: calc(1 + var(--cover-i));
+}
+
+.bento-tile--folder.is-expanded .vibe-folder__cover.is-active {
+  transform: translateX(calc(-50% + (var(--cover-i) - 1) * 7.85rem))
+    translateY(-1.95rem) rotate(0deg);
+  /* Hovered project rises above the rest of the fan. */
+  z-index: 6;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.22);
+}
+
+.vibe-folder__cover-btn {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #f3f3f3;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  pointer-events: auto;
+}
+
+.vibe-folder__cover-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 28%;
+  display: block;
+}
+
+.vibe-folder__cover-title {
+  position: absolute;
+  left: 0.35rem;
+  right: 0.35rem;
+  bottom: 0.35rem;
+  font-size: 0.58rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #fff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.bento-tile--folder.is-expanded .vibe-folder__cover-title {
+  opacity: 1;
+}
+
+.vibe-folder__body {
+  position: absolute;
+  /* Rest: folder front covers the papers; expands under the fan on hover. */
+  z-index: 3;
+  left: 50%;
+  bottom: 0.15rem;
+  width: 17.25rem;
+  height: 7rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.vibe-folder__flap {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 100%;
+  transform-style: preserve-3d;
+  /* Soft ambient lift only — a tight drop-shadow reads as a hard underline. */
+  filter: drop-shadow(0 14px 22px rgba(40, 32, 18, 0.1));
+  transition:
+    transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 380ms ease;
+}
+
+.vibe-folder__tab {
+  position: absolute;
+  left: 1.25rem;
+  top: -0.9rem;
+  width: 3.9rem;
+  height: 1.2rem;
+  border-radius: 0.55rem 0.55rem 0 0;
+  background: linear-gradient(180deg, #e6d4a6, #d4b878);
+}
+
+.vibe-folder__front {
+  position: absolute;
+  inset: 0;
+  /* Keep all four corners round — also while the flap rotates out. */
+  border-radius: 0.75rem;
+  background: linear-gradient(180deg, #ead9ae 0%, #d7bf86 55%, #c8ac6e 100%);
+  /* Local edge only — ambient lift lives on the flap filter. */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 -14px 22px rgba(90, 70, 30, 0.045);
+  transition: box-shadow 380ms ease;
+}
+
+/* Soft ground contact under the closed folder — ellipse, not a hard line. */
+.vibe-folder__body::after {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -0.35rem;
+  height: 0.85rem;
+  z-index: -1;
+  border-radius: 50%;
+  background: rgba(40, 32, 18, 0.14);
+  filter: blur(7px);
+  opacity: 0.55;
+  pointer-events: none;
+  transition: opacity 380ms ease, transform 380ms ease;
+}
+
+/* Open toward the viewer (outward), tab rides with the flap.
+   No clip-path — a trapezoid cut squares the bottom corners. */
+.bento-tile--folder.is-expanded .vibe-folder__flap {
+  transform: perspective(720px) rotateX(-36deg) translateY(0.15rem);
+  filter: drop-shadow(0 20px 28px rgba(40, 32, 18, 0.14));
+}
+
+.bento-tile--folder.is-expanded .vibe-folder__body::after {
+  opacity: 0.28;
+  transform: translateY(0.35rem) scaleX(0.92);
+}
+
+.bento-tile--folder.is-expanded .vibe-folder__front {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -12px 20px rgba(90, 70, 30, 0.05);
+}
+
+.vibe-folder__footer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.45rem;
+  min-height: 1.2rem;
+}
+
+.vibe-folder__footer .bento-tile__kicker,
+.vibe-folder__all {
+  transform-origin: left center;
+  transition:
+    color 0.25s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.vibe-folder__all {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 400;
+  cursor: pointer;
+  transform-origin: right center;
+}
+
+.bento-tile--folder:hover .vibe-folder__footer .bento-tile__kicker,
+.bento-tile--folder:focus-within .vibe-folder__footer .bento-tile__kicker,
+.vibe-folder__all:hover,
+.vibe-folder__all:focus-visible {
+  color: var(--color-text);
+  transform: scale(1.04);
+}
+
+/* ——— Teaching: short strip (thumb + course line), not a tall hero ——— */
+
+.bento-tile--teaching {
+  overflow: visible;
+  border: 1px solid transparent;
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease;
+}
+
+/* Same quiet border language as hobbies / vibe folder — rest is
+   transparent; hover draws a 1px edge so the tile reads as pressed. */
+.bento-tile--teaching:hover,
+.bento-tile--teaching:focus-within {
+  border-color: color-mix(in srgb, var(--color-text) 10%, transparent);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  background: color-mix(in srgb, var(--color-surface) 88%, #fff);
+}
+
+.bento-tile__button--teaching {
+  display: grid;
+  grid-template-columns: 4.25rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 0;
+  padding: 0.65rem 1rem 0.65rem 0.7rem;
+  overflow: visible;
+  background: transparent;
+  color: var(--color-text);
+  text-align: left;
+  border-radius: inherit;
+}
+
+.teaching-tile__thumb {
+  position: relative;
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: 0.7rem;
+  overflow: visible;
+  flex: 0 0 auto;
+  align-self: center;
+  background: transparent;
+}
+
+.teaching-tile__bleed {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  border-radius: 0.7rem;
+  transform-origin: 50% 70%;
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bento-tile__button--teaching:hover .teaching-tile__bleed,
+.bento-tile__button--teaching:focus-visible .teaching-tile__bleed {
+  transform: rotate(-5deg) translateY(-0.08rem);
+}
+
+.teaching-tile__caption {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 0.35rem;
+  min-height: 0;
+  padding: 0.05rem 0;
+  background: transparent;
+  color: var(--color-text);
+  min-width: 0;
+}
+
+.teaching-tile__copy {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.teaching-tile__caption .bento-tile__kicker {
+  /* Same quiet module label as vibe folder — not primary ink. */
+  color: var(--color-text-secondary);
+  width: fit-content;
+  transform-origin: left center;
+  transition:
+    color 0.25s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bento-tile--teaching:hover .teaching-tile__caption .bento-tile__kicker,
+.bento-tile--teaching:focus-within .teaching-tile__caption .bento-tile__kicker {
+  color: var(--color-text);
+  transform: scale(1.04);
+}
+
+.teaching-tile__note {
+  margin: 0;
+  /* Course line is the readable content on the strip — full ink, not washed secondary. */
+  color: var(--color-text);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.teaching-tile__more {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  align-self: flex-end;
+  width: fit-content;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  transform-origin: right center;
+  transition:
+    color 0.25s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.teaching-tile__more-arrow {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bento-tile--teaching:hover .teaching-tile__more,
+.bento-tile--teaching:focus-within .teaching-tile__more {
+  color: var(--color-text);
+  transform: scale(1.04);
+}
+
+.bento-tile--teaching:hover .teaching-tile__more-arrow,
+.bento-tile--teaching:focus-within .teaching-tile__more-arrow {
+  transform: translateX(0.18rem);
+}
+
+/* ——— Selected work: chapter-level horizontal rail (no gray tray) ——— */
+
+.selected-rail {
+  display: grid;
+  gap: 1.15rem;
+}
+
+.selected-rail__kicker {
+  margin: 0 0 -0.45rem;
+  padding: 0 0.05rem;
+  color: var(--color-text-secondary);
+}
+
+.selected-rail__scroller {
+  container-type: inline-size;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 0;
+  -webkit-overflow-scrolling: touch;
+  /* Quiet bar along the bottom edge — only while scrolling. */
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.selected-rail__scroller.is-scrolling {
+  scrollbar-color: color-mix(in srgb, var(--color-text) 32%, transparent)
+    transparent;
+}
+
+.selected-rail__scroller::-webkit-scrollbar {
+  height: 6px;
+}
+
+.selected-rail__scroller::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.selected-rail__scroller::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+}
+
+.selected-rail__scroller.is-scrolling::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-text) 32%, transparent);
+}
+
+.selected-rail__scroller:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.selected-rail__track {
+  display: flex;
+  gap: 0.85rem;
+  width: max-content;
+  /* End pad so the last card can snap clear of the edge. */
+  padding: 0 0 0.65rem;
+}
+
+.selected-rail__card {
+  margin: 0;
+  /* ~70% of the rail so the next card peeks — clear scroll affordance. */
+  flex: 0 0 min(34rem, 70cqi);
+  width: min(34rem, 70cqi);
+  scroll-snap-align: start;
+}
+
+.selected-rail__card-btn {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 1.05rem;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-text) 8%, #fff);
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.selected-rail__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-text) 6%, #fff);
+}
+
+.selected-rail__still,
+.selected-rail__video,
+.selected-rail__placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--media-pos, center 30%);
+  display: block;
+  /* Light crop only — keep UI in the shot readable. */
+  transform: scale(var(--media-zoom, 1.06));
+  transform-origin: var(--media-origin, center center);
+}
+
+.selected-rail__still {
+  z-index: 0;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.selected-rail__video {
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.28s ease,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.selected-rail__media.is-playing .selected-rail__video {
+  opacity: 1;
+}
+
+/* Keep the still under the video so hover never flashes an empty tile. */
+.selected-rail__media.is-playing .selected-rail__still {
+  opacity: 1;
+}
+
+.selected-rail__card-btn:hover .selected-rail__still,
+.selected-rail__card-btn:focus-visible .selected-rail__still,
+.selected-rail__card-btn:hover .selected-rail__video,
+.selected-rail__card-btn:focus-visible .selected-rail__video,
+.selected-rail__media.is-playing .selected-rail__still,
+.selected-rail__media.is-playing .selected-rail__video {
+  transform: scale(var(--media-zoom-hover, 1.12));
+}
+
+.selected-rail__shade {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 2;
+  height: 58%;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.38) 40%,
+    rgba(0, 0, 0, 0.78) 100%
+  );
+  pointer-events: none;
+}
+
+.selected-rail__meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  display: grid;
+  gap: 0.28rem;
+  padding: 1.15rem;
+}
+
+.selected-rail__card-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.22rem;
+  font-weight: var(--weight-reading-title);
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
+}
+
+.selected-rail__card-sub {
+  margin: 0;
+  font-family: var(--font-ui);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+}
+
+.selected-rail__card-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.bento-tile__external {
+  opacity: 0.75;
+}
+
+.home-copyright--flow {
+  position: static;
+  width: auto;
+  margin-top: 0.25rem;
+  padding: 0 0.15rem;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.projects-page {
+  display: grid;
+  gap: var(--space-6);
+  width: min(100%, var(--v3-content-max));
+  margin: 0 auto;
+  padding-bottom: 1rem;
+}
+
+.projects-page__header {
+  display: grid;
+  gap: 0.35rem;
+  max-width: none;
+  margin-bottom: 1.5rem;
+}
+
+.projects-page__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.65rem, 3vw, 2.1rem);
+  font-weight: var(--weight-reading-title);
+  letter-spacing: -0.03em;
+}
+
+.projects-page__note {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-reading);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.shared-layout--v3 .case-studies__section-title {
+  font-family: var(--font-ui);
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--color-text);
+}
+
+.shared-layout--v3 .case-studies__section-note,
+.shared-layout--v3 .projects-page__note {
+  font-family: var(--font-reading);
+  max-width: none;
+  width: 100%;
+}
+
+/* Projects cards: lift off the page ground so they don’t melt into the board. */
+.shared-layout--v3 .vibe-card__button,
+.shared-layout--v3 .vibe-card__link {
+  background: var(--color-surface);
+  box-shadow:
+    0 1px 2px color-mix(in srgb, #000 6%, transparent),
+    0 8px 22px color-mix(in srgb, #000 8%, transparent);
+}
+
+.shared-layout--v3 .vibe-card__button:hover,
+.shared-layout--v3 .vibe-card__button:focus-visible,
+.shared-layout--v3 .vibe-card__link:hover,
+.shared-layout--v3 .vibe-card__link:focus-visible {
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 12px 28px rgba(0, 0, 0, 0.07);
+}
+
+.home-layout--library {
+  height: auto;
+  min-height: 100%;
+  overflow: visible;
+}
+
+/* V3: kill the legacy two-column reading/sidebar track on Projects */
+.shared-layout--v3 .home-layout--library .home-layout__grid {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+}
+
+.shared-layout--v3 .home-layout--library .home-layout__reading {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+}
+
+/* Teaching / About / Projects share the same content width + inset as Home */
+.shared-layout--v3 .app-content-layer--teaching {
+  padding: 0 !important;
+}
+
+.shared-layout--v3 .teaching-page,
+.shared-layout--v3 .about-page__shell,
+.shared-layout--v3 .projects-page,
+.shared-layout--v3 .home-bento {
+  width: min(100%, var(--v3-content-max));
+  max-width: none;
+  margin: 0 auto;
+  padding-top: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.shared-layout--v3 .about-page__shell .log-narrative {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+
+/* First text band: same start height as Home 龙月 across routes. */
+.shared-layout--v3 .projects-page__header,
+.shared-layout--v3 .teaching-section--intro,
+.shared-layout--v3 .about-page__shell {
+  margin-top: 0;
+  padding-top: var(--v3-page-start);
+}
+
+.shared-layout--v3 .teaching-section--intro .teaching-section__kicker {
+  display: none;
+}
+
+.shared-layout--v3 .projects-page__title,
+.shared-layout--v3 .teaching-section--intro .teaching-section__title {
+  margin: 0 0 1.35rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.65rem, 3vw, 2.1rem);
+  font-weight: var(--weight-reading-title);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--color-text);
+}
+
+.shared-layout--v3 .about-page__shell .log-essay__heading {
+  font-family: var(--font-display);
+}
+
+.shared-layout--v3 .about-experience__title {
+  font-family: var(--font-display);
+  font-weight: var(--weight-reading-title);
+}
+
+.shared-layout--v3 .teaching-section__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+  font-weight: var(--weight-reading-title);
+  letter-spacing: -0.02em;
+}
+
+.shared-layout--v3 .teaching-prose > p,
+.shared-layout--v3 .teaching-principles__description,
+.shared-layout--v3 .teaching-course__focus,
+.shared-layout--v3 .teaching-list,
+.shared-layout--v3 .teaching-work__body > p,
+.shared-layout--v3 .teaching-reflection p:not(.teaching-label) {
+  max-width: none;
+  font-size: 1rem;
+  line-height: var(--reading-line-height);
+  letter-spacing: var(--reading-letter-spacing);
+}
+
+.shared-layout--v3 .about-page__shell .log-essay > p,
+.shared-layout--v3 .about-page__shell .log-essay__section > p,
+.shared-layout--v3 .about-page__shell .log-essay__quote,
+.shared-layout--v3 .about-page__shell .log-essay__quote-original,
+.shared-layout--v3 .about-page__shell .log-essay__quote-translation {
+  max-width: none;
+  width: 100%;
+}
+
+.shared-layout--v3 .about-page__shell .log-essay > p,
+.shared-layout--v3 .about-page__shell .log-essay__section > p,
+.shared-layout--v3 .about-page__shell .log-essay__quote-translation {
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.shared-layout--v3 .teaching-section__kicker {
+  display: none;
+}
+
+.shared-layout--v3 .teaching-thread {
+  height: 2.5rem;
+  margin: 1.5rem 0;
+  opacity: 0.55;
+}
+
+.shared-layout--v3 .teaching-figure__frame {
+  border: 0;
+  border-radius: 0.75rem;
+}
+
+.shared-layout--v3 .teaching-principles__index,
+.shared-layout--v3 .teaching-arc__index {
+  color: var(--color-text-secondary);
+}
+
+.shared-layout--v3 .home-bento {
+  padding: 0;
+}
+
+/* ——— Desk / About close — same framed chip as project detail × ——— */
+
+.desk-close {
+  position: fixed;
+  z-index: 50;
+  top: max(1rem, env(safe-area-inset-top, 0px));
+  display: grid;
+  place-items: center;
+  width: 2.05rem;
+  height: 2.05rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+/* Windows / Linux: close on the right. macOS: close on the left. */
+.desk-close--right {
+  right: max(1rem, env(safe-area-inset-right, 0px));
+}
+
+.desk-close--left {
+  left: max(1rem, env(safe-area-inset-left, 0px));
+}
+
+.desk-close:hover,
+.desk-close:focus-visible {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-text) 8%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-text) 22%, transparent);
+}
+
+.desk-close:active {
+  transform: scale(0.94);
+}
+
+.desk-close:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .home-about-row {
+    grid-template-columns: 1fr;
+  }
+
+  .home-bento__split {
+    grid-template-columns: 1fr;
+  }
+
+  .hobby-stack {
+    min-height: 0;
+  }
+
+  .hobby-stack__list {
+    grid-template-rows: none;
+  }
+
+  .home-about-row__side {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+  }
+
+  .bento-tile__button--teaching {
+    grid-template-columns: 3.85rem minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .teaching-tile__thumb {
+    width: 3.85rem;
+    height: 3.85rem;
+  }
+
+  .bento-grid__modules {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .home-status {
+    grid-template-columns: 1fr;
+  }
+
+  .home-status__tile {
+    aspect-ratio: 5 / 3;
+  }
+
+  .home-status__analog {
+    width: min(100%, 8.5rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .shared-layout--v3 {
+    --v3-page-inset: 1.1rem;
+  }
+
+  .home-status {
+    width: 100%;
+  }
+
+  .selected-rail__card {
+    flex-basis: min(28rem, 78cqi);
+    width: min(28rem, 78cqi);
+  }
+
+  .bento-grid__modules {
+    grid-template-columns: 1fr;
+  }
+
+  .vibe-folder__cover {
+    width: 7.6rem;
+    height: 7.1rem;
+  }
+
+  .bento-tile--folder.is-expanded .vibe-folder__cover {
+    transform: translateX(calc(-50% + (var(--cover-i) - 1) * 5.2rem))
+      translateY(-0.7rem) rotate(0deg);
+  }
+
+  .bento-tile--folder.is-expanded .vibe-folder__cover.is-active {
+    transform: translateX(calc(-50% + (var(--cover-i) - 1) * 5.2rem))
+      translateY(-1rem) rotate(0deg);
+  }
+
+  .home-about-tile__photo {
+    width: min(42%, 9rem);
+    margin: 0 0 0.75rem 0.85rem;
+  }
+
+  .home-about-row__side {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vibe-folder__cover,
+  .teaching-tile__bleed,
+  .selected-rail__media img,
+  .selected-rail__still,
+  .selected-rail__video,
+  .bento-tile__image,
+  .home-about-tile__photo img,
+  .hobby-strip__sticker,
+  .home-bento__links a,
+  .home-about-tile__more,
+  .home-bento__tag,
+  .home-bento__tag-text,
+  .site-dock__bar-shell,
+  .site-dock__bar,
+  .site-dock__plus-btn,
+  .site-dock__item {
+    transition: none;
+    transform: none;
+  }
+
+  .site-dock__plus-btn:active,
+  .site-dock__item:active {
+    transform: none;
+  }
+
+  .selected-rail__media.is-playing .selected-rail__video {
+    opacity: 0;
+  }
+
+  .selected-rail__media.is-playing .selected-rail__still {
+    opacity: 1;
+  }
+
+  .home-bento__tag-text,
+  .home-bento__tag-text.is-leaving {
+    opacity: 0;
+    transform: none;
+  }
+
+  .home-bento__tag-text.is-active {
+    opacity: 1;
+    transform: none;
+  }
+
+  .home-about-tile__status-item--open::before {
+    animation: none;
+  }
+}
+
+/* ——— Site dock ——— */
+
+.site-dock {
+  --dock-control-size: 3.2rem;
+  --dock-item-size: 2.6rem;
+  --dock-chrome: var(--color-surface);
+  --dock-lift:
+    drop-shadow(0 1px 1px rgba(0, 0, 0, 0.03))
+    drop-shadow(0 6px 16px rgba(0, 0, 0, 0.08));
+  position: fixed;
+  /* Above project detail (z-index 100) so the bar stays reachable. */
+  z-index: 120;
+  /* Keep dock outside page crossfade so chrome stays still. */
+  view-transition-name: site-dock;
+  /* Whole cluster stays centered: expand grows right, then the group
+     eases left into the middle as a single piece. */
+  left: 50%;
+  bottom: max(1.85rem, calc(env(safe-area-inset-bottom, 0px) + 0.85rem));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  width: max-content;
+  max-width: calc(100vw - 1.25rem);
+  transform: translateX(-50%);
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.site-dock__cluster,
+.site-dock__settings {
+  pointer-events: auto;
+}
+
+.site-dock__cluster {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  justify-content: flex-start;
+  min-height: var(--dock-control-size);
+  max-width: 100%;
+}
+
+.site-dock__bar-shell {
+  display: grid;
+  grid-template-columns: 0fr;
+  min-height: var(--dock-control-size);
+  /* Soft pill lift lives on the shell so overflow clipping can't square it. */
+  filter: var(--dock-lift);
+  /* Width open + parent translateX(-50%) = the left-shift-to-center feel. */
+  transition: grid-template-columns 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-dock__bar-shell.is-open {
+  grid-template-columns: 1fr;
+}
+
+.site-dock__bar-clip {
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  border-radius: 999px;
+}
+
+/* Toggle stays its own control — not peer to nav items. */
+.site-dock__plus-btn {
+  display: grid;
+  place-items: center;
+  width: var(--dock-control-size);
+  height: var(--dock-control-size);
+  margin: 0;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+  border-radius: 999px;
+  background: var(--dock-chrome);
+  color: var(--color-text);
+  cursor: pointer;
+  /* Match bar: shape-following lift, not a rectangular box-shadow. */
+  filter: var(--dock-lift);
+  box-shadow: none;
+  flex: 0 0 auto;
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 180ms ease,
+    background 180ms ease,
+    border-color 180ms ease;
+}
+
+.site-dock__plus-btn:hover,
+.site-dock__plus-btn:focus-visible {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-text) 6%, var(--dock-chrome));
+  border-color: color-mix(in srgb, var(--color-text) 16%, transparent);
+}
+
+.site-dock__plus-btn:active {
+  transform: scale(0.94);
+}
+
+.site-dock__plus-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.site-dock__plus {
+  position: relative;
+  width: 0.85rem;
+  height: 0.85rem;
+  display: block;
+}
+
+.site-dock__plus::before,
+.site-dock__plus::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: currentColor;
+  border-radius: 1px;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 520ms ease,
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-dock__plus::before {
+  width: 100%;
+  height: 1.5px;
+}
+
+.site-dock__plus::after {
+  width: 1.5px;
+  height: 100%;
+}
+
+/* Collapse: keep the horizontal bar, ease the upright arm away → − */
+.site-dock__plus--close::after {
+  opacity: 0;
+  height: 0;
+  transform: translate(-50%, -50%) scaleY(0);
+}
+
+.site-dock__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  width: max-content;
+  height: var(--dock-control-size);
+  box-sizing: border-box;
+  padding: 0.28rem;
+  border-radius: 999px;
+  background: var(--dock-chrome);
+  border: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+  box-shadow: none;
+  opacity: 0;
+  transform: translateX(-0.35rem);
+  transition:
+    opacity 220ms ease,
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-dock__bar-shell.is-open .site-dock__bar {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.site-dock__indicator {
+  position: absolute;
+  top: 0.28rem;
+  bottom: 0.28rem;
+  left: 0.28rem;
+  right: calc(100% - 2.88rem);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text) 9%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.site-dock__nav-group {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  overflow: hidden;
+}
+
+.site-dock__divider {
+  position: relative;
+  z-index: 1;
+  width: 1px;
+  height: 1.35rem;
+  margin: 0 0.2rem;
+  background: color-mix(in srgb, var(--color-text) 16%, transparent);
+  flex: 0 0 auto;
+}
+
+.site-dock__item {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--dock-item-size);
+  height: var(--dock-item-size);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition:
+    color 200ms ease,
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-dock__item:hover,
+.site-dock__item:focus-visible {
+  color: var(--color-text);
+}
+
+.site-dock__item:active {
+  transform: scale(0.9);
+}
+
+.site-dock__item:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.site-dock__item[data-active="true"] {
+  color: var(--color-text);
+  background: transparent;
+}
+
+.site-dock__icon {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.site-dock__settings {
+  width: min(calc(100vw - 1.25rem), 20rem);
+  max-height: min(52vh, 24rem);
+  padding: var(--space-3);
+  border-radius: 16px;
+  background: var(--dock-chrome);
+  border: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+  box-shadow: 0 14px 36px color-mix(in srgb, #000 18%, transparent);
+  color: var(--color-text);
+  display: grid;
+  gap: var(--space-3);
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+[data-theme="dark"] .site-dock {
+  --dock-lift:
+    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35))
+    drop-shadow(0 8px 22px rgba(0, 0, 0, 0.45));
+}
+
+/* Narrow phones: keep Home → Settings on-screen; shrink chrome a touch. */
+@media (max-width: 430px) {
+  .site-dock {
+    --dock-control-size: 2.85rem;
+    --dock-item-size: 2.35rem;
+    bottom: max(1.25rem, calc(env(safe-area-inset-bottom, 0px) + 0.55rem));
+    gap: 0.4rem;
+  }
+
+  .site-dock__cluster {
+    gap: 0.3rem;
+  }
+
+  .site-dock__bar {
+    gap: 0.05rem;
+    padding: 0.22rem;
+  }
+
+  .site-dock__divider {
+    margin: 0 0.1rem;
+  }
+
+  .site-dock__icon {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  .site-dock__settings {
+    max-height: min(46vh, 20rem);
+  }
+}
+
+.site-dock__settings-row {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.site-dock__settings-label {
+  color: var(--color-text-secondary);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Dock stays visible over project detail — clearer chrome layer. */

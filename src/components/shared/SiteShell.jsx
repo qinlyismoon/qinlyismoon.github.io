@@ -94,15 +94,20 @@ export default function SiteShell() {
     if (routeTransitionRef.current) return;
     const nextView = viewStateFromPath(location.pathname);
     if (nextView === viewState) return;
-    // Opening a project detail: hold the visitor's current page
-    // behind the overlay while the backdrop settles and the panel
-    // lands (0.35s + 0.22s + 0.45s), and only then swap the
-    // collection layer in under the settled backdrop. Switching at
-    // the route change would open the detail over the collection
-    // grid's top — the first project — instead of the page and
-    // scroll position the visitor is actually on; closing reverses
-    // the same courtesy (destination first, reveal second).
-    if (nextView === "library" && projectIdFromPath(location.pathname)) {
+    // Project detail routes (/:id) map to "library" in path helpers, but
+    // the underlay should stay wherever the visitor already was. Flipping
+    // Home → Projects under an open detail made the background jump to
+    // the catalogue mid-read.
+    if (projectIdFromPath(location.pathname)) {
+      if (
+        viewState === "landing" ||
+        viewState === "library" ||
+        viewState === "workspace"
+      ) {
+        return;
+      }
+      // Opened a project URL from somewhere else (About / Teaching) —
+      // land the catalogue under the overlay after it settles.
       const timer = window.setTimeout(() => setViewState("library"), 700);
       return () => window.clearTimeout(timer);
     }
@@ -111,14 +116,23 @@ export default function SiteShell() {
 
   const transitionTo = useCallback(
     (nextView, options = {}) => {
-      if (nextView === viewState || routeTransitionRef.current) return;
+      if (routeTransitionRef.current) return;
+      const targetPath = VIEW_PATHS[nextView];
+      // Project details live on /<id> while viewState may still say
+      // "landing"/"library" — still allow dock chrome to leave the detail.
+      if (nextView === viewState && location.pathname === targetPath) return;
       if (!options.silent) playSound(clickSoundRef);
 
       const commit = () => {
         flushSync(() => {
-          navigate(VIEW_PATHS[nextView]);
+          navigate(targetPath);
           setViewState(nextView);
         });
+        // Shared content scroller persists across routes — reset so Teaching /
+        // Projects / About always open from the page head, not mid-home scroll.
+        const scroller = document.querySelector(".shared-layout__content--v3");
+        if (scroller) scroller.scrollTop = 0;
+        window.scrollTo(0, 0);
       };
 
       const reduceMotion = window.matchMedia(
@@ -126,7 +140,7 @@ export default function SiteShell() {
       ).matches;
       const root = document.documentElement;
 
-      // Document-level VT + out-then-in (see site-chrome.css). Scoped grid
+      // Document-level VT + float-in (see site-chrome.css). Scoped grid
       // VT was tried so ambient could stay live, but it fell back to a
       // crossfade and ghosted page text on top of itself — never do that.
       if (!reduceMotion && typeof document.startViewTransition === "function") {
@@ -140,9 +154,28 @@ export default function SiteShell() {
         return;
       }
 
+      // Fallback when View Transitions are unavailable: soft out → swap → in.
+      if (!reduceMotion) {
+        routeTransitionRef.current = true;
+        root.classList.add("page-transitioning", "page-transitioning--fallback");
+        window.setTimeout(() => {
+          commit();
+          root.classList.add("page-transitioning--fallback-in");
+          window.setTimeout(() => {
+            root.classList.remove(
+              "page-transitioning",
+              "page-transitioning--fallback",
+              "page-transitioning--fallback-in",
+            );
+            routeTransitionRef.current = false;
+          }, 420);
+        }, 180);
+        return;
+      }
+
       commit();
     },
-    [navigate, playSound, viewState],
+    [location.pathname, navigate, playSound, viewState],
   );
 
   const navigateToHome = useCallback(

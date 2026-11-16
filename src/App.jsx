@@ -8,6 +8,7 @@ import "./teaching.css";
 import "./site-chrome.css";
 import "./settings.css";
 import "./ambient-backdrop.css";
+import "./home-bento.css";
 
 export default function App() {
   return (

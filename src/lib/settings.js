@@ -7,18 +7,49 @@
  * status); every option is a quiet natural pigment that belongs on a desk
  * — plant green, fountain-pen ink, terracotta, plum, pencil ochre — and
  * passes WCAG AA (≥ 4.5:1) on the page and surface in both modes. Type
- * voice chooses Geometric (Urbanist, default) or Editorial (Zalando +
- * STIX), never a free-form font picker.
+ * voice chooses Sans or Serif, never a free-form font picker.
  */
 
 export const SETTINGS_STORAGE_KEY = "phoebe-site-settings";
 
 export const THEME_MODES = ["light", "dark", "system"];
 
-/** Type voices: two named presets, not a font picker.
- *  geometric — Urbanist for UI and reading (default)
- *  editorial — Zalando Sans + STIX Two Text (the previous default) */
-export const TYPE_VOICES = ["geometric", "editorial"];
+/** Type voices: two named presets, not a font picker. Each fills the
+ *  ui / reading / display roles in styles.css.
+ *  geometric (Sans) — Geist for UI, reading, and display
+ *  serif            — Zalando Sans for UI chrome; STIX Two Text for reading + display
+ *  A saved "editorial" (retired) falls back to the default. */
+export const TYPE_VOICES = ["geometric", "serif"];
+
+/** Faces each voice paints with (CSS font shorthands), loaded before a
+ *  switch so the new voice never arrives in a fallback face first. */
+const TYPE_VOICE_FONTS = {
+  serif: [
+    '400 1em "Zalando Sans"',
+    '500 1em "Zalando Sans"',
+    '600 1em "Zalando Sans"',
+    '400 1em "STIX Two Text"',
+    '500 1em "STIX Two Text"',
+    '600 1em "STIX Two Text"',
+  ],
+  geometric: [
+    '400 1em "Geist"',
+    '500 1em "Geist"',
+    '600 1em "Geist"',
+    '400 1em "Geist Mono"',
+  ],
+};
+
+/** Resolves once the voice's faces are ready, or after `timeout` ms so a
+ *  slow network never holds the switch hostage. */
+export function loadTypeVoiceFonts(typeVoice, timeout = 800) {
+  const faces = TYPE_VOICE_FONTS[typeVoice] ?? [];
+  if (!faces.length || !document.fonts?.load) return Promise.resolve();
+  return Promise.race([
+    Promise.all(faces.map((face) => document.fonts.load(face))).catch(() => {}),
+    new Promise((resolve) => window.setTimeout(resolve, timeout)),
+  ]);
+}
 
 /** Accent pigments + matching page grounds (subtle tint of the accent). */
 export const ACCENTS = [
@@ -26,35 +57,36 @@ export const ACCENTS = [
     id: "forest",
     light: "#526b61",
     dark: "#9aafa5",
-    pageBgLight: "#f4f6f4",
+    // v3: Hudson-like cool gray ground (accents can retint later).
+    pageBgLight: "#fafafa",
     pageBgDark: "#161816",
   },
   {
     id: "ink",
     light: "#4c6178",
     dark: "#a3b4c7",
-    pageBgLight: "#f4f5f7",
+    pageBgLight: "#fafafa",
     pageBgDark: "#15171a",
   },
   {
     id: "clay",
     light: "#94584a",
     dark: "#d4a698",
-    pageBgLight: "#f7f4f2",
+    pageBgLight: "#fafafa",
     pageBgDark: "#1a1716",
   },
   {
     id: "plum",
     light: "#6b5a75",
     dark: "#bcaac4",
-    pageBgLight: "#f6f4f7",
+    pageBgLight: "#fafafa",
     pageBgDark: "#18161a",
   },
   {
     id: "ochre",
     light: "#80652e",
     dark: "#cdb27c",
-    pageBgLight: "#f7f5ef",
+    pageBgLight: "#fafafa",
     pageBgDark: "#1a1814",
   },
 ];
@@ -126,8 +158,8 @@ const LABELS = {
     },
     type: "Type",
     typeVoices: {
-      geometric: "Geometric",
-      editorial: "Editorial",
+      geometric: "Sans",
+      serif: "Serif",
     },
     close: "Close settings",
     language: "Switch to Chinese",
@@ -149,8 +181,8 @@ const LABELS = {
     },
     type: "字体",
     typeVoices: {
-      geometric: "几何",
-      editorial: "编辑",
+      geometric: "无衬线",
+      serif: "衬线",
     },
     close: "关闭设置",
     language: "Switch to English",

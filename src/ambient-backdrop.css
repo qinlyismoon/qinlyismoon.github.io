@@ -8,7 +8,12 @@
  * the out-then-in clock.
  * ------------------------------------------------------------------------- */
 
+/* v3: ambient wash disabled — no flashing / shifting glow on any page. */
 .ambient-backdrop {
+  display: none !important;
+}
+
+.ambient-backdrop--legacy {
   position: absolute;
   inset: 0;
   z-index: 0;

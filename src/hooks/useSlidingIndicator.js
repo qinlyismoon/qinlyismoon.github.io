@@ -23,6 +23,12 @@ export const INDICATOR_MOTION = {
   trail: { duration: 380, delay: 70, easing: "cubic-bezier(0.6, 0, 0.1, 1)" },
 };
 
+/** Snappier circle glide for the site dock — leaves on click. */
+export const DOCK_INDICATOR_MOTION = {
+  lead: { duration: 90, easing: "cubic-bezier(0.2, 0.9, 0.1, 1)" },
+  trail: { duration: 130, delay: 0, easing: "cubic-bezier(0.3, 0, 0.1, 1)" },
+};
+
 function reduceMotion() {
   try {
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -38,6 +44,9 @@ function reduceMotion() {
  * @param activeKey     changes when the selection changes (animates)
  * @param layoutKey     changes when sizes may change without a new
  *                      selection, e.g. language (re-places, no animation)
+ * @param motion        optional lead/trail timings (defaults to INDICATOR_MOTION)
+ * @param awaitPageTurn when false (dock), glide on click instead of waiting
+ *                      for the route View Transition to finish
  */
 export default function useSlidingIndicator({
   containerRef,
@@ -45,6 +54,8 @@ export default function useSlidingIndicator({
   getActive,
   activeKey,
   layoutKey,
+  motion = INDICATOR_MOTION,
+  awaitPageTurn = true,
 }) {
   const getActiveRef = useRef(getActive);
   getActiveRef.current = getActive;
@@ -97,11 +108,11 @@ export default function useSlidingIndicator({
       const trail = movingRight ? "left" : "right";
       indicator.animate(
         [{ [lead]: `${from[lead]}px` }, { [lead]: `${target[lead]}px` }],
-        { ...INDICATOR_MOTION.lead },
+        { ...motion.lead },
       );
       indicator.animate(
         [{ [trail]: `${from[trail]}px` }, { [trail]: `${target[trail]}px` }],
-        { ...INDICATOR_MOTION.trail, fill: "backwards" },
+        { ...motion.trail, fill: "backwards" },
       );
     };
 
@@ -119,9 +130,9 @@ export default function useSlidingIndicator({
     });
     resizeObserver.observe(container);
 
-    // Hold the previous slot through the VT snapshot, then glide once the
-    // overlay lifts so the motion is actually visible.
-    if (pageTurning && isNewSelection) {
+    // Top-nav underlines: hold through the VT snapshot, then glide once the
+    // overlay lifts. Dock skips this — it should leave on click.
+    if (awaitPageTurn && pageTurning && isNewSelection) {
       placedKeyRef.current = activeKey;
       const glideWhenSettled = () => {
         if (document.documentElement.classList.contains("page-transitioning")) {
@@ -145,5 +156,5 @@ export default function useSlidingIndicator({
     placedKeyRef.current = activeKey;
 
     return () => resizeObserver.disconnect();
-  }, [containerRef, indicatorRef, activeKey, layoutKey]);
+  }, [containerRef, indicatorRef, activeKey, layoutKey, motion, awaitPageTurn]);
 }

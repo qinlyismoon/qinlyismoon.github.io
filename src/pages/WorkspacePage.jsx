@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useAppSettings } from "../context/AppSettingsContext";
 import { getWorkspaceCopy } from "../lib/copy";
 import InteractiveWorkspace from "../components/workspace/InteractiveWorkspace";
+import DeskCloseButton from "../components/workspace/DeskCloseButton";
 
 export default function WorkspacePage({
   environment,
@@ -16,6 +17,7 @@ export default function WorkspacePage({
 
   return (
     <div className="workspace-page__content">
+      <DeskCloseButton />
       <InteractiveWorkspace
         copy={copy}
         isNight={isNight}

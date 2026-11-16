@@ -1,11 +1,30 @@
 import { useEffect, useState } from "react";
 
 const EASTERN_TZ = "America/New_York";
+export const CHONGQING_TZ = "Asia/Shanghai";
+
+function getZonedDate(timeZone = EASTERN_TZ) {
+  return new Date(
+    new Date().toLocaleString("en-US", { timeZone }),
+  );
+}
 
 function getEasternDate() {
-  return new Date(
-    new Date().toLocaleString("en-US", { timeZone: EASTERN_TZ }),
-  );
+  return getZonedDate(EASTERN_TZ);
+}
+
+export function getHandAnglesForTimeZone(timeZone = EASTERN_TZ) {
+  const date = getZonedDate(timeZone);
+  const hours = date.getHours() % 12;
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+  const milliseconds = date.getMilliseconds();
+
+  const second = (seconds + milliseconds / 1000) * 6;
+  const minute = (minutes + seconds / 60) * 6;
+  const hour = (hours + minutes / 60) * 30;
+
+  return { second, minute, hour };
 }
 
 export function getEasternHandAngles(date = getEasternDate()) {
@@ -86,6 +105,35 @@ export function formatEasternTime() {
   }).format(new Date());
 }
 
+/** Live home-status clock — includes seconds for a system feel. */
+export function formatEasternLiveClock(language = "en") {
+  return new Intl.DateTimeFormat(easternLocale(language), {
+    timeZone: EASTERN_TZ,
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: language !== "zh",
+  }).format(new Date());
+}
+
+export function formatEasternShortDate(language = "en") {
+  const now = new Date();
+  const weekday = new Intl.DateTimeFormat(easternLocale(language), {
+    timeZone: EASTERN_TZ,
+    weekday: "short",
+  })
+    .format(now)
+    .toUpperCase();
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: EASTERN_TZ,
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(now);
+  const month = parts.find((part) => part.type === "month")?.value ?? "—";
+  const day = parts.find((part) => part.type === "day")?.value ?? "—";
+  return { weekday, dateLine: `${month}/${day}` };
+}
+
 export function useEasternTimeLabel() {
   const [time, setTime] = useState(formatEasternTime);
 
@@ -97,6 +145,25 @@ export function useEasternTimeLabel() {
   }, []);
 
   return time;
+}
+
+export function useEasternLiveClock(language = "en") {
+  const [time, setTime] = useState(() => formatEasternLiveClock(language));
+  const [dateParts, setDateParts] = useState(() =>
+    formatEasternShortDate(language),
+  );
+
+  useEffect(() => {
+    const tick = () => {
+      setTime(formatEasternLiveClock(language));
+      setDateParts(formatEasternShortDate(language));
+    };
+    tick();
+    const intervalId = window.setInterval(tick, 1000);
+    return () => window.clearInterval(intervalId);
+  }, [language]);
+
+  return { time, ...dateParts };
 }
 
 export function useEasternDateLine(language = "en") {
@@ -125,20 +192,78 @@ export function useEasternClockTooltipLine(language = "en") {
   return line;
 }
 
-export function useEasternHandAngles() {
-  const [angles, setAngles] = useState(getEasternHandAngles);
+export function useHandAngles(timeZone = EASTERN_TZ) {
+  const [angles, setAngles] = useState(() => getHandAnglesForTimeZone(timeZone));
 
   useEffect(() => {
     let frameId = 0;
 
     const tick = () => {
-      setAngles(getEasternHandAngles());
+      setAngles(getHandAnglesForTimeZone(timeZone));
       frameId = requestAnimationFrame(tick);
     };
 
     frameId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frameId);
-  }, []);
+  }, [timeZone]);
 
   return angles;
+}
+
+export function useEasternHandAngles() {
+  return useHandAngles(EASTERN_TZ);
+}
+
+export function formatZonedLiveClock(language = "en", timeZone = EASTERN_TZ) {
+  return new Intl.DateTimeFormat(easternLocale(language), {
+    timeZone,
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: language !== "zh",
+  }).format(new Date());
+}
+
+/** Quiet clock-tile date — weekday + month/day in that timezone. */
+export function formatZonedDateLabel(language = "en", timeZone = EASTERN_TZ) {
+  const locale = easternLocale(language);
+  if (language === "zh") {
+    return new Intl.DateTimeFormat(locale, {
+      timeZone,
+      month: "numeric",
+      day: "numeric",
+      weekday: "short",
+    }).format(new Date());
+  }
+  const weekday = new Intl.DateTimeFormat(locale, {
+    timeZone,
+    weekday: "short",
+  }).format(new Date());
+  const monthDay = new Intl.DateTimeFormat(locale, {
+    timeZone,
+    month: "short",
+    day: "numeric",
+  }).format(new Date());
+  return `${weekday} · ${monthDay}`;
+}
+
+export function useZonedLiveClock(language = "en", timeZone = EASTERN_TZ) {
+  const [time, setTime] = useState(() =>
+    formatZonedLiveClock(language, timeZone),
+  );
+  const [date, setDate] = useState(() =>
+    formatZonedDateLabel(language, timeZone),
+  );
+
+  useEffect(() => {
+    const tick = () => {
+      setTime(formatZonedLiveClock(language, timeZone));
+      setDate(formatZonedDateLabel(language, timeZone));
+    };
+    tick();
+    const intervalId = window.setInterval(tick, 1000);
+    return () => window.clearInterval(intervalId);
+  }, [language, timeZone]);
+
+  return { time, date };
 }

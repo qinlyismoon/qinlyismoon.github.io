@@ -3,18 +3,35 @@
 // selected projects without native content still link out to Notion.
 
 import {
+  COLOR_ANALYSIS_DETAIL_CHAPTERS,
+  COLOR_ANALYSIS_DETAIL_SECTIONS,
+  COLOR_ANALYSIS_DETAIL_SECTIONS_ZH,
+  COLOR_ANALYSIS_FACTS,
+  COLOR_ANALYSIS_FACTS_ZH,
+  COLOR_ANALYSIS_SUMMARY,
+  COLOR_ANALYSIS_SUMMARY_ZH,
+} from "./colorAnalysisCaseStudy";
+import {
+  LEAF_NOTE_DETAIL_CHAPTERS,
   LEAF_NOTE_DETAIL_SECTIONS,
   LEAF_NOTE_DETAIL_SECTIONS_ZH,
 } from "./leafNoteCaseStudy";
 import {
+  MONEY_MAP_DETAIL_CHAPTERS,
+  MONEY_MAP_FACTS,
+  MONEY_MAP_FACTS_ZH,
+  MONEY_MAP_SUMMARY,
+  MONEY_MAP_SUMMARY_ZH,
   MONEY_MAP_DETAIL_SECTIONS,
   MONEY_MAP_DETAIL_SECTIONS_ZH,
 } from "./moneyMapCaseStudy";
 import {
+  PROCEDURAL_ANIMATION_DETAIL_CHAPTERS,
   PROCEDURAL_ANIMATION_DETAIL_SECTIONS,
   PROCEDURAL_ANIMATION_DETAIL_SECTIONS_ZH,
 } from "./proceduralAnimationCaseStudy";
 import {
+  WHOSE_DREAMS_DETAIL_CHAPTERS,
   WHOSE_DREAMS_DETAIL_SECTIONS,
   WHOSE_DREAMS_DETAIL_SECTIONS_ZH,
 } from "./whoseDreamsCaseStudy";
@@ -546,13 +563,55 @@ export const VIBE_PROJECTS = [
 // and the Notion case study, instead of linking straight out.
 export const SELECTED_PROJECTS = [
   {
+    // Internship at fAIshion. The consumer app is unreleased, so the detail
+    // carries no live link — screenshots only (see colorAnalysisCaseStudy.js).
+    id: "color-analysis",
+    title: "Color Analysis",
+    subtitle: "fAIshion · AI Fashion · Product Design Internship",
+    tagline: "An expert color analysis, digitized into an 8–10 minute flow inside fAIshion’s AI stylist app.",
+    taglineZh: "在 fAIshion 实习：把线下专家色彩测试数字化，做成 AI 造型师应用里 8–10 分钟的流程。",
+    description:
+      "Internship at fAIshion: an in-app color analysis for an AI fashion stylist — a long in-person session turned into an 8–10 minute flow, where AI makes the first read and the user confirms it through a drape test.",
+    descriptionZh:
+      "fAIshion 实习作品：AI 时尚造型师应用里的色彩测试——把线下漫长的专家测试变成 8–10 分钟的流程，AI 先做初判，用户通过色布对比来确认。",
+    tags: ["Product Design", "AI Interaction", "0 → 1"],
+    // Same light warm gray as the cover ground.
+    panelBackground: "#f3f1ee",
+    thumbnail: "/work/color-analysis/cover.jpg",
+    // Home card: three screens sit across the middle of the cover.
+    cardObjectPosition: "50% 50%",
+    cardZoom: "1.08",
+    cardZoomHover: "1.14",
+    // Bar / footer crop the bottom-right corner: circle edge and a dot,
+    // clear of the screens.
+    navArtPosition: "100% 100%",
+    navArtSize: "auto 44rem",
+    footerArtPosition: "100% 100%",
+    footerArtSize: "auto 90rem",
+    role: "Product Designer (Intern) · fAIshion",
+    roleZh: "产品设计师（实习）· fAIshion",
+    timeline: "2026",
+    duration: "Aug – Sep",
+    durationZh: "8 – 9 月",
+    // Fixed header slot: summary + facts before chapter 01.
+    summary: COLOR_ANALYSIS_SUMMARY,
+    summaryZh: COLOR_ANALYSIS_SUMMARY_ZH,
+    facts: COLOR_ANALYSIS_FACTS,
+    factsZh: COLOR_ANALYSIS_FACTS_ZH,
+    detailChapters: COLOR_ANALYSIS_DETAIL_CHAPTERS,
+    detailSections: COLOR_ANALYSIS_DETAIL_SECTIONS,
+    detailSectionsZh: COLOR_ANALYSIS_DETAIL_SECTIONS_ZH,
+  },
+  {
     // Detail route is /leaf-note-case so it does not collide with the
     // live prototype at https://qinlyismoon.github.io/leaf-note/.
     id: "leaf-note-case",
     title: "Leaf Note",
     subtitle: "Shared Plant Care · Coded Prototype",
-    tagline: "Know when to water. Hand off the rest.",
-    taglineZh: "知道什么时候浇。剩下的交给别人。",
+    tagline:
+      "A working prototype for shared plant care: suggested checks, a handoff that carries what to do next, and a way for the owner to follow along without chasing updates.",
+    taglineZh:
+      "能跑的共享植物照料原型：今天该查什么、交接时带上下一步怎么做，主人也能跟着看进度，不用一直追问。",
     description:
       "Shared plant care for when you’re away: the person covering knows what to do next, and you can stop chasing updates. Designed and built as a working prototype.",
     descriptionZh:
@@ -562,11 +621,14 @@ export const SELECTED_PROJECTS = [
     // on the same ground as the case-study page.
     panelBackground: "#eef2e9",
     liveUrl: "https://qinlyismoon.github.io/leaf-note/",
-    liveLabel: "Experience Prototype",
-    liveLabelZh: "体验原型",
-    // Still used for the Selected Work card, contents-bar crop, and footer.
+    // Detail / contents-bar still; home card uses the video first frame.
     thumbnail: "/work/leaf-note/cover.png",
-    // Detail hero — looping cover video (replaces the static cover image).
+    cardPoster: "/work/leaf-note/cover-poster.jpg",
+    // Home card: handoff timeline readable — don’t over-zoom the board.
+    cardObjectPosition: "42% 45%",
+    cardZoom: "1.1",
+    cardZoomHover: "1.16",
+    // Detail hero + home hover loop — product cover motion, not a static board.
     heroVideo: "/work/leaf-note/cover.mp4",
     // Contents-bar crop: only the cover's sage wash, so the phone
     // cluster never leaks into the bar. Anchored top-right and sized
@@ -579,8 +641,9 @@ export const SELECTED_PROJECTS = [
     role: "Product Designer & Engineer",
     roleZh: "产品设计师 & 工程实现",
     timeline: "2026",
-    // Full case study (research tables, journey maps, evaluation,
-    // coded experience, UI boards) — see leafNoteCaseStudy.js.
+    // Full case study (research, screen walkthrough, live handoff try-it,
+    // managing + system, evaluation) — see leafNoteCaseStudy.js.
+    detailChapters: LEAF_NOTE_DETAIL_CHAPTERS,
     detailSections: LEAF_NOTE_DETAIL_SECTIONS,
     detailSectionsZh: LEAF_NOTE_DETAIL_SECTIONS_ZH,
   },
@@ -595,8 +658,6 @@ export const SELECTED_PROJECTS = [
     tags: ["Interactive Data Visualization", "Motion Design"],
     // Native intro only — live site, no outbound Notion case study.
     liveUrl: "https://emotion-garden-sooty.vercel.app/",
-    liveLabel: "Experience Website",
-    liveLabelZh: "体验网站",
     // Screen recording of the live sample garden: ambient motion plus
     // hovering flowers to reveal each moment's feeling, time and duration.
     thumbnail: "/emotion-garden-thumb.jpg",
@@ -624,6 +685,43 @@ export const SELECTED_PROJECTS = [
     },
   },
   {
+    id: "money-map",
+    title: "Money Map",
+    subtitle: "Savings Goals · Product Design",
+    tagline: "A savings-goal app that tells you what to save this month, and where your money goes when plans change.",
+    taglineZh: "一个储蓄目标 App：告诉你这个月该存多少，计划变了钱去了哪。",
+    description:
+      "A savings-goal redesign that shows what each goal requires, where you stand this month, and how a change ripples through the plan, so people can act without doing the math themselves.",
+    descriptionZh:
+      "一个储蓄目标的改版：让人看清每个目标需要什么、这个月进展到哪里，以及改一处会怎样影响整个计划——不必自己算，也能做出决定。",
+    tags: ["Product Design", "Usability Testing"],
+    // Soft gray wash from the cover so hero and boards share one ground.
+    panelBackground: "#eef0f2",
+    // Native detail (personas → HMW → three priorities → prototype clips
+    // → usability plan) — see moneyMapCaseStudy.js.
+    thumbnail: "/money-map/cover.png",
+    // Home card: phone UI readable, light crop only.
+    cardObjectPosition: "62% 40%",
+    cardZoom: "1.1",
+    cardZoomHover: "1.16",
+    // Contents-bar / footer: phone + soft blue circle on the right.
+    navArtPosition: "88% 42%",
+    navArtSize: "auto 26rem",
+    footerArtPosition: "80% 40%",
+    footerArtSize: "auto 55rem",
+    role: "Product Designer",
+    roleZh: "产品设计师",
+    timeline: "2026",
+    // Fixed header slot: what it is + facts, right after the intro.
+    summary: MONEY_MAP_SUMMARY,
+    summaryZh: MONEY_MAP_SUMMARY_ZH,
+    facts: MONEY_MAP_FACTS,
+    factsZh: MONEY_MAP_FACTS_ZH,
+    detailChapters: MONEY_MAP_DETAIL_CHAPTERS,
+    detailSections: MONEY_MAP_DETAIL_SECTIONS,
+    detailSectionsZh: MONEY_MAP_DETAIL_SECTIONS_ZH,
+  },
+  {
     id: "oscar-ar",
     title: "Oscar et la Dame Rose",
     subtitle: "AR Reading · Unity for iOS",
@@ -637,9 +735,12 @@ export const SELECTED_PROJECTS = [
     // The detail is fully native (detailSections below), never the
     // Notion page; the working-prototype video is embedded in the
     // system section, so there is no outbound action.
-    // Still used for Selected Work fallback poster, contents-bar crop, footer.
+    // Nav/footer art still crops the marketing banner; the Selected Work
+    // card uses the video still so rest ↔ hover is one continuous shot.
     thumbnail: "/oscar-ar-thumb.jpg",
-    // Card + detail hero — looping cover-flip video.
+    cardPoster: "/oscar-ar/cover-poster.jpg",
+    cardZoom: "1",
+    cardZoomHover: "1",
     heroVideo: "/oscar-ar/cover.mp4",
     // Contents-bar crop: the vine rose from the hero's top band
     // (the spiral rose at the vine's right end), framed whole at
@@ -713,7 +814,7 @@ export const SELECTED_PROJECTS = [
         items: [
           {
             title: "Enter — Crossing into Oscar's world",
-            split: true,
+            mediaFirst: true,
             paragraphs: [
               "A simple action marks the transition from the reader's physical world into Oscar's story. The reader scans the book and taps the door handle; the door opens, a rose grows, and the carrier pigeon appears.",
               "Building it meant placing the door relative to the page, defining its open and closed states, and connecting a tap to that behavior in C# — turning a tap into a transition between the physical book and the narrative world.",
@@ -726,7 +827,7 @@ export const SELECTED_PROJECTS = [
           },
           {
             title: "Listen — Sharing a Moment Through Sound",
-            split: true,
+            mediaFirst: true,
             paragraphs: [
               "Oscar and Peggy sit together and listen to The Nutcracker. The reader taps the Walkman to start the music, and music and animation bring the scene to life.",
               "A narrative detail becomes a shared sensory moment: the reader briefly listens with the characters.",
@@ -739,7 +840,7 @@ export const SELECTED_PROJECTS = [
           },
           {
             title: "Connect — Responding to Support",
-            split: true,
+            mediaFirst: true,
             paragraphs: [
               "Granny Rose helps Oscar approach illness, aging, and death with courage. The reader triggers a fist bump between Oscar and Rose, and the characters answer through a short animated gesture.",
               "Emotional support becomes a simple physical gesture — their relationship witnessed through action.",
@@ -752,7 +853,7 @@ export const SELECTED_PROJECTS = [
           },
           {
             title: "Care — Turning Empathy into Action",
-            split: true,
+            mediaFirst: true,
             paragraphs: [
               "As Oscar approaches the end of his symbolic lifetime, he becomes physically weaker. This interaction changes the reader's relationship to that moment: notice he is weaker, drag a hat or scarf to him, and offer warmth through action.",
               "I chose a drag-and-place interaction because it turns care into a physical gesture: selecting an object, moving it toward Oscar, and giving it to him.",
@@ -765,7 +866,7 @@ export const SELECTED_PROJECTS = [
           },
           {
             title: "Let Go — Participating in Goodbye",
-            split: true,
+            mediaFirst: true,
             paragraphs: [
               "Oscar reaches the end of his life. He follows the carrier pigeon toward another world, turns back, smiles, and says goodbye.",
               "The final interaction shifts away from playful participation. The reader is asked to witness, and to let go.",
@@ -907,7 +1008,7 @@ export const SELECTED_PROJECTS = [
         items: [
           {
             title: "进入——走进 Oscar 的世界",
-            split: true,
+            mediaFirst: true,
             paragraphs: [
               "一个简单的动作，标记着从读者的物理世界进入 Oscar 故事的过渡。读者扫描书页，轻点门把手；门打开，玫瑰生长，信鸽出现。",
               "实现上，要把门相对于书页放置，定义它开与关的状态，再用 C# 把轻点和行为连起来——一次轻点，由此成为物理书页与叙事世界之间的一次过渡。",
@@ -920,7 +1021,7 @@ export const SELECTED_PROJECTS = [
           },
           {
             title: "聆听——用声音分享一个时刻",
-            split: true,
+            mediaFirst: true,
             paragraphs: [
               "Oscar 和 Peggy 坐在一起听《胡桃夹子》。读者轻点随身听，音乐响起，动画让场景活起来。",
               "一个叙事细节变成可以共同感受的时刻：读者短暂地和角色一起聆听。",
@@ -933,7 +1034,7 @@ export const SELECTED_PROJECTS = [
           },
           {
             title: "连结——回应支持",
-            split: true,
+            mediaFirst: true,
             paragraphs: [
               "玫瑰奶奶帮助 Oscar 勇敢地面对疾病、衰老和死亡。读者触发 Oscar 和玫瑰奶奶之间的一次碰拳，两个角色用一个简短的动画手势回应。",
               "情感上的支持变成一个简单的身体动作——这段关系，用行动来见证。",
@@ -946,7 +1047,7 @@ export const SELECTED_PROJECTS = [
           },
           {
             title: "关照——把共情变成行动",
-            split: true,
+            mediaFirst: true,
             paragraphs: [
               "当 Oscar 走近他象征性一生的终点，他的身体越来越虚弱。这个交互改变读者与这一刻的关系：注意到他的虚弱，把帽子或围巾拖给他，用行动送去温暖。",
               "我选择拖放，是因为关照由此成为一个身体动作：选一件东西，把它挪向 Oscar，交到他手里。",
@@ -959,7 +1060,7 @@ export const SELECTED_PROJECTS = [
           },
           {
             title: "放手——参与告别",
-            split: true,
+            mediaFirst: true,
             paragraphs: [
               "Oscar 走到了生命的终点。他跟着信鸽走向另一个世界，回过头来，微笑着挥手告别。",
               "最后一个时刻离开了游戏式的参与。读者要做的，是见证，然后放手。",
@@ -1046,34 +1147,7 @@ export const SELECTED_PROJECTS = [
         ],
       },
     ],
-  },
-  {
-    id: "money-map",
-    title: "Money Map",
-    subtitle: "Savings Goals · Product Design",
-    tagline: "See what the goal asks. Act without doing the math.",
-    taglineZh: "看清目标要什么。不必自己算，也能行动。",
-    description:
-      "A savings-goal redesign that shows what each goal requires, where you stand this month, and how a change ripples through the plan, so people can act without doing the math themselves.",
-    descriptionZh:
-      "一个储蓄目标的改版：让人看清每个目标需要什么、这个月进展到哪里，以及改一处会怎样影响整个计划——不必自己算，也能做出决定。",
-    tags: ["Product Design", "Usability Testing"],
-    // Soft gray wash from the cover so hero and boards share one ground.
-    panelBackground: "#eef0f2",
-    // Native detail (personas → HMW → three priorities → prototype clips
-    // → usability plan) — see moneyMapCaseStudy.js.
-    thumbnail: "/money-map/cover.png",
-    // Contents-bar / footer: phone + soft blue circle on the right.
-    navArtPosition: "88% 42%",
-    navArtSize: "auto 26rem",
-    footerArtPosition: "80% 40%",
-    footerArtSize: "auto 55rem",
-    role: "Product Designer",
-    roleZh: "产品设计师",
-    timeline: "2026",
-    detailSections: MONEY_MAP_DETAIL_SECTIONS,
-    detailSectionsZh: MONEY_MAP_DETAIL_SECTIONS_ZH,
-  },
+  }
 ];
 
 // Research & Craft — between Selected Work and Vibe Coding. Two parallel
@@ -1100,6 +1174,7 @@ export const RESEARCH_CRAFT_PROJECTS = [
     role: "Co-design Team Member",
     roleZh: "共创团队成员",
     timeline: "2025",
+    detailChapters: WHOSE_DREAMS_DETAIL_CHAPTERS,
     detailSections: WHOSE_DREAMS_DETAIL_SECTIONS,
     detailSectionsZh: WHOSE_DREAMS_DETAIL_SECTIONS_ZH,
   },
@@ -1124,7 +1199,31 @@ export const RESEARCH_CRAFT_PROJECTS = [
     role: "Technical Artist & Designer",
     roleZh: "技术美术 & 设计师",
     timeline: "2024",
+    detailChapters: PROCEDURAL_ANIMATION_DETAIL_CHAPTERS,
     detailSections: PROCEDURAL_ANIMATION_DETAIL_SECTIONS,
     detailSectionsZh: PROCEDURAL_ANIMATION_DETAIL_SECTIONS_ZH,
   },
+];
+
+/** Flat list of every showcase project (Selected → Research & Craft → Vibe). */
+export function getAllProjects() {
+  return [
+    ...SELECTED_PROJECTS,
+    ...RESEARCH_CRAFT_PROJECTS,
+    ...VIBE_PROJECTS,
+  ];
+}
+
+export function getProjectById(id) {
+  return getAllProjects().find((project) => project.id === id) ?? null;
+}
+
+/**
+ * Home vibe-coding folder — Emotion Garden, Furin, Swim Balance.
+ * Covers live inside the folder; catalogue section is on Projects.
+ */
+export const HOME_VIBE_FOLDER_IDS = [
+  "emotion-garden",
+  "onomichi-furin",
+  "swim-balance",
 ];

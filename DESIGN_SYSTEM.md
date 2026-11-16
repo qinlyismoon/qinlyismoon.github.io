@@ -11,29 +11,34 @@ primitives.
 
 ## Typography
 
-Three faces, each with one role:
+Three type roles, each filled by the active type voice:
 
 - Type voices (Settings → Type): two named presets on `data-type-voice`,
-  not a font picker. **Geometric** (default) sets both `--font-sans` and
-  `--font-serif` to self-hosted `Urbanist` (`public/fonts/Urbanist/`).
-  **Editorial** restores the previous pair: Zalando Sans for chrome,
-  STIX Two Text for reading. Switching is stored with the other site
-  settings and applied before paint. Geometric opens long-copy rhythm
+  not a font picker. A voice only fills the three roles below (plus the
+  reading rhythm tokens); rules elsewhere pick a role, never a typeface.
+  **Serif** (`serif`, default): Zalando Sans for UI and reading, STIX
+  Two Text at regular weight for headings and pulled quotes. **Sans**
+  (`geometric`, id kept from earlier versions): self-hosted `Urbanist`
+  (`public/fonts/Urbanist/`) in every role, with long-copy rhythm opened
   slightly (`--reading-letter-spacing`, `--reading-line-height`,
-  `--weight-reading-title`) so Urbanist does not read as packed or flat;
-  Editorial resets those to the serif defaults.
+  `--weight-reading-title`) so it does not read as packed or flat. A
+  saved `editorial` (retired in v2.5.2) falls back to the default.
+  Switching is stored with the other site settings and applied before
+  paint.
+- Every role stack names a Chinese face after its Latin face (PingFang /
+  Hiragino / YaHei / Noto Sans SC for UI and reading; Songti / Noto Serif
+  SC for the serif display), so a voice holds in 中文 too.
 - Home identity (name + intro + links) shares `--content-max-width` with
-  Selected Work — never a separate `80ch` / `720px` cap that drifted under
-  Editorial’s `ch` metric.
-- Sans: `--font-sans` — UI chrome, headings, labels, metadata
-  (`Urbanist` in geometric; `Zalando Sans` in editorial). Used for
-  `--type-display`, `--type-h1`, `--type-h2`, `--type-caption`,
-  navigation, sidebar, buttons, and Desk object labels/tooltips. The one
-  deliberate exception is the Log page title and its closing heading:
-  serif, so the document never borrows the identity's voice.
-- Serif: `--font-serif` — reading. The `body` base font; long-form
-  copy, quotes, and editorial text (`Urbanist` in geometric;
-  `STIX Two Text` in editorial).
+  Selected Work — never a separate `80ch` / `720px` cap that drifts
+  with a face's `ch` metric.
+- UI: `--font-ui` — navigation, sidebar, buttons, labels, metadata, and
+  Desk object labels/tooltips.
+- Reading: `--font-reading` — the `body` base font; long-form copy,
+  intros, captions, case-study text.
+- Display: `--font-display` — headings and pulled quotes. Which classes
+  are headings is declared once, in the display-role `:is()` list at the
+  top of `styles.css`; a new heading class joins that list (in Serif the
+  list also settles headings at regular weight, -0.01em).
 - Mono: `--font-mono` (`JetBrains Mono`) — code, data, and technical labels.
 - Handwritten: `Caveat` — reserved for the logo only, never for UI or body.
 - Display: `--type-display`, used once for a page-level introduction.
@@ -221,7 +226,7 @@ column structure. The Context Column is informational,
 not navigational, and owns the shared contact links.
 
 The home page closes with a single versioned copyright line (`.home-copyright`,
-`© 2026 Longyue Qin · v2.5.1`) after the work index. It is set in the sidebar
+`© 2026 Longyue Qin · v3.0.0`) after the work index. It is set in the sidebar
 label voice (12px/500/secondary) and aligned to the documentation content
 width — a quiet colophon, never a footer bar. It is language-neutral, so
 it lives directly in `HomeIntro.jsx` rather than the localization copy.
@@ -554,7 +559,7 @@ this one constant — never per object.
 ### Desk hover labels and tooltips share one face
 
 SVG object labels (`.desk-scene__label`) and HTML portal tooltips
-(`.workspace-tooltip__line`) use the same type: `var(--font-sans)`,
+(`.workspace-tooltip__line`) use the same type: `var(--font-ui)`,
 `--type-caption`, weight regular, `0.01em` letter-spacing. Tooltips portal
 to `document.body` and position from `getBoundingClientRect`, so they track the
 scene while the viewport scrolls.
@@ -737,7 +742,7 @@ a testimonial widget: no photo avatar, no Caveat handwriting, no off-system
 teal — the active stage no longer shifts the quote's color. Every quote
 speaks in one voice — stage highlights and the journey's transition prompt
 ("Where will this journey take me next?") alike: the bare
-`.journey-reflection`, the serif reading face (`var(--font-serif)`,
+`.journey-reflection`, the serif reading face (`var(--font-reading)`,
 upright — no faux-italic CJK), primary text,
 `clamp(1.125rem, 1.5vw, 1.25rem)` (a modest step above body copy), a single
 2px accent rule (`var(--color-accent)`, theme-aware), capped at `40rem`. A
@@ -1145,6 +1150,58 @@ The site version is v2.2.2. Bump `package.json` / `package-lock.json`,
 the Home footer (`LandingPage.jsx`), and sidebar `Current version`
 (`pageContext.js`, EN and ZH) together.
 
+### Case-study detail template (v2.6, Color Analysis)
+
+Every case-study detail follows one fixed order, top to bottom. A slot
+that has no content is skipped — never an empty block.
+
+1. Hero image (`thumbnail` / `heroVideo`).
+2. Title block: project title → tagline → year · role. The tagline is
+   one plain sentence that says what the project is (no slogan).
+3. Header slot: `summary` / `summaryZh` (one or two short paragraphs on
+   what I did) then `facts` / `factsZh` — Role, Worked with, Timeline,
+   Status — in the shared `.case-study__facts` grid. Project-level
+   fields, rendered by `VibeProjectDetail` before the chapters
+   (`.vibe-detail__header-facts`). Facts never sit inside a chapter.
+   Timeline is a date range only (no version numbers); team counts are
+   written out ("2 product managers").
+4. Numbered chapters start at 01 after the header slot. There is no
+   "Overview" chapter when the header slot carries the summary.
+5. Section headings are plain sentences — no added numbering such as
+   "1." inside a chapter (the chapter numeral is the only number).
+
+Media rules:
+
+- App screens are shown one per figure with `section.screens`, in a
+  horizontal `FlowMediaRail` (`.flow-media-rail--screens`) that peeks
+  the next frame so a long sequence never reads as complete, on the
+  page ground — no board, no backdrop colour, no titles, tags, or labels
+  drawn onto the image. Each screen carries one short caption under it
+  (`figcaption`, caption token). Explanation lives in the text and
+  captions, never inside the image.
+- Spacing: media sits one `--space-6` beat away from copy on both sides
+  — copy or list → media, media → media, and media → a list that follows
+  it. Never set ad-hoc margins on case-study media; use the space tokens.
+- One topic, one section: keep related steps (e.g. how the drape
+  works and why results come per attribute) in one section so its
+  screens form one continuous set; split only when each part has its
+  own full set of screens.
+- Do not add an "end-to-end flow" overview image when the sections
+  already walk through the flow screen by screen.
+- Screens are captured from the real build with sample (AI-generated)
+  faces; photos of real people (including celebrity reference images)
+  are left out.
+
+Lists: when copy gives parallel reasons or benefits (“this helps on
+three levels”), use a numbered list (`listOrdered: true` → `<ol>`) with
+a short lead-in sentence; never type “1.” into the text. Plain bullets
+are for unordered points. Use `items` (titled sub-blocks) for a follow-on
+point that comes after a list.
+
+Type rule: lists inside a detail (`.case-study__list`) use the same body
+token as paragraphs (`--type-body` via the `.vibe-detail__main` rule),
+so a section that switches from paragraph to list never changes size.
+
 ### Vibe case-study detail (Swim Balance, added after v2.2.2)
 
 A vibe project may carry a `caseStudy` / `caseStudyZh` object in
@@ -1208,6 +1265,19 @@ Detail-view rules for every project, case study or not:
   rest, and at the bar's right end once the bar sticks (it fades in
   as the hero's copy scrolls away, keeping its slot so items never
   shift). It is the one navigation pattern for details.
+- Story chapters: a long case study can group its sections into a few
+  chapters (`detailChapters` on the project: `{ id, label, labelZh,
+  sections: [sectionId…] }`, shared by both languages). The contents
+  bar then shows only the chapters — a small chevron marks the ones
+  with more than one section — and the underline follows the chapter
+  being read. A chapter's sections open in a paper menu under it
+  (surface ground, one 1px border, 8px radius, no shadow), on hover
+  where the pointer can hover and on click/tap everywhere; the section
+  being read carries a short accent tick. Escape or an outside click
+  closes the menu. In the body the chapter takes the pale numeral and
+  the L2 title, and its sections step down to L2b (serif, reading
+  size), sitting closer together than chapters do. Short details keep
+  the flat numbered list.
 - Nav-art crop rule: choose the slice of the hero with the least
   information that still identifies the project — one quiet signature
   drawn from the project's subject itself (Emotion Garden's flowers,
@@ -1288,6 +1358,36 @@ Detail-view rules for every project, case study or not:
   `detailSections` / `detailSectionsZh` (paragraphs, pull quote,
   titled items, a self-hosted figure per section); legacy
   `detail` / `detailZh` fields map onto the same shape.
+
+## v3.0.0 — Bento home + Projects page + site dock
+
+Major layout frame (Hudson / Dustin pattern):
+
+- **Chrome:** floating **SiteDock** only — no top text nav, no left
+  context column. Wide page insets (`--v3-page-inset`) so the board
+  breathes and stacks cleanly on small screens.
+- **Type:** default voice is **Outfit** + **Geist Mono** kickers
+  (Hudson’s default is Apfel Grotezk; Outfit is the closest face in
+  Hudson’s own font shuffle). Serif voice remains available in Settings.
+- **Home board:** masthead **珑月 (Phoebe)** → About tile → modules row
+  (Furin square, Desk square, vibe-coding **folder** with hover-fan
+  covers + a side **hobbies** list) → **Selected work** as a
+  horizontal scroll rail of all `SELECTED_PROJECTS` (Hudson media tiles,
+  not the old description/tag cards). Hobbies stay a quiet non-linked
+  column (`away from the screen`), not an “in the works” status board.
+- **Projects** (`/library`): full catalogue. Detail close returns via
+  `location.state.from`.
+- **Case studies:** Color Analysis (fAIshion internship), Leaf Note
+  (screens + live handoff try-it), Money Map live flows; Try-it task
+  lists show all steps at once (no fake progress tracking).
+- **Identity:** role line stays a quiet caption; rotating trait chips
+  carry muted per-trait color.
+
+### Version
+
+The site version is v3.0.0. Bump `package.json` / `package-lock.json`,
+the Home footer (`HomeBento.jsx`), and sidebar `Current version`
+(`pageContext.js`, EN and ZH) together.
 
 ## Localization
 

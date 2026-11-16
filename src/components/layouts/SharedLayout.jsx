@@ -1,57 +1,47 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useAppSettings } from "../../context/AppSettingsContext";
 import { getThemeColors } from "../../lib/theme";
-import AmbientBackdrop from "../shared/AmbientBackdrop";
-import ContextColumn from "../shared/ContextColumn";
-import TopNavigation from "../shared/TopNavigation";
-import ViewportPortal from "../shared/ViewportPortal";
-import SystemStatus from "../shared/SystemStatus";
+import SiteDock from "../shared/SiteDock";
 
-export default function SharedLayout({
-  children,
-  context,
-  page,
-  metadataDirection = "none",
-  metadataSwapKey,
-}) {
+/**
+ * V3 shell — no top nav, no left column, no ambient flash.
+ * Shared page inset so Home / Projects / Teaching breathe the same.
+ */
+export default function SharedLayout({ children, page }) {
   const { isDarkMode, accent } = useAppSettings();
   const themeColors = useMemo(
     () => getThemeColors(isDarkMode, accent),
     [isDarkMode, accent],
   );
-  // Home and Desk share the same fixed application grid. Page-specific
-  // content changes must never move the persistent chrome.
-  const isStageView = page === "desk" || page === "home";
+  const isDesk = page === "desk";
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    if (isDesk) return;
+    const scroller = contentRef.current;
+    if (scroller) scroller.scrollTop = 0;
+    window.scrollTo(0, 0);
+  }, [page, isDesk]);
 
   return (
     <div
-      className={`shared-layout${isStageView ? " shared-layout--desk" : ""}`}
+      className={`shared-layout shared-layout--v3${
+        isDesk ? " shared-layout--desk" : ""
+      }`}
       style={{
         background: themeColors.pageBg,
         color: themeColors.text,
-        // Theme changes crossfade complete page snapshots, so the shell and
-        // page-specific artwork cannot visibly lead or lag one another.
       }}
     >
-      <AmbientBackdrop />
-      <ViewportPortal>
-        <div className="viewport-top-nav">
-          <TopNavigation className="viewport-top-nav__bar" />
-          <div className="viewport-top-nav__mobile-settings" aria-label="Display settings">
-            <SystemStatus />
-          </div>
-        </div>
-      </ViewportPortal>
-
-      <div className="shared-layout__grid">
-        <ContextColumn
-          {...context}
-          page={page}
-          direction={metadataDirection}
-          metadataSwapKey={metadataSwapKey}
-        />
-        <main className="shared-layout__content">{children}</main>
-      </div>
+      <main
+        ref={contentRef}
+        className={`shared-layout__content shared-layout__content--v3${
+          isDesk ? " shared-layout__content--desk" : ""
+        }`}
+      >
+        {children}
+      </main>
+      <SiteDock />
     </div>
   );
 }

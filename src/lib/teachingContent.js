@@ -36,8 +36,8 @@ const TEACHING_COPY_EN = {
   introduction: {
     title: "Teaching",
     paragraphs: [
-      "Since January 2025 I have been a Graduate Teaching Associate at The Ohio State University, supporting courses in design foundations, experiential media, and visual communication.",
-      "Teaching changed the way I understand my own design process. Explaining an idea to someone else means making its reasoning visible: what I would do, and why. Working with students taught me to listen closely, adapt feedback to different ways of thinking, and leave room for experimentation.",
+      "Since January 2025 I’ve been a Graduate Teaching Associate at The Ohio State University, supporting courses in design foundations, experiential media, and visual communication.",
+      "Teaching changed how I see my own process. When I explain an idea, I have to show the reasoning — what I’d do, and why. Working with students taught me to listen, adjust feedback, and leave room to experiment.",
     ],
     // Handwritten note on the thread between Introduction and Philosophy.
     threadNote: "make thinking visible",
@@ -45,28 +45,22 @@ const TEACHING_COPY_EN = {
 
   philosophy: {
     title: "How I Approach Teaching",
-    subtitle: "Learning how to think beyond the classroom.",
+    subtitle: "A way of thinking that lasts past the course.",
     paragraphs: [
-      "I teach for the moment after a course ends, when students meet a problem no assignment prepared them for. What carries them through is a way of thinking: questioning what they see, reading the situation, and trusting their own judgment.",
+      "I teach for the moment after class ends — when someone hits a problem no assignment covered. What helps then is a habit of mind: question what you see, read the situation, trust your own judgment.",
     ],
     principles: [
       {
         index: "01",
         title: "Transferable Thinking",
         description:
-          "A method is tied to one situation; the question behind it travels. I teach that question so students can rebuild a method when the assignment, the field, or the medium changes.",
+          "A method sticks to one situation; the question behind it travels. I teach that question so students can rebuild a method when the assignment, the field, or the medium changes.",
       },
       {
         index: "02",
-        title: "Individual Approaches",
+        title: "Responsibility for Accuracy",
         description:
-          "The same goal can be reached by many routes. When a method grows from a student’s own field and experience, it becomes theirs to keep using.",
-      },
-      {
-        index: "03",
-        title: "Contextual Reasoning",
-        description:
-          "Audience, medium, and purpose change what “good” looks like. Learning to read them is how students move from following rules to making their own judgment.",
+          "Students take what I teach as true and build on it. So before class I check the terms, sources, and examples — I only bring in what I can stand behind.",
       },
     ],
   },
@@ -221,40 +215,35 @@ const TEACHING_COPY_ZH = {
   introduction: {
     title: "教学",
     paragraphs: [
-      "从 2025 年 1 月起，我在俄亥俄州立大学做研究生助教（Graduate Teaching Associate），参与设计基础、体验媒体和视觉传达方向的课。",
-      "教学改变了我对自己设计过程的理解。要把想法讲清楚，就得把背后的理由摊开：我会怎么做，为什么这么做。和学生一起工作，让我学会听得更细，按不同的思维方式给反馈，也为试错留一点空。",
+      "从 2025 年 1 月起，我在俄亥俄州立大学当研究生助教，带设计基础、体验媒体和视觉传达相关的课。",
+      "教学改了我对自己过程的看法。要把想法讲清楚，就得把理由摊开——怎么做、为什么。和学生一起，我更会听、会改反馈，也更敢留一点试错的空。",
     ],
     threadNote: "把想法摊开",
   },
 
   philosophy: {
     title: "我怎么看教学",
-    subtitle: "学会在课堂之外想问题。",
+    subtitle: "课上完了还能带走的思考方式。",
     paragraphs: [
-      "我为课结束之后的那一刻而教：当学生碰上任何作业都没准备过的问题时，托住他们的是一种想事情的方式——质疑所见、读懂情境，并相信自己的判断。",
+      "我想教的是课结束之后：碰上从没练过的问题时，还有没有用的习惯——质疑所见、读懂情境、信自己的判断。",
     ],
     principles: [
       {
         title: "能带走的思考",
         description:
-          "方法往往绑在某一种情境里；它背后的问题，可以带走。我教的是那个问题，这样学生换了作业、领域或媒介，也能自己重新搭起方法。",
+          "方法常常绑在某个情境里；背后的问题可以带走。我教那个问题，换了作业、领域或媒介，学生也能自己重搭方法。",
       },
       {
-        title: "各自的路",
+        title: "对讲的内容负责",
         description:
-          "同一个目标可以有许多条路。当方法从学生自己的领域和经验里长出来，它就真正成为他们可以继续用的东西。",
-      },
-      {
-        title: "看清再判断",
-        description:
-          "受众、媒介和目的，会改变「好」的标准。学会读懂它们，学生才能从跟着规则走，走到自己做出判断。",
+          "学生会把我讲的当真，并接着往上做。进课堂前我会核对术语、出处和例子——讲出去的，我得站得住。",
       },
     ],
   },
 
   experience: {
     title: "教学经历",
-    note: "我作为研究生助教参与的课，以及每门课里留下的工作。",
+    note: "我当助教带过的课，以及每门课里留下的工作。",
     labels: {
       role: "我的角色",
       reflection: "反思",

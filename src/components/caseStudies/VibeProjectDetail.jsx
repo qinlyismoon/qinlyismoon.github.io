@@ -4,8 +4,48 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useAppSettings } from "../../context/AppSettingsContext";
-import useSlidingIndicator from "../../hooks/useSlidingIndicator";
+import useWindowChromeSide from "../../hooks/useWindowChromeSide";
+import { PORTFOLIO_LINKS } from "../../lib/links";
 import CaseStudyVideo from "./CaseStudyVideo";
+import FlowMediaRail from "./FlowMediaRail";
+import { LEAF_NOTE_WIDGETS } from "./leafnote";
+import { MONEY_MAP_WIDGETS } from "./moneymap";
+
+// Interactive blocks a case-study section can embed by name.
+const CASE_STUDY_WIDGETS = { ...MONEY_MAP_WIDGETS, ...LEAF_NOTE_WIDGETS };
+
+/** Same quiet fAIshion link as the home About block. */
+function withFaishionLink(text) {
+  if (typeof text !== "string" || !text.includes("fAIshion")) return text;
+  return text.split(/(fAIshion)/g).map((part, index) =>
+    part === "fAIshion" ? (
+      <a
+        key={`faishion-${index}`}
+        className="site-text-link"
+        href={PORTFOLIO_LINKS.faishion}
+        target="_blank"
+        rel="noreferrer"
+      >
+        fAIshion
+        <span className="external-arrow" aria-hidden="true">
+          {" "}
+          ↗︎
+        </span>
+      </a>
+    ) : (
+      part
+    ),
+  );
+}
+
+function SectionWidget({ name }) {
+  const Widget = CASE_STUDY_WIDGETS[name];
+  return Widget ? (
+    <dd className="case-study__widget">
+      <Widget />
+    </dd>
+  ) : null;
+}
 
 const LABELS = {
   en: {
@@ -16,6 +56,10 @@ const LABELS = {
     projectNotes: "Project notes",
     contents: "Contents",
     nextProject: "Next project",
+    prevProject: "Previous project",
+    expand: "Widen panel",
+    shrink: "Narrow panel",
+    prototype: "Prototype",
     overview: "Overview",
     background: "Background",
     question: "The question",
@@ -31,6 +75,10 @@ const LABELS = {
     projectNotes: "项目笔记",
     contents: "本页内容",
     nextProject: "下一个项目",
+    prevProject: "上一个项目",
+    expand: "放大面板",
+    shrink: "缩小面板",
+    prototype: "原型",
     overview: "概述",
     background: "背景",
     question: "核心问题",
@@ -40,57 +88,226 @@ const LABELS = {
   },
 };
 
-// Sticky contents bar for the detail view: shows which sections the page
-// has, highlights the one being read, and jumps on click. Editorial-tab
-// voice from the design system — bare caption text on a hairline, the
-// current section marked by ONE accent underline that travels between
-// items with the shared sliding-indicator motion (useSlidingIndicator,
-// the same inchworm glide as the site tabs and Inline Choice). The bar
-// itself stays solid page ground so the text is always calm; the
-// project's hero image only breathes in at the right edge, masked so
-// it fades out before it can reach the words — and the crop picks the
-// calmest band of the hero (see the nav-art rule in DESIGN_SYSTEM.md).
-// The close control lives on the hero at rest (circled, top-right);
-// once the bar sticks, a matching circled close fades in at the bar's
-// right end — there is always exactly one close within reach.
-function DetailNav({ items, art, artPosition, artSize, fade, label, closeLabel, onClose }) {
-  const [activeId, setActiveId] = useState(items[0]?.id);
-  const [stuck, setStuck] = useState(false);
+function ExpandGlyph({ expanded }) {
+  return (
+    <svg
+      className="vibe-detail__expand-icon"
+      viewBox="0 0 16 16"
+      width="14"
+      height="14"
+      aria-hidden="true"
+    >
+      {expanded ? (
+        <>
+          <path d="M6 2.5H3.5V5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          <path d="M10 2.5h2.5V5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          <path d="M6 13.5H3.5V11" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          <path d="M10 13.5h2.5V11" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+        </>
+      ) : (
+        <>
+          <path d="M6 2.5H2.5V6" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          <path d="M10 2.5h3.5V6" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          <path d="M6 13.5H2.5V10" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          <path d="M10 13.5h3.5V10" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+        </>
+      )}
+    </svg>
+  );
+}
+
+function DetailToolbar({
+  labels,
+  expanded,
+  onToggleExpand,
+  onClose,
+  onPrev,
+  onNext,
+  canPrev,
+  canNext,
+  prototypeUrl,
+  prototypeLabel,
+  chromeSide = "right",
+}) {
+  const chrome = (
+    <div className="vibe-detail__toolbar-group vibe-detail__toolbar-group--chrome">
+      {chromeSide === "left" ? (
+        <>
+          <button
+            type="button"
+            className="vibe-detail__tool vibe-detail__tool--chrome vibe-detail__tool--close"
+            onClick={onClose}
+            aria-label={labels.close}
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+          <button
+            type="button"
+            className="vibe-detail__tool vibe-detail__tool--chrome"
+            onClick={onToggleExpand}
+            aria-label={expanded ? labels.shrink : labels.expand}
+            aria-pressed={expanded}
+          >
+            <ExpandGlyph expanded={expanded} />
+          </button>
+        </>
+      ) : (
+        <>
+          <button
+            type="button"
+            className="vibe-detail__tool vibe-detail__tool--chrome"
+            onClick={onToggleExpand}
+            aria-label={expanded ? labels.shrink : labels.expand}
+            aria-pressed={expanded}
+          >
+            <ExpandGlyph expanded={expanded} />
+          </button>
+          <button
+            type="button"
+            className="vibe-detail__tool vibe-detail__tool--chrome vibe-detail__tool--close"
+            onClick={onClose}
+            aria-label={labels.close}
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+        </>
+      )}
+    </div>
+  );
+
+  const nav = (
+    <div className="vibe-detail__toolbar-group vibe-detail__toolbar-group--nav">
+      {prototypeUrl ? (
+        <a
+          href={prototypeUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="vibe-detail__tool vibe-detail__tool--label vibe-detail__tool--link"
+        >
+          {prototypeLabel || labels.visitLive} ↗
+        </a>
+      ) : null}
+      <button
+        type="button"
+        className="vibe-detail__tool"
+        onClick={onPrev}
+        disabled={!canPrev}
+        aria-label={labels.prevProject}
+      >
+        ‹
+      </button>
+      <button
+        type="button"
+        className="vibe-detail__tool"
+        onClick={onNext}
+        disabled={!canNext}
+        aria-label={labels.nextProject}
+      >
+        ›
+      </button>
+    </div>
+  );
+
+  return (
+    <div
+      className="vibe-detail__toolbar"
+      data-chrome-side={chromeSide}
+      onClick={(event) => event.stopPropagation()}
+    >
+      {chromeSide === "left" ? (
+        <>
+          {chrome}
+          {nav}
+        </>
+      ) : (
+        <>
+          {nav}
+          {chrome}
+        </>
+      )}
+    </div>
+  );
+}
+
+const CHAPTER_RING = { size: 16, stroke: 1.5 };
+
+function ChapterProgressRing({ progress, active }) {
+  const { size, stroke } = CHAPTER_RING;
+  const radius = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const clamped = Math.min(1, Math.max(0, progress));
+  const complete = clamped >= 0.995;
+  const offset = circumference * (1 - clamped);
+  return (
+    <svg
+      className="vibe-detail__sidenav-ring"
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
+      aria-hidden="true"
+      data-active={active ? "true" : undefined}
+      data-complete={complete ? "true" : undefined}
+    >
+      <circle
+        className="vibe-detail__sidenav-ring-track"
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        fill="none"
+        strokeWidth={stroke}
+      />
+      {complete ? (
+        <circle
+          className="vibe-detail__sidenav-ring-fill"
+          cx={size / 2}
+          cy={size / 2}
+          r={Math.max(2.2, radius - 0.35)}
+        />
+      ) : (
+        <circle
+          className="vibe-detail__sidenav-ring-value"
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          strokeWidth={stroke}
+          strokeDasharray={circumference}
+          strokeLinecap="round"
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+          style={{ strokeDashoffset: offset }}
+        />
+      )}
+    </svg>
+  );
+}
+
+/**
+ * Left sticky TOC — chapter titles with a per-chapter reading ring,
+ * plus nested subsection links (no rings) when a chapter has children.
+ */
+function DetailSideNav({ items, label, panelRef }) {
+  const chapters = items;
   const navRef = useRef(null);
-  const itemsRef = useRef(null);
-  const indicatorRef = useRef(null);
-  const itemRefs = useRef(new Map());
-  const idsKey = items.map((item) => item.id).join(",");
-  const labelsKey = items.map((item) => item.label).join("|");
-
-  useSlidingIndicator({
-    containerRef: itemsRef,
-    indicatorRef,
-    getActive: () => itemRefs.current.get(activeId),
-    activeKey: activeId,
-    layoutKey: labelsKey,
-  });
-
-  // The bar sticks at the viewport top; when it arrives there, reveal
-  // its close control (the hero's own close has scrolled away by then).
-  useEffect(() => {
-    const nav = navRef.current;
-    if (!nav) return undefined;
-    const onScroll = () => {
-      setStuck(nav.getBoundingClientRect().top <= 1);
-    };
-    onScroll();
-    document.addEventListener("scroll", onScroll, true);
-    window.addEventListener("resize", onScroll);
-    return () => {
-      document.removeEventListener("scroll", onScroll, true);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
+  const [activeId, setActiveId] = useState(chapters[0]?.id);
+  const [chapterProgress, setChapterProgress] = useState(() =>
+    Object.fromEntries(chapters.map((item) => [item.id, 0])),
+  );
+  const observeIds = chapters.flatMap((item) => [
+    item.id,
+    ...(item.children?.map((child) => child.id) ?? []),
+  ]);
+  const idsKey = observeIds.join(",");
+  const chapterIdsKey = chapters.map((item) => item.id).join(",");
+  const childToParent = Object.fromEntries(
+    chapters.flatMap((item) =>
+      (item.children ?? []).map((child) => [child.id, item.id]),
+    ),
+  );
 
   useEffect(() => {
-    const panel = navRef.current?.closest(".vibe-detail");
-    if (!panel) return undefined;
+    const panel = panelRef?.current;
+    if (!panel || !idsKey) return undefined;
+    const scrollRoot = panel.querySelector("[data-detail-scroll]");
     const sections = idsKey
       .split(",")
       .map((id) => panel.querySelector(`#${CSS.escape(id)}`))
@@ -99,74 +316,137 @@ function DetailNav({ items, art, artPosition, artSize, fade, label, closeLabel, 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) setActiveId(entry.target.id);
+          if (!entry.isIntersecting) return;
+          setActiveId(entry.target.id);
         });
       },
-      { rootMargin: "-25% 0px -65% 0px" },
+      {
+        root: scrollRoot || null,
+        rootMargin: "-18% 0px -62% 0px",
+      },
     );
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, [idsKey]);
+  }, [idsKey, panelRef]);
+
+  useEffect(() => {
+    const panel = panelRef?.current;
+    const scroller = panel?.querySelector("[data-detail-scroll]");
+    if (!scroller || !chapterIdsKey) return undefined;
+
+    const chapterIds = chapterIdsKey.split(",");
+    const lastId = chapterIds[chapterIds.length - 1];
+    let frame = 0;
+
+    const updateProgress = () => {
+      const scrollerRect = scroller.getBoundingClientRect();
+      const viewH = scroller.clientHeight;
+      const readingY = scrollerRect.top + viewH * 0.32;
+      const finishY = scrollerRect.top + viewH * 0.78;
+      const maxScroll = Math.max(0, scroller.scrollHeight - viewH);
+      const atBottom =
+        maxScroll <= 4 || scroller.scrollTop >= maxScroll - 6;
+      const next = {};
+      chapterIds.forEach((id) => {
+        const el = panel.querySelector(`#${CSS.escape(id)}`);
+        if (!el) {
+          next[id] = 0;
+          return;
+        }
+        const rect = el.getBoundingClientRect();
+        const height = Math.max(rect.height, 1);
+        let raw = (readingY - rect.top) / height;
+        // Once the chapter bottom has crossed the finish line, treat as read.
+        if (rect.bottom <= finishY) raw = 1;
+        // Last chapter often can't scroll the reading line through its full
+        // height — snap complete when the page end is reached.
+        if (id === lastId && atBottom) raw = 1;
+        next[id] = Math.min(1, Math.max(0, raw));
+      });
+      setChapterProgress(next);
+    };
+
+    const onScroll = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        updateProgress();
+      });
+    };
+
+    updateProgress();
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", updateProgress);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      scroller.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", updateProgress);
+    };
+  }, [panelRef, chapterIdsKey]);
 
   const jump = (id) => {
     setActiveId(id);
-    navRef.current
-      ?.closest(".vibe-detail")
+    panelRef?.current
       ?.querySelector(`#${CSS.escape(id)}`)
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  if (!chapters.length) return null;
+
   return (
-    <nav
-      ref={navRef}
-      className="vibe-detail__nav"
-      style={fade ? { background: fade } : undefined}
-      aria-label={label}
-    >
-      {art ? (
-        <span
-          className="vibe-detail__nav-art"
-          style={{
-            backgroundImage: `url(${art})`,
-            backgroundPosition: artPosition ?? "50% 0%",
-            backgroundSize: artSize ?? "cover",
-          }}
-          aria-hidden="true"
-        />
-      ) : null}
-      <div ref={itemsRef} className="vibe-detail__nav-items">
-        <span
-          ref={indicatorRef}
-          className="vibe-detail__nav-indicator"
-          aria-hidden="true"
-        />
-        {items.map((item) => (
-          <button
-            key={item.id}
-            ref={(node) => {
-              if (node) itemRefs.current.set(item.id, node);
-              else itemRefs.current.delete(item.id);
-            }}
-            type="button"
-            className="vibe-detail__nav-item"
-            aria-current={item.id === activeId ? "true" : undefined}
-            onClick={() => jump(item.id)}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
-      <button
-        type="button"
-        className={`vibe-detail__close vibe-detail__close--nav${stuck ? " is-visible" : ""}`}
-        onClick={onClose}
-        aria-label={closeLabel}
-        aria-hidden={stuck ? undefined : "true"}
-        tabIndex={stuck ? undefined : -1}
-      >
-        ×
-      </button>
-    </nav>
+    <aside ref={navRef} className="vibe-detail__sidenav" aria-label={label}>
+      <ol className="vibe-detail__sidenav-list">
+        {chapters.map((item) => {
+          const progress = chapterProgress[item.id] ?? 0;
+          const children = item.children ?? [];
+          const activeChapterId = childToParent[activeId] ?? activeId;
+          const isChapterActive = item.id === activeChapterId;
+          return (
+            <li key={item.id} className="vibe-detail__sidenav-item">
+              <button
+                type="button"
+                className="vibe-detail__sidenav-link"
+                aria-current={
+                  isChapterActive && !children.some((c) => c.id === activeId)
+                    ? "true"
+                    : undefined
+                }
+                aria-label={`${item.label}, ${Math.round(progress * 100)}%`}
+                onClick={() => jump(item.id)}
+              >
+                <ChapterProgressRing
+                  progress={progress}
+                  active={isChapterActive}
+                />
+                <span className="vibe-detail__sidenav-text">{item.label}</span>
+              </button>
+              {children.length ? (
+                <ol className="vibe-detail__sidenav-sublist">
+                  {children.map((child) => {
+                    const isChildActive = child.id === activeId;
+                    return (
+                      <li
+                        key={child.id}
+                        className="vibe-detail__sidenav-subitem"
+                      >
+                        <button
+                          type="button"
+                          className="vibe-detail__sidenav-sublink"
+                          aria-current={isChildActive ? "true" : undefined}
+                          onClick={() => jump(child.id)}
+                        >
+                          {child.label}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ol>
+              ) : null}
+            </li>
+          );
+        })}
+      </ol>
+    </aside>
   );
 }
 
@@ -275,6 +555,401 @@ function CaseStudyBody({ caseStudy }) {
   );
 }
 
+function ItemFigure({ image }) {
+  return (
+    <figure className="case-study__figure">
+      <img src={image.src} alt={image.alt ?? ""} loading="lazy" />
+      {image.caption ? <figcaption>{image.caption}</figcaption> : null}
+    </figure>
+  );
+}
+
+/** Drop a leading "1. " / "01 " so auto step badges don’t double-number. */
+function stripScreenIndex(caption) {
+  if (!caption) return caption;
+  return caption.replace(/^\d+[.\s、．]\s*/, "").trim();
+}
+
+/**
+ * One rich section (title, copy, quotes, figures, tables, lists, videos,
+ * items). Numbered when it stands alone in the flat list; inside a story
+ * chapter the chapter carries the numeral instead.
+ */
+function DetailSection({ section, index }) {
+  const { language } = useAppSettings();
+  const isZh = language === "zh";
+
+  return (
+    <div
+      className="vibe-detail__section"
+      id={`detail-${section.key}`}
+    >
+      {index != null ? (
+        <span className="vibe-detail__index" aria-hidden="true">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+      ) : null}
+      <dt>{section.label}</dt>
+      {section.paragraphs?.map((paragraph) => (
+        <dd
+          key={paragraph.slice(0, 24)}
+          className={section.quote === true ? "vibe-detail__quote" : undefined}
+        >
+          {paragraph}
+        </dd>
+      ))}
+      {/* A string quote is its own pulled line after the
+          paragraphs (the legacy `quote: true` instead
+          styles the paragraph itself as the quote). */}
+      {typeof section.quote === "string" ? (
+        <dd className="vibe-detail__quote">{section.quote}</dd>
+      ) : null}
+      {section.interactive ? <SectionWidget name={section.interactive} /> : null}
+      {/* Project facts (role, context, deliverables, timeline) as a
+          compact grid under the overview copy. */}
+      {section.facts?.length ? (
+        <dd className="case-study__facts-wrap">
+          <dl className="case-study__facts">
+            {section.facts.map((fact) => (
+              <div key={fact.label} className="case-study__fact">
+                <dt>{fact.label}</dt>
+                {fact.lines.map((line) => (
+                  <dd key={line}>{line}</dd>
+                ))}
+              </div>
+            ))}
+          </dl>
+        </dd>
+      ) : null}
+      {/* Evidence before synthesis: section figures/images
+          lead tables so research boards aren't interrupted
+          by a summary table sitting above them. */}
+      {section.image ? (
+        <figure
+          className={`case-study__figure${
+            section.image.size === "contained"
+              ? " case-study__figure--contained"
+              : ""
+          }`}
+        >
+          <img
+            src={section.image.src}
+            alt={section.image.alt ?? ""}
+            loading="lazy"
+          />
+          {section.image.caption ? (
+            <figcaption>{section.image.caption}</figcaption>
+          ) : null}
+        </figure>
+      ) : null}
+      {/* Default: stack full-width (journey maps, boards).
+          `imagesLayout: "rail"` — horizontal peek rail (e.g. Money Map personas).
+          Phone flows use `screens` + FlowMediaRail instead. */}
+      {section.images?.length ? (
+        section.imagesLayout === "rail" ? (
+          <FlowMediaRail
+            className="flow-media-rail--boards"
+            label={isZh ? "滑动查看人物卡" : "Scroll through personas"}
+          >
+            {section.images.map((image) => (
+              <figure
+                key={image.src}
+                className="case-study__figure flow-media-rail__card"
+              >
+                <img
+                  src={image.src}
+                  alt={image.alt ?? ""}
+                  loading="lazy"
+                />
+                {image.caption ? (
+                  <figcaption>{image.caption}</figcaption>
+                ) : null}
+              </figure>
+            ))}
+          </FlowMediaRail>
+        ) : (
+          <div className="case-study__figures">
+            {section.images.map((image) => (
+              <figure key={image.src} className="case-study__figure">
+                <img
+                  src={image.src}
+                  alt={image.alt ?? ""}
+                  loading="lazy"
+                />
+                {image.caption ? (
+                  <figcaption>{image.caption}</figcaption>
+                ) : null}
+              </figure>
+            ))}
+          </div>
+        )
+      ) : null}
+      {section.tables?.map((table) => (
+        <div
+          key={table.caption ?? table.headers?.join("-")}
+          className="case-study__table-wrap"
+        >
+          <table
+            className={`case-study__table${
+              table.headerColumn ? " case-study__table--row-head" : ""
+            }`}
+          >
+            {table.headers?.length ? (
+              <thead>
+                <tr>
+                  {table.headers.map((header) => (
+                    <th key={header} scope="col">
+                      {header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+            ) : null}
+            <tbody>
+              {table.rows?.map((row) => (
+                <tr key={row.join("|").slice(0, 48)}>
+                  {row.map((cell, cellIndex) =>
+                    table.headerColumn && cellIndex === 0 ? (
+                      <th key={cellIndex} scope="row">
+                        {cell}
+                      </th>
+                    ) : (
+                      <td key={cellIndex}>{cell}</td>
+                    ),
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {table.caption ? (
+            <p className="case-study__table-caption">{table.caption}</p>
+          ) : null}
+        </div>
+      ))}
+      {section.list?.length ? (
+        // `listOrdered` numbers the points (1, 2, 3) when the copy is a
+        // set of parallel reasons; plain lists keep bullets.
+        section.listOrdered ? (
+          <ol className="case-study__list case-study__list--ordered">
+            {section.list.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ol>
+        ) : (
+          <ul className="case-study__list">
+            {section.list.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        )
+      ) : null}
+      {/* Local screen recordings (mp4), same stage as Swim
+          Balance — a section can carry a short loop of clips. */}
+      {/* App / flow screens — horizontal rail with a peek so a long
+          sequence never reads as “only these three.” Numbered like
+          Money Map’s journey steps when the rail is a sequence. */}
+      {section.screens?.length ? (
+        <dd className="case-study__screens-wrap">
+          <FlowMediaRail
+            className="flow-media-rail--screens"
+            label={isZh ? "滑动查看流程截图" : "Scroll through the flow"}
+          >
+            {section.screens.map((screen, screenIndex) => {
+              const caption = stripScreenIndex(screen.caption);
+              return (
+                <figure
+                  key={screen.src}
+                  className="case-study__screen flow-media-rail__card"
+                >
+                  <img src={screen.src} alt={screen.alt ?? ""} loading="lazy" />
+                  {caption ? (
+                    <figcaption className="case-study__screen-caption">
+                      <span className="case-study__screen-index" aria-hidden="true">
+                        {screenIndex + 1}
+                      </span>
+                      <span>{caption}</span>
+                    </figcaption>
+                  ) : null}
+                </figure>
+              );
+            })}
+          </FlowMediaRail>
+        </dd>
+      ) : null}
+      {section.videos?.length ? (
+        <div
+          className={`case-study__videos${
+            section.videos.some((video) => video.aspect === "landscape")
+              ? " case-study__videos--stack"
+              : ""
+          }`}
+        >
+          {section.videos.map((video) => (
+            <figure
+              key={video.src}
+              className={`case-study__video${
+                video.aspect === "landscape"
+                  ? " case-study__video--landscape"
+                  : ""
+              }`}
+            >
+              <CaseStudyVideo
+                src={video.src}
+                withSound={Boolean(video.withSound)}
+              />
+              {video.caption ? (
+                <figcaption>{video.caption}</figcaption>
+              ) : null}
+            </figure>
+          ))}
+        </div>
+      ) : null}
+      {section.items?.map((item) => (
+        <div
+          key={item.title}
+          className={`case-study__decision${
+            item.split ? " case-study__decision--split" : ""
+          }${item.mediaFirst ? " case-study__decision--media-first" : ""}`}
+        >
+          <h4>{item.title}</h4>
+          {/* Media-first items give the artwork its own row under the
+              title, then the copy runs the full measure below it. */}
+          {item.image && item.mediaFirst ? (
+            <ItemFigure image={item.image} />
+          ) : null}
+          {/* Split items pair their copy with the artwork
+              beside it; the copy keeps one column so the
+              grid never interleaves paragraphs and figure. */}
+          {item.split ? (
+            <div className="case-study__split-text">
+              {item.paragraphs?.map((paragraph) => (
+                <dd key={paragraph.slice(0, 24)}>{paragraph}</dd>
+              ))}
+            </div>
+          ) : (
+            item.paragraphs?.map((paragraph) => (
+              <dd key={paragraph.slice(0, 24)}>{paragraph}</dd>
+            ))
+          )}
+          {item.interactive ? <SectionWidget name={item.interactive} /> : null}
+          {item.list?.length ? (
+            <ul className="case-study__list">
+              {item.list.map((entry) => (
+                <li key={entry}>{entry}</li>
+              ))}
+            </ul>
+          ) : null}
+          {item.image && !item.mediaFirst ? (
+            <ItemFigure image={item.image} />
+          ) : null}
+          {item.images?.length ? (
+            <div className="case-study__figures">
+              {item.images.map((image) => (
+                <figure key={image.src} className="case-study__figure">
+                  <img
+                    src={image.src}
+                    alt={image.alt ?? ""}
+                    loading="lazy"
+                  />
+                  {image.caption ? (
+                    <figcaption>{image.caption}</figcaption>
+                  ) : null}
+                </figure>
+              ))}
+            </div>
+          ) : null}
+          {/* Local mp4 or external embed. Portrait clips
+              (phone recordings) use a tall stage so the
+              frame fills without pillarbox bars; landscape
+              stays 16:9. Playback is shared: in-view play. */}
+          {item.video ? (
+            <figure className="case-study__figure case-study__figure--video">
+              <div
+                className={`case-study__embed${
+                  item.video.aspect === "portrait"
+                    ? " case-study__embed--portrait"
+                    : ""
+                }`}
+              >
+                {/\.(mp4|webm|ogg)(\?|$)/i.test(item.video.src) ? (
+                  <CaseStudyVideo
+                    src={item.video.src}
+                    title={item.video.title ?? item.title}
+                    withSound={Boolean(item.video.withSound)}
+                  />
+                ) : (
+                  <iframe
+                    src={item.video.src}
+                    title={item.video.title ?? item.title}
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    referrerPolicy="strict-origin-when-cross-origin"
+                  />
+                )}
+              </div>
+              {item.video.caption ? (
+                <figcaption>{item.video.caption}</figcaption>
+              ) : null}
+            </figure>
+          ) : null}
+          {/* Item tables (e.g. Money Map status / edit rules) run the
+              full measure under the split copy and clip. */}
+          {item.tables?.map((table) => (
+            <div
+              key={table.caption ?? table.headers?.join("-")}
+              className="case-study__table-wrap case-study__table-wrap--item"
+            >
+              <table
+                className={`case-study__table${
+                  table.headerColumn ? " case-study__table--row-head" : ""
+                }`}
+              >
+                {table.headers?.length ? (
+                  <thead>
+                    <tr>
+                      {table.headers.map((header) => (
+                        <th key={header} scope="col">
+                          {header}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                ) : null}
+                <tbody>
+                  {table.rows?.map((row) => (
+                    <tr key={row.join("|").slice(0, 48)}>
+                      {row.map((cell, cellIndex) =>
+                        table.headerColumn && cellIndex === 0 ? (
+                          <th key={cellIndex} scope="row">
+                            {cell}
+                          </th>
+                        ) : (
+                          <td key={cellIndex}>{cell}</td>
+                        ),
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {table.caption ? (
+                <p className="case-study__table-caption">{table.caption}</p>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      ))}
+      {/* Closing quote after evidence/items (e.g. Leaf Note
+          self-analysis insight that follows the four issues). */}
+      {typeof section.closingQuote === "string" ? (
+        <dd className="vibe-detail__quote vibe-detail__quote--closing">
+          {section.closingQuote}
+        </dd>
+      ) : null}
+    </div>
+  );
+}
+
 // "The Problem — Why I Built It" -> "The Problem"; "问题——我为什么做它" -> "问题".
 const shortLabel = (heading) => heading.split(/—+/)[0].trim();
 
@@ -284,10 +959,41 @@ const shortLabel = (heading) => heading.split(/—+/)[0].trim();
  * a project route (/<id>) opens, so a shared link lands on
  * this same presentation.
  */
-function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
+function ProjectDetailPanel({
+  project,
+  onClose,
+  nextProject,
+  prevProject,
+  onOpenNext,
+  onOpenPrev,
+  expanded,
+  onToggleExpand,
+}) {
   const { language } = useAppSettings();
+  const chromeSide = useWindowChromeSide();
   const labels = LABELS[language] ?? LABELS.en;
   const [imageFailed, setImageFailed] = useState(false);
+  const panelRef = useRef(null);
+  const scrollIdleRef = useRef(null);
+
+  // Show a quiet scrollbar only while the reader is moving; hide when idle.
+  useEffect(() => {
+    const panel = panelRef.current;
+    const scroller = panel?.querySelector("[data-detail-scroll]");
+    if (!scroller) return undefined;
+    const onScroll = () => {
+      scroller.classList.add("is-scrolling");
+      window.clearTimeout(scrollIdleRef.current);
+      scrollIdleRef.current = window.setTimeout(() => {
+        scroller.classList.remove("is-scrolling");
+      }, 900);
+    };
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      scroller.removeEventListener("scroll", onScroll);
+      window.clearTimeout(scrollIdleRef.current);
+    };
+  }, [project?.id]);
 
   const isZh = language === "zh";
   const detail = isZh && project.detailZh ? project.detailZh : project.detail ?? {};
@@ -295,6 +1001,10 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
     (isZh && project.caseStudyZh ? project.caseStudyZh : project.caseStudy) ??
     null;
   const tagline = isZh && project.taglineZh ? project.taglineZh : project.tagline;
+  // Fixed header slot (v2.6): project facts + a short summary of the work
+  // sit under the title block, before the first numbered chapter.
+  const headerFacts = (isZh && project.factsZh) || project.facts || null;
+  const headerSummary = (isZh && project.summaryZh) || project.summary || null;
   const showImage = project.thumbnail && !imageFailed;
   // Card may use a short loop (`heroVideo`); detail can swap in a longer
   // cut via `detailHeroVideo` (e.g. full workshop film).
@@ -306,19 +1016,7 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
   // interaction in the same section slots.
   const liveLabel =
     (isZh ? project.liveLabelZh : project.liveLabel) ?? labels.visitLive;
-  const notesLabel =
-    (isZh ? project.notesLabelZh : project.notesLabel) ?? labels.projectNotes;
-  const livePendingLabel =
-    (isZh ? project.livePendingLabelZh : project.livePendingLabel) ??
-    (isZh ? "即将上线" : "Coming soon");
-  const chips = caseStudy?.skills?.length ? caseStudy.skills : project.tags;
   const role = isZh && project.roleZh ? project.roleZh : project.role;
-  const hasActions = Boolean(
-    project.liveUrl || project.notesUrl || project.livePending,
-  );
-  const panelBackground =
-    project.panelBackground ?? caseStudy?.background ?? null;
-
   // Rich per-project sections (detailSections) when present; otherwise
   // the legacy detail fields in their fixed slots. Both feed the same
   // numbered-section rendering below.
@@ -342,7 +1040,32 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
         { key: "process", label: labels.process, paragraphs: [detail.process] },
       ].filter((section) => section.paragraphs[0]);
 
-  const navItems = caseStudy
+  // Optional story chapters (detailChapters) group the rich sections by
+  // id; without them the sections stay one flat numbered list.
+  const chapters =
+    richSections && project.detailChapters
+      ? project.detailChapters
+          .map((chapter) => ({
+            id: `detail-chapter-${chapter.id}`,
+            label: (isZh && chapter.labelZh) || chapter.label,
+            sections: chapter.sections
+              .map((id) => genericSections.find((section) => section.key === id))
+              .filter(Boolean),
+          }))
+          .filter((chapter) => chapter.sections.length)
+      : null;
+
+  // Side nav: chapter rings + nested subsection links (no rings).
+  const navItems = chapters
+    ? chapters.map((chapter) => ({
+        id: chapter.id,
+        label: chapter.label,
+        children: chapter.sections.map((section) => ({
+          id: `detail-${section.key}`,
+          label: section.label,
+        })),
+      }))
+    : caseStudy
     ? [
         caseStudy.problem && {
           id: "case-study-problem",
@@ -368,419 +1091,138 @@ function ProjectDetailPanel({ project, onClose, nextProject, onOpenNext }) {
 
   return (
       <div
+        ref={panelRef}
         className={`vibe-detail${caseStudy ? " vibe-detail--case-study" : ""}${
-          panelBackground ? " vibe-detail--tinted" : ""
+          expanded ? " vibe-detail--expanded" : ""
         }`}
-        style={
-          panelBackground ? { background: panelBackground } : undefined
-        }
+        data-project={project.id}
         onClick={(event) => event.stopPropagation()}
       >
-        <button
-          type="button"
-          className="vibe-detail__close"
-          onClick={onClose}
-          aria-label={labels.close}
-        >
-          ×
-        </button>
-        {showHero ? (
-          <div
-            className={`vibe-detail__hero${
-              showHeroVideo ? " vibe-detail__hero--video" : ""
-            }`}
-          >
-            {showHeroVideo ? (
-              <CaseStudyVideo
-                className="vibe-detail__image vibe-detail__hero-video"
-                src={detailHeroSrc}
-                poster={project.thumbnail || undefined}
-                controls={false}
-              />
-            ) : (
-              <img
-                src={project.thumbnail}
-                alt=""
-                className="vibe-detail__image"
-                onError={() => setImageFailed(true)}
-              />
-            )}
-          </div>
-        ) : null}
-        <DetailNav
-          items={navItems}
-          art={showImage ? project.thumbnail : null}
-          artPosition={project.navArtPosition}
-          artSize={project.navArtSize}
-          fade={panelBackground ?? "var(--color-surface)"}
-          label={labels.contents}
-          closeLabel={labels.close}
+        <DetailToolbar
+          labels={labels}
+          expanded={expanded}
+          onToggleExpand={onToggleExpand}
           onClose={onClose}
+          onPrev={() => prevProject && onOpenPrev?.(prevProject)}
+          onNext={() => nextProject && onOpenNext?.(nextProject)}
+          canPrev={Boolean(prevProject && onOpenPrev)}
+          canNext={Boolean(nextProject && onOpenNext)}
+          prototypeUrl={project.liveUrl || null}
+          prototypeLabel={liveLabel}
+          chromeSide={chromeSide}
         />
         <div className="vibe-detail__body">
-          <p className="vibe-detail__kicker">{project.subtitle}</p>
-          <h2 className="vibe-detail__title">{project.title}</h2>
-          {tagline ? <p className="vibe-detail__tagline">{tagline}</p> : null}
-          {chips?.length ? (
-            <ul className="vibe-detail__tags" aria-label={labels.technologies}>
-              {chips.map((chip) => (
-                <li key={chip} className="vibe-detail__tag">
-                  {chip}
-                </li>
-              ))}
-            </ul>
-          ) : null}
-          {hasActions ? (
-            <div className="vibe-detail__actions">
-              {project.liveUrl ? (
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="vibe-detail__action vibe-detail__action--primary"
-                >
-                  {liveLabel} ↗
-                </a>
-              ) : project.livePending ? (
-                <span
-                  className="vibe-detail__action vibe-detail__action--primary vibe-detail__action--pending"
-                  aria-disabled="true"
-                >
-                  {liveLabel}
-                  <span className="vibe-detail__action-note">
-                    {" "}
-                    · {livePendingLabel}
-                  </span>
-                </span>
+        <div className="vibe-detail__layout">
+          <DetailSideNav
+            items={navItems}
+            label={labels.contents}
+            panelRef={panelRef}
+          />
+          {/* Only the main column scrolls — keeps the TOC from riding up at the end. */}
+          <div className="vibe-detail__main-scroll" data-detail-scroll="">
+          <div className="vibe-detail__main">
+            {showHero ? (
+              <div
+                className={`vibe-detail__hero${
+                  showHeroVideo ? " vibe-detail__hero--video" : ""
+                }`}
+              >
+                {showHeroVideo ? (
+                  <CaseStudyVideo
+                    className="vibe-detail__image vibe-detail__hero-video"
+                    src={detailHeroSrc}
+                    poster={
+                      project.cardPoster || project.thumbnail || undefined
+                    }
+                    controls={false}
+                  />
+                ) : (
+                  <img
+                    src={project.thumbnail}
+                    alt=""
+                    className="vibe-detail__image"
+                    onError={() => setImageFailed(true)}
+                  />
+                )}
+              </div>
+            ) : null}
+            <header className="vibe-detail__intro">
+              <h2 className="vibe-detail__title">{project.title}</h2>
+              {tagline ? (
+                <p className="vibe-detail__tagline">{withFaishionLink(tagline)}</p>
               ) : null}
-              {project.notesUrl ? (
-                <a
-                  href={project.notesUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="vibe-detail__action"
-                >
-                  {notesLabel} ↗
-                </a>
-              ) : null}
-            </div>
-          ) : null}
-          {caseStudy ? <CaseStudyBody caseStudy={caseStudy} /> : null}
-          {caseStudy ? null : (
-            <dl className="vibe-detail__sections">
-              {genericSections.map((section, index) => (
-                <div
-                  key={section.key}
-                  className="vibe-detail__section"
-                  id={`detail-${section.key}`}
-                >
-                  <span className="vibe-detail__index" aria-hidden="true">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <dt>{section.label}</dt>
-                  {section.paragraphs?.map((paragraph) => (
-                    <dd
-                      key={paragraph.slice(0, 24)}
-                      className={section.quote === true ? "vibe-detail__quote" : undefined}
-                    >
-                      {paragraph}
-                    </dd>
-                  ))}
-                  {/* A string quote is its own pulled line after the
-                      paragraphs (the legacy `quote: true` instead
-                      styles the paragraph itself as the quote). */}
-                  {typeof section.quote === "string" ? (
-                    <dd className="vibe-detail__quote">{section.quote}</dd>
+              {(project.timeline || role) && (
+                <div className="vibe-detail__intro-meta">
+                  {project.timeline ? (
+                    <p className="vibe-detail__date">{project.timeline}</p>
                   ) : null}
-                  {/* Evidence before synthesis: section figures/images
-                      lead tables so research boards aren't interrupted
-                      by a summary table sitting above them. */}
-                  {section.image ? (
-                    <figure
-                      className={`case-study__figure${
-                        section.image.size === "contained"
-                          ? " case-study__figure--contained"
-                          : ""
-                      }`}
-                    >
-                      <img
-                        src={section.image.src}
-                        alt={section.image.alt ?? ""}
-                        loading="lazy"
-                      />
-                      {section.image.caption ? (
-                        <figcaption>{section.image.caption}</figcaption>
-                      ) : null}
-                    </figure>
-                  ) : null}
-                  {section.images?.length ? (
-                    <div className="case-study__figures">
-                      {section.images.map((image) => (
-                        <figure key={image.src} className="case-study__figure">
-                          <img
-                            src={image.src}
-                            alt={image.alt ?? ""}
-                            loading="lazy"
-                          />
-                          {image.caption ? (
-                            <figcaption>{image.caption}</figcaption>
-                          ) : null}
-                        </figure>
-                      ))}
-                    </div>
-                  ) : null}
-                  {section.tables?.map((table) => (
-                    <div
-                      key={table.caption ?? table.headers?.join("-")}
-                      className="case-study__table-wrap"
-                    >
-                      <table
-                        className={`case-study__table${
-                          table.headerColumn ? " case-study__table--row-head" : ""
-                        }`}
-                      >
-                        {table.headers?.length ? (
-                          <thead>
-                            <tr>
-                              {table.headers.map((header) => (
-                                <th key={header} scope="col">
-                                  {header}
-                                </th>
-                              ))}
-                            </tr>
-                          </thead>
-                        ) : null}
-                        <tbody>
-                          {table.rows?.map((row) => (
-                            <tr key={row.join("|").slice(0, 48)}>
-                              {row.map((cell, cellIndex) =>
-                                table.headerColumn && cellIndex === 0 ? (
-                                  <th key={cellIndex} scope="row">
-                                    {cell}
-                                  </th>
-                                ) : (
-                                  <td key={cellIndex}>{cell}</td>
-                                ),
-                              )}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                      {table.caption ? (
-                        <p className="case-study__table-caption">{table.caption}</p>
-                      ) : null}
-                    </div>
-                  ))}
-                  {section.list?.length ? (
-                    <ul className="case-study__list">
-                      {section.list.map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  ) : null}
-                  {/* Local screen recordings (mp4), same stage as Swim
-                      Balance — a section can carry a short loop of clips. */}
-                  {section.videos?.length ? (
-                    <div
-                      className={`case-study__videos${
-                        section.videos.some((video) => video.aspect === "landscape")
-                          ? " case-study__videos--stack"
-                          : ""
-                      }`}
-                    >
-                      {section.videos.map((video) => (
-                        <figure
-                          key={video.src}
-                          className={`case-study__video${
-                            video.aspect === "landscape"
-                              ? " case-study__video--landscape"
-                              : ""
-                          }`}
-                        >
-                          <CaseStudyVideo
-                            src={video.src}
-                            withSound={Boolean(video.withSound)}
-                          />
-                          {video.caption ? (
-                            <figcaption>{video.caption}</figcaption>
-                          ) : null}
-                        </figure>
-                      ))}
-                    </div>
-                  ) : null}
-                  {section.items?.map((item) => (
-                    <div
-                      key={item.title}
-                      className={`case-study__decision${
-                        item.split ? " case-study__decision--split" : ""
-                      }`}
-                    >
-                      <h4>{item.title}</h4>
-                      {/* Split items pair their copy with the artwork
-                          beside it; the copy keeps one column so the
-                          grid never interleaves paragraphs and figure. */}
-                      {item.split ? (
-                        <div className="case-study__split-text">
-                          {item.paragraphs?.map((paragraph) => (
-                            <dd key={paragraph.slice(0, 24)}>{paragraph}</dd>
-                          ))}
-                        </div>
-                      ) : (
-                        item.paragraphs?.map((paragraph) => (
-                          <dd key={paragraph.slice(0, 24)}>{paragraph}</dd>
-                        ))
-                      )}
-                      {item.list?.length ? (
-                        <ul className="case-study__list">
-                          {item.list.map((entry) => (
-                            <li key={entry}>{entry}</li>
-                          ))}
-                        </ul>
-                      ) : null}
-                      {item.image ? (
-                        <figure className="case-study__figure">
-                          <img
-                            src={item.image.src}
-                            alt={item.image.alt ?? ""}
-                            loading="lazy"
-                          />
-                          {item.image.caption ? (
-                            <figcaption>{item.image.caption}</figcaption>
-                          ) : null}
-                        </figure>
-                      ) : null}
-                      {item.images?.length ? (
-                        <div className="case-study__figures">
-                          {item.images.map((image) => (
-                            <figure key={image.src} className="case-study__figure">
-                              <img
-                                src={image.src}
-                                alt={image.alt ?? ""}
-                                loading="lazy"
-                              />
-                              {image.caption ? (
-                                <figcaption>{image.caption}</figcaption>
-                              ) : null}
-                            </figure>
-                          ))}
-                        </div>
-                      ) : null}
-                      {/* Local mp4 or external embed. Portrait clips
-                          (phone recordings) use a tall stage so the
-                          frame fills without pillarbox bars; landscape
-                          stays 16:9. Playback is shared: in-view play. */}
-                      {item.video ? (
-                        <figure className="case-study__figure case-study__figure--video">
-                          <div
-                            className={`case-study__embed${
-                              item.video.aspect === "portrait"
-                                ? " case-study__embed--portrait"
-                                : ""
-                            }`}
-                          >
-                            {/\.(mp4|webm|ogg)(\?|$)/i.test(item.video.src) ? (
-                              <CaseStudyVideo
-                                src={item.video.src}
-                                title={item.video.title ?? item.title}
-                                withSound={Boolean(item.video.withSound)}
-                              />
-                            ) : (
-                              <iframe
-                                src={item.video.src}
-                                title={item.video.title ?? item.title}
-                                loading="lazy"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                allowFullScreen
-                                referrerPolicy="strict-origin-when-cross-origin"
-                              />
-                            )}
-                          </div>
-                          {item.video.caption ? (
-                            <figcaption>{item.video.caption}</figcaption>
-                          ) : null}
-                        </figure>
-                      ) : null}
-                    </div>
-                  ))}
-                  {/* Closing quote after evidence/items (e.g. Leaf Note
-                      self-analysis insight that follows the four issues). */}
-                  {typeof section.closingQuote === "string" ? (
-                    <dd className="vibe-detail__quote vibe-detail__quote--closing">
-                      {section.closingQuote}
-                    </dd>
+                  {role ? (
+                    <p className="vibe-detail__meta-role">
+                      {withFaishionLink(role)}
+                    </p>
                   ) : null}
                 </div>
-              ))}
-            </dl>
-          )}
-        </div>
-        {/* Scene footer: no divider lines — the panel settles onto a
-            quiet slice of the project's own artwork (the same crop
-            the contents bar breathes), with the record kept at the
-            left (title · year, role, shared tag chips) and the next
-            project waiting at the right. */}
-        <footer className="vibe-detail__footer">
-          {showImage ? (
-            <span
-              className="vibe-detail__footer-art"
-              style={{
-                backgroundImage: `url(${project.thumbnail})`,
-                backgroundPosition:
-                  project.footerArtPosition ?? project.navArtPosition ?? "50% 0%",
-                backgroundSize:
-                  project.footerArtSize ?? project.navArtSize ?? "cover",
-              }}
-              aria-hidden="true"
-            />
-          ) : null}
-          <div className="vibe-detail__footer-info">
-            <p className="vibe-detail__footer-meta">
-              {[project.title, project.timeline].filter(Boolean).join(" · ")}
-              {project.duration ? (
-                <>
-                  {"  ·  "}
-                  <span className="vibe-detail__footer-duration">
-                    {isZh && project.durationZh
-                      ? project.durationZh
-                      : project.duration}
-                  </span>
-                </>
-              ) : null}
-            </p>
-            {role ? (
-              <p className="vibe-detail__footer-role">{role}</p>
-            ) : null}
-            {chips?.length ? (
-              <ul
-                className="vibe-detail__tags vibe-detail__footer-tags"
-                aria-label={labels.technologies}
-              >
-                {chips.map((chip) => (
-                  <li key={chip} className="vibe-detail__tag">
-                    {chip}
-                  </li>
+              )}
+            </header>
+            {headerFacts?.length || headerSummary?.length ? (
+              <div className="vibe-detail__header-facts">
+                {headerSummary?.map((paragraph) => (
+                  <p key={paragraph.slice(0, 24)} className="vibe-detail__summary">
+                    {withFaishionLink(paragraph)}
+                  </p>
                 ))}
-              </ul>
+                {headerFacts?.length ? (
+                  <dl className="case-study__facts">
+                    {headerFacts.map((fact) => (
+                      <div key={fact.label} className="case-study__fact">
+                        <dt>{fact.label}</dt>
+                        {fact.lines.map((line) => (
+                          <dd key={line}>{withFaishionLink(line)}</dd>
+                        ))}
+                      </div>
+                    ))}
+                  </dl>
+                ) : null}
+              </div>
             ) : null}
+            {caseStudy ? <CaseStudyBody caseStudy={caseStudy} /> : null}
+            {caseStudy ? null : (
+              chapters ? (
+                <div className="vibe-detail__sections vibe-detail__sections--chapters">
+                  {chapters.map((chapter, index) => (
+                    <section
+                      key={chapter.id}
+                      className="vibe-detail__chapter"
+                      id={chapter.id}
+                    >
+                      <span className="vibe-detail__index" aria-hidden="true">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <h3 className="vibe-detail__chapter-title">{chapter.label}</h3>
+                      <dl className="vibe-detail__chapter-sections">
+                        {chapter.sections.map((section) => (
+                          <DetailSection key={section.key} section={section} />
+                        ))}
+                      </dl>
+                    </section>
+                  ))}
+                </div>
+              ) : (
+                <dl className="vibe-detail__sections">
+                  {genericSections.map((section, index) => (
+                    <DetailSection
+                      key={section.key}
+                      section={section}
+                      index={index}
+                    />
+                  ))}
+                </dl>
+              )
+            )}
           </div>
-          {nextProject && onOpenNext ? (
-            <button
-              type="button"
-              className="vibe-detail__next"
-              onClick={() => onOpenNext(nextProject)}
-            >
-              <span className="vibe-detail__next-label">
-                {labels.nextProject}
-              </span>
-              <span className="vibe-detail__next-title">
-                {nextProject.title}{" "}
-                <span className="vibe-detail__next-arrow" aria-hidden="true">
-                  →
-                </span>
-              </span>
-            </button>
-          ) : null}
-        </footer>
+          </div>
+        </div>
+        </div>
       </div>
   );
 }
@@ -790,11 +1232,14 @@ export default function VibeProjectDetail({
   onCloseStart,
   onClosed,
   nextProject,
+  prevProject,
   onOpenNext,
+  onOpenPrev,
 }) {
   const overlayRef = useRef(null);
   const closeTimerRef = useRef(null);
   const [closing, setClosing] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   // Latest callbacks in refs: the mount effect below must run exactly
   // once, or its cleanup would drop the body lock mid-handoff.
@@ -803,11 +1248,13 @@ export default function VibeProjectDetail({
   const onClosedRef = useRef(onClosed);
   onClosedRef.current = onClosed;
 
-  // Switching projects (the footer's Next) keeps the overlay and its
-  // backdrop mounted — only the panel changes, scrolling back to the
-  // top while the new panel eases in (see vibe-detail-rise).
+  // Switching projects (toolbar Next/Prev) keeps the overlay and its
+  // backdrop mounted — only the panel changes. Scroll the right column
+  // back to the top while the new panel eases in (see vibe-detail-rise).
   useEffect(() => {
-    overlayRef.current?.scrollTo({ top: 0 });
+    overlayRef.current
+      ?.querySelector("[data-detail-scroll]")
+      ?.scrollTo({ top: 0 });
   }, [project?.id]);
 
   // Closing is a reveal, not a cut — and the destination lands FIRST.
@@ -856,7 +1303,9 @@ export default function VibeProjectDetail({
   return createPortal(
     <div
       ref={overlayRef}
-      className={`vibe-detail__overlay${closing ? " is-closing" : ""}`}
+      className={`vibe-detail__overlay${closing ? " is-closing" : ""}${
+        expanded ? " is-expanded" : ""
+      }`}
       role="dialog"
       aria-modal="true"
       aria-label={project.title}
@@ -867,7 +1316,11 @@ export default function VibeProjectDetail({
         project={project}
         onClose={handleClose}
         nextProject={nextProject}
+        prevProject={prevProject}
         onOpenNext={onOpenNext}
+        onOpenPrev={onOpenPrev}
+        expanded={expanded}
+        onToggleExpand={() => setExpanded((value) => !value)}
       />
     </div>,
     document.body,

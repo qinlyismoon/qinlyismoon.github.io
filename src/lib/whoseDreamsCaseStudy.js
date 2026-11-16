@@ -6,6 +6,29 @@
 
 const BASE = "/research-craft/whose-dreams";
 
+// Story chapters over the sections (by section id), shared by EN + ZH.
+export const WHOSE_DREAMS_DETAIL_CHAPTERS = [
+  {
+    id: "context",
+    label: "Context",
+    labelZh: "背景",
+    sections: ["overview", "objective", "timeline"],
+  },
+  {
+    id: "workshops",
+    label: "Workshops",
+    labelZh: "工作坊",
+    sections: ["tools", "workshop-1", "workshop-1-findings", "workshop-2"],
+  },
+  { id: "outcome", label: "Outcome", labelZh: "成果", sections: ["film", "quotes"] },
+  {
+    id: "reflection",
+    label: "Reflection",
+    labelZh: "反思",
+    sections: ["insights", "reflection"],
+  },
+];
+
 export const WHOSE_DREAMS_DETAIL_SECTIONS = [
   {
     id: "overview",

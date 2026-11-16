@@ -7,6 +7,17 @@
 
 const BASE = "/research-craft/procedural";
 
+// Story chapters over the sections (by section id), shared by EN + ZH.
+export const PROCEDURAL_ANIMATION_DETAIL_CHAPTERS = [
+  { id: "houdini", label: "Houdini", labelZh: "Houdini", sections: ["houdini"] },
+  {
+    id: "studies",
+    label: "Four studies",
+    labelZh: "四个习作",
+    sections: ["study-01", "study-02", "study-03", "study-04"],
+  },
+];
+
 export const PROCEDURAL_ANIMATION_DETAIL_SECTIONS = [
   {
     id: "houdini",

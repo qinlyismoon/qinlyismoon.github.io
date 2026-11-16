@@ -2,7 +2,7 @@
 export const WORKSPACE_CANVAS_WIDTH = 900;
 
 /** Shift desk + wall decor — tuned so the plant tooltip fits on the left. */
-export const SCENE_CONTENT_SHIFT_X = -220;
+export const SCENE_CONTENT_SHIFT_X = -160;
 
 /** Right-wall window — sits right of the wire grid with a clear wall gap
  * (64 units since v2.1.2, so the grid and the window read as two objects,
@@ -142,7 +142,7 @@ export const DESK_SCENE_COMPACT_MIN_SCALE = 0.85;
  * tooltips — scales up uniformly from this one constant. Tune here, never
  * per object.
  */
-export const DESK_SCENE_SCALE = 1.5;
+export const DESK_SCENE_SCALE = 1.72;
 export const DESK_SCENE_RENDER_WIDTH = Math.round(
   DESK_SCENE_WIDTH * DESK_SCENE_SCALE
 );

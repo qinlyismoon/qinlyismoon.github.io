@@ -1,8 +1,18 @@
 /**
  * Leaf Note native case-study body (EN + ZH).
- * Rewritten from the Notion page, with research tables, journey maps,
- * evaluation criteria, coded-experience videos, UI boards, and system shots.
+ * Research → reframed HMW → screen walkthrough + live handoff try-it →
+ * managing plants + design system → evaluation.
+ *
+ * The design flows use screen rails (not videos). Try the handoff embeds the
+ * live prototype with Owner / Caregiver perspective switching.
  */
+
+const S = "/work/leaf-note/screens/";
+const scr = (flow, n, caption, alt) => ({
+  src: `${S}${flow}-${String(n).padStart(2, "0")}.jpg`,
+  caption,
+  alt: alt ?? caption,
+});
 
 const ASSUMPTIONS_TABLE_EN = {
   headerColumn: true,
@@ -14,9 +24,9 @@ const ASSUMPTIONS_TABLE_EN = {
   ],
   rows: [
     [
-      "1. Casual plant owners may rely on rough judgment rather than a consistent care system.",
+      "1. Casual plant owners may rely on rough judgment, with no consistent care system.",
       "The owner watched for soft leaves or an empty watering can. The caregiver mixed a few instructions with what they could see in the soil.",
-      "It wasn’t random — just informal rules people could still recognize. Nobody was running a precise schedule.",
+      "They followed informal rules that others could still recognize. Nobody ran a precise schedule.",
       "Sharpened",
     ],
     [
@@ -28,7 +38,7 @@ const ASSUMPTIONS_TABLE_EN = {
     [
       "3. When care changes hands, instructions may transfer more easily than the context behind them.",
       "The caregiver received basic instructions but still needed information about watering methods, pot setups, stopping cues, and abnormal conditions. The amount of information needed also changed with the number and variety of plants.",
-      "A useful handoff has to carry the practical details, not just a to-do. How much detail depends on how many plants and how unfamiliar the caregiver is.",
+      "A useful handoff carries the practical details along with the to-do. How much detail depends on how many plants and how unfamiliar the caregiver is.",
       "Sharpened",
     ],
     [
@@ -52,9 +62,9 @@ const ASSUMPTIONS_TABLE_ZH = {
   headers: ["最初假设", "我学到什么", "修正后的理解", "变化"],
   rows: [
     [
-      "1. 随性的养植人可能靠粗略判断，而不是一套稳定的照料系统。",
+      "1. 随性的养植人可能靠粗略判断照料，没有一套稳定的系统。",
       "主人用熟悉的线索，比如叶片发软或水壶空了。照料者也把基本说明与可观察的条件（土壤干湿、是否积水）合在一起用。",
-      "他们的决定并不只是粗糙或随机，而是靠非正式但可辨认的线索规则，而不是精确日程或计量。",
+      "他们靠的是非正式、但别人也认得出的线索规则，没有精确的日程或计量。",
       "更清楚了",
     ],
     [
@@ -66,7 +76,7 @@ const ASSUMPTIONS_TABLE_ZH = {
     [
       "3. 照料换手时，说明比背后的情境更容易交接。",
       "照料者拿到了基本说明，但仍需要浇水方式、花盆设置、停止线索和异常情况。需要多少信息，也随植物数量与种类变化。",
-      "有用的交接得带上能照着做的细节，不能只丢一张待办。细节多少，看植物有多少、照料者熟不熟。",
+      "有用的交接要连同待办，一起带上能照着做的细节。细节多少，看植物有多少、照料者熟不熟。",
       "更清楚了",
     ],
     [
@@ -101,7 +111,7 @@ const EVALUATION_TABLE_EN = {
     [
       "Everyday care stays easy",
       "The caregiver can finish a routine check without hunting through the app.",
-      "Extra taps; lost confidence; time spent figuring out the UI instead of the plant",
+      "Extra taps; lost confidence; time spent figuring out the UI",
     ],
   ],
   caption: "How I’d tell whether the prototype answers the reframed How Might We.",
@@ -123,11 +133,37 @@ const EVALUATION_TABLE_ZH = {
     [
       "日常照料仍然简单",
       "照料者能做完一次例行检查，而不用在应用里找半天。",
-      "多余的点击；没把握；花在摸界面而不是看植物上的时间",
+      "多余的点击；没把握；时间都花在摸索界面上",
     ],
   ],
   caption: "我会怎样判断原型有没有回答重新框定的 How Might We。",
 };
+
+// Story chapters over the sections (by section id), shared by EN + ZH:
+// the contents bar shows these, each opening onto its sections.
+export const LEAF_NOTE_DETAIL_CHAPTERS = [
+  { id: "start", label: "Starting point", labelZh: "起点", sections: ["started", "problem"] },
+  {
+    id: "research",
+    label: "Research",
+    labelZh: "研究",
+    sections: ["research", "assumptions", "reframed"],
+  },
+  {
+    id: "design",
+    label: "Design",
+    labelZh: "设计",
+    sections: [
+      "handoff",
+      "caregiver",
+      "following",
+      "try-handoff",
+      "managing",
+      "system",
+    ],
+  },
+  { id: "evaluate", label: "Evaluation", labelZh: "评估", sections: ["evaluate"] },
+];
 
 export const LEAF_NOTE_DETAIL_SECTIONS = [
   {
@@ -192,10 +228,10 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
     label: "Broadening the perspective",
     paragraphs: [
       "Looking at my own routine only got me so far. Before designing, I wanted to hear from people who had owned several plants, handed care off, or been the temporary caregiver.",
-      "I wrote down four starting bets, then talked with two people for about fifteen to twenty minutes each — short, recent stories, not a survey meant to prove a market need.",
+      "I wrote down four starting bets, then talked with two people for about fifteen to twenty minutes each, about their most recent experience.",
     ],
     list: [
-      "Casual owners may rely on rough judgment instead of a real care system.",
+      "Casual owners may rely on rough judgment, with no real care system.",
       "Without a visible history, owners may not know what has already been done.",
       "When care changes hands, instructions travel more easily than the context behind them.",
       "Even after handing the task off, owners may still hold the planning and follow-up.",
@@ -221,7 +257,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
     id: "assumptions",
     label: "Revisiting assumptions",
     paragraphs: [
-      "What came through: people decide from cues they can see, not from precise schedules. Instructions only help if they say what to do next. How much support you need depends on how messy the handoff is. And a normal watering and a plant that looks wrong are not the same kind of message.",
+      "What came through: people decide from cues they can see. Instructions only help if they say what to do next. How much support you need depends on how messy the handoff is. And a normal watering and a plant that looks wrong call for different kinds of messages.",
       "The table below is how each starting bet shifted — including one pattern I hadn’t put on the list.",
     ],
     tables: [ASSUMPTIONS_TABLE_EN],
@@ -242,113 +278,86 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
     quote:
       "How might we help someone who’s not a plant expert leave enough behind — and make clear who’s responsible — without turning everyday care into homework for the person covering?",
     list: [
-      "Say what to do next, not everything you know about the plant",
+      "Say only what the next step needs",
       "Fit the structure to how complex the handoff actually is",
       "Say who’s responsible out loud",
       "Keep everyday checks light; make exceptions easy to spot",
     ],
   },
   {
-    id: "experience",
-    label: "Building it",
+    id: "handoff",
+    label: "Owner prepares the handoff",
     paragraphs: [
-      "Coding the prototype forced me to treat the handoff as one connected loop, not a pile of separate screens. Three recordings, from both sides:",
+      "Hand off sits on the Care list. The owner picks the plants, enters the caregiver’s email, and sends one request. Until the caregiver accepts, those plants stay on the owner’s list, with an empty seat on each card.",
     ],
-    videos: [
-      {
-        src: "/work/leaf-note/01-owner-hand-off.mp4",
-        aspect: "landscape",
-        caption:
-          "Preparing the handoff — owner: select plants, set the care period, assign a caregiver, clarify pot setup, and share the plan.",
-      },
-      {
-        src: "/work/leaf-note/02-caregiver-care.mp4",
-        aspect: "landscape",
-        caption:
-          "Carrying out care — caregiver: review tasks, follow watering cues, confirm routine care, and report an abnormal condition with a photo.",
-      },
-      {
-        src: "/work/leaf-note/03-owner-follow-along.mp4",
-        aspect: "landscape",
-        caption:
-          "Following along — owner: stay oriented on what happened while away without reclaiming day-to-day follow-up.",
-      },
+    screens: [
+      scr("handoff", 1, "Care first — Hand off sits on the same list as today’s checks"),
+      scr("handoff", 2, "Pick the plants that leave with this request"),
+      scr("handoff", 3, "One email field, then Send request"),
+      scr("handoff", 4, "Pending: still on Care, with a seat marked for the caregiver"),
+      scr("handoff", 5, "Accepted: those plants leave Care; one row points to Shared"),
     ],
   },
   {
-    id: "interface",
-    label: "Interface",
+    id: "caregiver",
+    label: "Caregiver carries out care",
     paragraphs: [
-      "The interface keeps owner and caregiver in one shared care model: preparing a handoff, carrying out care, staying oriented after the handoff without reclaiming the work, then managing plants and reading history.",
+      "For the person covering, a check is a few questions they can answer by looking and touching. Soft or firm leaves, dry or damp soil: each answer narrows the next step until one action is left. When they finish, a photo goes back to the owner.",
     ],
-    items: [
-      {
-        title: "Owner prepares the handoff",
-        paragraphs: [
-          "Select which plants are included, set the care window, assign a caregiver, and review the plan before it leaves the owner’s hands.",
-        ],
-        image: {
-          src: "/work/leaf-note/ui-owner-handoff.png",
-          alt: "UI board: owner prepares a plant-care handoff across phone screens",
-          caption: "Owner · preparing the handoff",
-        },
-      },
-      {
-        title: "Caregiver carries out care",
-        paragraphs: [
-          "Current and upcoming tasks, observable watering cues, routine confirmation, and a clearer path when something looks wrong.",
-        ],
-        image: {
-          src: "/work/leaf-note/ui-caregiver.png",
-          alt: "UI board: caregiver care tasks and confirmation flows",
-          caption: "Caregiver · carrying out care",
-        },
-      },
-      {
-        title: "Responsibility after the handoff",
-        paragraphs: [
-          "Once care is shared, the owner no longer does the checks — but can still see what is due and nudge once a day. The caregiver gets one clear prompt that leads straight into the check, and a lightweight update closes the loop when the work is done.",
-        ],
-        image: {
-          src: "/work/leaf-note/ui-responsibility.png",
-          alt: "UI board: after handoff, owner sees overdue care and reminds once; caregiver gets a prompt into the check; an update closes the loop",
-          caption: "Shared care · responsibility after the handoff",
-        },
-      },
-      {
-        title: "Managing plants",
-        paragraphs: [
-          "Plant profiles and care details stay modular, so the same information can appear in everyday care and in a handoff without being rewritten from scratch.",
-        ],
-        image: {
-          src: "/work/leaf-note/ui-managing.png",
-          alt: "UI board: managing plant profiles and care details",
-          caption: "Managing plants",
-        },
-      },
-      {
-        title: "History, updates, and library",
-        paragraphs: [
-          "A lightweight record of what happened, updates between owner and caregiver, and a library that keeps plants findable after the handoff ends.",
-        ],
-        image: {
-          src: "/work/leaf-note/ui-history.png",
-          alt: "UI board: care history, updates, and plant library",
-          caption: "History, updates, and library",
-        },
-      },
+    screens: [
+      scr("caregiver", 1, "Shared opens on the request — Decline or Accept"),
+      scr("caregiver", 2, "After accept: suggested checks for the plants in their care"),
+      scr("caregiver", 3, "First cue: how do the leaves feel?"),
+      scr("caregiver", 4, "Next cue: how does the soil feel?"),
+      scr("caregiver", 5, "One action left — Time to water, then I watered it"),
+      scr("caregiver", 6, "Photo attached; Done closes the check for the owner"),
+    ],
+  },
+  {
+    id: "following",
+    label: "Owner follows along",
+    paragraphs: [
+      "Once Jordan takes over, Maya can still see which plants are due. If one seems forgotten, she taps Remind Jordan, once a day per plant. Jordan gets a pop-up for that plant and goes straight into the check. When he’s done, the record comes back to Maya with his name and a photo.",
+    ],
+    screens: [
+      scr("following", 1, "Your handoffs: Jordan’s plants, due first"),
+      scr("following", 2, "In Jordan’s care — one action: Remind Jordan"),
+      scr("following", 3, "Sent; one reminder per plant per day"),
+      scr("following", 4, "Jordan gets a pop-up: which plant, and Check now"),
+      scr("following", 5, "Check now opens that plant’s check"),
+      scr("following", 6, "The timeline shows who did what, with the photo"),
+      scr("following", 7, "Updates: the photo, a heart, and a short thanks"),
+    ],
+  },
+  {
+    id: "try-handoff",
+    label: "Try the handoff",
+    paragraphs: [
+      "The prototype has two people: Maya (owner) and Jordan (caregiver). Switch sides below and walk the same loop — send a handoff, accept it, run a check.",
+    ],
+    interactive: "ln-handoff",
+  },
+  {
+    id: "managing",
+    label: "Managing plants",
+    paragraphs: [
+      "Adding and editing a plant use the same sheet: pick a species, then add a label, place, and tray if you want.",
+    ],
+    screens: [
+      scr("managing", 1, "Library filtered by where plants live"),
+      scr("managing", 2, "Add plant: pick a species first"),
+      scr("managing", 3, "Same sheet — optional label, place, and tray"),
+      scr("managing", 4, "Plant page with care basics ready for checks and handoffs"),
+      scr("managing", 5, "Edit uses the same sheet; Remove plant sits at the end"),
+      scr("managing", 6, "Remove asks once before anything is deleted"),
     ],
   },
   {
     id: "system",
     label: "Design system",
-    paragraphs: [
-      "A shared visual and interaction system keeps care information, inputs, and status language consistent across owner and caregiver views — so building in code stayed coherent as the flows grew.",
-    ],
     image: {
       src: "/work/leaf-note/design-system.png",
       alt: "Leaf Note design system: type, color, components, and status patterns",
-      caption: "Design system for the coded prototype",
     },
   },
   {
@@ -423,10 +432,10 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
     label: "把视角拉开",
     paragraphs: [
       "光看自己的习惯不够。动手之前，我想听听养过好几株植物、交接过、或者当过临时照料者的人怎么说。",
-      "我先写下四条起点判断，再和两个人各聊十几二十分钟——都是最近的具体事，不是想证明「市场需要这个」的问卷。",
+      "我先写下四条起点判断，再和两个人各聊十几二十分钟，聊的都是他们最近一次的具体经历。",
     ],
     list: [
-      "随性养植的人，可能靠感觉，而不是一套稳定系统。",
+      "随性养植的人，可能靠感觉照料，没有一套稳定系统。",
       "没有看得见的记录，主人可能不知道已经做过什么。",
       "照料换手时，说明比背后的情境更好交出去。",
       "活交出去了，排程和跟进可能还挂在主人身上。",
@@ -452,7 +461,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
     id: "assumptions",
     label: "回看假设",
     paragraphs: [
-      "听下来大致是：大家靠看得见的线索做决定，不是靠精确日程；说明得说清下一步才有用；交接越乱，需要的支持越多；日常浇水和「看起来不对」不是同一种消息。",
+      "听下来大致是：大家靠看得见的线索做决定；说明得说清下一步才有用；交接越乱，需要的支持越多；日常浇水和「看起来不对」需要不同的消息。",
       "下表是每条起点判断怎么动的——包括一条我一开始没写进清单的。",
     ],
     tables: [ASSUMPTIONS_TABLE_ZH],
@@ -473,113 +482,86 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
     quote:
       "How might we：怎样帮不太会养植物的人留下够用的说明、把责任说清楚，又不把日常照料变成替班的人的功课？",
     list: [
-      "说清下一步，别把植物百科塞过去",
+      "只说下一步需要的",
       "交接有多复杂，结构就配多复杂",
       "谁负责，说出来",
       "日常检查保持轻；异常要容易看见",
     ],
   },
   {
-    id: "experience",
-    label: "做成能跑的",
+    id: "handoff",
+    label: "主人准备交接",
     paragraphs: [
-      "写成代码之后，交接不再是一串拆开的屏幕，而是一条连着的回路。三段录像，两边各看一遍：",
+      "交接的入口就在 Care 列表上。主人勾选要交接的植物，填上照料者的邮箱，发出一条请求。对方接受之前，这些植物仍留在主人的列表里，每张卡片上留着一个空座位。",
     ],
-    videos: [
-      {
-        src: "/work/leaf-note/01-owner-hand-off.mp4",
-        aspect: "landscape",
-        caption:
-          "准备交接——主人：选择植物、设定照料时段、指定照料者、说明花盆设置，并分享计划。",
-      },
-      {
-        src: "/work/leaf-note/02-caregiver-care.mp4",
-        aspect: "landscape",
-        caption:
-          "执行照料——照料者：查看任务、跟随浇水线索、确认日常照料，并用照片报告异常。",
-      },
-      {
-        src: "/work/leaf-note/03-owner-follow-along.mp4",
-        aspect: "landscape",
-        caption:
-          "远程跟进——主人：出门在外仍能看清发生了什么，而不必收回日常跟进。",
-      },
+    screens: [
+      scr("handoff", 1, "先从 Care 出发——Hand off 和今日检查在同一列表"),
+      scr("handoff", 2, "勾选这次请求要带走的植物"),
+      scr("handoff", 3, "一个邮箱字段，然后发送请求"),
+      scr("handoff", 4, "待接受：仍在 Care，座位已标给照料者"),
+      scr("handoff", 5, "已接受：这些植物离开 Care；一行入口指向 Shared"),
     ],
   },
   {
-    id: "interface",
-    label: "界面",
+    id: "caregiver",
+    label: "照料者执行照料",
     paragraphs: [
-      "界面把主人与照料者放在同一套共享照料模型里：准备交接、执行照料、交接之后仍能跟住而不把活收回来，再管理植物与阅读历史。",
+      "对临时照料的人来说，一次检查就是几个看一看、摸一摸就能回答的问题。叶子软不软、土干不干：每个回答收窄下一步，直到只剩一个动作。做完后拍一张照片回给主人。",
     ],
-    items: [
-      {
-        title: "主人准备交接",
-        paragraphs: [
-          "选择纳入交接的植物、设定照料窗口、指定照料者，并在计划离开主人之手以前完成确认。",
-        ],
-        image: {
-          src: "/work/leaf-note/ui-owner-handoff.png",
-          alt: "界面板：主人准备植物照料交接",
-          caption: "主人 · 准备交接",
-        },
-      },
-      {
-        title: "照料者执行照料",
-        paragraphs: [
-          "当前与即将到来的任务、可观察的浇水线索、日常确认，以及看起来不对时更清楚的上报路径。",
-        ],
-        image: {
-          src: "/work/leaf-note/ui-caregiver.png",
-          alt: "界面板：照料者任务与确认流程",
-          caption: "照料者 · 执行照料",
-        },
-      },
-      {
-        title: "交接之后的责任",
-        paragraphs: [
-          "照料已经共享之后，主人不再亲自做检查——但仍能看到到期事项，并每天提醒一次。照料者收到一条清楚提示，直接进入检查；做完后用一条轻量更新把闭环收住。",
-        ],
-        image: {
-          src: "/work/leaf-note/ui-responsibility.png",
-          alt: "界面板：交接之后，主人看到逾期并提醒一次；照料者收到提示进入检查；更新收住闭环",
-          caption: "共享照料 · 交接之后的责任",
-        },
-      },
-      {
-        title: "管理植物",
-        paragraphs: [
-          "植物档案与照料信息保持模块化，同一套信息既能用于日常照料，也能用于交接，而不必重写一遍。",
-        ],
-        image: {
-          src: "/work/leaf-note/ui-managing.png",
-          alt: "界面板：管理植物档案与照料细节",
-          caption: "管理植物",
-        },
-      },
-      {
-        title: "历史、更新与资料库",
-        paragraphs: [
-          "轻量记录发生过什么、主人与照料者之间的更新，以及交接结束后仍能找到植物的资料库。",
-        ],
-        image: {
-          src: "/work/leaf-note/ui-history.png",
-          alt: "界面板：照料历史、更新与植物资料库",
-          caption: "历史、更新与资料库",
-        },
-      },
+    screens: [
+      scr("caregiver", 1, "Shared 打开就是请求——拒绝或接受"),
+      scr("caregiver", 2, "接受后：自己照料范围内的建议检查"),
+      scr("caregiver", 3, "第一个线索：叶子摸起来怎样？"),
+      scr("caregiver", 4, "下一个线索：土壤摸起来怎样？"),
+      scr("caregiver", 5, "只剩一个动作——该浇水了，然后点「我浇过了」"),
+      scr("caregiver", 6, "附上照片；点完成，检查对主人关闭"),
+    ],
+  },
+  {
+    id: "following",
+    label: "主人远程跟进",
+    paragraphs: [
+      "Jordan 接手之后，Maya 还是能看到哪几盆该检查了。如果觉得哪盆被落下了，她可以点一下提醒 Jordan，每盆每天一次。Jordan 那边会弹出这盆植物，点进去就开始检查。浇完水，记录会带着 Jordan 的名字和照片回到 Maya 这里。",
+    ],
+    screens: [
+      scr("following", 1, "你的交接：Jordan 照料的植物，到期的在前"),
+      scr("following", 2, "在 Jordan 手里——只有一个动作：提醒 Jordan"),
+      scr("following", 3, "已提醒；每株植物每天只能提醒一次"),
+      scr("following", 4, "Jordan 收到弹窗：哪株植物，点「现在检查」"),
+      scr("following", 5, "点进去就是这株植物的检查"),
+      scr("following", 6, "时间线：谁做了什么，附带照片"),
+      scr("following", 7, "更新：看到照片，点个心，说声谢谢"),
+    ],
+  },
+  {
+    id: "try-handoff",
+    label: "试一试交接",
+    paragraphs: [
+      "原型里有两个人：Maya（主人）和 Jordan（照料者）。在下面切换视角，走同一条回路——发出交接、接受、做一次检查。",
+    ],
+    interactive: "ln-handoff",
+  },
+  {
+    id: "managing",
+    label: "管理植物",
+    paragraphs: [
+      "添加和编辑植物用同一张表：先选品种，标签、位置、托盘可以不填。",
+    ],
+    screens: [
+      scr("managing", 1, "资料库按植物所在位置筛选"),
+      scr("managing", 2, "添加植物：先选品种"),
+      scr("managing", 3, "同一张表——可选标签、位置、托盘"),
+      scr("managing", 4, "植物页带上照料要点，检查和交接都能用"),
+      scr("managing", 5, "编辑还是这张表；删除在最下面"),
+      scr("managing", 6, "删除前再问一次"),
     ],
   },
   {
     id: "system",
     label: "设计系统",
-    paragraphs: [
-      "共享的视觉与交互系统，让照料信息、输入与状态语言在主人与照料者视图之间保持一致——流程变多时，用代码搭建仍能连贯。",
-    ],
     image: {
       src: "/work/leaf-note/design-system.png",
       alt: "Leaf Note 设计系统：字体、色彩、组件与状态模式",
-      caption: "编码原型的设计系统",
     },
   },
   {

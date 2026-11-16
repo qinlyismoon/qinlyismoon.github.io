@@ -11,4 +11,6 @@ export const PORTFOLIO_LINKS = {
   github: "https://github.com/qinlyismoon",
   rednote: "https://www.rednote.com/user/profile/668558bd0000000003033b2b",
   portfolio: "https://qinlyismoon.github.io/",
+  osuDesign: "https://design.osu.edu/",
+  faishion: "https://faishion.ai/en",
 };

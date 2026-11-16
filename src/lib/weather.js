@@ -49,13 +49,21 @@ const LABELS = {
   },
 };
 
+export function weatherConditionLabel(language, kind) {
+  return (LABELS[language] ?? LABELS.en)[kind] ?? LABELS.en.sunny;
+}
+
+export function formatTempC(temperatureC) {
+  return Number.isFinite(temperatureC) ? `${Math.round(temperatureC)}°C` : "—";
+}
+
 export function formatWeatherLabel(language, { temperatureC, kind }) {
-  const temp = Number.isFinite(temperatureC)
-    ? `${Math.round(temperatureC)}°C`
-    : "—";
-  const condition =
-    (LABELS[language] ?? LABELS.en)[kind] ?? LABELS.en.sunny;
-  return `${temp} · ${condition}`;
+  return `${formatTempC(temperatureC)} · ${weatherConditionLabel(language, kind)}`;
+}
+
+function readDailyBound(values) {
+  const value = Array.isArray(values) ? values[0] : values;
+  return typeof value === "number" ? value : null;
 }
 
 export async function fetchCurrentWeather(
@@ -69,6 +77,8 @@ export async function fetchCurrentWeather(
   url.searchParams.set("latitude", String(latitude));
   url.searchParams.set("longitude", String(longitude));
   url.searchParams.set("current", "temperature_2m,weather_code");
+  url.searchParams.set("daily", "temperature_2m_max,temperature_2m_min");
+  url.searchParams.set("forecast_days", "1");
   url.searchParams.set("temperature_unit", "celsius");
   url.searchParams.set("timezone", "auto");
 
@@ -83,6 +93,8 @@ export async function fetchCurrentWeather(
   return {
     temperatureC:
       typeof temperatureC === "number" ? temperatureC : null,
+    highC: readDailyBound(data?.daily?.temperature_2m_max),
+    lowC: readDailyBound(data?.daily?.temperature_2m_min),
     weatherCode,
     kind,
   };

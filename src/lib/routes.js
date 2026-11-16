@@ -7,12 +7,15 @@ export const PHOEBES_DESK_PATH = "/phoebes-desk";
 export const ABOUT_PATH = "/about";
 export const TEACHING_PATH = "/teaching";
 export const LIBRARY_PATH = "/library";
+/** Public name for the projects catalogue (same route as LIBRARY_PATH). */
+export const PROJECTS_PATH = LIBRARY_PATH;
 export const HOME_PATH = "/";
 
 const LEGACY_WORKSPACE_PATH = "/workspace";
 
 export const NAV_ITEMS = [
   { id: "home", path: HOME_PATH },
+  { id: "caseStudies", path: LIBRARY_PATH },
   { id: "about", path: ABOUT_PATH },
   { id: "teaching", path: TEACHING_PATH },
   { id: "desk", path: DESK_PATH },

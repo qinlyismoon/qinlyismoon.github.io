@@ -85,7 +85,10 @@ export default function SelectedWorkCard({ project, onHover, onOpen }) {
 
   const thumbnail = showThumb ? (
     showVideo ? (
-      <LazyHeroVideo src={project.heroVideo} poster={project.thumbnail} />
+      <LazyHeroVideo
+        src={project.heroVideo}
+        poster={project.cardPoster || project.thumbnail}
+      />
     ) : (
       <div className="vibe-card__thumbnail" aria-hidden="true">
         {showImage ? (

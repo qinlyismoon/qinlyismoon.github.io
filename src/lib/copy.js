@@ -1,11 +1,12 @@
 const HOME_COPY = {
   en: {
-    name: "Phoebe Qin",
+    name: "Longyue Qin",
+    nameEn: "Phoebe",
     role: "Design Engineer & Product Designer",
     statement:
-      "I design and build interactive systems that help people understand complexity and act with confidence.",
+      "I design and build interactive products for messy problems.",
     detail:
-      "I take a product from a tangled problem to a working prototype—figuring out what matters, designing how it behaves, and building it in code so others can test it and keep going.",
+      "I take a tangled problem to a working prototype — figure out what matters, shape how it behaves, and build it in code so other people can try it.",
     akaLabel: "My Chinese name",
     chineseName: "秦珑月",
     nameCardAria: "Name meaning of 秦珑月",
@@ -23,8 +24,8 @@ const HOME_COPY = {
     availability: "Open to opportunities",
     disciplines: ["Design", "Research", "Design Engineering"],
     contactTitle: "Contact",
-    contactHeading: "Have a question, an idea, or a messy system to untangle?",
-    contactBody: "I’m open to product design, design engineering, and research-led collaborations.",
+    contactHeading: "Got a question, an idea, or a messy system to untangle?",
+    contactBody: "I’m open to product design, design engineering, and research-led work.",
     email: "Email",
     github: "GitHub",
     linkedin: "LinkedIn",
@@ -32,44 +33,45 @@ const HOME_COPY = {
     peelCornerLabel: "Open Phoebe's Desk",
   },
   zh: {
-    name: "Phoebe Qin",
+    name: "Longyue Qin",
+    nameEn: "Phoebe",
     role: "设计工程师 & 产品设计师",
-    statement: "我设计并构建交互系统，让复杂的事变得好懂，也让人更有信心去行动。",
+    statement: "我做交互产品，对付乱七八糟的真问题。",
     detail:
-      "从纠缠的问题到可运行的原型，我会一路参与：判断什么最重要，设计它如何运作，再用代码做成别人可以测试、可以继续开发的样子。",
+      "把一团乱的问题做到能跑的原型：先弄清什么要紧，再设计它怎么动，最后用代码做成别人能上手试的东西。",
     akaLabel: "我的中文名",
     chineseName: "秦珑月",
     nameCardAria: "秦珑月的姓名释义",
     exploreTitle: "探索",
-    caseStudies: "案例研究",
-    caseStudiesDescription: "我的设计工作与技术探索。",
-    opensNotion: "在 Notion 中打开",
+    caseStudies: "作品",
+    caseStudiesDescription: "设计作品和技术探索。",
+    opensNotion: "在 Notion 打开",
     desk: "工作台",
-    deskDescription: "一个可交互的工作空间。",
+    deskDescription: "可交互的工作台。",
     // Chinese nav term for "Log" pending the user's approval —
     // keep the English word rather than inventing a translation.
     versionHistory: "Log",
-    versionHistoryDescription: "我的思考是如何一步步演变的。",
+    versionHistoryDescription: "想法怎么一步步变过来的。",
     statusTitle: "状态",
-    basedIn: "俄亥俄州哥伦布市",
+    basedIn: "哥伦布，俄亥俄",
     weather: "22°C · 晴",
-    availability: "正在寻找新的机会",
+    availability: "在找机会",
     disciplines: ["设计", "研究", "设计工程"],
     contactTitle: "联系",
-    contactHeading: "如果你有一个问题、一个想法，或一个需要理清的复杂系统，欢迎来聊聊。",
-    contactBody: "我期待产品设计、设计工程，以及由研究驱动的合作机会。",
+    contactHeading: "有问题、有想法，或有一团乱要理，欢迎来聊。",
+    contactBody: "产品设计、设计工程、研究向的合作都可以。",
     email: "邮箱",
     github: "GitHub",
     linkedin: "LinkedIn",
-    editorialThreadNote: "一切都有联系。",
-    peelCornerLabel: "打开 Phoebe's Desk",
+    editorialThreadNote: "都连着。",
+    peelCornerLabel: "打开 Phoebe 的工作台",
   },
 };
 
 const NAV_COPY = {
   en: {
     home: "Home",
-    caseStudies: "Case Studies",
+    caseStudies: "Projects",
     desk: "Desk",
     about: "About",
     teaching: "Teaching",
@@ -77,7 +79,7 @@ const NAV_COPY = {
   },
   zh: {
     home: "首页",
-    caseStudies: "案例研究",
+    caseStudies: "作品",
     desk: "工作台",
     about: "关于",
     // Chinese label is a draft pending Phoebe's approval.
@@ -93,7 +95,7 @@ const ABOUT_COPY = {
   },
   zh: {
     title: "关于",
-    placeholder: "内容即将到来。",
+    placeholder: "稍后更新。",
   },
 };
 
