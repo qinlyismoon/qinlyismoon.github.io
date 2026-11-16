@@ -6,7 +6,7 @@ export const HOME_BENTO_COPY = {
   en: {
     roleLine: "Product designer · Design engineer",
     rotatingLines: [
-      { id: "try", label: "Up for trying new things" },
+      { id: "try", label: "Up for trying" },
       { id: "curious", label: "Curious" },
       { id: "adaptable", label: "Adaptable" },
     ],

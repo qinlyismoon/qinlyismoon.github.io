@@ -46,9 +46,9 @@
 
 /* --- Approach: principles as a card file ----------------------------------
  * Tabs stay fully visible above the panel (never buried). Active tab + face
- * share one fill; panel top is flat under the tab row, radius only on the
- * free corners. Back layers peek only along the bottom — no side inset, so
- * they don’t read as extra vertical tabs.
+ * share one fill. Tabs already span the full width, so the panel top stays
+ * square — a top-right radius would notch white under the last tab. Radius
+ * only on the bottom. Back layers peek along the bottom only.
  * ------------------------------------------------------------------------- */
 .teaching-file {
   --file-radius: 1rem;
@@ -144,9 +144,9 @@
   z-index: calc(10 - var(--depth));
   min-width: 0;
   border: 0;
-  /* Same corner recipe as the front face so nothing peeks through the
-     top-right curve as a vertical sliver. */
-  border-radius: 0 var(--file-radius) var(--file-radius) var(--file-radius);
+  /* Flat top under the tab row — rounded top corners leave a white notch
+     beside the end tabs. Soften only the bottom. */
+  border-radius: 0 0 var(--file-radius) var(--file-radius);
   /* Deeper sheets step darker so each bottom edge reads as its own layer. */
   background: color-mix(
     in srgb,
