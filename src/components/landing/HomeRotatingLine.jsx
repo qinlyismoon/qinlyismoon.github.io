@@ -41,6 +41,10 @@ export default function HomeRotatingLine({ lines }) {
   const [index, setIndex] = useState(0);
   const [leavingIndex, setLeavingIndex] = useState(null);
   const [width, setWidth] = useState(null);
+  // Width of the longest line. The slot around the chip always reserves it,
+  // so whether the chip fits beside the role line or wraps below it is the
+  // same for every line — the page never jumps as the copy rotates.
+  const [slotWidth, setSlotWidth] = useState(null);
   const tagRef = useRef(null);
   const measureRefs = useRef([]);
 
@@ -66,6 +70,21 @@ export default function HomeRotatingLine({ lines }) {
     if (next != null) setWidth(next);
   }, [index, items]);
 
+  const labelsKey = items.map((item) => item.label).join("|");
+  useLayoutEffect(() => {
+    const measureSlot = () => {
+      const widths = measureRefs.current
+        .map((node) => measureTagWidth(tagRef.current, node))
+        .filter((value) => value != null);
+      if (widths.length) setSlotWidth(Math.max(...widths));
+    };
+    measureSlot();
+    // Re-measure once web fonts settle, and on resize.
+    document.fonts?.ready?.then(measureSlot);
+    window.addEventListener("resize", measureSlot);
+    return () => window.removeEventListener("resize", measureSlot);
+  }, [labelsKey]);
+
   useEffect(() => {
     const onResize = () => {
       const next = measureTagWidth(tagRef.current, measureRefs.current[index]);
@@ -80,6 +99,10 @@ export default function HomeRotatingLine({ lines }) {
   const activeId = items[index]?.id;
 
   return (
+    <span
+      className="home-bento__tag-slot"
+      style={slotWidth != null ? { width: `${slotWidth}px` } : undefined}
+    >
     <div
       ref={tagRef}
       className={[
@@ -115,5 +138,6 @@ export default function HomeRotatingLine({ lines }) {
         })}
       </span>
     </div>
+    </span>
   );
 }

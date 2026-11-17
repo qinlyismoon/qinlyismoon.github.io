@@ -14,6 +14,20 @@ const scr = (flow, n, caption, alt) => ({
   alt: alt ?? caption,
 });
 
+export const LEAF_NOTE_FACTS = [
+  { label: "Role", lines: ["Product Designer & Engineer", "Solo: research, design, and build"] },
+  { label: "Research", lines: ["My own care routine", "2 short interviews"] },
+  { label: "Deliverables", lines: ["Coded web prototype", "Research synthesis"] },
+  { label: "Timeline", lines: ["About 1 month", "2026"] },
+];
+
+export const LEAF_NOTE_FACTS_ZH = [
+  { label: "角色", lines: ["产品设计师 & 工程实现", "独立完成：研究、设计、开发"] },
+  { label: "研究", lines: ["我自己的照料习惯", "2 次简短访谈"] },
+  { label: "交付物", lines: ["可运行的网页原型", "研究整理"] },
+  { label: "时间", lines: ["约 1 个月", "2026"] },
+];
+
 const ASSUMPTIONS_TABLE_EN = {
   headerColumn: true,
   headers: [
@@ -170,8 +184,8 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
     id: "started",
     label: "How it started",
     paragraphs: [
-      "Leaf Note began with my own experience. I enjoy having plants at home, but I am not an experienced plant owner — I mainly want to keep them alive without mastering plant care.",
-      "My inconsistent routine became a larger problem when I traveled and asked someone else to look after them. The care instructions, watering history, and decisions I normally kept in my head were difficult to hand over.",
+      "Leaf Note started with my own plants. I like having them at home, but I’m not good at caring for them. I just want to keep them alive without having to study plant care.",
+      "As an international student, I’m often away from home for a while, so my plants end up with someone else. The watering notes, what I last did, and the judgment calls I usually keep in my head are hard to hand over.",
     ],
   },
   {
@@ -196,32 +210,32 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
     ],
     items: [
       {
-        title: "Care relied on rough judgment",
+        title: "I watered by feel",
         paragraphs: [
-          "I did not follow precise schedules or keep detailed information about each plant. I relied on vague memory, visual cues, and simple personal rules to decide when and how much to water.",
+          "I had no schedule and no notes for each plant. I decided when and how much to water from memory, a look at the plant, and a few rules of my own.",
         ],
       },
       {
-        title: "Each action left no continuous history",
+        title: "Nothing was written down",
         paragraphs: [
-          "Watering was treated as an isolated task. Without a record of what had happened, the next decision still depended on incomplete recollection.",
+          "Each watering was a one-off. Next time, whether a plant needed water came down to whether I remembered the last time.",
         ],
       },
       {
-        title: "Handoff transferred the task, but not the responsibility",
+        title: "After the handoff, the planning was still mine",
         paragraphs: [
-          "A temporary caregiver could perform the watering, but I still had to organize instructions, remember when care was needed, send reminders, and follow up without seeing the plants’ current condition.",
+          "A friend could do the watering. I still wrote the instructions, kept track of when each plant was due, and sent reminders, without being able to see how the plants looked.",
         ],
       },
       {
-        title: "Repeated uncertainty created a low-level mental burden",
+        title: "No step was hard, but I was never sure",
         paragraphs: [
-          "No individual step felt especially difficult, but the combined uncertainty kept the experience between neutral and mildly frustrated — especially when I was away.",
+          "Each step was easy. Not knowing whether it was done right stayed with me, especially while I was away.",
         ],
       },
     ],
     closingQuote:
-      "The task could be delegated, but the context and mental responsibility could not.",
+      "I could hand off the watering. Knowing how to water, what had been done, and when to check stayed with me.",
   },
   {
     id: "research",
@@ -375,8 +389,8 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
     id: "started",
     label: "它怎么开始的",
     paragraphs: [
-      "Leaf Note 从我自己的经验开始。我喜欢家里有植物，但不是资深养植人——我主要只想把它们养活，不必精通养护。",
-      "日常不太规律的照料，在我出门、把植物托给别人时变得更难。平时记在脑子里的浇水说明、养护记录和判断，很难交接出去。",
+      "Leaf Note 是从我自己养的植物开始的。我喜欢在家里养植物，但并不擅长，只想把它们养活，不想专门去研究养护。",
+      "作为留学生，我经常要离开家一段时间，植物只能托给别人照看。平时我凭记性和手感浇水，真要交给别人时，怎么浇、上次什么时候浇的、什么时候该浇，都很难说清楚。",
     ],
   },
   {
@@ -401,31 +415,31 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
     ],
     items: [
       {
-        title: "照料靠粗略判断",
+        title: "浇水靠感觉",
         paragraphs: [
-          "我没有精确日程，也很少为每株植物保留详细信息。多半靠模糊记忆、目测和几条个人规矩，决定何时浇、浇多少。",
+          "我没有固定的浇水时间，也没给每盆植物记过笔记。什么时候浇、浇多少，靠的是记性、看一眼植物的样子，再加上几条自己的小规矩。",
         ],
       },
       {
-        title: "每一次动作留不下连续记录",
+        title: "浇过就没有记录",
         paragraphs: [
-          "浇水被当成孤立任务。没有发生过什么的记录，下一次判断仍依赖不完整的回忆。",
+          "每次浇完就过去了。下次该不该浇，全看我还记不记得上次是什么时候。",
         ],
       },
       {
-        title: "交接转走了任务，却没转走责任",
+        title: "托给别人之后，安排还在我身上",
         paragraphs: [
-          "临时照料者可以动手浇水，但我仍要整理说明、记住何时该照料、反复提醒，并在看不见现状的情况下远程跟进。",
+          "朋友可以帮我浇水。说明还是我来写，哪盆什么时候该浇还是我来记，还要隔几天提醒一次，而我看不到植物现在是什么样。",
         ],
       },
       {
-        title: "反复的不确定带来低强度负担",
+        title: "每一步都不难，只是一直没底",
         paragraphs: [
-          "单一步骤并不特别难，合在一起的不确定却让体验停在中性与轻微烦躁之间——尤其在我出门时。",
+          "每一步都很简单，可我一直不确定做得对不对，人在外面的时候尤其如此。",
         ],
       },
     ],
-    closingQuote: "任务可以委托，但情境与心里的责任托不出去。",
+    closingQuote: "浇水可以托给别人，可怎么浇、浇过没有、什么时候该看，还是得我自己记着。",
   },
   {
     id: "research",

@@ -861,12 +861,18 @@ a.about-experience__org {
 }
 
 /* The assembly tile */
-.about-bricks {
+.bento-tile.about-bricks {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
   padding: 1.15rem 1.15rem 1.5rem;
   border: 1px solid transparent;
+  /* A block in flight is drawn inside this tile. Let it out of the tile's
+     box and lift the tile above its neighbours, so a travelling block is
+     always the top layer — never clipped, never sliding under a tile. */
+  position: relative;
+  z-index: 30;
+  overflow: visible;
 }
 
 .about-bricks__copy {

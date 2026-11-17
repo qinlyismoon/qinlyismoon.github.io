@@ -467,6 +467,7 @@ function CaseStudyBody({ caseStudy }) {
             01
           </span>
           <h3>{problem.heading}</h3>
+          {problem.lead ? <p className="vibe-detail__lead">{problem.lead}</p> : null}
           {problem.paragraphs?.map((paragraph) => (
             <p key={paragraph.slice(0, 24)}>{paragraph}</p>
           ))}
@@ -482,6 +483,7 @@ function CaseStudyBody({ caseStudy }) {
             02
           </span>
           <h3>{experience.heading}</h3>
+          {experience.lead ? <p className="vibe-detail__lead">{experience.lead}</p> : null}
           {experience.loop ? <p>{experience.loop}</p> : null}
           {/* Prefer crisp stills (PDF exports) when present; fall back
               to screen recordings for motion demos. */}
@@ -516,6 +518,7 @@ function CaseStudyBody({ caseStudy }) {
             03
           </span>
           <h3>{process.heading}</h3>
+          {process.lead ? <p className="vibe-detail__lead">{process.lead}</p> : null}
           {process.image ? (
             <figure className="case-study__figure">
               <img src={process.image.src} alt={process.image.alt ?? ""} loading="lazy" />
@@ -533,9 +536,11 @@ function CaseStudyBody({ caseStudy }) {
             04
           </span>
           <h3>{decisions.heading}</h3>
+          {decisions.lead ? <p className="vibe-detail__lead">{decisions.lead}</p> : null}
           {decisions.items?.map((item) => (
             <div key={item.title} className="case-study__decision">
               <h4>{item.title}</h4>
+              {item.lead ? <p className="vibe-detail__lead">{item.lead}</p> : null}
               {item.paragraphs?.map((paragraph) => (
                 <p key={paragraph.slice(0, 24)}>{paragraph}</p>
               ))}
@@ -590,6 +595,11 @@ function DetailSection({ section, index }) {
         </span>
       ) : null}
       <dt>{section.label}</dt>
+      {/* Heading names the topic (short, also the nav item); the lead
+          right under it carries the takeaway. */}
+      {section.lead ? (
+        <dd className="vibe-detail__lead">{section.lead}</dd>
+      ) : null}
       {section.paragraphs?.map((paragraph) => (
         <dd
           key={paragraph.slice(0, 24)}
@@ -821,6 +831,7 @@ function DetailSection({ section, index }) {
           }${item.mediaFirst ? " case-study__decision--media-first" : ""}`}
         >
           <h4>{item.title}</h4>
+          {item.lead ? <p className="vibe-detail__lead">{item.lead}</p> : null}
           {/* Media-first items give the artwork its own row under the
               title, then the copy runs the full measure below it. */}
           {item.image && item.mediaFirst ? (

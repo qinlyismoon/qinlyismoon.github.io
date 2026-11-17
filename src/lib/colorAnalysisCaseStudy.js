@@ -60,7 +60,8 @@ export const COLOR_ANALYSIS_DETAIL_CHAPTERS = [
 export const COLOR_ANALYSIS_DETAIL_SECTIONS = [
   {
     id: "challenge",
-    label: "From an expert session to a phone",
+    label: "From expert to phone",
+    lead: "What changes when an in-person expert session moves onto a phone.",
     paragraphs: [
       "In person, color analysis takes a long time. An expert holds drape after drape under your face and judges four attributes by eye: temperature (warm or cool), value (light or deep), saturation, and clarity (clear or muted). The combination of the four decides the season.",
       "Digitizing it meant solving three things:",
@@ -75,7 +76,8 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS = [
   },
   {
     id: "ai-role",
-    label: "Deciding what AI does, and what the user does",
+    label: "AI vs. user",
+    lead: "Deciding what AI does, and what the user does.",
     listOrdered: true,
     paragraphs: [
       "Many color analysis apps take one selfie and return a season directly. I decided against that for two reasons. Accuracy: lighting, white balance, camera processing, and makeup all shift how the model reads temperature or clarity — a direct answer hides that uncertainty. Trust: a season with no visible path to it is hard to believe or dress by.",
@@ -95,10 +97,10 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS = [
   },
   {
     id: "flow",
-    label: "The flow, and how it sits in the chat",
+    label: "Chat vs. task",
+    lead: "Separating the conversation from the task.",
     paragraphs: [
-      "From the profile: chat → one photo → confirm natural features → drape the four attributes → report, then write the result back.",
-      "The chat carries purpose and progress — the AI stylist explains, sends a task card per step, and sums up when a step is done. Camera and drape leave the chat: both need the whole screen. Each opens full-screen from its card and returns when done.",
+      "The interface has three clear layers. The conversation is where the AI stylist explains the purpose, keeps track of progress, and sums up each step. Task cards sit inside the conversation and hold short inputs, such as confirming details. Tasks that need the whole screen — the camera and the drape test — open full-screen from their card and return to the conversation when done.",
     ],
     screens: [
       scr("01-entry", "Entry on the profile"),
@@ -111,7 +113,8 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS = [
   },
   {
     id: "guidance",
-    label: "Photo guidance, in the order people can act on it",
+    label: "Photo guidance",
+    lead: "In the order people can act on it.",
     paragraphs: [
       "Guidance runs from setting to person: light, then clothing, then makeup and colored contacts. Light first so people can decide whether to start at all; the hardest step waits until they are ready to shoot.",
       "Early versions asked for a front photo plus two 45° sides. After checking with the model what it actually needed, one clear front photo was enough for a first read — so the flow keeps a single framed shot.",
@@ -126,7 +129,8 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS = [
   },
   {
     id: "details",
-    label: "Natural features narrow the direction",
+    label: "Natural features",
+    lead: "Confirming them first narrows the direction.",
     paragraphs: [
       "Natural hair color, eye color, and skin depth point toward a few likely seasons, so confirming them first cuts drape comparisons.",
       "AI pre-fills those three from the photo; the user confirms each on visual options, since dye, contacts, and lighting can shift them. Density is different: tests got volume right but strand thickness wrong, and when I asked the model how confident it was at reading thickness, that confidence was low — so density is left for the user. Everything lands on one review card.",
@@ -142,7 +146,8 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS = [
   },
   {
     id: "drapes",
-    label: "The drape test: from a still image to a live camera",
+    label: "The drape test",
+    lead: "From a still image to a live camera.",
     paragraphs: [
       "This step went through the most versions. Each one tried to get closer to sitting in front of a real drape: first a color block beside a cut-out face, then color filling the frame around the photo, then a full screen with a where-to-look guide and swatch buttons. I also tried a generated portrait with the drape color swapped in, and a drape-colored light laid over the photo. All of these were still pictures of a face.",
     ],
@@ -156,12 +161,13 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS = [
   },
   {
     id: "drape-final",
-    label: "The final drape: full-screen color, one attribute at a time",
+    label: "The final drape",
+    lead: "Full-screen color, one attribute at a time.",
     listOrdered: true,
     paragraphs: [
       "The final version uses the live front camera. The face sits in the same outline as the photo step; the rest of the screen fills with the drape color so its light falls on the face the way fabric reflects in a real session. Controls stay light and semi-transparent so they barely tint that light; swipe switches the two colors.",
       "Before each attribute, a short guide shows where to look — under-eye shadows, fine lines, how even the skin looks. When people still hesitated between two drapes, AI was meant to hint beside the choice while the user decides; the prototype has an early version of that.",
-      "Each attribute ends with its own result and the seasons still possible — not one dump at the end. That helps on three levels:",
+      "Each attribute now ends with its own result and the seasons still possible. That helps on three levels:",
     ],
     list: [
       "Users: they can see their progress, and how each choice moves them toward a season.",
@@ -179,9 +185,10 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS = [
   },
   {
     id: "report",
-    label: "A clear answer, then what to wear",
+    label: "The color report",
+    lead: "A clear answer, then what to wear.",
     paragraphs: [
-      "The report gives one season, then explains it through the four attributes and the details it used. Makeup and hair previews are interactive — pick a shade, see it applied — so the result is something people can try on, not only read.",
+      "The report gives one season, then explains it through the four attributes and the details it used. Makeup and hair previews are interactive — pick a shade, see it applied — so people can try the result on themselves.",
     ],
     screens: [
       scr("29-report-profile", "The four attributes and the details used"),
@@ -210,7 +217,7 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS = [
       "The framework was complete and the flow worked end to end. The feature was then paused before launch after a change in company strategy. Three things I would carry into future work:",
     ],
     list: [
-      "Turn expert judgment into steps people can follow alone. Order them by what the user can act on, and ask about what they can see on their own face.",
+      "Turn expert judgment into steps people can complete alone: each step should be something the user understands and can carry out accurately, in an order they can actually follow.",
       "Know where the model’s limits are. Test what it can and can’t judge before deciding its role: what it reads reliably can be pre-filled; anything lighting, dye, or contacts can shift goes to the user to confirm.",
       "Make the layers of the interface clear. The conversation explains and keeps track of progress; task cards hold short inputs and confirmations; full-screen windows take over for tasks that need the whole screen, then hand back to the chat.",
     ],
@@ -232,7 +239,8 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS = [
 export const COLOR_ANALYSIS_DETAIL_SECTIONS_ZH = [
   {
     id: "challenge",
-    label: "从线下专家测试到手机",
+    label: "从专家到手机",
+    lead: "把一次线下专家测试搬到手机上，会变什么。",
     paragraphs: [
       "线下的色彩测试很花时间。专家把一块块色布放到你脸下，凭眼睛判断四个属性：冷暖、明度、彩度和清浊。这四个属性的组合决定季型。",
       "把它数字化，需要解决三件事：",
@@ -246,7 +254,8 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS_ZH = [
   },
   {
     id: "ai-role",
-    label: "决定 AI 做什么，用户做什么",
+    label: "AI 与用户的分工",
+    lead: "决定 AI 做什么，用户做什么。",
     listOrdered: true,
     paragraphs: [
       "很多色彩测试应用是一张自拍直接出季型。我没有采用这种方式，原因有两个。一是准确性：光线、白平衡、相机处理和妆容都会让模型对冷暖、清浊的判断偏移，直接给答案会把不确定藏起来。二是信任：只拿到一个季型、看不到路径，很难相信它、按它去穿。",
@@ -266,10 +275,10 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS_ZH = [
   },
   {
     id: "flow",
-    label: "整体流程，以及它在对话里的位置",
+    label: "对话与任务",
+    lead: "把对话层和任务层分开。",
     paragraphs: [
-      "从个人主页开始：对话 → 拍一张照片 → 确认原生特征 → 四个属性的色布对比 → 报告，结果写回主页。",
-      "对话负责说明目的和推进进度——AI 造型师解释、每一步发任务卡片、完成后总结。拍照和色布会离开对话：两者都需要整个屏幕，从卡片打开全屏，完成后再回来。",
+      "界面分成三个清楚的层级。对话层是 AI 造型师说明目的、推进进度、总结每一步的地方；任务卡片在对话里，承载简短的输入，比如确认个人信息；需要整个屏幕的任务——拍照和色布测试——从卡片打开全屏界面，完成后回到对话。",
     ],
     screens: [
       scr("01-entry", "从个人主页进入"),
@@ -282,7 +291,8 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS_ZH = [
   },
   {
     id: "guidance",
-    label: "拍照指引：按用户能做到的顺序排列",
+    label: "拍照指引",
+    lead: "按用户能做到的顺序排列。",
     paragraphs: [
       "指引从环境到个人：光线、穿着，再到卸妆和取下美瞳。先确认光线，用户可以决定现在要不要开始；最费事的一步留到真正准备拍照时。",
       "早期版本要求正脸加两张 45 度侧脸。向模型确认它实际需要什么之后，一张清晰正脸就够做初步判断——所以流程只保留一张带轮廓线的正脸照。",
@@ -297,7 +307,8 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS_ZH = [
   },
   {
     id: "details",
-    label: "原生特征先缩小方向",
+    label: "原生特征",
+    lead: "先确认它们，缩小方向。",
     paragraphs: [
       "原生发色、瞳色和肤色深浅能指向几个更可能的季型，先确认它们，色布对比就会更少。",
       "这三项由 AI 根据照片预填，用户在可视化选项上确认——染发、美瞳和光线都可能让它们偏移。发量不一样：测试里发量对、发丝粗细会错，而且问过模型对粗细的可信度，本身就偏低，所以改为用户填写。最后汇总在一张核对卡片上。",
@@ -313,7 +324,8 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS_ZH = [
   },
   {
     id: "drapes",
-    label: "色布测试：从静态图片到实时相机",
+    label: "色布测试",
+    lead: "从静态图片到实时相机。",
     paragraphs: [
       "这一步迭代的版本最多，每一版都想更接近真的坐在色布前：最早是抠出的脸旁边一块颜色，然后让颜色铺满照片周围，再到整屏界面加上观察指引和色块按钮。我也试过根据用户照片生成人像再换成色布色，以及在照片上叠加和色布同色的光。这些看到的都还是一张静态的脸。",
     ],
@@ -327,12 +339,13 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS_ZH = [
   },
   {
     id: "drape-final",
-    label: "最终的色布：整屏颜色，一次测一个属性",
+    label: "最终的色布",
+    lead: "整屏颜色，一次测一个属性。",
     listOrdered: true,
     paragraphs: [
       "最终版用实时前置相机：脸落在和拍照时一样的轮廓里，其余屏幕铺满色布色，光会照到脸上，就像线下布料把颜色反射到脸上一样。控件保持偏淡、半透明，尽量不染那层光；左右滑切换两种颜色。",
       "每个属性开始前有简短指引——黑眼圈、细纹、肤色是否均匀。若两块色布仍难判断，AI 会在选择旁给出提示，最终仍由用户决定；原型里有这个早期版本。",
-      "每个属性测完就给出结果和还剩哪些季型，而不是最后一次性抛出答案。这样做有三方面的好处：",
+      "现在每个属性测完就给出结果，并告诉用户还剩哪些季型。这样做有三方面的好处：",
     ],
     list: [
       "对用户：能看到进度，也明白每次选择怎样一步步接近自己的季型。",
@@ -350,9 +363,10 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS_ZH = [
   },
   {
     id: "report",
-    label: "明确的答案，然后告诉你怎么穿",
+    label: "色彩测试结果",
+    lead: "明确的答案，然后告诉你怎么穿。",
     paragraphs: [
-      "报告给出一个季型，再通过四个属性和用到的个人信息解释它。妆容和发色预览可交互——选一个色号就能看到上妆效果——结果是可以试的，而不只是读的。",
+      "报告给出一个季型，再通过四个属性和用到的个人信息解释它。妆容和发色预览可交互——选一个色号就能看到上妆效果——用户可以直接把结果试在自己身上。",
     ],
     screens: [
       scr("29-report-profile", "四个属性与用到的个人信息"),
@@ -381,7 +395,7 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS_ZH = [
       "整体框架已经完成，流程可以从头走到尾。之后因为公司战略调整，这个功能在上线前暂停了。有三点我会带到之后的工作里：",
     ],
     list: [
-      "把专家的判断拆成用户自己能完成的步骤：按用户能做到的顺序排列，问他们在自己脸上看得见的东西。",
+      "把专家的判断拆成用户自己能完成的步骤：每一步都要让用户看得懂、能准确地做到，并按用户能做到的顺序排列。",
       "了解模型的边界在哪里。先测试它能可靠判断什么、不能判断什么，再决定它的角色：能准确读出的就预填；会被光线、染发、美瞳影响的，交给用户确认。",
       "明确界面的不同层级：对话负责说明和推进进度；任务卡片承载简短的输入和确认；需要整个屏幕的任务交给全屏窗口，完成后再回到对话。",
     ],

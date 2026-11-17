@@ -14,7 +14,7 @@ const GROUPS = {
       title: "Plan edits",
       cases: [
         { id: "date", label: "Move the date", at: "goal", risk: "The monthly amount jumps with no reason given.", does: "Works it out again from what was saved before this month, and shows the new amount before saving." },
-        { id: "target", label: "Change the target", at: "goal", risk: "Same — a new number appears from nowhere.", does: "Worked out the same way, and the new amount is shown before saving." },
+        { id: "target", label: "Change the target", at: "goal", risk: "The monthly amount changes, and you can’t tell why.", does: "Works out the new monthly amount from what’s left and the months left, and shows it before saving." },
         { id: "priority", label: "Change priority", at: "goal", risk: "Amounts quietly change with the order.", does: "Only the order changes. Monthly amounts stay the same." },
         { id: "entry", label: "Fix a past entry", at: "goal", risk: "Progress and status go stale.", does: "Progress, this month and status are worked out again." },
         { id: "reach", label: "Reach the target", at: "goal", route: "Money stays in the goal — it’s marked Completed", risk: "It keeps asking for this month.", does: "Asks for nothing and moves to Completed." },
@@ -57,7 +57,7 @@ const GROUPS = {
       title: "改计划",
       cases: [
         { id: "date", label: "改日期", at: "goal", risk: "每月金额突然变了，没有解释。", does: "按本月之前已存的金额重新算，保存前先显示新金额。" },
-        { id: "target", label: "改目标金额", at: "goal", risk: "同样，一个新数字凭空出现。", does: "用同样的方法重新算，保存前先显示新金额。" },
+        { id: "target", label: "改目标金额", at: "goal", risk: "每月金额变了，却看不出为什么。", does: "按还差多少、剩几个月重新算出每月金额，保存前先显示。" },
         { id: "priority", label: "改优先级", at: "goal", risk: "顺序一变，金额也悄悄跟着变。", does: "只改顺序，每月金额不变。" },
         { id: "entry", label: "修改历史记录", at: "goal", risk: "进度和状态没跟着更新。", does: "重新计算进度、本月金额和状态。" },
         { id: "reach", label: "达成目标", at: "goal", route: "钱留在目标里，标为「已完成」", risk: "还在要求本月存钱。", does: "不再要求存钱，移到「已完成」。" },
@@ -100,7 +100,7 @@ const GROUPS = {
 const T = {
   en: {
     stays: "Money stays where it is — only the plan changes",
-    risk: "If nothing handled it",
+    risk: "What could go wrong",
     does: "What MoneyMap does",
     route: "Money goes",
     inBy: "Comes in by",
@@ -110,7 +110,7 @@ const T = {
   },
   zh: {
     stays: "钱不动，只改计划",
-    risk: "如果不处理",
+    risk: "可能出的问题",
     does: "MoneyMap 怎么做",
     route: "钱去哪",
     inBy: "怎么进来",

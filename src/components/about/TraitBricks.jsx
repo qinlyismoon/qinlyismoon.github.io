@@ -11,7 +11,7 @@ import { motion, useReducedMotion } from "framer-motion";
  */
 const IDS = ["doubt", "possibilities", "making"];
 // One unhurried glide for every move: tile → tray, tray → tower, and back.
-const MOVE = { layout: { duration: 0.95, ease: [0.22, 1, 0.36, 1] } };
+const MOVE = { layout: { duration: 1.1, ease: [0.45, 0, 0.2, 1] } };
 const COPY = {
   en: {
     labels: ["Questions", "Possibilities", "Making"],

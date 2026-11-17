@@ -8971,6 +8971,11 @@ body[data-project-detail="open"] .app-content-layer {
   margin-top: var(--space-3);
 }
 
+/* No summary above (e.g. Leaf Note): the facts sit right under the intro. */
+.vibe-detail__header-facts > .case-study__facts:first-child {
+  margin-top: 0;
+}
+
 /* Flow / screen sequences — horizontal rail with a peek + edge fade
    so a long set never reads as “only these three.” */
 .case-study__screens-wrap {
@@ -11369,4 +11374,22 @@ body:not([data-page="home"]) .editorial-thread {
 .vibe-detail__main .mm-moves__title,
 .case-study__table th {
   color: var(--color-text);
+}
+
+/* Section lead — the takeaway line right under a short section heading.
+   Darker and a step larger than body copy, so a skim of heading + lead
+   gives the whole argument. */
+.vibe-detail__main .vibe-detail__section dd.vibe-detail__lead,
+.vibe-detail__main .vibe-detail__lead.vibe-detail__lead {
+  margin: calc(var(--space-1) * -0.5) 0 var(--space-3);
+  font-family: var(--font-reading);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  letter-spacing: var(--reading-letter-spacing, -0.01em);
+  color: var(--color-text);
+}
+
+/* Lead under an h3/h4 heading: sit as close as it does under a section dt. */
+.vibe-detail__main :is(h3, h4) + .vibe-detail__lead.vibe-detail__lead {
+  margin-top: calc(var(--space-2) * -0.5);
 }

@@ -70,9 +70,9 @@ export const HOME_BENTO_COPY = {
     workTitle: "digital product design",
     selectedWorkLabel: "Selected work",
     workBridge:
-      "Selected work you can open and try—AI fashion flows, shared-care handoffs, and money goals that stay clear when plans change.",
+      "Selected work you can open and try—AI fashion flows, shared-care handoffs, money goals that stay clear when plans change, and AR moments that open on the printed page.",
     vibeBridge:
-      "On the side I vibe-code — it puts the scaffolding up faster. Direction and instructions have to be clearer, or you go way off, and the detail still takes care. Sometimes the direction only gets clear while I’m building.",
+      "One thing I’ve learned building with AI: it moves fast, but not always the right way. If the product goal or the core interaction isn’t clear, a small misunderstanding turns into rounds of changes that don’t fix the problem. I don’t need everything figured out first—some things only show up once I’m building—and AI is good for trying approaches quickly. So I stay clear on what I’m trying to achieve, flexible on how: test what it builds, question it, and adjust as I learn.",
     teachingBridge:
       "Teaching changed how I see my own process. When I explain an idea, I have to show the reasoning — what I’d do, and why. Working with students taught me to listen, adjust feedback, and leave room to experiment.",
     teachingNote:
@@ -193,9 +193,9 @@ export const HOME_BENTO_COPY = {
     workTitle: "数字产品设计",
     selectedWorkLabel: "Selected work",
     workBridge:
-      "能打开试的精选：AI 时尚流程、共享照料交接，还有计划一变仍能看懂的存钱目标。",
+      "能打开试的精选：AI 时尚流程、共享照料交接、计划一变仍能看懂的存钱目标，还有落在纸页上的 AR 时刻。",
     vibeBridge:
-      "另外会 vibe coding，框架能搭得更快。但对方向和指令更严——不清楚就容易跑偏，细节也还得慢慢抠。有时方向是在做的过程中才变得清楚。",
+      "和 AI 一起做，我学到一件事：它能跑得很快，但不一定跑对方向。产品目标和核心交互不清楚，一个小误解就会变成好几轮改来改去、却没真正解决问题。我也并不觉得一切都要事先想完——有些边界和交互，只有动手做了才看得清；AI 很适合快速试几种做法。所以我对要达成什么保持清楚，对怎么走到那里保持灵活：测它做出来的东西，多问一句，再跟着学到的往前调。",
     teachingBridge:
       "教学改了我对自己过程的看法。要把想法讲清楚，就得把理由摊开——怎么做、为什么。和学生一起，我更会听、会改反馈，也更敢留一点试错的空。",
     teachingNote: "Presentation as Thinking · 体验媒体 · 设计基础",

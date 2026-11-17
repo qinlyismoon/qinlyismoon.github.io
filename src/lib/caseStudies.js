@@ -15,6 +15,8 @@ import {
   LEAF_NOTE_DETAIL_CHAPTERS,
   LEAF_NOTE_DETAIL_SECTIONS,
   LEAF_NOTE_DETAIL_SECTIONS_ZH,
+  LEAF_NOTE_FACTS,
+  LEAF_NOTE_FACTS_ZH,
 } from "./leafNoteCaseStudy";
 import {
   MONEY_MAP_DETAIL_CHAPTERS,
@@ -79,7 +81,8 @@ export const VIBE_PROJECTS = [
       background: "#eef5f8",
       skills: ["SwiftUI", "ChatGPT", "Claude", "Muse", "GitHub"],
       problem: {
-        heading: "The Problem — Why I Built It",
+        heading: "The problem",
+        lead: "Why I built it.",
         paragraphs: [
           "I swim regularly, and I've recently been working on improving my freestyle. But I often struggle to balance practicing a newer stroke with getting enough exercise overall. My available time also changes from day to day.",
           "I wanted something that could help me plan more intentionally, rather than just track how far I'd swum.",
@@ -89,7 +92,8 @@ export const VIBE_PROJECTS = [
           "How might I plan swims that fit the week I actually have — and the stroke I’m still learning?",
       },
       experience: {
-        heading: "The Experience — What It Does",
+        heading: "The experience",
+        lead: "What it does.",
         loop: "Plan → Swim → Reflect & Adjust",
         // PDF exports at 2× — sharper than the compressed screen recordings.
         images: [
@@ -111,7 +115,8 @@ export const VIBE_PROJECTS = [
         ],
       },
       process: {
-        heading: "The Process — How I Built with AI",
+        heading: "The process",
+        lead: "How I built it with AI.",
         image: {
           src: "/swim-balance/process.png",
           alt: "Three-hour timeline: frame the problem (20 minutes with ChatGPT), build the foundation (15 minutes in Cursor), then refine through iteration (2.5 hours across Claude Code and ChatGPT)",
@@ -120,10 +125,11 @@ export const VIBE_PROJECTS = [
         },
       },
       decisions: {
-        heading: "Design Decisions — What I Learned",
+        heading: "Design decisions",
         items: [
           {
-            title: "1. From Data to Actionable Feedback",
+            title: "1. Actionable feedback",
+            lead: "From data to one thing I can do differently next time.",
             paragraphs: [
               "At first, the workout summary only showed which goals I met and how far I swam. What I actually wanted to know was what to do differently next time.",
               "So each past swim now opens with a short takeaway and one specific suggestion. Two quick questions — how tiring it felt, and why I stopped early — shape that suggestion. If I ran out of time, the app suggests a shorter session. If my form fell apart, it holds off on adding distance.",
@@ -134,7 +140,8 @@ export const VIBE_PROJECTS = [
             },
           },
           {
-            title: "2. Making Progress Comparisons Fair",
+            title: "2. Fair comparisons",
+            lead: "Comparing like with like, so progress isn’t quietly misleading.",
             paragraphs: [
               "While reviewing the History page, I noticed some comparisons were quietly misleading. On a Tuesday, the app compared my week so far with the whole of last week, so I always looked like I was falling behind. Weeks cut at the edges of a month could be just one or two days long.",
               "Now the current week is compared with the same days of last week, weeks always run Sunday to Sunday, and each bar shows its target as an outline, so it’s clear what “enough” looks like.",
@@ -145,7 +152,7 @@ export const VIBE_PROJECTS = [
             },
           },
           {
-            title: "3. What I Learned",
+            title: "3. What I learned",
             paragraphs: [
               "Building with AI took me from an idea to a working iOS app in about three hours. The speed didn’t make design less important; it made judgment the main job.",
               "A lot of what came out looked fine but wasn’t quite right. The stage bar first looked like a row of buttons. Colors on the bar didn’t match the legend beneath it. One suggestion sounded encouraging but had nothing in the data behind it. None of these were obvious until I used the app in the simulator. Most of my time went into noticing them, deciding what to cut or simplify, and trying again.",
@@ -158,7 +165,8 @@ export const VIBE_PROJECTS = [
       background: "#eef5f8",
       skills: ["SwiftUI", "ChatGPT", "Claude", "Muse", "GitHub"],
       problem: {
-        heading: "问题——我为什么做它",
+        heading: "问题",
+        lead: "我为什么做它。",
         paragraphs: [
           "我经常游泳，最近在练自由泳。但我常在两件事之间拉扯：练新学的泳姿，和保证足够的总体运动量。每天能用的时间也不一样。",
           "我想要的是能帮我排好训练的东西；游了多远，只是记录的一部分。",
@@ -168,7 +176,8 @@ export const VIBE_PROJECTS = [
           "How might I：怎样按我这周真正有的时间来排游泳——还要顾上正在练的泳姿？",
       },
       experience: {
-        heading: "体验——它能做什么",
+        heading: "体验",
+        lead: "它能做什么。",
         loop: "计划 → 游泳 → 反思与调整",
         images: [
           {
@@ -189,7 +198,8 @@ export const VIBE_PROJECTS = [
         ],
       },
       process: {
-        heading: "过程——我如何与 AI 一起做",
+        heading: "过程",
+        lead: "我如何与 AI 一起做。",
         image: {
           src: "/swim-balance/process.png",
           alt: "三小时时间线：用 ChatGPT 用 20 分钟框定问题，在 Cursor 里用 15 分钟搭好基础，再用 Claude Code 与 ChatGPT 迭代打磨两个半小时",
@@ -197,10 +207,11 @@ export const VIBE_PROJECTS = [
         },
       },
       decisions: {
-        heading: "设计决定——我学到了什么",
+        heading: "设计决定",
         items: [
           {
-            title: "1. 从数据到可以照着做的反馈",
+            title: "1. 可执行的反馈",
+            lead: "从数据，到下次可以照着做的一件事。",
             paragraphs: [
               "一开始，训练总结只显示我达成了哪些目标、游了多远。但我真正想知道的是：下一次该怎么做得不一样。",
               "所以现在每一次过去的游泳打开，先是一句简短的小结和一条具体的建议。两个快速问题——感觉有多累、为什么提前停——会塑造这条建议。如果是没时间了，建议下次缩短；如果动作散了，就先不加距离。",
@@ -211,7 +222,8 @@ export const VIBE_PROJECTS = [
             },
           },
           {
-            title: "2. 让进步对比更公平",
+            title: "2. 公平的对比",
+            lead: "同类相比，进步才不会被悄悄误读。",
             paragraphs: [
               "看 History 页面时，我发现有些对比在悄悄误导。周二时，应用拿我本周到目前为止和上周整周比，我看起来总像在落后。月份边缘被切开的周，可能只有一两天长。",
               "现在，本周和上周相同的那几天比，周从周日到周日，每根柱子把目标画成轮廓，「够了」长什么样一眼就清楚。",
@@ -276,7 +288,7 @@ export const VIBE_PROJECTS = [
       },
       {
         id: "starting",
-        label: "Starting with Vibe Coding",
+        label: "Starting with vibe coding",
         paragraphs: [
           "At the beginning, I described the visual language, physical behavior, sound, and interaction rules directly to an AI coding agent. The first prompt defined how the wall should behave, not just how it should look.",
         ],
@@ -321,21 +333,21 @@ export const VIBE_PROJECTS = [
       },
       {
         id: "iteration",
-        label: "Designing Through Iteration",
+        label: "Designing through iteration",
         paragraphs: [
           "AI got me a working wall quickly. What it didn’t give me was judgment about what felt wrong once I could click around — so I treated the first build as something to push against, not ship.",
           "I named what bothered me, set a rule, then asked AI to implement that rule and tried it again. The four passes below are the ones that changed the wall most.",
         ],
         items: [
           {
-            title: "Control vs. Information",
+            title: "Control vs. information",
             paragraphs: [
               "Before: “Sound On” and the Onomichi time sat at similar weight — one is a control, the other is just place info.",
               "After: Sound On stays obvious; local time gets quieter and separate, so it doesn’t look clickable.",
             ],
           },
           {
-            title: "Wish Modal Hierarchy",
+            title: "Wish modal hierarchy",
             paragraphs: [
               "Before: The wish modal had soft round corners and generic form controls — it looked like a website, not like the paper hanging behind it.",
               "After: Square edges on the card and CTA, quieter rounding on inputs. It reads as paper in the scene, not as a floating form.",
@@ -346,14 +358,14 @@ export const VIBE_PROJECTS = [
             },
           },
           {
-            title: "Object-based Selection",
+            title: "Object-based selection",
             paragraphs: [
               "Before: Glass color was a regular color picker — abstract chips, disconnected from the chime you’d hang.",
               "After: You pick illustrated chimes instead. You’re choosing how yours will look on the wall.",
             ],
           },
           {
-            title: "Wind Feedback",
+            title: "Wind feedback",
             paragraphs: [
               "Before: The pointer trail was dark and heavy — readable, but more like a debug path than wind.",
               "After: Press softens into a ripple, drag leaves a light dotted trail, release drifts away. It shows where the wind started and where it went, not the cursor itself.",
@@ -363,11 +375,12 @@ export const VIBE_PROJECTS = [
       },
       {
         id: "systems",
-        label: "Rethinking the Systems",
+        label: "Rethinking the systems",
         paragraphs: [],
         items: [
           {
-            title: "Environment System: From a static scene to a place that changes over time",
+            title: "Environment system",
+            lead: "From a static scene to a place that changes over time.",
             paragraphs: [
               "The first prototype presented Onomichi as a fixed scene. I wanted the wall to feel connected to the place it represents, even when no one was interacting with it.",
               "I introduced an environmental system based on local time in Onomichi, Japan, with four atmospheric states: Morning → Day → Sunset → Night. The system keeps the interface consistent while changing environmental properties such as ambient light, sky color, glass reflections, and atmospheric glow — and subtle signs of life in the scene, such as the presence and behavior of Onomichi's cats.",
@@ -378,7 +391,8 @@ export const VIBE_PROJECTS = [
             },
           },
           {
-            title: "Wish System: From a shared database to different levels of visibility",
+            title: "Wish system",
+            lead: "From a shared database to different levels of visibility.",
             paragraphs: [
               "The first prototype assumed that every new wish should immediately become visible to everyone. I realized that this technical assumption was also making a decision for the visitor.",
               "I redesigned the system so that visitors can choose whether a wish becomes part of the shared wall or remains private. All wishes now follow one consistent data model: a visitor sees the original seed wishes, community wishes, and all of their own wishes, while private wishes remain visible only to their creator.",
@@ -392,7 +406,7 @@ export const VIBE_PROJECTS = [
       },
       {
         id: "building",
-        label: "Building the System",
+        label: "Building the system",
         paragraphs: [
           "As the experience became more complex, I separated its major behaviors instead of letting them remain tightly coupled inside the initial prototype. The wind interaction, environmental time, and wish data now operate as separate systems. This makes it easier to improve one layer without rewriting the others.",
           "For the wish system, a repository layer also separates the interface from storage, preparing the prototype for a future multi-user backend.",
@@ -513,7 +527,8 @@ export const VIBE_PROJECTS = [
         paragraphs: [],
         items: [
           {
-            title: "环境系统：从静态场景到随时间变化的地方",
+            title: "环境系统",
+            lead: "从静态场景到随时间变化的地方。",
             paragraphs: [
               "第一个原型把尾道呈现成一个固定的场景。我希望这面墙和它代表的地方保持联系，哪怕没有人在和它互动。",
               "我加入了一套以日本尾道当地时间为基础的环境系统，四种氛围状态：早晨 → 白天 → 日落 → 夜晚。界面保持一致，环境光、天空颜色、玻璃反光和氛围光随之变化，场景里还有细微的生命迹象，比如尾道猫的出现和行为。",
@@ -524,7 +539,8 @@ export const VIBE_PROJECTS = [
             },
           },
           {
-            title: "愿望系统：从共享数据库到不同层级的可见性",
+            title: "愿望系统",
+            lead: "从共享数据库到不同层级的可见性。",
             paragraphs: [
               "第一个原型默认每个新愿望都立刻对所有人可见。我意识到，这个技术上的默认其实替访客做了一个决定。",
               "我重新设计了这套系统：访客可以自己选，愿望是成为共享墙面的一部分，还是只留给自己。所有愿望现在遵循同一套数据模型：访客能看到最初的种子愿望、社区愿望和自己的全部愿望，私密愿望只有许愿的人能看到。",
@@ -641,6 +657,10 @@ export const SELECTED_PROJECTS = [
     role: "Product Designer & Engineer",
     roleZh: "产品设计师 & 工程实现",
     timeline: "2026",
+    duration: "About 1 month",
+    durationZh: "约 1 个月",
+    facts: LEAF_NOTE_FACTS,
+    factsZh: LEAF_NOTE_FACTS_ZH,
     // Full case study (research, screen walkthrough, live handoff try-it,
     // managing + system, evaluation) — see leafNoteCaseStudy.js.
     detailChapters: LEAF_NOTE_DETAIL_CHAPTERS,
@@ -764,7 +784,7 @@ export const SELECTED_PROJECTS = [
     detailSections: [
       {
         id: "challenge",
-        label: "The Challenge",
+        label: "The challenge",
         paragraphs: [
           "Oscar et la Dame Rose follows a terminally ill child who imagines living an entire lifetime over twelve days. Its themes — illness, aging, connection, and death — are emotionally rich but abstract, especially for younger readers.",
           "I looked at the experience from both sides of a parent–child reading relationship. For the parent, the challenge is introducing difficult topics while keeping the experience supportive and open to conversation. For the child, it is staying engaged with a text-based story while making sense of ideas that can feel distant or abstract.",
@@ -775,7 +795,7 @@ export const SELECTED_PROJECTS = [
       },
       {
         id: "principles",
-        label: "Design Principles",
+        label: "Design principles",
         paragraphs: ["From that question, I set three principles for the experience:"],
         items: [
           {
@@ -800,7 +820,7 @@ export const SELECTED_PROJECTS = [
       },
       {
         id: "moments",
-        label: "Five Moments",
+        label: "Five moments",
         paragraphs: [
           "The book holds many scenes worth pausing on. I didn’t try to cover them all. The filter was interaction: where could a reader’s action deepen what the moment means, instead of turning the page into an animated illustration?",
           "That decision shaped the set below — five moments I chose to build. Others could work; these were the ones where participation felt earned. For each, I asked what the reader could do, and the work shifted from drawing the story to designing actions inside it. As Oscar’s journey unfolds, those actions change:",
@@ -813,7 +833,8 @@ export const SELECTED_PROJECTS = [
         },
         items: [
           {
-            title: "Enter — Crossing into Oscar's world",
+            title: "Enter",
+            lead: "Crossing into Oscar’s world.",
             mediaFirst: true,
             paragraphs: [
               "A simple action marks the transition from the reader's physical world into Oscar's story. The reader scans the book and taps the door handle; the door opens, a rose grows, and the carrier pigeon appears.",
@@ -826,7 +847,8 @@ export const SELECTED_PROJECTS = [
             },
           },
           {
-            title: "Listen — Sharing a Moment Through Sound",
+            title: "Listen",
+            lead: "Sharing a moment through sound.",
             mediaFirst: true,
             paragraphs: [
               "Oscar and Peggy sit together and listen to The Nutcracker. The reader taps the Walkman to start the music, and music and animation bring the scene to life.",
@@ -839,7 +861,8 @@ export const SELECTED_PROJECTS = [
             },
           },
           {
-            title: "Connect — Responding to Support",
+            title: "Connect",
+            lead: "Responding to support.",
             mediaFirst: true,
             paragraphs: [
               "Granny Rose helps Oscar approach illness, aging, and death with courage. The reader triggers a fist bump between Oscar and Rose, and the characters answer through a short animated gesture.",
@@ -852,7 +875,8 @@ export const SELECTED_PROJECTS = [
             },
           },
           {
-            title: "Care — Turning Empathy into Action",
+            title: "Care",
+            lead: "Turning empathy into action.",
             mediaFirst: true,
             paragraphs: [
               "As Oscar approaches the end of his symbolic lifetime, he becomes physically weaker. This interaction changes the reader's relationship to that moment: notice he is weaker, drag a hat or scarf to him, and offer warmth through action.",
@@ -865,7 +889,8 @@ export const SELECTED_PROJECTS = [
             },
           },
           {
-            title: "Let Go — Participating in Goodbye",
+            title: "Let go",
+            lead: "Taking part in goodbye.",
             mediaFirst: true,
             paragraphs: [
               "Oscar reaches the end of his life. He follows the carrier pigeon toward another world, turns back, smiles, and says goodbye.",
@@ -881,7 +906,7 @@ export const SELECTED_PROJECTS = [
       },
       {
         id: "system",
-        label: "Building the AR System",
+        label: "Building the AR system",
         paragraphs: [
           "To make the moments work with a physical book, I connected page recognition, spatial content, touch input, animation, and sound into one system. I built the prototype in Unity, using Vuforia to recognize selected pages and C# to connect reader input with scene behavior.",
         ],
@@ -949,7 +974,7 @@ export const SELECTED_PROJECTS = [
       },
       {
         id: "take-forward",
-        label: "What I Took Forward",
+        label: "What I took forward",
         paragraphs: [
           "Critique from peers was practical: the look of the scenes should match the story’s tone more evenly; I still need to watch real parent–child reading, not only studio demos; and a few moments want more animation and sound so attention lands where it should.",
           "This was an early project where I designed the interaction and built it. In Unity, a sketch stops being a sketch — a gesture needs input, an animation needs states, an AR scene has to sit on a real page. That back-and-forth is still how I work: decide how it should behave, make a version you can hold, then judge it.",
@@ -1007,7 +1032,8 @@ export const SELECTED_PROJECTS = [
         },
         items: [
           {
-            title: "进入——走进 Oscar 的世界",
+            title: "进入",
+            lead: "走进 Oscar 的世界。",
             mediaFirst: true,
             paragraphs: [
               "一个简单的动作，标记着从读者的物理世界进入 Oscar 故事的过渡。读者扫描书页，轻点门把手；门打开，玫瑰生长，信鸽出现。",
@@ -1020,7 +1046,8 @@ export const SELECTED_PROJECTS = [
             },
           },
           {
-            title: "聆听——用声音分享一个时刻",
+            title: "聆听",
+            lead: "用声音分享一个时刻。",
             mediaFirst: true,
             paragraphs: [
               "Oscar 和 Peggy 坐在一起听《胡桃夹子》。读者轻点随身听，音乐响起，动画让场景活起来。",
@@ -1033,7 +1060,8 @@ export const SELECTED_PROJECTS = [
             },
           },
           {
-            title: "连结——回应支持",
+            title: "连结",
+            lead: "回应支持。",
             mediaFirst: true,
             paragraphs: [
               "玫瑰奶奶帮助 Oscar 勇敢地面对疾病、衰老和死亡。读者触发 Oscar 和玫瑰奶奶之间的一次碰拳，两个角色用一个简短的动画手势回应。",
@@ -1046,7 +1074,8 @@ export const SELECTED_PROJECTS = [
             },
           },
           {
-            title: "关照——把共情变成行动",
+            title: "关照",
+            lead: "把共情变成行动。",
             mediaFirst: true,
             paragraphs: [
               "当 Oscar 走近他象征性一生的终点，他的身体越来越虚弱。这个交互改变读者与这一刻的关系：注意到他的虚弱，把帽子或围巾拖给他，用行动送去温暖。",
@@ -1059,7 +1088,8 @@ export const SELECTED_PROJECTS = [
             },
           },
           {
-            title: "放手——参与告别",
+            title: "放手",
+            lead: "参与告别。",
             mediaFirst: true,
             paragraphs: [
               "Oscar 走到了生命的终点。他跟着信鸽走向另一个世界，回过头来，微笑着挥手告别。",
@@ -1150,10 +1180,8 @@ export const SELECTED_PROJECTS = [
   }
 ];
 
-// Research & Craft — between Selected Work and Vibe Coding. Two parallel
-// practices (not research→craft): co-design first, then procedural motion.
-// Same card + native detail grammar as Selected Work.
-export const RESEARCH_CRAFT_PROJECTS = [
+// Research — co-design / workshops, separate from 3D craft.
+export const RESEARCH_PROJECTS = [
   {
     id: "whose-dreams",
     title: "Whose Dreams Shape Tomorrow?",
@@ -1177,7 +1205,12 @@ export const RESEARCH_CRAFT_PROJECTS = [
     detailChapters: WHOSE_DREAMS_DETAIL_CHAPTERS,
     detailSections: WHOSE_DREAMS_DETAIL_SECTIONS,
     detailSectionsZh: WHOSE_DREAMS_DETAIL_SECTIONS_ZH,
-  },
+  }
+];
+
+// 3D — Houdini procedural motion and AR spatial work.
+// Oscar AR also lives in SELECTED_PROJECTS (digital product / home rail).
+export const THREE_D_PROJECTS = [
   {
     id: "procedural-animation",
     title: "Procedural Animation",
@@ -1203,13 +1236,22 @@ export const RESEARCH_CRAFT_PROJECTS = [
     detailSections: PROCEDURAL_ANIMATION_DETAIL_SECTIONS,
     detailSectionsZh: PROCEDURAL_ANIMATION_DETAIL_SECTIONS_ZH,
   },
+  SELECTED_PROJECTS.find((project) => project.id === "oscar-ar"),
+].filter(Boolean);
+
+/** @deprecated Prefer RESEARCH_PROJECTS + THREE_D_PROJECTS. */
+export const RESEARCH_CRAFT_PROJECTS = [
+  ...RESEARCH_PROJECTS,
+  ...THREE_D_PROJECTS,
 ];
 
-/** Flat list of every showcase project (Selected → Research & Craft → Vibe). */
+/** Flat list: Selected → 3D → Research → Vibe (Oscar AR once). */
 export function getAllProjects() {
+  const selectedIds = new Set(SELECTED_PROJECTS.map((project) => project.id));
   return [
     ...SELECTED_PROJECTS,
-    ...RESEARCH_CRAFT_PROJECTS,
+    ...THREE_D_PROJECTS.filter((project) => !selectedIds.has(project.id)),
+    ...RESEARCH_PROJECTS,
     ...VIBE_PROJECTS,
   ];
 }

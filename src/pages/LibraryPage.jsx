@@ -8,7 +8,8 @@ import SelectedWorkCard from "../components/caseStudies/SelectedWorkCard";
 import {
   VIBE_PROJECTS,
   SELECTED_PROJECTS,
-  RESEARCH_CRAFT_PROJECTS,
+  RESEARCH_PROJECTS,
+  THREE_D_PROJECTS,
   HOME_VIBE_FOLDER_IDS,
   getProjectById,
 } from "../lib/caseStudies";
@@ -24,19 +25,23 @@ const VibeProjectDetail = lazy(() =>
   import("../components/caseStudies/VibeProjectDetail"),
 );
 
-// Projects with a native case-study detail at /<id>: vibe, selected with
-// native detail, and Research & Craft.
-// Order matches the page sections so “Next project” walks Selected →
-// Research & Craft → Vibe Coding (folder order).
-const DETAIL_PROJECTS = [
-  ...SELECTED_PROJECTS.filter(
+// Projects with a native case-study detail at /<id>.
+// Order matches the page sections: Selected → 3D → Research → Vibe.
+// Oscar AR is in both Selected and 3D — keep it once in the sequence.
+const DETAIL_PROJECTS = (() => {
+  const selected = SELECTED_PROJECTS.filter(
     (project) =>
       (project.detail || project.detailSections) &&
       project.id !== "emotion-garden",
-  ),
-  ...RESEARCH_CRAFT_PROJECTS,
-  ...HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(Boolean),
-];
+  );
+  const selectedIds = new Set(selected.map((project) => project.id));
+  return [
+    ...selected,
+    ...THREE_D_PROJECTS.filter((project) => !selectedIds.has(project.id)),
+    ...RESEARCH_PROJECTS,
+    ...HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(Boolean),
+  ];
+})();
 
 /** Home Selected Work rail order (Emotion Garden lives in the vibe folder). */
 const HOME_SELECTED_SEQUENCE = SELECTED_PROJECTS.filter(
@@ -72,11 +77,15 @@ function entryFromLocation(location, embedded) {
 // Every project that can drive the sidebar on hover. Their role and
 // timeline values are passed as `reserve` candidates so the sidebar slot is
 // always sized to the longest one (no jump when moving between cards).
-const HOVER_PROJECTS = [
-  ...SELECTED_PROJECTS,
-  ...RESEARCH_CRAFT_PROJECTS,
-  ...VIBE_PROJECTS,
-];
+const HOVER_PROJECTS = (() => {
+  const selectedIds = new Set(SELECTED_PROJECTS.map((project) => project.id));
+  return [
+    ...SELECTED_PROJECTS,
+    ...THREE_D_PROJECTS.filter((project) => !selectedIds.has(project.id)),
+    ...RESEARCH_PROJECTS,
+    ...VIBE_PROJECTS,
+  ];
+})();
 
 /** The sidebar's timeline text for a project: year · duration, from the
  *  same `duration` field the detail footer calls out — one source, so
@@ -116,13 +125,14 @@ const LABELS = {
   en: {
     pageTitle: "Projects",
     pageNote:
-      "Still a student, still stretching. From an AI fashion color-analysis internship and shared plant-care handoffs, to money goals that stay readable when plans change—then research, craft, and vibe-coded experiments you can open and try.",
+      "Some of this was built inside a real product team, some I carried from first sketch to working code on my own, and some is me picking up a new medium to see how far it goes. Each card opens into how I got there—and each time I thought it through, I grew.",
     caseStudies: "Digital product design",
     caseStudiesNote:
       "Internship and 0→1 product work—flows you can poke at.",
-    researchCraft: "Research & Craft",
-    researchCraftNote:
-      "Co-design with people on one side; procedural motion in Houdini on the other.",
+    research: "Research",
+    researchNote: "Co-design with people—workshops that leave a film, a town, a question.",
+    threeD: "3D",
+    threeDNote: "Houdini motion studies and AR built onto the printed page.",
     vibeCoding: "Vibe Coding",
     vibeCodingNote:
       "Quick experiments with AI coding tools—start curious, end with something you can play with.",
@@ -130,11 +140,13 @@ const LABELS = {
   zh: {
     pageTitle: "作品",
     pageNote:
-      "还在学，也还在长。从 AI 时尚色彩测试实习、共享照料交接，到计划一变仍能看懂的存钱目标；再到研究、制作，以及能打开玩的 vibe coding 小实验。",
+      "有些是在真实的产品团队里做出来的，有些是我一个人从草图做到能跑的代码，还有一些，是我拿起一种新媒介，试试它能走多远。每张卡片点开，都是我一路怎么想过来的——每一次思考，都有成长。",
     caseStudies: "数字产品设计",
     caseStudiesNote: "实习与 0→1 产品：能上手戳的流程。",
-    researchCraft: "研究与制作",
-    researchCraftNote: "一边和人共创，一边在 Houdini 里做程序化运动。",
+    research: "研究",
+    researchNote: "和人一起共创——工作坊留下的短片、小镇，和一个问题。",
+    threeD: "3D",
+    threeDNote: "Houdini 里的程序化运动，以及落在纸页上的 AR。",
     vibeCoding: "Vibe Coding",
     vibeCodingNote: "和 AI 编程工具一起快速试——先好奇，再做出能玩的东西。",
   },
@@ -312,14 +324,33 @@ export default function LibraryPage({ embedded = false }) {
       </section>
 
       <section
-        id="research-craft"
+        id="three-d"
         className="case-studies__section"
-        aria-label={labels.researchCraft}
+        aria-label={labels.threeD}
       >
-        <h2 className="case-studies__section-title">{labels.researchCraft}</h2>
-        <p className="case-studies__section-note">{labels.researchCraftNote}</p>
+        <h2 className="case-studies__section-title">{labels.threeD}</h2>
+        <p className="case-studies__section-note">{labels.threeDNote}</p>
         <div className="vibe-grid">
-          {RESEARCH_CRAFT_PROJECTS.map((project) => (
+          {THREE_D_PROJECTS.map((project) => (
+            <SelectedWorkCard
+              key={project.id}
+              project={project}
+              onOpen={handleCardOpen}
+              onHover={handleCardHover}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section
+        id="research"
+        className="case-studies__section"
+        aria-label={labels.research}
+      >
+        <h2 className="case-studies__section-title">{labels.research}</h2>
+        <p className="case-studies__section-note">{labels.researchNote}</p>
+        <div className="vibe-grid">
+          {RESEARCH_PROJECTS.map((project) => (
             <SelectedWorkCard
               key={project.id}
               project={project}

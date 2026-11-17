@@ -225,6 +225,15 @@
   white-space: nowrap;
 }
 
+/* Reserves the longest trait's width, so the chip either always sits beside
+   the role line or always wraps below it — never one line for a short trait
+   and two for a long one. */
+.home-bento__tag-slot {
+  display: inline-flex;
+  flex: 0 0 auto;
+  max-width: 100%;
+}
+
 /* Low caption chip — hairline + whisper of tint, not a tall pill button. */
 .home-bento__tag {
   --tag-pad-x: 0.5rem;
@@ -1796,13 +1805,22 @@
   font: inherit;
   text-align: left;
   cursor: pointer;
+  /* Own compositor layer so the shade doesn’t detach while the rail scrolls. */
+  isolation: isolate;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .selected-rail__media {
   position: relative;
+  z-index: 0;
   aspect-ratio: 4 / 3;
   overflow: hidden;
   background: color-mix(in srgb, var(--color-text) 6%, #fff);
+  /* Keep image/video scale transforms in their own layer, away from shade. */
+  isolation: isolate;
+  transform: translateZ(0);
 }
 
 .selected-rail__still,
@@ -1857,9 +1875,13 @@
   inset: auto 0 0;
   z-index: 2;
   height: 58%;
-  background: linear-gradient(
+  /* Stable paint during horizontal touch scroll (Safari / Chrome mobile). */
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  background-image: linear-gradient(
     180deg,
-    transparent 0%,
+    rgba(0, 0, 0, 0) 0%,
     rgba(0, 0, 0, 0.38) 40%,
     rgba(0, 0, 0, 0.78) 100%
   );

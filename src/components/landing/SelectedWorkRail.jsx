@@ -43,7 +43,6 @@ function HoverCardMedia({
     return (
       <div className="selected-rail__media">
         <div className="selected-rail__placeholder" />
-        <div className="selected-rail__shade" />
       </div>
     );
   }
@@ -85,7 +84,6 @@ function HoverCardMedia({
           preload="metadata"
         />
       ) : null}
-      <div className="selected-rail__shade" />
     </div>
   );
 }
@@ -129,6 +127,10 @@ function SelectedWorkCard({ project, onOpen, isZh }) {
           zoomHover={project.cardZoomHover}
           active={active}
         />
+        {/* Shade sits beside media, not inside it — iOS scroll + media
+            transforms were dropping the gradient when it lived under
+            overflow/scale on the image layer. */}
+        <div className="selected-rail__shade" aria-hidden="true" />
         <div className="selected-rail__meta">
           <h3 className="selected-rail__card-title">{project.title}</h3>
           {subtitle ? (
