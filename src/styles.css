@@ -8971,8 +8971,13 @@ body[data-project-detail="open"] .app-content-layer {
   margin-top: var(--space-3);
 }
 
-/* No summary above (e.g. Leaf Note): the facts sit right under the intro. */
+/* No summary above (e.g. Leaf Note): the facts sit right under the intro,
+   with only the main column's row gap between them. */
 .vibe-detail__header-facts > .case-study__facts:first-child {
+  margin-top: 0;
+}
+
+.vibe-detail__header-facts:has(> .case-study__facts:first-child) {
   margin-top: 0;
 }
 

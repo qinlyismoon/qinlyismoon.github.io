@@ -740,7 +740,39 @@ export const SELECTED_PROJECTS = [
     detailChapters: MONEY_MAP_DETAIL_CHAPTERS,
     detailSections: MONEY_MAP_DETAIL_SECTIONS,
     detailSectionsZh: MONEY_MAP_DETAIL_SECTIONS_ZH,
-  },
+  }
+];
+
+// Research — co-design / workshops, separate from 3D craft.
+export const RESEARCH_PROJECTS = [
+  {
+    id: "whose-dreams",
+    title: "Whose Dreams Shape Tomorrow?",
+    subtitle: "Co-design · Youth & Sustainability",
+    tagline: "High-school students build and film a 2050 town.",
+    taglineZh: "高中生搭一座 2050 的小镇，再拍下来。",
+    description:
+      "Two co-design workshops with a robotics team—and Sustaintown, the short film they made.",
+    descriptionZh:
+      "和机器人队做的两场共创工作坊，以及他们拍的短片 Sustaintown。",
+    tags: ["Co-design", "Workshop", "Design Research"],
+    // Still cover — workshop affinity boards (research feel); film lives in the detail.
+    thumbnail: "/research-craft/whose-dreams/cover.jpg",
+    navArtPosition: "42% 48%",
+    navArtSize: "auto 36rem",
+    footerArtPosition: "55% 52%",
+    footerArtSize: "auto 60rem",
+    role: "Co-design Team Member",
+    roleZh: "共创团队成员",
+    timeline: "2025",
+    detailChapters: WHOSE_DREAMS_DETAIL_CHAPTERS,
+    detailSections: WHOSE_DREAMS_DETAIL_SECTIONS,
+    detailSectionsZh: WHOSE_DREAMS_DETAIL_SECTIONS_ZH,
+  }
+];
+
+// 3D — AR spatial work first, then Houdini procedural motion.
+export const THREE_D_PROJECTS = [
   {
     id: "oscar-ar",
     title: "Oscar et la Dame Rose",
@@ -1177,40 +1209,7 @@ export const SELECTED_PROJECTS = [
         ],
       },
     ],
-  }
-];
-
-// Research — co-design / workshops, separate from 3D craft.
-export const RESEARCH_PROJECTS = [
-  {
-    id: "whose-dreams",
-    title: "Whose Dreams Shape Tomorrow?",
-    subtitle: "Co-design · Youth & Sustainability",
-    tagline: "High-school students build and film a 2050 town.",
-    taglineZh: "高中生搭一座 2050 的小镇，再拍下来。",
-    description:
-      "Two co-design workshops with a robotics team—and Sustaintown, the short film they made.",
-    descriptionZh:
-      "和机器人队做的两场共创工作坊，以及他们拍的短片 Sustaintown。",
-    tags: ["Co-design", "Workshop", "Design Research"],
-    // Still cover — workshop affinity boards (research feel); film lives in the detail.
-    thumbnail: "/research-craft/whose-dreams/cover.jpg",
-    navArtPosition: "42% 48%",
-    navArtSize: "auto 36rem",
-    footerArtPosition: "55% 52%",
-    footerArtSize: "auto 60rem",
-    role: "Co-design Team Member",
-    roleZh: "共创团队成员",
-    timeline: "2025",
-    detailChapters: WHOSE_DREAMS_DETAIL_CHAPTERS,
-    detailSections: WHOSE_DREAMS_DETAIL_SECTIONS,
-    detailSectionsZh: WHOSE_DREAMS_DETAIL_SECTIONS_ZH,
-  }
-];
-
-// 3D — Houdini procedural motion and AR spatial work.
-// Oscar AR also lives in SELECTED_PROJECTS (digital product / home rail).
-export const THREE_D_PROJECTS = [
+  },
   {
     id: "procedural-animation",
     title: "Procedural Animation",
@@ -1235,9 +1234,8 @@ export const THREE_D_PROJECTS = [
     detailChapters: PROCEDURAL_ANIMATION_DETAIL_CHAPTERS,
     detailSections: PROCEDURAL_ANIMATION_DETAIL_SECTIONS,
     detailSectionsZh: PROCEDURAL_ANIMATION_DETAIL_SECTIONS_ZH,
-  },
-  SELECTED_PROJECTS.find((project) => project.id === "oscar-ar"),
-].filter(Boolean);
+  }
+];
 
 /** @deprecated Prefer RESEARCH_PROJECTS + THREE_D_PROJECTS. */
 export const RESEARCH_CRAFT_PROJECTS = [
@@ -1245,12 +1243,20 @@ export const RESEARCH_CRAFT_PROJECTS = [
   ...THREE_D_PROJECTS,
 ];
 
-/** Flat list: Selected → 3D → Research → Vibe (Oscar AR once). */
+/**
+ * Home “Selected work” rail — digital products plus Oscar AR.
+ * On the Projects page, AR only appears under 3D (not Digital product design).
+ */
+export const HOME_SELECTED_PROJECTS = [
+  ...SELECTED_PROJECTS.filter((project) => project.id !== "emotion-garden"),
+  ...THREE_D_PROJECTS.filter((project) => project.id === "oscar-ar"),
+];
+
+/** Flat list: Selected → 3D → Research → Vibe. */
 export function getAllProjects() {
-  const selectedIds = new Set(SELECTED_PROJECTS.map((project) => project.id));
   return [
     ...SELECTED_PROJECTS,
-    ...THREE_D_PROJECTS.filter((project) => !selectedIds.has(project.id)),
+    ...THREE_D_PROJECTS,
     ...RESEARCH_PROJECTS,
     ...VIBE_PROJECTS,
   ];

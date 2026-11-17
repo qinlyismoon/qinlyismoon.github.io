@@ -10,6 +10,7 @@ import {
   SELECTED_PROJECTS,
   RESEARCH_PROJECTS,
   THREE_D_PROJECTS,
+  HOME_SELECTED_PROJECTS,
   HOME_VIBE_FOLDER_IDS,
   getProjectById,
 } from "../lib/caseStudies";
@@ -27,26 +28,19 @@ const VibeProjectDetail = lazy(() =>
 
 // Projects with a native case-study detail at /<id>.
 // Order matches the page sections: Selected → 3D → Research → Vibe.
-// Oscar AR is in both Selected and 3D — keep it once in the sequence.
-const DETAIL_PROJECTS = (() => {
-  const selected = SELECTED_PROJECTS.filter(
+const DETAIL_PROJECTS = [
+  ...SELECTED_PROJECTS.filter(
     (project) =>
       (project.detail || project.detailSections) &&
       project.id !== "emotion-garden",
-  );
-  const selectedIds = new Set(selected.map((project) => project.id));
-  return [
-    ...selected,
-    ...THREE_D_PROJECTS.filter((project) => !selectedIds.has(project.id)),
-    ...RESEARCH_PROJECTS,
-    ...HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(Boolean),
-  ];
-})();
+  ),
+  ...THREE_D_PROJECTS,
+  ...RESEARCH_PROJECTS,
+  ...HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(Boolean),
+];
 
-/** Home Selected Work rail order (Emotion Garden lives in the vibe folder). */
-const HOME_SELECTED_SEQUENCE = SELECTED_PROJECTS.filter(
-  (project) => project.id !== "emotion-garden",
-);
+/** Home Selected Work rail — includes Oscar AR; Projects digital section does not. */
+const HOME_SELECTED_SEQUENCE = HOME_SELECTED_PROJECTS;
 
 const HOME_VIBE_SEQUENCE = HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(
   Boolean,
@@ -77,15 +71,12 @@ function entryFromLocation(location, embedded) {
 // Every project that can drive the sidebar on hover. Their role and
 // timeline values are passed as `reserve` candidates so the sidebar slot is
 // always sized to the longest one (no jump when moving between cards).
-const HOVER_PROJECTS = (() => {
-  const selectedIds = new Set(SELECTED_PROJECTS.map((project) => project.id));
-  return [
-    ...SELECTED_PROJECTS,
-    ...THREE_D_PROJECTS.filter((project) => !selectedIds.has(project.id)),
-    ...RESEARCH_PROJECTS,
-    ...VIBE_PROJECTS,
-  ];
-})();
+const HOVER_PROJECTS = [
+  ...SELECTED_PROJECTS,
+  ...THREE_D_PROJECTS,
+  ...RESEARCH_PROJECTS,
+  ...VIBE_PROJECTS,
+];
 
 /** The sidebar's timeline text for a project: year · duration, from the
  *  same `duration` field the detail footer calls out — one source, so
@@ -132,7 +123,7 @@ const LABELS = {
     research: "Research",
     researchNote: "Co-design with people—workshops that leave a film, a town, a question.",
     threeD: "3D",
-    threeDNote: "Houdini motion studies and AR built onto the printed page.",
+    threeDNote: "AR built onto the printed page, and Houdini motion studies.",
     vibeCoding: "Vibe Coding",
     vibeCodingNote:
       "Quick experiments with AI coding tools—start curious, end with something you can play with.",
@@ -146,7 +137,7 @@ const LABELS = {
     research: "研究",
     researchNote: "和人一起共创——工作坊留下的短片、小镇，和一个问题。",
     threeD: "3D",
-    threeDNote: "Houdini 里的程序化运动，以及落在纸页上的 AR。",
+    threeDNote: "落在纸页上的 AR，以及 Houdini 里的程序化运动。",
     vibeCoding: "Vibe Coding",
     vibeCodingNote: "和 AI 编程工具一起快速试——先好奇，再做出能玩的东西。",
   },

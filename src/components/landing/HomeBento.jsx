@@ -16,16 +16,11 @@ import { getHomeBentoCopy } from "../../lib/homeBento";
 import { PORTFOLIO_LINKS } from "../../lib/links";
 import {
   HOME_VIBE_FOLDER_IDS,
-  SELECTED_PROJECTS,
+  HOME_SELECTED_PROJECTS,
   getProjectById,
 } from "../../lib/caseStudies";
 import { ABOUT_PATH, LIBRARY_PATH } from "../../lib/routes";
 import PageCopyright from "../shared/PageCopyright";
-
-/** Selected Work on Home — Emotion Garden lives in the vibe folder only. */
-const HOME_SELECTED = SELECTED_PROJECTS.filter(
-  (project) => project.id !== "emotion-garden",
-);
 
 export default function HomeBento() {
   const { language } = useAppSettings();
@@ -133,7 +128,7 @@ export default function HomeBento() {
         </div>
 
         <SelectedWorkRail
-          projects={HOME_SELECTED}
+          projects={HOME_SELECTED_PROJECTS}
           onOpen={handleOpen}
           bridge={bento.workBridge}
           frameLabel={bento.selectedWorkLabel}
