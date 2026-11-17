@@ -91,10 +91,16 @@ function HoverCardMedia({
 function SelectedWorkCard({ project, onOpen, isZh }) {
   const [active, setActive] = useState(false);
   const reduceMotion = useRef(false);
+  // Touch / coarse pointers: ignore hover. Sticky :hover on phones was
+  // zooming the still and dropping the shade without opening the project.
+  const fineHover = useRef(false);
 
   useEffect(() => {
     reduceMotion.current = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
+    ).matches;
+    fineHover.current = window.matchMedia(
+      "(hover: hover) and (pointer: fine)",
     ).matches;
   }, []);
 
@@ -103,7 +109,7 @@ function SelectedWorkCard({ project, onOpen, isZh }) {
   const subtitle = project.subtitle;
 
   const setHover = (next) => {
-    if (reduceMotion.current) return;
+    if (reduceMotion.current || !fineHover.current) return;
     setActive(next);
   };
 
@@ -115,8 +121,6 @@ function SelectedWorkCard({ project, onOpen, isZh }) {
         onClick={() => onOpen?.(project)}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
-        onFocus={() => setHover(true)}
-        onBlur={() => setHover(false)}
         aria-label={isZh ? `查看 ${project.title}` : `View ${project.title}`}
       >
         <HoverCardMedia

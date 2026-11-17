@@ -9102,8 +9102,16 @@ body[data-project-detail="open"] .app-content-layer {
 }
 
 .flow-media-rail--screens .flow-media-rail__card {
-  flex: 0 0 min(12.5rem, 46cqi);
-  width: min(12.5rem, 46cqi);
+  /* Wider step on narrow viewports so the next screen is a thin peek, not a leak. */
+  flex: 0 0 min(12.5rem, 58cqi);
+  width: min(12.5rem, 58cqi);
+}
+
+@media (min-width: 720px) {
+  .flow-media-rail--screens .flow-media-rail__card {
+    flex: 0 0 min(12.5rem, 46cqi);
+    width: min(12.5rem, 46cqi);
+  }
 }
 
 .flow-media-rail--boards .flow-media-rail__card {
@@ -9132,13 +9140,15 @@ body[data-project-detail="open"] .app-content-layer {
   top: var(--flow-rail-pad);
   right: 0;
   bottom: var(--flow-rail-pad-bottom);
-  width: 2.75rem;
+  /* Quiet scroll cue — short and soft so it doesn’t paint over the frame. */
+  width: 1.35rem;
   pointer-events: none;
   border-radius: 0 0.85rem 0.85rem 0;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    var(--flow-rail-fill) 88%
+    color-mix(in srgb, var(--flow-rail-fill) 55%, transparent) 55%,
+    var(--flow-rail-fill) 100%
   );
 }
 
@@ -10859,13 +10869,19 @@ body:not([data-page="home"]) .editorial-thread {
 @media (max-width: 760px) {
   .vibe-detail__main .mm-live {
     grid-template-columns: 1fr;
+    padding: var(--space-3);
   }
   .vibe-detail__main .mm-phone {
     justify-self: center;
     width: min(300px, 80vw);
   }
+  /* Phone uses the content column — keep 390×844 proportion, no letterbox. */
   .vibe-detail__main .ln-handoff .mm-phone {
-    width: min(320px, 88vw);
+    width: min(22.5rem, 100%);
+    max-width: 100%;
+  }
+  .vibe-detail__main .ln-handoff__phone {
+    margin-inline: auto;
   }
 }
 

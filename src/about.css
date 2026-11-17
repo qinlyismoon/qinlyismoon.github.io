@@ -824,6 +824,13 @@ a.about-experience__org {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* While a block glides, keep it above slots, lamp, and other bricks. */
+.toy-block-source.is-moving,
+.toy-block-wrap.is-moving {
+  z-index: 40;
+  filter: drop-shadow(0 4px 10px rgba(40, 32, 24, 0.18));
+}
+
 .toy-block-source {
   position: absolute;
   top: 1.3rem;

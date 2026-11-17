@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useEffect, useId, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 /**
@@ -6,12 +6,13 @@ import { motion, useReducedMotion } from "framer-motion";
  * top-right corner; picking it up sends it to the tray here, and placing it
  * stacks it on the tower. Blocks always stack Questions → Possibilities →
  * Making from the ground up (a later, lower block slides in underneath), so
- * the tower is never floating and its bands read red · white · red. With all
- * three in, the lamp lights: a lighthouse — it helps people see their way.
+ * the tower is never floating and its bands read red · white · red. The lamp
+ * lights only after the last block has finished gliding into place.
  */
 const IDS = ["doubt", "possibilities", "making"];
-// One unhurried glide for every move: tile → tray, tray → tower, and back.
-const MOVE = { layout: { duration: 1.1, ease: [0.45, 0, 0.2, 1] } };
+// One shared, readable glide for every hop (tile → tray, tray → tower, back).
+const MOVE_MS = 1400;
+const MOVE = { layout: { duration: MOVE_MS / 1000, ease: [0.45, 0, 0.2, 1] } };
 const COPY = {
   en: {
     labels: ["Questions", "Possibilities", "Making"],
@@ -150,6 +151,7 @@ function Block({ id, label }) {
 /** The block as it sits in a trait tile's corner, waiting to be picked up. */
 export function BrickSource({ id, language, collected, onCollect }) {
   const reduceMotion = useReducedMotion();
+  const [moving, setMoving] = useState(false);
   const copy = COPY[language] ?? COPY.en;
   const index = IDS.indexOf(id);
   if (index < 0 || collected) return null;
@@ -158,10 +160,12 @@ export function BrickSource({ id, language, collected, onCollect }) {
   return (
     <motion.button
       type="button"
-      className="toy-block-source"
+      className={`toy-block-source${moving ? " is-moving" : ""}`}
       layoutId={reduceMotion ? undefined : `toy-block-${id}`}
       transition={MOVE}
       aria-label={`${copy.collect} · ${label}`}
+      onLayoutAnimationStart={() => setMoving(true)}
+      onLayoutAnimationComplete={() => setMoving(false)}
       onClick={(event) => {
         // Keyboard activation: the button unmounts, so park focus on the title.
         if (event.detail === 0) {
@@ -182,14 +186,22 @@ export function TraitBricks({ language, bricks, onPlace }) {
   const placedOrder = IDS.filter((id) => bricks[id] === "placed");
   const collectedCount = IDS.filter((id) => bricks[id]).length;
   const complete = placedOrder.length === IDS.length;
+  // Lamp waits until the last block finishes arriving — not the click.
+  const [lit, setLit] = useState(false);
+  const [movingId, setMovingId] = useState(null);
+
+  useEffect(() => {
+    if (!complete) setLit(false);
+    else if (reduceMotion) setLit(true);
+  }, [complete, reduceMotion]);
 
   let hint = copy.hintEmpty;
-  if (complete) hint = copy.complete;
+  if (complete && lit) hint = copy.complete;
   else if (collectedCount === IDS.length) hint = copy.hintBuild;
 
   return (
     <section
-      className={`bento-tile about-bricks${complete ? " is-complete" : ""}`}
+      className={`bento-tile about-bricks${lit ? " is-complete" : ""}`}
       aria-labelledby="about-bricks-title"
     >
       <div className="about-bricks__copy">
@@ -199,7 +211,7 @@ export function TraitBricks({ language, bricks, onPlace }) {
         </h2>
         <p
           key={hint}
-          className={`about-bricks__hint${complete ? " is-answer" : ""}`}
+          className={`about-bricks__hint${lit ? " is-answer" : ""}`}
           aria-live="polite"
         >
           {hint}
@@ -235,10 +247,17 @@ export function TraitBricks({ language, bricks, onPlace }) {
               type="button"
               layout={reduceMotion ? false : "position"}
               layoutId={reduceMotion ? undefined : `toy-block-${id}`}
-              className={`toy-block-wrap${placed ? " is-placed" : " is-loose"}`}
+              className={`toy-block-wrap${placed ? " is-placed" : " is-loose"}${
+                movingId === id ? " is-moving" : ""
+              }`}
               style={{ "--tray": index, "--level": placed ? level : 0 }}
               transition={MOVE}
               aria-label={`${placed ? copy.lift : copy.place} · ${label}`}
+              onLayoutAnimationStart={() => setMovingId(id)}
+              onLayoutAnimationComplete={() => {
+                setMovingId((current) => (current === id ? null : current));
+                if (placedOrder.length === IDS.length && placed) setLit(true);
+              }}
               onClick={() => onPlace(id)}
             >
               <Block id={id} label={label} />

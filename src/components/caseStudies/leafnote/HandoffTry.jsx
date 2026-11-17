@@ -72,15 +72,21 @@ export default function HandoffTry() {
   const [roleId, setRoleId] = useState("owner");
   const [nonce, setNonce] = useState(0);
   const phoneRef = useRef(null);
-  const [scale, setScale] = useState(320 / PHONE_W);
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
     const el = phoneRef.current;
-    if (!el || typeof ResizeObserver === "undefined") return undefined;
-    const ro = new ResizeObserver(([entry]) => {
-      const width = entry.contentRect.width;
+    if (!el) return undefined;
+    const update = () => {
+      const width = el.getBoundingClientRect().width;
       if (width > 0) setScale(width / PHONE_W);
-    });
+    };
+    update();
+    if (typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", update);
+      return () => window.removeEventListener("resize", update);
+    }
+    const ro = new ResizeObserver(update);
     ro.observe(el);
     return () => ro.disconnect();
   }, []);

@@ -1861,13 +1861,14 @@
   opacity: 1;
 }
 
-.selected-rail__card-btn:hover .selected-rail__still,
-.selected-rail__card-btn:focus-visible .selected-rail__still,
-.selected-rail__card-btn:hover .selected-rail__video,
-.selected-rail__card-btn:focus-visible .selected-rail__video,
-.selected-rail__media.is-playing .selected-rail__still,
-.selected-rail__media.is-playing .selected-rail__video {
-  transform: scale(var(--media-zoom-hover, 1.12));
+/* Hover zoom only when a real pointer can hover — not on sticky phone taps. */
+@media (hover: hover) and (pointer: fine) {
+  .selected-rail__card-btn:hover .selected-rail__still,
+  .selected-rail__card-btn:hover .selected-rail__video,
+  .selected-rail__media.is-playing .selected-rail__still,
+  .selected-rail__media.is-playing .selected-rail__video {
+    transform: scale(var(--media-zoom-hover, 1.12));
+  }
 }
 
 .selected-rail__shade {
