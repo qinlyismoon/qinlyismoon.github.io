@@ -20,7 +20,11 @@ export const HOME_BENTO_COPY = {
     ],
     aboutBody: [
       [
-        { t: "I come from an engineering background. Currently an MFA student in Design at " },
+        { t: "I come from an " },
+        { t: "engineering background", strong: true },
+        { t: ". Currently an MFA student in " },
+        { t: "Design", strong: true },
+        { t: " at " },
         {
           t: "The Ohio State University",
           href: "https://design.osu.edu/",
@@ -35,10 +39,8 @@ export const HOME_BENTO_COPY = {
         { t: "." },
       ],
       [
-        { t: "Before that I worked in " },
-        { t: "HCI research", strong: true },
         {
-          t: " and other product internships. I also teach as a Graduate Teaching Associate — listening, taking another person’s standpoint, and figuring out how to explain.",
+          t: "Before that I worked in HCI research and other product internships. I also teach as a Graduate Teaching Associate — listening, taking another person’s standpoint, and figuring out how to explain.",
         },
       ],
       "I’m also drawn to where physical and digital meet — XR interaction, and research along that edge. Spatial complexity opens a lot of interesting ground: how bodies, places, and screens talk to each other.",
@@ -143,10 +145,13 @@ export const HOME_BENTO_COPY = {
     ],
     aboutBody: [
       [
-        { t: "我是工程背景。目前在" },
+        { t: "我是" },
+        { t: "工程背景", strong: true },
+        { t: "。目前在俄亥俄州立大学" },
         {
-          t: "俄亥俄州立大学设计系",
+          t: "设计系",
           href: "https://design.osu.edu/",
+          strong: true,
         },
         { t: "读 MFA。" },
         {
@@ -158,10 +163,8 @@ export const HOME_BENTO_COPY = {
         { t: " 做产品设计实习。" },
       ],
       [
-        { t: "以前做过 " },
-        { t: "HCI 研究", strong: true },
         {
-          t: "和产品实习，现在也当研究生助教——学会听、换位想，也学会怎么讲清楚。",
+          t: "以前做过 HCI 研究和产品实习，现在也当研究生助教——学会听、换位想，也学会怎么讲清楚。",
         },
       ],
       "我也对物理与数字交界的交互感兴趣，做过一些 XR 交互和研究。空间一复杂，就多出很多有趣的地带——身体、场所和屏幕怎样互相说话。",

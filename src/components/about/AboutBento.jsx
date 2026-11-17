@@ -2,6 +2,7 @@ import { Fragment, useState } from "react";
 import { LayoutGroup } from "framer-motion";
 import { MakingLoop, PhotoStack } from "./AboutInteractions";
 import { BrickSource, TraitBricks } from "./TraitBricks";
+import VolunteerGarden from "./VolunteerGarden";
 
 /**
  * About as a bento board — same grammar as Home: a page header, then flat
@@ -221,6 +222,7 @@ export default function AboutBento({ copy, language, experience }) {
               )}
             </Fragment>
           ))}
+          <VolunteerGarden language={language} />
           {experience.items.length ? <ExperienceStack {...experience} /> : null}
         </div>
       </LayoutGroup>

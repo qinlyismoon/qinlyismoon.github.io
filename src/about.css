@@ -850,7 +850,13 @@ a.about-experience__org {
    bottom-right corner, in the open space under the loop. */
 .about-tile--making .toy-block-source {
   top: auto;
-  bottom: 1.3rem;
+  bottom: 1.15rem;
+}
+
+/* Its own band under the loop, at every width and in both languages, so the
+   block never touches the last pill. Fixed, so picking it up doesn't jump. */
+.bento-tile.about-tile--making {
+  padding-bottom: calc(var(--block-h) + 2.6rem);
 }
 
 .toy-block-source:hover .toy-block,
@@ -880,6 +886,21 @@ a.about-experience__org {
   position: relative;
   z-index: 30;
   overflow: visible;
+}
+
+/* Same hover as every other About tile: 1px edge, soft lift, lighter panel. */
+.bento-tile.about-bricks {
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease;
+}
+
+.bento-tile.about-bricks:hover,
+.bento-tile.about-bricks:focus-within {
+  border-color: color-mix(in srgb, var(--color-text) 10%, transparent);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  background: color-mix(in srgb, var(--color-surface) 88%, #fff);
 }
 
 .about-bricks__copy {
@@ -1048,11 +1069,6 @@ a.about-experience__org {
     min-height: 3lh;
   }
 
-  /* Making stacks text over the loop here; give its block a row of its
-     own underneath while it is still in the tile. */
-  .about-tile--making {
-    padding-bottom: 4.4rem;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1066,5 +1082,183 @@ a.about-experience__org {
   .about-bricks__hint,
   .about-bricks.is-complete .toy-lamp__glass {
     animation: none;
+  }
+}
+
+/* --- Volunteering: same about-tile / bento grammar as the trait tiles -----
+ * Kicker → title → body; sill sits in the split like Making’s loop.
+ * ------------------------------------------------------------------------- */
+.about-tile--garden {
+  grid-column: 1 / -1;
+}
+
+.garden__split {
+  align-items: end;
+  gap: 1.25rem 2.5rem;
+}
+
+.garden__split .garden__sill {
+  justify-self: end;
+  align-self: end;
+}
+
+/* Two short lines at most — reserved so the tile never changes height. */
+.garden__note {
+  min-height: 2.9rem;
+}
+
+.garden__card p {
+  margin: 0;
+}
+
+.garden__card {
+  display: grid;
+  gap: 0.15rem;
+  animation: about-pop 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Same voice as the experience strips: org, then quiet details. */
+.garden__org {
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.garden__org span {
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
+.garden__when {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+
+/* The sill: pots and the pin on one faint line. */
+.garden__sill {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 1.15rem;
+  margin: 0;
+  padding: 0 0.5rem 0.2rem;
+  list-style: none;
+}
+
+.garden__sill::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+
+.garden-plant,
+.garden-pin {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 260ms ease;
+}
+
+.garden-plant {
+  width: 4.4rem;
+}
+
+.garden-plant__art {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.garden-plant__leaves {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.garden-plant:hover .garden-plant__art,
+.garden-plant:focus-visible .garden-plant__art,
+.garden-plant.is-active .garden-plant__art {
+  transform: translateY(-0.25rem);
+}
+
+.garden-plant:hover .garden-plant__leaves,
+.garden-plant:focus-visible .garden-plant__leaves,
+.garden-plant.is-active .garden-plant__leaves {
+  animation: garden-sway 1.8s ease-in-out infinite;
+}
+
+@keyframes garden-sway {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-3deg); }
+  70% { transform: rotate(2.5deg); }
+}
+
+/* The pin rests at the end of the sill, a little tilted, like a keepsake. */
+.garden__pin-slot {
+  align-self: flex-end;
+  padding-bottom: 0.35rem;
+}
+
+.garden-pin {
+  width: 3rem;
+  transform: rotate(-10deg);
+  transition:
+    transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 260ms ease;
+}
+
+.garden-pin svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.garden-pin:hover,
+.garden-pin:focus-visible,
+.garden-pin.is-active {
+  transform: rotate(0deg) translateY(-0.25rem);
+}
+
+/* One item in focus; the rest step back a little. */
+.garden__sill:has(.is-active) :is(.garden-plant, .garden-pin):not(.is-active) {
+  opacity: 0.5;
+}
+
+.garden-plant:focus-visible,
+.garden-pin:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+  border-radius: 0.5rem;
+}
+
+@media (max-width: 720px) {
+  .garden__split .garden__sill {
+    justify-self: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .garden-plant__art,
+  .garden-pin {
+    transition: none;
+  }
+
+  .garden-plant .garden-plant__leaves,
+  .garden__card {
+    animation: none !important;
   }
 }

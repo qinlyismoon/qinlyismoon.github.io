@@ -21,7 +21,7 @@ const COPY = {
     collect: "Pick up",
     place: "Place",
     lift: "Lift",
-    hintEmpty: "Pick up the three blocks on this page — one sits in each tile’s corner.",
+    hintEmpty: "Find the three blocks on this page and pick them up.",
     hintBuild: "Now stack them.",
     complete:
       "I design interactive systems that help people understand complexity and act with confidence.",
@@ -33,7 +33,7 @@ const COPY = {
     collect: "拿起",
     place: "放上",
     lift: "取下",
-    hintEmpty: "页面上有三块积木，分别在三个板块的右上角，把它们拿起来。",
+    hintEmpty: "在页面上找到三块积木，把它们拿起来。",
     hintBuild: "把它们搭起来。",
     complete: "我设计交互系统，帮助人们理解复杂事物，并更有信心地采取行动。",
   },
