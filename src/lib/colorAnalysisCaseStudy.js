@@ -54,7 +54,7 @@ export const COLOR_ANALYSIS_DETAIL_CHAPTERS = [
     labelZh: "设计与决策",
     sections: ["ai-role", "flow", "guidance", "details", "drapes", "drape-final", "report"],
   },
-  { id: "process", label: "Process", labelZh: "过程", sections: ["role", "reflection", "next"] },
+  { id: "process", label: "Role & reflection", labelZh: "角色与反思", sections: ["role", "reflection", "next"] },
 ];
 
 export const COLOR_ANALYSIS_DETAIL_SECTIONS = [
@@ -81,12 +81,12 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS = [
     listOrdered: true,
     paragraphs: [
       "Many color analysis apps take one selfie and return a season directly. I decided against that for two reasons. Accuracy: lighting, white balance, camera processing, and makeup all shift how the model reads temperature or clarity — a direct answer hides that uncertainty. Trust: a season with no visible path to it is hard to believe or dress by.",
-      "So the split is: AI does what it can do reliably and that saves effort; the user keeps the judgments that need to be seen to be believed. I mapped this in FigJam before building:",
+      "So the split is: AI does what it can do reliably and that saves effort; the user keeps the judgments that need to be seen to be believed. Before building, I sketched that first idea of the framework in FigJam — an early map of the division of labor, not the final flow:",
     ],
     image: {
       src: "/work/color-analysis/framework.jpg",
-      alt: "FigJam board: Color Analysis Feature Logic, with AI steps on top (quality check, pre-filled details, nominated color type, test groups), user input below (guided photo, confirm or revise details, drape comparisons), and the season type as output",
-      caption: "My framework in FigJam: what AI does (top), what the user does (bottom), and how they meet in one season type.",
+      alt: "FigJam board of the initial Color Analysis Feature Logic idea, with AI steps on top (quality check, pre-filled details, nominated color type, test groups), user input below (guided photo, confirm or revise details, drape comparisons), and the season type as output",
+      caption: "Initial framework idea in FigJam: what AI does (top), what the user does (bottom), merging into a season type — the starting sketch, not the shipped flow.",
     },
     list: [
       "Check the photo: AI checks quality first, so a bad photo never reaches the analysis.",
@@ -259,12 +259,12 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS_ZH = [
     listOrdered: true,
     paragraphs: [
       "很多色彩测试应用是一张自拍直接出季型。我没有采用这种方式，原因有两个。一是准确性：光线、白平衡、相机处理和妆容都会让模型对冷暖、清浊的判断偏移，直接给答案会把不确定藏起来。二是信任：只拿到一个季型、看不到路径，很难相信它、按它去穿。",
-      "所以分工是：AI 做它能可靠完成、又能省力的部分；需要被看见才能被相信的判断，交给用户。动手前先在 FigJam 里把这个分工画了出来：",
+      "所以分工是：AI 做它能可靠完成、又能省力的部分；需要被看见才能被相信的判断，交给用户。动手前，我先在 FigJam 里画了这个最初的框架想法——是分工的早期草图，不是最终流程：",
     ],
     image: {
       src: "/work/color-analysis/framework.jpg",
-      alt: "FigJam 白板：Color Analysis Feature Logic。上方是 AI 的步骤（质量检测、预填个人信息、推测季型、测试分组），下方是用户的操作（引导拍照、确认或修改信息、色布对比），右侧输出季型",
-      caption: "我在 FigJam 里画的框架：上方是 AI 做的事，下方是用户做的事，最后汇合成一个季型。",
+      alt: "FigJam 白板：Color Analysis 最初的 Feature Logic 想法。上方是 AI 的步骤（质量检测、预填个人信息、推测季型、测试分组），下方是用户的操作（引导拍照、确认或修改信息、色布对比），右侧输出季型",
+      caption: "最初的框架想法（FigJam）：上方是 AI 做的事，下方是用户做的事，汇合成一个季型——起步草图，不是最终上线流程。",
     },
     list: [
       "检查照片：AI 先检测照片质量，不合格的照片不会进入分析。",

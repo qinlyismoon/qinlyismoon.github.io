@@ -272,7 +272,7 @@ export const VIBE_PROJECTS = [
     detailSections: [
       {
         id: "background",
-        label: "Background",
+        label: "Memories of Onomichi",
         paragraphs: [
           "In 2023, I visited Onomichi during my graduation trip. What stayed with me was a collection of small moments: walking along hillside temple paths, looking down toward the sea and town, hearing wind chimes, and encountering cats resting and wandering around the temples.",
           "Years later, I returned to these memories as the starting point for this project. Instead of reproducing the landscape realistically, I began asking:",
@@ -288,7 +288,7 @@ export const VIBE_PROJECTS = [
       },
       {
         id: "starting",
-        label: "Starting with vibe coding",
+        label: "The first prompt",
         paragraphs: [
           "At the beginning, I described the visual language, physical behavior, sound, and interaction rules directly to an AI coding agent. The first prompt defined how the wall should behave, not just how it should look.",
         ],
@@ -333,7 +333,7 @@ export const VIBE_PROJECTS = [
       },
       {
         id: "iteration",
-        label: "Designing through iteration",
+        label: "Four fixes",
         paragraphs: [
           "AI got me a working wall quickly. What it didn’t give me was judgment about what felt wrong once I could click around — so I treated the first build as something to push against, not ship.",
           "I named what bothered me, set a rule, then asked AI to implement that rule and tried it again. The four passes below are the ones that changed the wall most.",
@@ -375,7 +375,7 @@ export const VIBE_PROJECTS = [
       },
       {
         id: "systems",
-        label: "Rethinking the systems",
+        label: "Time and wishes",
         paragraphs: [],
         items: [
           {
@@ -406,7 +406,7 @@ export const VIBE_PROJECTS = [
       },
       {
         id: "building",
-        label: "Building the system",
+        label: "Separating systems",
         paragraphs: [
           "As the experience became more complex, I separated its major behaviors instead of letting them remain tightly coupled inside the initial prototype. The wind interaction, environmental time, and wish data now operate as separate systems. This makes it easier to improve one layer without rewriting the others.",
           "For the wish system, a repository layer also separates the interface from storage, preparing the prototype for a future multi-user backend.",
@@ -422,7 +422,7 @@ export const VIBE_PROJECTS = [
     detailSectionsZh: [
       {
         id: "background",
-        label: "背景",
+        label: "尾道的记忆",
         paragraphs: [
           "2023 年毕业旅行时我去了尾道。留在记忆里的是一些细小的瞬间：沿着山腰的寺庙小径散步，俯瞰大海和小镇，听见风铃声，遇见在寺庙里打盹、闲逛的猫。",
           "几年后，我回到这些记忆，把它们当作这个项目的起点。比起真实地复刻那片风景，我更想先问一个问题：",
@@ -436,7 +436,7 @@ export const VIBE_PROJECTS = [
       },
       {
         id: "starting",
-        label: "从 Vibe Coding 开始",
+        label: "最初的提示词",
         paragraphs: [
           "一开始，我直接向 AI 编程助手描述视觉语言、物理行为、声音和交互规则。第一条提示词定义的，是这面墙应该怎样运作，长什么样只是其中一部分。",
         ],
@@ -481,7 +481,7 @@ export const VIBE_PROJECTS = [
       },
       {
         id: "iteration",
-        label: "在迭代中设计",
+        label: "四次修改",
         paragraphs: [
           "AI 很快搭出一面能点的墙。它给不了的是：点开之后哪里别扭——所以我把第一版当成拿来顶的东西，而不是拿来上线的东西。",
           "先说出哪里不对、定一条规则，再让 AI 按规则改，自己再试。下面四次，是对墙面改动最大的几步。",
@@ -523,7 +523,7 @@ export const VIBE_PROJECTS = [
       },
       {
         id: "systems",
-        label: "重新思考系统",
+        label: "时间与愿望",
         paragraphs: [],
         items: [
           {
@@ -554,7 +554,7 @@ export const VIBE_PROJECTS = [
       },
       {
         id: "building",
-        label: "把系统搭起来",
+        label: "拆分系统",
         paragraphs: [
           "随着体验变复杂，我把几个主要行为拆开，没有让它们继续缠在最初那个紧耦合的原型里。风的交互、环境时间和愿望数据现在是三套分开的系统，改一层时，别的层不用重写。",
           "愿望系统里还有一个仓库层（repository），把界面和存储分开，为将来接多用户后端做准备。",
@@ -708,12 +708,12 @@ export const SELECTED_PROJECTS = [
     id: "money-map",
     title: "Money Map",
     subtitle: "Savings Goals · Product Design",
-    tagline: "A savings-goal app that tells you what to save this month, and where your money goes when plans change.",
-    taglineZh: "一个储蓄目标 App：告诉你这个月该存多少，计划变了钱去了哪。",
+    tagline: "A savings-goal app that keeps track of your money, even when plans change.",
+    taglineZh: "一个储蓄目标 App：计划怎么变，你都知道钱在哪。",
     description:
-      "A savings-goal redesign that shows what each goal requires, where you stand this month, and how a change ripples through the plan, so people can act without doing the math themselves.",
+      "A savings-goal redesign focused on what happens when plans change: every withdrawal, pause, lower target or ended goal, and where the money goes in each case.",
     descriptionZh:
-      "一个储蓄目标的改版：让人看清每个目标需要什么、这个月进展到哪里，以及改一处会怎样影响整个计划——不必自己算，也能做出决定。",
+      "一个储蓄目标的改版，重点在计划变了之后：取钱、暂停、调低目标、结束目标，每种情况下钱都去了哪。",
     tags: ["Product Design", "Usability Testing"],
     // Soft gray wash from the cover so hero and boards share one ground.
     panelBackground: "#eef0f2",

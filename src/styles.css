@@ -9135,21 +9135,57 @@ body[data-project-detail="open"] .app-content-layer {
   min-width: 0;
 }
 
-.flow-media-rail__fade {
-  position: absolute;
-  top: var(--flow-rail-pad);
-  right: 0;
-  bottom: var(--flow-rail-pad-bottom);
-  /* Quiet scroll cue — short and soft so it doesn’t paint over the frame. */
-  width: 1.35rem;
-  pointer-events: none;
-  border-radius: 0 0.85rem 0.85rem 0;
-  background: linear-gradient(
+/* Edge fade — the frames fade out on the side that still has more, as a
+   mask on the content (no painted overlay), full height of the rail. The
+   lengths are registered so each side eases in and out as you scroll. */
+@property --flow-fade-start {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --flow-fade-end {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+.flow-media-rail {
+  --flow-fade: 3.25rem;
+  transition:
+    --flow-fade-start 260ms ease,
+    --flow-fade-end 260ms ease;
+}
+
+.flow-media-rail.has-more-start {
+  --flow-fade-start: var(--flow-fade);
+}
+
+.flow-media-rail.has-more-end {
+  --flow-fade-end: var(--flow-fade);
+}
+
+.flow-media-rail:not(.flow-media-rail--fit) .flow-media-rail__scroller {
+  -webkit-mask-image: linear-gradient(
     90deg,
-    transparent 0%,
-    color-mix(in srgb, var(--flow-rail-fill) 55%, transparent) 55%,
-    var(--flow-rail-fill) 100%
+    transparent 0,
+    #000 var(--flow-fade-start),
+    #000 calc(100% - var(--flow-fade-end)),
+    transparent 100%
   );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 var(--flow-fade-start),
+    #000 calc(100% - var(--flow-fade-end)),
+    transparent 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-media-rail {
+    transition: none;
+  }
 }
 
 .case-study__screen img {
@@ -11413,4 +11449,286 @@ body:not([data-page="home"]) .editorial-thread {
 /* Lead under an h3/h4 heading: sit as close as it does under a section dt. */
 .vibe-detail__main :is(h3, h4) + .vibe-detail__lead.vibe-detail__lead {
   margin-top: calc(var(--space-2) * -0.5);
+}
+
+/* Money Map — status colours shared by the new visuals */
+.vibe-detail__main .mm-places,
+.vibe-detail__main .mm-thresholds,
+.vibe-detail__main .mm-daily {
+  --mm-on: #3f7a4a;
+  --mm-behind: #b3a01c;
+  --mm-risk: #c2493d;
+  padding: var(--space-4);
+}
+
+/* Five places money can be */
+.vibe-detail__main .mm-places__bracket {
+  position: relative;
+  margin: 0 calc(20% + 0.2rem) 0.75rem calc(20% + 0.2rem);
+  padding-bottom: 0.55rem;
+  border-bottom: 2px solid var(--mm-olive);
+  text-align: center;
+}
+
+.vibe-detail__main .mm-places__bracket::before,
+.vibe-detail__main .mm-places__bracket::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  width: 2px;
+  height: 0.6rem;
+  background: var(--mm-olive);
+}
+
+.vibe-detail__main .mm-places__bracket::before { left: 0; }
+.vibe-detail__main .mm-places__bracket::after { right: 0; }
+
+.vibe-detail__main .mm-places__bracket span {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .mm-places__row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vibe-detail__main .mm-places__card {
+  position: relative;
+  padding: 0.9rem 0.8rem;
+  border-radius: 14px;
+  background: var(--color-background);
+}
+
+.vibe-detail__main .mm-places__card--goal,
+.vibe-detail__main .mm-places__card--paused,
+.vibe-detail__main .mm-places__card--free {
+  background: color-mix(in srgb, var(--mm-lime) 28%, var(--color-background));
+}
+
+.vibe-detail__main .mm-places__dot {
+  display: block;
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-bottom: 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text) 25%, transparent);
+}
+
+.vibe-detail__main .mm-places__card--goal .mm-places__dot,
+.vibe-detail__main .mm-places__card--paused .mm-places__dot,
+.vibe-detail__main .mm-places__card--free .mm-places__dot {
+  background: var(--mm-olive);
+}
+
+.vibe-detail__main .mm-places__name {
+  margin: 0 0 0.3rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.vibe-detail__main .mm-places__desc {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .mm-places__arrow {
+  position: absolute;
+  top: 50%;
+  right: -0.55rem;
+  z-index: 1;
+  transform: translate(50%, -50%);
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+/* Thresholds on one scale */
+.vibe-detail__main .mm-thresholds__bar {
+  display: grid;
+  grid-template-columns: 1fr 3fr 2fr;
+  gap: 3px;
+  height: 14px;
+  margin-top: var(--space-2);
+}
+
+.vibe-detail__main .mm-thresholds__seg { border-radius: 4px; }
+.vibe-detail__main .mm-thresholds__seg--on { background: color-mix(in srgb, var(--mm-on) 70%, transparent); }
+.vibe-detail__main .mm-thresholds__seg--behind { background: color-mix(in srgb, var(--mm-behind) 70%, transparent); }
+.vibe-detail__main .mm-thresholds__seg--risk { background: color-mix(in srgb, var(--mm-risk) 70%, transparent); }
+
+.vibe-detail__main .mm-thresholds__ticks {
+  position: relative;
+  height: 1.2rem;
+  margin-top: 0.3rem;
+}
+
+.vibe-detail__main .mm-thresholds__ticks span {
+  position: absolute;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  transform: translateX(-2px);
+}
+
+.vibe-detail__main .mm-thresholds__bands {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.6rem;
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vibe-detail__main .mm-thresholds__band {
+  padding: 0.85rem;
+  border-radius: 14px;
+  background: var(--color-background);
+}
+
+.vibe-detail__main .mm-thresholds__chip {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.vibe-detail__main .mm-thresholds__band--on .mm-thresholds__chip { background: color-mix(in srgb, var(--mm-on) 14%, transparent); color: var(--mm-on); }
+.vibe-detail__main .mm-thresholds__band--behind .mm-thresholds__chip { background: color-mix(in srgb, var(--mm-behind) 18%, transparent); color: #6f6200; }
+.vibe-detail__main .mm-thresholds__band--risk .mm-thresholds__chip { background: color-mix(in srgb, var(--mm-risk) 14%, transparent); color: var(--mm-risk); }
+
+.vibe-detail__main .mm-thresholds__range {
+  font-family: var(--font-ui);
+  margin: 0.5rem 0 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.vibe-detail__main .mm-thresholds__note {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+}
+
+/* Daily vs monthly, one month */
+.vibe-detail__main .mm-daily__payday {
+  position: relative;
+  height: 1.3rem;
+  margin: var(--space-2) 0 0.2rem 9.5rem;
+}
+
+.vibe-detail__main .mm-daily__payday span {
+  position: absolute;
+  bottom: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.vibe-detail__main .mm-daily__row {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  column-gap: 0.5rem;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.vibe-detail__main .mm-daily__label {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.vibe-detail__main .mm-daily__cells {
+  display: grid;
+  grid-template-columns: repeat(30, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.vibe-detail__main .mm-daily__cell {
+  display: inline-block;
+  height: 22px;
+  border-radius: 3px;
+}
+
+.vibe-detail__main .mm-daily__cell--on { background: color-mix(in srgb, var(--mm-on) 55%, transparent); }
+.vibe-detail__main .mm-daily__cell--behind { background: color-mix(in srgb, var(--mm-behind) 60%, transparent); }
+
+.vibe-detail__main .mm-daily__note {
+  grid-column: 2;
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .mm-daily__legend {
+  display: flex;
+  gap: var(--space-3);
+  margin-left: 9.5rem;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .mm-daily__legend i {
+  width: 12px;
+  height: 12px;
+  margin-right: 0.3rem;
+  vertical-align: -1px;
+}
+
+@media (max-width: 760px) {
+  .vibe-detail__main .mm-places__row,
+  .vibe-detail__main .mm-thresholds__bands {
+    grid-template-columns: 1fr;
+  }
+  .vibe-detail__main .mm-places__bracket { display: none; }
+  .vibe-detail__main .mm-places__arrow { display: none; }
+  .vibe-detail__main .mm-daily__row { grid-template-columns: 1fr; }
+  .vibe-detail__main .mm-daily__note,
+  .vibe-detail__main .mm-daily__legend,
+  .vibe-detail__main .mm-daily__payday { grid-column: 1; margin-left: 0; }
+}
+
+/* Rule screenshots: same grey box as the other screen groups, phones kept small */
+.vibe-detail[data-project="money-map"] .case-study__figure:has(img[src*="/money-map/rules/"]) {
+  margin: var(--space-3) 0 0;
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  border-radius: 20px;
+  background: var(--color-surface);
+}
+
+.vibe-detail[data-project="money-map"] .case-study__figure img[src*="/money-map/rules/"] {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 420px;
+  margin: 0 auto;
+  border-radius: 0;
+  box-shadow: none;
+  background: none;
+}
+
+.vibe-detail[data-project="money-map"] .case-study__figure:has(img[src*="/money-map/rules/"]) figcaption {
+  margin-top: var(--space-3);
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+/* Money Map: a short row of screens sits centred in its box
+   (`safe` keeps the first card reachable if the row ever overflows). */
+.vibe-detail[data-project="money-map"] .flow-media-rail--screens .flow-media-rail__track {
+  justify-content: safe center;
 }

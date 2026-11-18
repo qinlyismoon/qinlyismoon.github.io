@@ -182,7 +182,7 @@ export const LEAF_NOTE_DETAIL_CHAPTERS = [
 export const LEAF_NOTE_DETAIL_SECTIONS = [
   {
     id: "started",
-    label: "How it started",
+    label: "Leaving plants behind",
     paragraphs: [
       "Leaf Note started with my own plants. I like having them at home, but I’m not good at caring for them. I just want to keep them alive without having to study plant care.",
       "As an international student, I’m often away from home for a while, so my plants end up with someone else. The watering notes, what I last did, and the judgment calls I usually keep in my head are hard to hand over.",
@@ -190,7 +190,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
   },
   {
     id: "problem",
-    label: "Initial problem",
+    label: "Remembering care",
     paragraphs: [
       "I had several types of houseplants, each with different watering needs. Remembering when and how much to water each one was difficult for me — and even harder to communicate when someone else took over.",
       "My first question was simpler: how do I remember different watering needs — and explain them when someone else takes over?",
@@ -239,7 +239,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
   },
   {
     id: "research",
-    label: "Broadening the perspective",
+    label: "Interviews",
     paragraphs: [
       "Looking at my own routine only got me so far. Before designing, I wanted to hear from people who had owned several plants, handed care off, or been the temporary caregiver.",
       "I wrote down four starting bets, then talked with two people for about fifteen to twenty minutes each, about their most recent experience.",
@@ -269,7 +269,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
   },
   {
     id: "assumptions",
-    label: "Revisiting assumptions",
+    label: "Bets vs. findings",
     paragraphs: [
       "What came through: people decide from cues they can see. Instructions only help if they say what to do next. How much support you need depends on how messy the handoff is. And a normal watering and a plant that looks wrong call for different kinds of messages.",
       "The table below is how each starting bet shifted — including one pattern I hadn’t put on the list.",
@@ -284,7 +284,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
   },
   {
     id: "reframed",
-    label: "Reframed problem",
+    label: "The real problem",
     paragraphs: [
       "Handing off plant care can move the watering without moving the know-how — or the sense of who’s responsible.",
       "A temporary caregiver can usually water on a normal day. They still need clear cues for when to act, how to do it, and when something looks wrong enough to flag. More plants, more variety: memory and casual notes stop being enough, and the owner stays in the loop from afar.",
@@ -376,7 +376,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
   },
   {
     id: "evaluate",
-    label: "How I would evaluate",
+    label: "What I’d test",
     paragraphs: [
       "I’d go back to the reframed How Might We and ask whether the prototype actually answers it.",
     ],
@@ -387,7 +387,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
 export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
   {
     id: "started",
-    label: "它怎么开始的",
+    label: "离家时的植物",
     paragraphs: [
       "Leaf Note 是从我自己养的植物开始的。我喜欢在家里养植物，但并不擅长，只想把它们养活，不想专门去研究养护。",
       "作为留学生，我经常要离开家一段时间，植物只能托给别人照看。平时我凭记性和手感浇水，真要交给别人时，怎么浇、上次什么时候浇的、什么时候该浇，都很难说清楚。",
@@ -395,7 +395,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
   },
   {
     id: "problem",
-    label: "最初的问题",
+    label: "记住怎么照料",
     paragraphs: [
       "家里有好几类植物，浇水需求各不相同。记住每株该何时浇、浇多少，对我已经不容易——交接给别人时更难说清楚。",
       "一开始问得更简单：不同植物的浇水，我怎么记得住——交给别人时又怎么说清楚？",
@@ -443,7 +443,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
   },
   {
     id: "research",
-    label: "把视角拉开",
+    label: "访谈",
     paragraphs: [
       "光看自己的习惯不够。动手之前，我想听听养过好几株植物、交接过、或者当过临时照料者的人怎么说。",
       "我先写下四条起点判断，再和两个人各聊十几二十分钟，聊的都是他们最近一次的具体经历。",
@@ -473,7 +473,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
   },
   {
     id: "assumptions",
-    label: "回看假设",
+    label: "假设与发现",
     paragraphs: [
       "听下来大致是：大家靠看得见的线索做决定；说明得说清下一步才有用；交接越乱，需要的支持越多；日常浇水和「看起来不对」需要不同的消息。",
       "下表是每条起点判断怎么动的——包括一条我一开始没写进清单的。",
@@ -488,7 +488,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
   },
   {
     id: "reframed",
-    label: "重新框定的问题",
+    label: "真正的问题",
     paragraphs: [
       "交接植物照料，可以把浇水这件事交出去，却未必把「怎么判断」和「谁负责」也交出去。",
       "临时照料者平常日子大多浇得动。他们仍需要清楚的线索：什么时候动手、怎么做、什么时候该说一声不对劲。植物越多、种类越杂，记性和随口叮嘱就越不够用，主人还得在远处跟着操心。",
@@ -580,7 +580,7 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
   },
   {
     id: "evaluate",
-    label: "我会如何评估",
+    label: "要验证什么",
     paragraphs: [
       "我会回到重新框定的 How Might We，看这个原型有没有真正答上。",
     ],

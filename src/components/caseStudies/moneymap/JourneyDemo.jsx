@@ -7,7 +7,7 @@ const STEPS = {
       label: "Set a goal",
       screen: "Create goal",
       happens: "A target and a date become one monthly amount, shown before saving.",
-      decision: "Decision 1 — the same monthly amount on every screen.",
+      decision: "Baseline — the same monthly amount on every screen.",
     },
     {
       id: "month",
@@ -28,14 +28,14 @@ const STEPS = {
       label: "Check status",
       screen: "Goal detail",
       happens: "On Track, Behind or At Risk — judged when a month ends, not every day.",
-      decision: "Decision 2 — progress is checked by the month.",
+      decision: "Baseline — progress is checked by the month.",
     },
     {
       id: "change",
       label: "Life changes",
       screen: "Money sheet · Withdraw",
       happens: "Taking money out shows what’s left and the status change, then asks how to catch up: save more, or move the date.",
-      decision: "Decision 3 — you always know where your money is.",
+      decision: "Plans change — you always know where the money goes.",
     },
     {
       id: "done",
@@ -51,7 +51,7 @@ const STEPS = {
       label: "设定目标",
       screen: "创建目标",
       happens: "目标金额和日期在保存前就变成一个每月金额。",
-      decision: "决定 1 —— 每个页面的每月金额都一样。",
+      decision: "基准 —— 每个页面的每月金额都一样。",
     },
     {
       id: "month",
@@ -72,14 +72,14 @@ const STEPS = {
       label: "看状态",
       screen: "目标详情",
       happens: "On Track / Behind / At Risk —— 每月结束时判断，而不是每天。",
-      decision: "决定 2 —— 按月看进度。",
+      decision: "基准 —— 按月看进度。",
     },
     {
       id: "change",
       label: "计划变了",
       screen: "存取面板 · 取出",
       happens: "取钱时先显示还剩多少、状态怎么变，再问怎么补：每月多存，还是推迟日期。",
-      decision: "决定 3 —— 随时知道钱在哪。",
+      decision: "计划变了 —— 你总知道钱去了哪。",
     },
     {
       id: "done",

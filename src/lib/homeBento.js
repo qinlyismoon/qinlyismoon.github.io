@@ -4,7 +4,9 @@
 
 export const HOME_BENTO_COPY = {
   en: {
-    roleLine: "Product designer · Design engineer",
+    // What I do, not a job title — reads across design, PM and
+    // creative-technologist roles.
+    roleLine: "From complex problems to products people can try",
     rotatingLines: [
       { id: "try", label: "Up for trying" },
       { id: "curious", label: "Curious" },
@@ -129,7 +131,7 @@ export const HOME_BENTO_COPY = {
     lowShort: "L",
   },
   zh: {
-    roleLine: "产品设计师 · 设计工程师",
+    roleLine: "从复杂的问题，到别人能上手的产品",
     rotatingLines: [
       { id: "try", label: "爱试新东西" },
       { id: "curious", label: "强好奇心" },

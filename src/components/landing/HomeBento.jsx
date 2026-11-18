@@ -68,6 +68,14 @@ export default function HomeBento() {
     <div className="home-bento">
       <header className="home-bento__masthead">
         <div className="home-bento__brand">
+          <img
+            className="home-bento__logo"
+            src="/name-logo-bold.png"
+            alt=""
+            aria-hidden="true"
+            width="1100"
+            height="900"
+          />
           <div className="home-bento__name-row">
             <h1 className="home-bento__name">
               {copy.name}
@@ -81,8 +89,11 @@ export default function HomeBento() {
           </div>
         </div>
 
+        {/* No role line: the About tile's first sentence is the positioning.
+            The masthead only identifies — name, then one row: a trait chip
+            leading the contact links. */}
+        <div className="home-bento__meta">
         <div className="home-bento__identity">
-          <p className="home-bento__role">{bento.roleLine}</p>
           <HomeRotatingLine lines={bento.rotatingLines} />
         </div>
 
@@ -98,6 +109,7 @@ export default function HomeBento() {
             LinkedIn <span className="external-arrow" aria-hidden="true">↗︎</span>
           </a>
         </nav>
+        </div>
       </header>
 
       <section className="bento-grid" aria-label="Home">

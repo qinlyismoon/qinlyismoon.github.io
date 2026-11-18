@@ -44,69 +44,61 @@ const PERSONA_TABLE_ZH = {
 };
 
 const EVAL_TABLE_EN = {
-  headers: ["Decision", "Task", "What I’d watch for"],
+  headers: ["Part of the design", "Task", "What I’d watch for"],
   rows: [
-    [
-      "1. Same monthly amount everywhere",
-      "Create a goal, then move its date.",
-      "Whether people predict the new monthly amount before they confirm it.",
-    ],
-    [
-      "2. Progress is checked by the month",
-      "Check a goal mid-month, before payday.",
-      "Whether people read On Track correctly, and trust it.",
-    ],
-    [
-      "3. You always know where your money is",
-      "Take money out of one goal, then end another.",
-      "Whether people can say where each amount went — and find Free to assign afterwards.",
-    ],
+    ["Where the money is", "Take money out of one goal, then end another.", "Whether people can say where each amount went, and find Free to assign afterwards."],
+    ["Pause, end and delete", "Stop saving for a goal for three months.", "Whether people choose Pause rather than End or Delete, and know their money is still there."],
+    ["One monthly amount", "Create a goal, then move its date.", "Whether people can guess the new monthly amount before they confirm it."],
+    ["Monthly progress", "Check a goal mid-month, before payday.", "Whether people read On Track correctly, and trust it."],
   ],
-  caption: "A moderated, task-based study with one task per decision.",
+  caption: "A moderated, task-based study. Most tasks are about changing a plan.",
 };
 
 const EVAL_TABLE_ZH = {
-  headers: ["决定", "任务", "我会观察什么"],
+  headers: ["设计部分", "任务", "我会观察什么"],
   rows: [
-    ["1. 每月金额处处一致", "创建一个目标，再改它的日期。", "确认前，用户能否预判新的每月金额。"],
-    ["2. 按月看进度", "在月中、发薪日之前查看一个目标。", "用户是否正确理解 On Track，并且相信它。"],
-    ["3. 随时知道钱在哪", "从一个目标取钱，再结束另一个目标。", "用户能否说出每笔钱去了哪，之后能否找到 Free to assign。"],
+    ["钱在哪里", "从一个目标取钱，再结束另一个目标。", "用户能否说出每笔钱去了哪，之后能否找到 Free to assign。"],
+    ["暂停、结束和删除", "先停三个月，不给某个目标存钱。", "用户会选「暂停」而不是「结束」或「删除」吗？知道钱还在吗？"],
+    ["统一的每月金额", "创建一个目标，再改它的日期。", "确认前，用户能否猜到新的每月金额。"],
+    ["按月看进度", "在月中、发薪日之前查看一个目标。", "用户是否正确理解 On Track，并且相信它。"],
   ],
-  caption: "有主持的任务式研究，每个决定对应一个任务。",
+  caption: "有主持的任务式测试，大部分任务都和改计划有关。",
 };
 
 export const MONEY_MAP_SUMMARY = [
-  "MoneyMap is a personal finance app. I redesigned its savings goals — setting a goal, saving each month, and changing plans along the way — and built the whole journey as a working prototype you can use on this page.",
+  "MoneyMap is a personal finance app. I redesigned its savings goals, with one focus: what happens when a plan changes. I listed every change someone can make to a goal, decided where the money goes in each case, and built it all into a working prototype you can use on this page.",
 ];
 
 export const MONEY_MAP_SUMMARY_ZH = [
-  "MoneyMap 是一款个人理财 App。我重新设计了它的储蓄目标功能——设定目标、每月存钱、中途改计划——并把整条旅程做成了可以操作的原型，就在这个页面里。",
+  "MoneyMap 是一款个人理财 App。我重新设计了它的储蓄目标功能，重点只有一个：计划变了之后会发生什么。我列出了用户对一个目标能做的每一种改动，决定了每种情况下钱该去哪，并把它们都做进了一个可以操作的原型，就在这个页面里。",
 ];
 
 export const MONEY_MAP_FACTS = [
-  { label: "Role", lines: ["Product Designer", "Strategy, UX, prototype"] },
-  { label: "Background", lines: ["Erdős Institute", "UXR Bootcamp, team project"] },
+  { label: "Role", lines: ["Solo product designer", "Worked with UX researchers"] },
+  { label: "Background", lines: ["Erdős Institute", "UXR Bootcamp"] },
   { label: "Deliverables", lines: ["Product strategy", "Interactive prototype", "Usability test plan"] },
   { label: "Timeline", lines: ["5 weeks", "2026"] },
 ];
 
 export const MONEY_MAP_FACTS_ZH = [
-  { label: "角色", lines: ["产品设计师", "策略、体验、原型"] },
-  { label: "背景", lines: ["Erdős Institute", "UXR Bootcamp 团队项目"] },
+  { label: "角色", lines: ["唯一的产品设计师", "与 UX 研究员合作"] },
+  { label: "背景", lines: ["Erdős Institute", "UXR Bootcamp"] },
   { label: "交付物", lines: ["产品策略", "可交互原型", "可用性测试计划"] },
   { label: "时间", lines: ["5 周", "2026"] },
 ];
 
 // Story chapters over the sections (by section id), shared by EN + ZH.
+// The weight sits on "When plans change"; the baseline is the short setup.
 export const MONEY_MAP_DETAIL_CHAPTERS = [
   { id: "overview", label: "Overview", labelZh: "概述", sections: ["overview"] },
   { id: "understand", label: "Research", labelZh: "研究", sections: ["research"] },
   { id: "journey", label: "Journey", labelZh: "旅程", sections: ["journey"] },
+  { id: "baseline", label: "The baseline", labelZh: "先定基准", sections: ["decision-math", "decision-time"] },
   {
-    id: "design",
-    label: "Decisions",
-    labelZh: "设计决定",
-    sections: ["decision-math", "decision-time", "decision-money"],
+    id: "change",
+    label: "When plans change",
+    labelZh: "计划变了",
+    sections: ["change-method", "decision-money", "change-rules"],
   },
   { id: "testing", label: "Testing", labelZh: "测试", sections: ["evaluate", "next"] },
 ];
@@ -116,34 +108,34 @@ export const MONEY_MAP_DETAIL_SECTIONS = [
     id: "overview",
     label: "The problem",
     paragraphs: [
-      "Setting a savings goal is easy. Knowing what to do next is hard: how much to save this month, whether you’re on track, and what happens to your money when plans change.",
-      "MoneyMap’s old Goal Tracker only showed a progress bar. It didn’t answer any of those questions. Users got confused, rarely came back, and left goals unfinished.",
-      "This was a five-week team project. My teammates ran the research and built the personas. I turned their findings into a product strategy, designed and built a working prototype of the whole saving flow, and wrote the plan to test it.",
+      "Savings plans rarely go to plan. A bonus comes in, the car breaks down, a trip gets cancelled, and the goal has to change.",
+      "MoneyMap’s old Goal Tracker only showed a progress bar. It didn’t say how much to save, whether you were keeping up, or what happens to your money when you change a goal. Users got confused, rarely came back, and left goals unfinished.",
+      "I was the only designer on the team, working with UX researchers. They ran the research and built the personas. I turned their findings into a product strategy, designed and built a working prototype, and wrote the test plan. Most of my work went into the hardest part: what happens when a plan changes.",
     ],
   },
   {
     id: "research",
     label: "What I took from the research",
     paragraphs: [
-      "My teammates built three personas. Each one needed something different (see the table).",
-      "These needs became the design decisions further down. Suzie’s need shaped decisions 1 and 2: one clear monthly amount, and a fair answer to “am I keeping up?”. Rachel’s shaped decision 3: change the plan and still know where the money is. David’s shaped how the screens are split: one page for this month, one for everything saved.",
+      "The researchers built three personas, each needing something different (see the table).",
+      "Two of them pull against each other. Rachel changes her plans often and wants to adjust freely. Suzie is afraid that one wrong move will undo months of saving. Letting people change plans freely while keeping their money safe and easy to follow became the focus of my design.",
+      "David needs to see every goal at once. That shaped how the screens are split.",
     ],
     imagesLayout: "rail",
     images: [
-      { src: "/money-map/persona-suzie.png", alt: "Persona card for Suzie, the Financial Starter" },
-      { src: "/money-map/persona-david.png", alt: "Persona card for David, the Financial Organizer" },
-      { src: "/money-map/persona-rachel.png", alt: "Persona card for Rachel, the Financial Optimizer" },
+      {src: "/money-map/persona-suzie.png", alt: "Persona card for Suzie, the Financial Starter"},
+      {src: "/money-map/persona-david.png", alt: "Persona card for David, the Financial Organizer"},
+      {src: "/money-map/persona-rachel.png", alt: "Persona card for Rachel, the Financial Optimizer"},
     ],
     tables: [PERSONA_TABLE_EN],
-    closingQuote:
-      "How might MoneyMap help users understand what their goals require, decide where to focus, and revise their plans without losing track of their progress?",
+    closingQuote: "How might MoneyMap help users understand what their goals require, decide where to focus, and revise their plans without losing track of their progress?",
   },
   {
     id: "journey",
     label: "The saving flow",
     lead: "Walked end to end before designing any one screen.",
     paragraphs: [
-      "A goal goes through six steps, from setting it to finishing it. Each step below is one screen in the prototype, with the decision behind it.",
+      "A goal goes through six steps. The first four set up the plan. Steps five and six are where plans change, and where most of my design work went.",
     ],
     interactive: "mm-journey",
     items: [
@@ -157,62 +149,106 @@ export const MONEY_MAP_DETAIL_SECTIONS = [
   },
   {
     id: "decision-math",
-    label: "1. One monthly amount",
-    lead: "The same number on every screen.",
+    label: "One monthly amount",
+    lead: "The number every change is measured against.",
     paragraphs: [
-      "A target and a date are hard to act on. A monthly amount is easy: it’s what you set aside on payday. So the first number a goal shows is how much to save each month: what’s left, divided by the months left. A $6,000 trip in 11 months is $545 a month.",
-      "In my first build, this number changed between screens. A new goal showed one amount while I was creating it, and another once it was saved. Changing its priority changed it again.",
-      "Now every screen works it out the same way. The amount you see when you create a goal is the amount you see afterwards. Priority only changes the order of goals.",
-      "If you later change the date or the target, a confirm step shows the new monthly amount and how much it went up or down before anything is saved.",
+      "Before designing for changes, I needed something to measure them against: how much to save this month, and whether the goal is on track.",
+      "The monthly amount is what’s left to save, divided by the months left. A $6,000 trip in 11 months is $545 a month. Every screen works it out the same way, so the number you see when you create a goal is the number you see later.",
     ],
     screens: [
-      {
-        src: "/money-map/journey/1-set.webp",
-        caption: "New goal — the monthly amount shows before you create it",
-      },
-      {
-        src: "/money-map/journey/2-month.webp",
-        caption: "Goals · this month — what each goal still needs this month",
-      },
-      {
-        src: "/money-map/journey/4-status.webp",
-        caption: "Goal detail — this month’s amount, plus overall progress",
-      },
+      {src: "/money-map/journey/1-set.webp", caption: "New goal — the monthly amount shows before you create it"},
+      {src: "/money-map/journey/2-month.webp", caption: "Goals · this month — what each goal still needs this month"},
+      {src: "/money-map/journey/4-status.webp", caption: "Goal detail — this month’s amount, plus overall progress"},
     ],
   },
   {
     id: "decision-time",
-    label: "2. Monthly progress",
+    label: "Monthly progress",
     lead: "Checked by the month, the way pay and bills arrive.",
     paragraphs: [
-      "A percentage tells you how much is saved, not whether it’s enough. 60% sounds good, unless the deadline is next week. So each goal also gets a status: On Track, Behind or At Risk.",
-      "Status is checked by the month, because money moves by the month. Pay comes in monthly. Rent, card bills and subscriptions go out monthly.",
-      "Checking every day would be unfair. Someone who saves on payday would look Behind for most of the month, even while following the plan. So a goal is only Behind if a month ends more than 5% short, and At Risk if it ends more than 20% short.",
+      "Status is checked by the month, because money moves by the month: pay comes in monthly, and rent, card bills and subscriptions go out monthly.",
+      "The app compares what you’ve saved with where the plan says you should be after the months that have already ended. A $6,000 goal over 12 months expects $500 after month one, $1,000 after month two, and so on.",
+    ],
+    items: [
+      {
+        title: "Why 5% and 20%",
+        paragraphs: [
+          "The gap is measured against the whole target, so it means the same thing for a $1,000 goal and a $20,000 one. A small gap shouldn’t raise an alarm; a big one should ask for a decision.",
+          "These two numbers are my starting point, not research findings. The usability test checks whether people read the labels the way I intended.",
+        ],
+        interactive: "mm-thresholds",
+      },
+      {
+        title: "Why not check every day",
+        paragraphs: [
+          "The month you’re in only counts once it ends. Checking daily would punish people who save on payday, and they’d soon stop trusting the label.",
+        ],
+        interactive: "mm-daily",
+      },
+    ],
+  },
+  {
+    id: "change-method",
+    label: "Finding every change",
+    lead: "List every change, then follow the money.",
+    paragraphs: [
+      "I listed every change someone could make to a goal after setting it up: edit the date, target or priority, add or take out money, move money between goals, pause, resume, end, or delete.",
+      "For each one I asked five questions. Three about the numbers: Where does the money go? What happens to the monthly amount? Does the status change? Two about the person: Do they understand what just happened? Can they trust what the app tells them to do next? Then I pushed each action to its limit: more than is saved, more than is free, a date that has already passed, $0.",
+      "This found real problems in my own prototype:",
+    ],
+    list: [
+      "Adding more than a goal needed made the extra disappear.",
+      "Lowering a target below what was saved cut off the difference.",
+      "Changing a goal’s priority quietly changed its monthly amount.",
+      "Delete was the only way to stop a goal, so pausing, finishing early and throwing it away all looked the same.",
     ],
   },
   {
     id: "decision-money",
-    label: "3. Where the money is",
+    label: "Where the money is",
     lead: "You always know, even when plans change.",
     paragraphs: [
-      "Plans change: a bonus comes in, the car breaks down, a trip is cancelled. Rachel wanted to adjust freely. Suzie worried that one wrong tap would undo months of saving.",
-      "I went through every change someone could make, and followed the money each time. That’s how I found a bug in my own prototype: if you added more than a goal needed, the extra just disappeared.",
-      "So I made sure money is always in one of five places: new money, in a goal, in a paused goal, Free to assign (saved, but not in any goal yet), or taken out. Before any change, the app shows where the money will go.",
-      "Below are all the cases I designed for, including the limits. Pick one to see where the money goes, what could go wrong, and what the app does.",
+      "All of these had the same fix: money is always in one of five places, and before any change, the app shows which one it will move to.",
     ],
-    interactive: "mm-states",
+    interactive: "mm-places",
     items: [
+      {
+        title: "Every case",
+        paragraphs: [
+          "Below is every case I designed for, sorted into four groups. Pick one to see where the money goes, what could go wrong, and what the app does.",
+        ],
+        interactive: "mm-states",
+      },
+    ],
+  },
+  {
+    id: "change-rules",
+    label: "Rules every change follows",
+    lead: "So no change is a surprise.",
+    paragraphs: [
+      "Across all the cases, the same three rules kept coming back.",
+    ],
+    items: [
+      {
+        title: "Show the result before you confirm",
+        paragraphs: [
+          "Add, Withdraw and Move use the same sheet. You enter the amount, then see the result: what’s still needed this month or what’s left in the goal, and whether the status changes. Questions like “how do you want to catch up?” come after the result, not before.",
+        ],
+        image: {src: "/money-map/rules/preview.webp", alt: "Add and Withdraw: the result and any status change show before the button.", caption: "Add and Withdraw: the result and any status change show before the button."},
+      },
       {
         title: "Pause, end and delete are different",
         paragraphs: [
           "Pause keeps the money in the goal and asks for nothing until you resume. End stops the goal and moves its money to Free to assign; the goal stays in the list as Ended. Delete removes the goal, after moving its money to Free to assign. A goal with money in it never just disappears.",
         ],
+        image: {src: "/money-map/rules/pause-end.webp", alt: "Three separate actions. Ending a goal says where its money goes before you confirm.", caption: "Three separate actions. Ending a goal says where its money goes before you confirm."},
       },
       {
-        title: "See the result before you confirm",
+        title: "Never change a number without saying why",
         paragraphs: [
-          "Add, Withdraw and Move use the same sheet. You enter the amount first, then see the result: what’s still needed this month or what’s left in the goal, and whether the status changes. Questions like “how do you want to catch up?” come after the result, not before.",
+          "If you change a date or target, a confirm step shows the new monthly amount, what it was before, and the difference. When money leaves a goal, a message says where it went, such as “$1,800 moved to Free to assign”.",
         ],
+        image: {src: "/money-map/rules/explain.webp", alt: "Left: a date change shows the new amount, the old one and the difference. Right: a message says where an ended goal’s money went.", caption: "Left: a date change shows the new amount, the old one and the difference. Right: a message says where an ended goal’s money went."},
       },
       {
         title: "Try it",
@@ -224,7 +260,7 @@ export const MONEY_MAP_DETAIL_SECTIONS = [
     id: "evaluate",
     label: "Testing plan",
     paragraphs: [
-      "I planned a moderated test with one task per decision. While people do each task, I’d note mistakes, pauses and questions. At the end I’d ask: where do you think your money is right now?",
+      "I planned a moderated test. Most tasks are about changing a plan, because that’s where people are most likely to lose track of their money. While people do each task, I’d note mistakes, pauses and questions. At the end I’d ask: where do you think your money is right now?",
     ],
     tables: [EVAL_TABLE_EN],
   },
@@ -232,10 +268,9 @@ export const MONEY_MAP_DETAIL_SECTIONS = [
     id: "next",
     label: "What I’d look at next",
     paragraphs: [
-      "First, run the test above. Each decision comes down to one question. Can people guess the new monthly amount before saving a date change? Do they understand On Track in the middle of the month, before payday? After taking money out and ending a goal, can they say where each amount went?",
-      "I’d also check whether people can find Free to assign. It’s on Home, but people might look for the money inside the goal they just left.",
+      "First, run the test above. I’d especially watch whether people can find Free to assign. It’s on Home, but people might look for the money inside the goal they just left.",
       "Later, if MoneyMap moved real money, new cases would come up: transfers still processing, transfers that fail, and money that arrives after the month ends. That money would need its own place too, such as “in transfer”.",
-      "What I learned: edge cases weren’t extra work at the end. Following the money through each one is what found the bugs, and what shaped the three decisions.",
+      "What I learned: edge cases aren’t extra work at the end. Following the money through every change is what found the bugs, and what shaped the design.",
     ],
   },
 ];
@@ -245,34 +280,34 @@ export const MONEY_MAP_DETAIL_SECTIONS_ZH = [
     id: "overview",
     label: "问题",
     paragraphs: [
-      "设一个储蓄目标很容易，难的是之后：这个月该存多少、有没有跟上、计划变了钱去哪。",
-      "MoneyMap 原来的目标追踪只有一条进度条，这些问题一个都没回答。用户看不懂，很少回来，目标也常常完不成。",
-      "这是一个 5 周的团队项目。队友做了用户研究和人物画像；我把研究结论变成产品策略，设计并搭建了覆盖整个储蓄流程的可交互原型，并写了测试计划。",
+      "储蓄计划很少按计划走。发了奖金、车坏了、旅行取消了，目标就得跟着改。",
+      "MoneyMap 原来的目标追踪只有一条进度条：不说每月该存多少、有没有跟上，也不说改了目标之后钱去哪。用户看不懂，很少回来，目标也常常完不成。",
+      "我是团队里唯一的设计师，和 UX 研究员一起合作。他们做了用户研究和人物画像；我把研究结论变成产品策略，设计并搭建了可交互原型，并写了测试计划。我把大部分精力放在最难的部分：计划变了之后会发生什么。",
     ],
   },
   {
     id: "research",
     label: "研究里带走的",
     paragraphs: [
-      "队友做了三个人物画像，每个人需要的东西不一样，见下表。",
-      "这些需求变成了后面的设计决定。Suzie 的需求对应决定 1 和 2：一个清楚的每月金额，以及对「我跟上了吗」的公平判断。Rachel 的需求对应决定 3：改计划时也知道钱在哪。David 的需求决定了页面怎么分：一个页面看本月，一个页面看全部。",
+      "研究员做了三个人物画像，每个人需要的东西不一样，见下表。",
+      "其中两个人的需求是互相拉扯的。Rachel 经常改计划，想随时调整；Suzie 担心动错一下，几个月的储蓄就白费了。既让人随时改计划，又让钱安全、看得清，成了我设计的重点。",
+      "David 需要一眼看到所有目标，这决定了页面怎么分。",
     ],
     imagesLayout: "rail",
     images: [
-      { src: "/money-map/persona-suzie.png", alt: "Suzie（起步者）人物卡" },
-      { src: "/money-map/persona-david.png", alt: "David（统筹者）人物卡" },
-      { src: "/money-map/persona-rachel.png", alt: "Rachel（优化者）人物卡" },
+      {src: "/money-map/persona-suzie.png", alt: "Suzie（起步者）人物卡"},
+      {src: "/money-map/persona-david.png", alt: "David（统筹者）人物卡"},
+      {src: "/money-map/persona-rachel.png", alt: "Rachel（优化者）人物卡"},
     ],
     tables: [PERSONA_TABLE_ZH],
-    closingQuote:
-      "How might we：MoneyMap 怎样帮人看清目标需要什么、决定先顾哪里，并在改计划时仍跟得上自己的进度？",
+    closingQuote: "How might we：MoneyMap 怎样帮人看清目标需要什么、决定先顾哪里，并在改计划时仍跟得上自己的进度？",
   },
   {
     id: "journey",
     label: "储蓄流程",
     lead: "先把整个流程走一遍，再去设计单个页面。",
     paragraphs: [
-      "一个目标从设定到完成，会经过六步。下面每一步都是原型里的一个页面，以及它背后的决定。",
+      "一个目标会经过六步。前四步是把计划定下来；第五、六步是计划变了的时候，也是我大部分设计工作所在。",
     ],
     interactive: "mm-journey",
     items: [
@@ -286,62 +321,106 @@ export const MONEY_MAP_DETAIL_SECTIONS_ZH = [
   },
   {
     id: "decision-math",
-    label: "1. 统一的每月金额",
-    lead: "每个页面上看到的都是同一个数。",
+    label: "统一的每月金额",
+    lead: "所有改动都拿它来对比。",
     paragraphs: [
-      "目标金额加日期，很难直接行动；每月金额就容易了，发工资时存下这么多就行。所以目标首先显示的，是每月该存多少：还差多少，除以剩下几个月。一个 11 个月后的 $6,000 旅行，就是每月 $545。",
-      "我第一版里，这个数在不同页面不一样：创建时显示一个，保存后变成另一个，改优先级又变一次。",
-      "现在每个页面都用同一种算法。创建时看到多少，之后就是多少。优先级只改目标的先后顺序。",
-      "之后如果改日期或目标金额，保存前会先确认一次：显示新的每月金额，以及比原来多了还是少了多少。",
+      "在设计「改动」之前，需要先有一个对比的基准：这个月该存多少，以及目标有没有跟上。",
+      "每月金额 = 还差多少 ÷ 剩下几个月。一个 11 个月后的 $6,000 旅行，就是每月 $545。每个页面都用同一种算法，所以创建目标时看到多少，之后就是多少。",
     ],
     screens: [
-      {
-        src: "/money-map/journey/1-set.webp",
-        caption: "新建目标——创建之前就显示每月金额",
-      },
-      {
-        src: "/money-map/journey/2-month.webp",
-        caption: "Goals · 本月——每个目标这个月还差多少",
-      },
-      {
-        src: "/money-map/journey/4-status.webp",
-        caption: "目标详情——本月金额，以及整体进度",
-      },
+      {src: "/money-map/journey/1-set.webp", caption: "新建目标——创建之前就显示每月金额"},
+      {src: "/money-map/journey/2-month.webp", caption: "Goals · 本月——每个目标这个月还差多少"},
+      {src: "/money-map/journey/4-status.webp", caption: "目标详情——本月金额，以及整体进度"},
     ],
   },
   {
     id: "decision-time",
-    label: "2. 按月看进度",
+    label: "按月看进度",
     lead: "和工资、账单一样，按月来算。",
     paragraphs: [
-      "百分比只说明存了多少，不说明够不够。存了 60% 听起来不错，但如果下周就到期，就不够了。所以每个目标还有一个状态：On Track、Behind 或 At Risk。",
       "状态按月判断，因为钱就是按月进出的：工资按月发，房租、信用卡、订阅也按月付。",
-      "如果每天判断，就不公平：习惯发薪日存钱的人，一个月里大部分时间都会显示 Behind，哪怕他完全按计划在存。所以只有一个月结束时差了 5% 以上，才算 Behind；差 20% 以上算 At Risk。",
+      "App 会把你已经存下的钱，和计划在「已经结束的月份」之后应该存到的金额做比较。比如一个 12 个月存 $6,000 的目标，第一个月结束时应该有 $500，第二个月结束时 $1,000，以此类推。",
+    ],
+    items: [
+      {
+        title: "为什么是 5% 和 20%",
+        paragraphs: [
+          "差距按整个目标金额来算，这样对 $1,000 和 $20,000 的目标意思一样。差一点不该报警；差很多，就该请用户做决定。",
+          "5% 和 20% 是我定的起点，不是研究得出的结论。可用性测试会验证用户对这些标签的理解是否和我预想的一样。",
+        ],
+        interactive: "mm-thresholds",
+      },
+      {
+        title: "为什么不按天判断",
+        paragraphs: [
+          "当前这个月要等它结束才算。如果按天判断，发薪日才存钱的人会一直被标成落后，很快就不会再相信这个标签了。",
+        ],
+        interactive: "mm-daily",
+      },
+    ],
+  },
+  {
+    id: "change-method",
+    label: "找出每一种改动",
+    lead: "先列出所有改动，再跟着钱走一遍。",
+    paragraphs: [
+      "我列出了目标设好之后，用户能做的每一种改动：改日期、改金额、改优先级，存钱、取钱、在目标之间挪钱，暂停、恢复、结束、删除。",
+      "对每一种，我都问五个问题。三个关于数字：钱去哪了？每月金额怎么变？状态会不会变？两个关于用户：用户明白刚刚发生了什么吗？App 给出的下一步建议值得信赖吗？然后把每个操作推到极限：取的比存的多、分配的比可用的多、日期已经过了、金额是 $0。",
+      "这样找出了我自己原型里真实存在的问题：",
+    ],
+    list: [
+      "存入超过目标所需时，多出来的钱直接消失了。",
+      "把目标金额改到低于已存，差额被截掉了。",
+      "改优先级时，每月金额也悄悄变了。",
+      "「删除」是停下一个目标的唯一方式，所以暂停、提前结束和彻底丢掉，看起来都一样。",
     ],
   },
   {
     id: "decision-money",
-    label: "3. 钱在哪里",
+    label: "钱在哪里",
     lead: "计划怎么变，你都知道钱去了哪。",
     paragraphs: [
-      "计划总会变：发了奖金、车坏了、旅行取消了。Rachel 想随时调整；Suzie 担心点错一下，几个月的储蓄就没了。",
-      "我把用户可能做的每一种改动都走了一遍，每次都跟着钱看它去了哪。也因此发现了自己原型里的 bug：存入超过目标所需时，多出来的钱直接消失了。",
-      "所以我确保钱永远在五个地方之一：新的钱、目标里、暂停的目标里、Free to assign（存下了但还没放进任何目标）、已取出。每次改动之前，App 都会先告诉你钱要去哪。",
-      "下面是我考虑过的所有情况，包括极限情况。选一种，看钱去了哪、可能出什么问题、App 怎么处理。",
+      "这些问题有同一个解法：钱永远在五个地方之一。每次改动之前，App 都会先告诉你钱要去哪一个。",
     ],
-    interactive: "mm-states",
+    interactive: "mm-places",
     items: [
       {
-        title: "暂停、结束、删除是三件事",
+        title: "所有情况",
         paragraphs: [
-          "暂停：钱留在目标里，恢复之前不要求存钱。结束：目标停下，钱进入 Free to assign，目标以「已结束」留在列表里。删除：先把钱移到 Free to assign，再删除目标。有钱的目标不会凭空消失。",
+          "下面是我考虑过的所有情况，分成四组。选一种，看钱去了哪、可能出什么问题、App 怎么处理。",
         ],
+        interactive: "mm-states",
       },
+    ],
+  },
+  {
+    id: "change-rules",
+    label: "每次改动都遵守的规则",
+    lead: "让任何改动都不意外。",
+    paragraphs: [
+      "把所有情况走完，有三条规则反复出现。",
+    ],
+    items: [
       {
         title: "先看结果，再确认",
         paragraphs: [
           "存入、取出、挪动用同一个面板：先填金额，再看结果，也就是本月还差多少或目标里还剩多少，以及状态会不会变。像「怎么补回来」这样的问题，放在结果之后再问。",
         ],
+        image: {src: "/money-map/rules/preview.webp", alt: "存入和取出：结果和状态变化都显示在按钮之前。", caption: "存入和取出：结果和状态变化都显示在按钮之前。"},
+      },
+      {
+        title: "暂停、结束、删除是三件事",
+        paragraphs: [
+          "暂停：钱留在目标里，恢复之前不要求存钱。结束：目标停下，钱进入 Free to assign，目标以「已结束」留在列表里。删除：先把钱移到 Free to assign，再删除目标。有钱的目标不会凭空消失。",
+        ],
+        image: {src: "/money-map/rules/pause-end.webp", alt: "三个独立的操作。结束目标时，确认前先说清钱会去哪。", caption: "三个独立的操作。结束目标时，确认前先说清钱会去哪。"},
+      },
+      {
+        title: "数字变了，就说清为什么",
+        paragraphs: [
+          "改日期或目标金额时，保存前会先确认一次：显示新的每月金额、原来的金额，以及差了多少。钱离开一个目标时，会有一条提示告诉你它去了哪，比如「$1,800 已移到 Free to assign」。",
+        ],
+        image: {src: "/money-map/rules/explain.webp", alt: "左：改日期后显示新金额、原来的金额和差额。右：提示告诉你结束目标的钱去了哪。", caption: "左：改日期后显示新金额、原来的金额和差额。右：提示告诉你结束目标的钱去了哪。"},
       },
       {
         title: "试一试",
@@ -353,7 +432,7 @@ export const MONEY_MAP_DETAIL_SECTIONS_ZH = [
     id: "evaluate",
     label: "测试计划",
     paragraphs: [
-      "我计划做一次有主持的测试，每个决定对应一个任务。用户做任务时，我记录出错、停顿和提问；最后问一句：你觉得你的钱现在在哪？",
+      "我计划做一次有主持的测试。大部分任务都和改计划有关，因为那是用户最容易搞不清钱在哪的时候。用户做任务时，我记录出错、停顿和提问；最后问一句：你觉得你的钱现在在哪？",
     ],
     tables: [EVAL_TABLE_ZH],
   },
@@ -361,10 +440,9 @@ export const MONEY_MAP_DETAIL_SECTIONS_ZH = [
     id: "next",
     label: "接下来想看的",
     paragraphs: [
-      "先把上面的测试做完。每个决定要验证的问题都很直接：改日期时，用户能在保存前猜到新的每月金额吗？月中、发薪日之前，用户能看懂 On Track 吗？取出一笔钱、再结束一个目标之后，用户能说出每笔钱去哪了吗？",
-      "我也想看看用户能不能找到 Free to assign。它在首页上，但用户可能会回到刚离开的目标里去找钱。",
+      "先把上面的测试做完。我会特别留意用户能不能找到 Free to assign。它在首页上，但用户可能会回到刚离开的目标里去找钱。",
       "再往后，如果 MoneyMap 真的帮用户转账，会出现新的情况：转账处理中、转账失败、月底之后才到账。这些钱也需要自己的位置，比如「转账中」。",
-      "我学到的：边界情况不是最后补的工作。正是跟着钱一个个走过去，才发现了 bug，也定下了这三个设计决定。",
+      "我学到的：边界情况不是最后补的工作。正是跟着钱走过每一种改动，才发现了 bug，也定下了整个设计。",
     ],
   },
 ];
