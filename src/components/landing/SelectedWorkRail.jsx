@@ -152,6 +152,8 @@ export default function SelectedWorkRail({
   bridge,
   title,
   frameLabel,
+  allLabel,
+  onOpenAll,
 }) {
   const { language } = useAppSettings();
   const isZh = language === "zh";
@@ -182,10 +184,29 @@ export default function SelectedWorkRail({
       className="selected-rail home-bento__chapter"
       aria-label={label}
     >
-      {title ? <h2 className="home-bento__section-title">{title}</h2> : null}
-      {bridge ? <p className="home-bento__bridge">{bridge}</p> : null}
-
-      <p className="bento-tile__kicker selected-rail__kicker">{label}</p>
+      {/* One header, read top-down: what this section is (a real section
+          title, not a 12px tile label), what's in it (one gray line), and
+          the way to everything else. Before, a body-size sentence starting
+          "Selected work…" came first and read as the end of About, with
+          the label tucked under it in the page's faintest type. */}
+      <header className="selected-rail__head">
+        <div className="selected-rail__heading">
+          <h2 className="selected-rail__title">{label}</h2>
+          {bridge ? <p className="selected-rail__note">{bridge}</p> : null}
+        </div>
+        {onOpenAll ? (
+          <button
+            type="button"
+            className="home-about-tile__more selected-rail__all"
+            onClick={onOpenAll}
+          >
+            {allLabel || (isZh ? "全部作品" : "All projects")}
+            <span className="home-about-tile__more-arrow" aria-hidden="true">
+              →
+            </span>
+          </button>
+        ) : null}
+      </header>
 
       <div
         className="selected-rail__scroller"

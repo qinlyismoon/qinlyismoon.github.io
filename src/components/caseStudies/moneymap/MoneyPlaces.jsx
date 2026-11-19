@@ -1,46 +1,54 @@
 import { useLang } from "./shared";
 
+// Same visual language as the edge-case diagram below: white boxes, the
+// three "saved" places grouped together.
 const T = {
   en: {
-    saved: "Counts as saved — the total on Home",
-    places: [
-      { id: "new", name: "New money", desc: "Coming in, not saved yet — like this month’s pay." },
-      { id: "goal", name: "In a goal", desc: "Saved toward a goal. Counts toward its progress." },
-      { id: "paused", name: "Paused goal", desc: "Still in the goal, but nothing is due." },
-      { id: "free", name: "Free to assign", desc: "Saved, but not in any goal yet. Always on Home." },
-      { id: "out", name: "Taken out", desc: "Withdrawn from savings, back to you." },
+    saved: "Counts as saved",
+    before: { name: "New money", desc: "Not saved yet" },
+    inside: [
+      { name: "In a goal", desc: "Counts toward the goal" },
+      { name: "Paused goal", desc: "Kept, nothing due" },
+      { name: "Free to assign", desc: "Saved, no goal yet" },
     ],
+    after: { name: "Taken out", desc: "Back to you" },
   },
   zh: {
-    saved: "都算已存下——首页的总额",
-    places: [
-      { id: "new", name: "新的钱", desc: "刚进来、还没存下，比如这个月的工资。" },
-      { id: "goal", name: "在目标里", desc: "存进某个目标，计入它的进度。" },
-      { id: "paused", name: "暂停的目标", desc: "还在目标里，只是暂时不要求存钱。" },
-      { id: "free", name: "Free to assign", desc: "已存下，但还没放进任何目标。首页随时可见。" },
-      { id: "out", name: "已取出", desc: "从储蓄里取出，回到你手上。" },
+    saved: "都算已存下",
+    before: { name: "新的钱", desc: "还没存下" },
+    inside: [
+      { name: "在目标里", desc: "计入目标进度" },
+      { name: "暂停的目标", desc: "保留，暂不要求存" },
+      { name: "Free to assign", desc: "已存下，还没分配" },
     ],
+    after: { name: "已取出", desc: "回到你手上" },
   },
 };
 
-/** The five places money can be: before saving → saved (3) → taken out. */
+function Place({ name, desc }) {
+  return (
+    <div className="mm-places__node">
+      <p className="mm-places__name">{name}</p>
+      <p className="mm-places__desc">{desc}</p>
+    </div>
+  );
+}
+
+/** The five places money can be. */
 export default function MoneyPlaces() {
-  const lang = useLang();
-  const t = T[lang];
+  const t = T[useLang()];
   return (
     <div className="mm-widget mm-places">
-      <div className="mm-places__bracket" aria-hidden="true">
-        <span>{t.saved}</span>
+      <Place {...t.before} />
+      <div className="mm-places__group">
+        <p className="mm-places__group-label">{t.saved}</p>
+        <div className="mm-places__group-row">
+          {t.inside.map((p) => (
+            <Place key={p.name} {...p} />
+          ))}
+        </div>
       </div>
-      <ol className="mm-places__row">
-        {t.places.map((p) => (
-          <li key={p.id} className={`mm-places__card mm-places__card--${p.id}`}>
-            <span className="mm-places__dot" aria-hidden="true" />
-            <p className="mm-places__name">{p.name}</p>
-            <p className="mm-places__desc">{p.desc}</p>
-          </li>
-        ))}
-      </ol>
+      <Place {...t.after} />
     </div>
   );
 }

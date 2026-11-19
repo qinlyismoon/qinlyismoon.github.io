@@ -1,6 +1,7 @@
 /**
  * Living tag under the name — outgoing slides up, incoming rises from
- * below; width eases with each line (short lines shrink back).
+ * below. Outer slot stays at the longest line’s width (contact links
+ * don’t shift); the tinted pill eases to each line’s width.
  * Each trait keeps its own quiet tint while the copy swaps.
  */
 import { useEffect, useLayoutEffect, useRef, useState } from "react";

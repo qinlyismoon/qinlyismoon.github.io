@@ -190,6 +190,9 @@ body {
   --type-body: 1rem;
   --type-reading: clamp(1.125rem, 1.55vw, 1.35rem);
   --type-caption: 0.875rem;
+  /* Small UI labels: tile labels, chips, utility links. One size, not
+     0.72 / 0.75 / 0.78 side by side. */
+  --type-label: 0.75rem;
   --weight-regular: 400;
   --weight-medium: 600;
   /* Reading rhythm — Sans values (see the Geometric voice); the Serif
@@ -8034,26 +8037,104 @@ body[data-project-detail="open"] .app-content-layer {
   color: var(--color-text-secondary);
 }
 
-/* Inline fAIshion (etc.) links — same dotted underline as home About. */
-.vibe-detail__tagline .site-text-link,
-.vibe-detail__meta-role .site-text-link,
-.vibe-detail__summary .site-text-link,
-.case-study__fact .site-text-link {
+/* Inline org / text links in case-study prose — inherit reading color;
+   org chips keep their own hover scale (see .site-org-link). */
+.vibe-detail__tagline .site-text-link:not(.site-org-link),
+.vibe-detail__meta-role .site-text-link:not(.site-org-link),
+.vibe-detail__summary .site-text-link:not(.site-org-link),
+.case-study__fact .site-text-link:not(.site-org-link) {
   color: inherit;
   font-style: inherit;
   text-decoration-color: color-mix(in srgb, var(--color-text) 32%, transparent);
   transform: none;
 }
 
-.vibe-detail__tagline .site-text-link:hover,
-.vibe-detail__tagline .site-text-link:focus-visible,
-.vibe-detail__meta-role .site-text-link:hover,
-.vibe-detail__meta-role .site-text-link:focus-visible,
-.vibe-detail__summary .site-text-link:hover,
-.vibe-detail__summary .site-text-link:focus-visible,
-.case-study__fact .site-text-link:hover,
-.case-study__fact .site-text-link:focus-visible {
+.vibe-detail__tagline .site-text-link:not(.site-org-link):hover,
+.vibe-detail__tagline .site-text-link:not(.site-org-link):focus-visible,
+.vibe-detail__meta-role .site-text-link:not(.site-org-link):hover,
+.vibe-detail__meta-role .site-text-link:not(.site-org-link):focus-visible,
+.vibe-detail__summary .site-text-link:not(.site-org-link):hover,
+.vibe-detail__summary .site-text-link:not(.site-org-link):focus-visible,
+.case-study__fact .site-text-link:not(.site-org-link):hover,
+.case-study__fact .site-text-link:not(.site-org-link):focus-visible {
   transform: none;
+}
+
+/* System org links — mark + name as one quiet unit (About + case studies).
+   No zoom/scale: enlarging mid-sentence reflows the whole paragraph.
+   Hover = deepen fill + solid underline + arrow nudge (layout stays put). */
+a.site-org-link.site-text-link,
+a.site-org-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.26em;
+  box-sizing: border-box;
+  max-width: 100%;
+  margin: 0 0.02em;
+  padding: 0.05em 0.28em 0.05em 0.16em;
+  border: 0;
+  border-radius: 0.32em;
+  vertical-align: baseline;
+  background: color-mix(in srgb, var(--color-text) 5%, transparent);
+  box-shadow: none;
+  color: var(--color-text-strong, var(--color-text));
+  font-family: inherit;
+  font-size: 1em;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-decoration: none;
+  zoom: 1;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+a.site-org-link:hover,
+a.site-org-link:focus-visible {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-text) 9%, transparent);
+  text-decoration: none;
+  zoom: 1;
+  outline: none;
+}
+
+.site-org-link__mark {
+  width: 0.95em;
+  height: 0.95em;
+  flex: 0 0 auto;
+  border-radius: 0;
+  /* contain — don’t crop the Block O’s tall octagon. */
+  object-fit: contain;
+  display: block;
+  translate: 0 0.02em;
+}
+
+.site-org-link__label {
+  font-size: 1em;
+  font-weight: inherit;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: color-mix(in srgb, currentColor 36%, transparent);
+  text-underline-offset: 0.18em;
+}
+
+.site-org-link:hover .site-org-link__label,
+.site-org-link:focus-visible .site-org-link__label {
+  text-decoration-style: solid;
+  text-decoration-color: currentColor;
+}
+
+.site-org-link .external-arrow {
+  opacity: 0.5;
+  font-size: 0.85em;
+}
+
+.vibe-detail__tagline a.site-org-link,
+.vibe-detail__meta-role a.site-org-link,
+.vibe-detail__summary a.site-org-link,
+.case-study__fact a.site-org-link {
+  font-style: normal;
 }
 
 .vibe-detail__main {
@@ -10794,10 +10875,16 @@ body:not([data-page="home"]) .editorial-thread {
   background: color-mix(in srgb, var(--color-text) 6%, transparent);
 }
 
+/* Live prototype: bare screen, corners clipped here so nothing can leak. */
 .vibe-detail__main .mm-phone {
   width: 300px;
-  aspect-ratio: 401 / 860;
-  filter: drop-shadow(0 18px 36px rgba(20, 24, 22, 0.16));
+  aspect-ratio: 393 / 852;
+  overflow: hidden;
+  border-radius: 38px;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-text) 10%, transparent),
+    0 18px 40px rgba(20, 24, 22, 0.14);
+  isolation: isolate;
 }
 
 /* Leaf Note needs a taller frame so Care chrome (Hand off + nav) stays usable. */
@@ -11461,243 +11548,70 @@ body:not([data-page="home"]) .editorial-thread {
   padding: var(--space-4);
 }
 
-/* Five places money can be */
-.vibe-detail__main .mm-places__bracket {
-  position: relative;
-  margin: 0 calc(20% + 0.2rem) 0.75rem calc(20% + 0.2rem);
-  padding-bottom: 0.55rem;
-  border-bottom: 2px solid var(--mm-olive);
+/* Five places money can be — same boxes as the edge-case diagram */
+.vibe-detail__main .mm-places {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 3.3fr) minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.vibe-detail__main .mm-places__node {
+  display: flex;
+  min-height: 4.6rem;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.75rem 0.6rem;
+  border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+  border-radius: 14px;
+  background: var(--color-background);
   text-align: center;
 }
 
-.vibe-detail__main .mm-places__bracket::before,
-.vibe-detail__main .mm-places__bracket::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  width: 2px;
-  height: 0.6rem;
-  background: var(--mm-olive);
-}
-
-.vibe-detail__main .mm-places__bracket::before { left: 0; }
-.vibe-detail__main .mm-places__bracket::after { right: 0; }
-
-.vibe-detail__main .mm-places__bracket span {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-}
-
-.vibe-detail__main .mm-places__row {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.6rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.vibe-detail__main .mm-places__card {
-  position: relative;
-  padding: 0.9rem 0.8rem;
-  border-radius: 14px;
-  background: var(--color-background);
-}
-
-.vibe-detail__main .mm-places__card--goal,
-.vibe-detail__main .mm-places__card--paused,
-.vibe-detail__main .mm-places__card--free {
-  background: color-mix(in srgb, var(--mm-lime) 28%, var(--color-background));
-}
-
-.vibe-detail__main .mm-places__dot {
-  display: block;
-  width: 0.6rem;
-  height: 0.6rem;
-  margin-bottom: 0.55rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-text) 25%, transparent);
-}
-
-.vibe-detail__main .mm-places__card--goal .mm-places__dot,
-.vibe-detail__main .mm-places__card--paused .mm-places__dot,
-.vibe-detail__main .mm-places__card--free .mm-places__dot {
-  background: var(--mm-olive);
-}
-
 .vibe-detail__main .mm-places__name {
-  margin: 0 0 0.3rem;
-  font-size: 0.92rem;
-  font-weight: 700;
-}
-
-.vibe-detail__main .mm-places__desc {
   margin: 0;
-  font-size: 0.8rem;
-  line-height: 1.45;
-  color: var(--color-text-secondary);
-}
-
-.vibe-detail__main .mm-places__arrow {
-  position: absolute;
-  top: 50%;
-  right: -0.55rem;
-  z-index: 1;
-  transform: translate(50%, -50%);
-  font-size: 0.85rem;
-  color: var(--color-text-secondary);
-}
-
-/* Thresholds on one scale */
-.vibe-detail__main .mm-thresholds__bar {
-  display: grid;
-  grid-template-columns: 1fr 3fr 2fr;
-  gap: 3px;
-  height: 14px;
-  margin-top: var(--space-2);
-}
-
-.vibe-detail__main .mm-thresholds__seg { border-radius: 4px; }
-.vibe-detail__main .mm-thresholds__seg--on { background: color-mix(in srgb, var(--mm-on) 70%, transparent); }
-.vibe-detail__main .mm-thresholds__seg--behind { background: color-mix(in srgb, var(--mm-behind) 70%, transparent); }
-.vibe-detail__main .mm-thresholds__seg--risk { background: color-mix(in srgb, var(--mm-risk) 70%, transparent); }
-
-.vibe-detail__main .mm-thresholds__ticks {
-  position: relative;
-  height: 1.2rem;
-  margin-top: 0.3rem;
-}
-
-.vibe-detail__main .mm-thresholds__ticks span {
-  position: absolute;
-  font-size: 0.72rem;
+  font-size: 0.88rem;
   font-weight: 600;
-  color: var(--color-text-secondary);
-  transform: translateX(-2px);
-}
-
-.vibe-detail__main .mm-thresholds__bands {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 0.6rem;
-  margin: var(--space-2) 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.vibe-detail__main .mm-thresholds__band {
-  padding: 0.85rem;
-  border-radius: 14px;
-  background: var(--color-background);
-}
-
-.vibe-detail__main .mm-thresholds__chip {
-  display: inline-block;
-  padding: 0.15rem 0.55rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-.vibe-detail__main .mm-thresholds__band--on .mm-thresholds__chip { background: color-mix(in srgb, var(--mm-on) 14%, transparent); color: var(--mm-on); }
-.vibe-detail__main .mm-thresholds__band--behind .mm-thresholds__chip { background: color-mix(in srgb, var(--mm-behind) 18%, transparent); color: #6f6200; }
-.vibe-detail__main .mm-thresholds__band--risk .mm-thresholds__chip { background: color-mix(in srgb, var(--mm-risk) 14%, transparent); color: var(--mm-risk); }
-
-.vibe-detail__main .mm-thresholds__range {
-  font-family: var(--font-ui);
-  margin: 0.5rem 0 0.25rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.vibe-detail__main .mm-thresholds__note {
-  margin: 0;
-  font-size: 0.8rem;
-  line-height: 1.45;
-  color: var(--color-text-secondary);
-}
-
-/* Daily vs monthly, one month */
-.vibe-detail__main .mm-daily__payday {
-  position: relative;
-  height: 1.3rem;
-  margin: var(--space-2) 0 0.2rem 9.5rem;
-}
-
-.vibe-detail__main .mm-daily__payday span {
-  position: absolute;
-  bottom: 0;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  font-size: 0.72rem;
-  font-weight: 700;
   color: var(--color-text);
 }
 
-.vibe-detail__main .mm-daily__row {
-  display: grid;
-  grid-template-columns: 9rem minmax(0, 1fr);
-  column-gap: 0.5rem;
-  align-items: center;
-  margin-bottom: var(--space-2);
-}
-
-.vibe-detail__main .mm-daily__label {
-  margin: 0;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.vibe-detail__main .mm-daily__cells {
-  display: grid;
-  grid-template-columns: repeat(30, minmax(0, 1fr));
-  gap: 2px;
-}
-
-.vibe-detail__main .mm-daily__cell {
-  display: inline-block;
-  height: 22px;
-  border-radius: 3px;
-}
-
-.vibe-detail__main .mm-daily__cell--on { background: color-mix(in srgb, var(--mm-on) 55%, transparent); }
-.vibe-detail__main .mm-daily__cell--behind { background: color-mix(in srgb, var(--mm-behind) 60%, transparent); }
-
-.vibe-detail__main .mm-daily__note {
-  grid-column: 2;
-  margin: 0.35rem 0 0;
-  font-size: 0.8rem;
-  color: var(--color-text-secondary);
-}
-
-.vibe-detail__main .mm-daily__legend {
-  display: flex;
-  gap: var(--space-3);
-  margin-left: 9.5rem;
+.vibe-detail__main .mm-places__desc {
+  margin: 0.2rem 0 0;
   font-size: 0.75rem;
+  line-height: 1.35;
   color: var(--color-text-secondary);
 }
 
-.vibe-detail__main .mm-daily__legend i {
-  width: 12px;
-  height: 12px;
-  margin-right: 0.3rem;
-  vertical-align: -1px;
+.vibe-detail__main .mm-places__group {
+  padding: 0.5rem;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--mm-lime) 45%, transparent);
+}
+
+.vibe-detail__main .mm-places__group-label {
+  margin: 0.1rem 0 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: var(--mm-ink);
+}
+
+.vibe-detail__main .mm-places__group-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.vibe-detail__main .mm-places__group .mm-places__node {
+  border-color: transparent;
 }
 
 @media (max-width: 760px) {
-  .vibe-detail__main .mm-places__row,
-  .vibe-detail__main .mm-thresholds__bands {
+  .vibe-detail__main .mm-places,
+  .vibe-detail__main .mm-places__group-row {
     grid-template-columns: 1fr;
   }
-  .vibe-detail__main .mm-places__bracket { display: none; }
-  .vibe-detail__main .mm-places__arrow { display: none; }
-  .vibe-detail__main .mm-daily__row { grid-template-columns: 1fr; }
-  .vibe-detail__main .mm-daily__note,
-  .vibe-detail__main .mm-daily__legend,
-  .vibe-detail__main .mm-daily__payday { grid-column: 1; margin-left: 0; }
 }
 
 /* Rule screenshots: same grey box as the other screen groups, phones kept small */
@@ -11731,4 +11645,369 @@ body:not([data-page="home"]) .editorial-thread {
    (`safe` keeps the first card reachable if the row ever overflows). */
 .vibe-detail[data-project="money-map"] .flow-media-rail--screens .flow-media-rail__track {
   justify-content: safe center;
+}
+
+/* Money Map phone shots already carry their own rounded, transparent edge —
+   drop the generic outline/background/radius so nothing shows outside it. */
+.vibe-detail[data-project="money-map"] .case-study__screen img[src*="/money-map/journey/"],
+.vibe-detail[data-project="money-map"] .case-study__figure img[src*="/money-map/rules/"],
+.vibe-detail[data-project="money-map"] .mm-flow__shot {
+  border-radius: 0;
+  box-shadow: none;
+  background: none;
+}
+
+/* Thresholds: one labelled scale + a worked example + three rows */
+.vibe-detail__main .mm-thresholds__axis {
+  margin: 0 0 1.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .mm-thresholds__scale {
+  position: relative;
+}
+
+.vibe-detail__main .mm-thresholds__bar {
+  position: relative;
+  height: 30px;
+}
+
+.vibe-detail__main .mm-thresholds__seg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 2px solid var(--color-surface);
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.vibe-detail__main .mm-thresholds__seg--on { border-left: 0; border-radius: 8px 0 0 8px; background: color-mix(in srgb, var(--mm-on) 22%, transparent); color: var(--mm-on); }
+.vibe-detail__main .mm-thresholds__seg--behind { background: color-mix(in srgb, var(--mm-behind) 26%, transparent); color: #6f6200; }
+.vibe-detail__main .mm-thresholds__seg--risk { border-radius: 0 8px 8px 0; background: color-mix(in srgb, var(--mm-risk) 20%, transparent); color: var(--mm-risk); }
+
+.vibe-detail__main .mm-thresholds__pin {
+  position: absolute;
+  top: -10px;
+  bottom: -4px;
+  z-index: 1;
+  width: 0;
+  border-left: 2px solid var(--mm-ink);
+}
+
+.vibe-detail__main .mm-thresholds__pin::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--mm-ink);
+}
+
+.vibe-detail__main .mm-thresholds__ticks {
+  position: relative;
+  height: 2.4rem;
+  margin-top: 0.4rem;
+}
+
+.vibe-detail__main .mm-thresholds__ticks span {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateX(-50%);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.vibe-detail__main .mm-thresholds__ticks span.is-first {
+  align-items: flex-start;
+  transform: none;
+}
+
+.vibe-detail__main .mm-thresholds__ticks b {
+  color: var(--color-text);
+}
+
+.vibe-detail__main .mm-thresholds__example {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0.4rem 0 var(--space-3);
+  font-size: 0.85rem;
+  color: var(--color-text);
+}
+
+.vibe-detail__main .mm-thresholds__pin-dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--mm-ink);
+}
+
+.vibe-detail__main .mm-thresholds__rows {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vibe-detail__main .mm-thresholds__row {
+  display: grid;
+  grid-template-columns: 6.5rem 11rem minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: center;
+  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  background: var(--color-background);
+  font-size: 0.85rem;
+}
+
+.vibe-detail__main .mm-thresholds__chip {
+  justify-self: start;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.vibe-detail__main .mm-thresholds__row--on .mm-thresholds__chip { background: color-mix(in srgb, var(--mm-on) 14%, transparent); color: var(--mm-on); }
+.vibe-detail__main .mm-thresholds__row--behind .mm-thresholds__chip { background: color-mix(in srgb, var(--mm-behind) 20%, transparent); color: #6f6200; }
+.vibe-detail__main .mm-thresholds__row--risk .mm-thresholds__chip { background: color-mix(in srgb, var(--mm-risk) 14%, transparent); color: var(--mm-risk); }
+
+.vibe-detail__main .mm-thresholds__when {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.vibe-detail__main .mm-thresholds__what {
+  color: var(--color-text-secondary);
+}
+
+/* Daily vs monthly: one month, checked two ways, payday line across both */
+.vibe-detail__main .mm-daily__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.vibe-detail__main .mm-daily__setup {
+  margin: 0;
+  max-width: 34rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.vibe-detail__main .mm-daily__legend {
+  display: flex;
+  gap: var(--space-2);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .mm-daily__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.vibe-detail__main .mm-daily__swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.vibe-detail__main .mm-daily__grid {
+  display: grid;
+  grid-template-columns: 9.5rem minmax(0, 1fr);
+  column-gap: 0.75rem;
+  row-gap: 0.3rem;
+  align-items: start;
+}
+
+.vibe-detail__main .mm-daily__row {
+  display: contents;
+}
+
+.vibe-detail__main .mm-daily__label {
+  margin: 0;
+  padding-top: 0.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.vibe-detail__main .mm-daily__label--muted {
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .mm-daily__track {
+  position: relative;
+  height: 26px;
+  margin-bottom: 0.6rem;
+}
+
+.vibe-detail__main .mm-daily__savedbar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding-left: 0.5rem;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .mm-daily__savedbar.is-full {
+  background: color-mix(in srgb, var(--mm-lime) 55%, transparent);
+  color: var(--mm-ink);
+}
+
+.vibe-detail__main .mm-daily__grid {
+  position: relative;
+  padding-top: 1.5rem;
+}
+
+/* Spans saved track + both rows, at the start of day 25 in the cell column. */
+.vibe-detail__main .mm-daily__payline {
+  position: absolute;
+  top: 0;
+  bottom: 1.1rem;
+  left: calc(10.25rem + (100% - 10.25rem) * var(--mm-pay));
+  z-index: 1;
+  border-left: 2px dashed var(--mm-ink);
+  pointer-events: none;
+}
+
+.vibe-detail__main .mm-daily__payline em {
+  position: absolute;
+  top: 0;
+  left: 0.35rem;
+  white-space: nowrap;
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--mm-ink);
+}
+
+.vibe-detail__main .mm-daily__cells {
+  display: grid;
+  grid-template-columns: repeat(30, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.vibe-detail__main .mm-daily__cell {
+  display: block;
+  height: 22px;
+  border-radius: 3px;
+}
+
+.vibe-detail__main .mm-daily__cell--on { background: color-mix(in srgb, var(--mm-on) 55%, transparent); }
+.vibe-detail__main .mm-daily__cell--behind { background: color-mix(in srgb, var(--mm-behind) 60%, transparent); }
+
+.vibe-detail__main .mm-daily__note {
+  grid-column: 2;
+  margin: 0 0 0.7rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .mm-daily__days {
+  position: relative;
+  height: 1rem;
+}
+
+.vibe-detail__main .mm-daily__days span {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 760px) {
+  .vibe-detail__main .mm-thresholds__row { grid-template-columns: 1fr; gap: 0.25rem; }
+  .vibe-detail__main .mm-daily__grid { grid-template-columns: 1fr; }
+  .vibe-detail__main .mm-daily__note,
+  .vibe-detail__main .mm-daily__days { grid-column: 1; }
+  .vibe-detail__main .mm-daily__label:empty { display: none; }
+  .vibe-detail__main .mm-daily__payline { display: none; }
+}
+
+/* Every text node inside the Money Map widgets uses the UI face. */
+.vibe-detail__main .mm-widget span,
+.vibe-detail__main .mm-widget b,
+.vibe-detail__main .mm-widget em,
+.vibe-detail__main .mm-widget li {
+  font-family: var(--font-ui);
+}
+
+.vibe-detail__main .mm-thresholds__pin {
+  bottom: auto;
+  height: 44px;
+}
+
+.vibe-detail__main .mm-thresholds__when,
+.vibe-detail__main .mm-thresholds__ticks span,
+.vibe-detail__main .mm-daily__days span {
+  font-variant-numeric: normal;
+}
+
+
+/* Leaf Note — two-phone handoff film (16:10) + link to the live prototype. */
+.vibe-detail__main .ln-film {
+  margin: 0;
+}
+
+.vibe-detail__main .ln-film__video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 1rem;
+  background: #eef2e9;
+}
+
+.vibe-detail__main .ln-film__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--type-caption);
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .ln-film__try {
+  padding: 0.45rem 0.95rem;
+  border: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
+  border-radius: 999px;
+  color: var(--color-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.vibe-detail__main .ln-film__try:hover {
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
 }

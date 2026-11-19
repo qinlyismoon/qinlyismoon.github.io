@@ -30,6 +30,7 @@ export const HOME_BENTO_COPY = {
         {
           t: "The Ohio State University",
           href: "https://design.osu.edu/",
+          org: "osu",
         },
         { t: ". I " },
         {
@@ -37,7 +38,7 @@ export const HOME_BENTO_COPY = {
           strong: true,
         },
         { t: ", and this year I’ve also been a product design intern at " },
-        { t: "fAIshion", href: "https://faishion.ai/en" },
+        { t: "fAIshion", href: "https://faishion.ai/en", org: "faishion" },
         { t: "." },
       ],
       [
@@ -45,9 +46,12 @@ export const HOME_BENTO_COPY = {
           t: "Before that I worked in HCI research and other product internships. I also teach as a Graduate Teaching Associate — listening, taking another person’s standpoint, and figuring out how to explain.",
         },
       ],
-      "I’m also drawn to where physical and digital meet — XR interaction, and research along that edge. Spatial complexity opens a lot of interesting ground: how bodies, places, and screens talk to each other.",
     ],
     experienceTitle: "Experience",
+    // Not shown anywhere for now. Kept for a future XR project write-up
+    // on the Projects page, where the direction can be shown with work.
+    xrDirection:
+      "I’m also drawn to where physical and digital meet — XR interaction, and research along that edge. Spatial complexity opens a lot of interesting ground: how bodies, places, and screens talk to each other.",
     experience: [
       {
         period: "2026 —",
@@ -73,8 +77,11 @@ export const HOME_BENTO_COPY = {
     photoAlt: "Portrait of Phoebe Qin",
     workTitle: "digital product design",
     selectedWorkLabel: "Selected work",
+    // One line under the section title — what's inside, not "selected
+    // work" again.
     workBridge:
-      "Selected work you can open and try—AI fashion flows, shared-care handoffs, money goals that stay clear when plans change, and AR moments that open on the printed page.",
+      "AI fashion flows, shared-care handoffs, money goals that stay clear when plans change, and AR on the printed page.",
+    selectedWorkAll: "All projects",
     vibeBridge:
       "One thing I’ve learned building with AI: it moves fast, but not always the right way. If the product goal or the core interaction isn’t clear, a small misunderstanding turns into rounds of changes that don’t fix the problem. I don’t need everything figured out first—some things only show up once I’m building—and AI is good for trying approaches quickly. So I stay clear on what I’m trying to achieve, flexible on how: test what it builds, question it, and adjust as I learn.",
     teachingBridge:
@@ -91,8 +98,8 @@ export const HOME_BENTO_COPY = {
     deskTitle: "Phoebe’s Desk",
     teachingLabel: "teaching",
     teachingMore: "more",
-    vibeFolderLabel: "vibe coding",
-    vibeFolderAll: "all 3",
+    vibeFolderLabel: "playground",
+    vibeFolderAll: "all 2",
     hobbiesLabel: "away from the screen",
     hobbies: [
       {
@@ -153,6 +160,7 @@ export const HOME_BENTO_COPY = {
         {
           t: "设计系",
           href: "https://design.osu.edu/",
+          org: "osu",
           strong: true,
         },
         { t: "读 MFA。" },
@@ -161,7 +169,7 @@ export const HOME_BENTO_COPY = {
           strong: true,
         },
         { t: "；今年也在 " },
-        { t: "fAIshion", href: "https://faishion.ai/en" },
+        { t: "fAIshion", href: "https://faishion.ai/en", org: "faishion" },
         { t: " 做产品设计实习。" },
       ],
       [
@@ -169,9 +177,10 @@ export const HOME_BENTO_COPY = {
           t: "以前做过 HCI 研究和产品实习，现在也当研究生助教——学会听、换位想，也学会怎么讲清楚。",
         },
       ],
-      "我也对物理与数字交界的交互感兴趣，做过一些 XR 交互和研究。空间一复杂，就多出很多有趣的地带——身体、场所和屏幕怎样互相说话。",
     ],
     experienceTitle: "经历",
+    xrDirection:
+      "我也对物理与数字交界的交互感兴趣，做过一些 XR 交互和研究。空间一复杂，就多出很多有趣的地带——身体、场所和屏幕怎样互相说话。",
     experience: [
       {
         period: "2026 —",
@@ -196,9 +205,10 @@ export const HOME_BENTO_COPY = {
     openToWork: "在找机会",
     photoAlt: "Phoebe Qin 的肖像",
     workTitle: "数字产品设计",
-    selectedWorkLabel: "Selected work",
+    selectedWorkLabel: "精选作品",
     workBridge:
-      "能打开试的精选：AI 时尚流程、共享照料交接、计划一变仍能看懂的存钱目标，还有落在纸页上的 AR 时刻。",
+      "AI 时尚流程、共享照料交接、计划一变仍能看懂的存钱目标，还有落在纸页上的 AR。",
+    selectedWorkAll: "全部作品",
     vibeBridge:
       "和 AI 一起做，我学到一件事：它能跑得很快，但不一定跑对方向。产品目标和核心交互不清楚，一个小误解就会变成好几轮改来改去、却没真正解决问题。我也并不觉得一切都要事先想完——有些边界和交互，只有动手做了才看得清；AI 很适合快速试几种做法。所以我对要达成什么保持清楚，对怎么走到那里保持灵活：测它做出来的东西，多问一句，再跟着学到的往前调。",
     teachingBridge:
@@ -214,8 +224,8 @@ export const HOME_BENTO_COPY = {
     deskTitle: "Phoebe 的工作台",
     teachingLabel: "教学",
     teachingMore: "更多",
-    vibeFolderLabel: "vibe coding",
-    vibeFolderAll: "全部 3",
+    vibeFolderLabel: "playground",
+    vibeFolderAll: "全部 2",
     hobbiesLabel: "离开屏幕之后",
     hobbies: [
       {

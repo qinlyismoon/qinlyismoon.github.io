@@ -5,53 +5,98 @@ const PAYDAY = 25;
 
 const T = {
   en: {
-    intro: "Same person, same savings: saves the full monthly amount on payday, the 25th.",
-    daily: "Checked every day",
-    monthly: "Checked by the month",
+    setup: "$500 a month, all saved on payday (the 25th).",
+    saved: "Saved",
+    savedBefore: "$0",
+    savedAfter: "$500",
     payday: "Payday",
+    rows: [
+      {
+        id: "daily",
+        label: "Checked daily",
+        note: "Behind for 24 days.",
+        status: (d) => (d < PAYDAY ? "behind" : "on"),
+      },
+      {
+        id: "monthly",
+        label: "Checked monthly",
+        note: "On Track all month.",
+        status: () => "on",
+      },
+    ],
     on: "On Track",
     behind: "Behind",
-    dailyNote: "Behind for 24 days of every month, while following the plan exactly.",
-    monthlyNote: "On Track all month. Only a month that ends short counts.",
   },
   zh: {
-    intro: "同一个人、同样的存法：每月 25 号发薪日，一次存够当月金额。",
-    daily: "按天判断",
-    monthly: "按月判断",
+    setup: "每月 $500，发薪日（25 号）一次存够。",
+    saved: "已存",
+    savedBefore: "$0",
+    savedAfter: "$500",
     payday: "发薪日",
+    rows: [
+      {
+        id: "daily",
+        label: "按天判断",
+        note: "24 天显示 Behind。",
+        status: (d) => (d < PAYDAY ? "behind" : "on"),
+      },
+      {
+        id: "monthly",
+        label: "按月判断",
+        note: "整个月都是 On Track。",
+        status: () => "on",
+      },
+    ],
     on: "On Track",
     behind: "Behind",
-    dailyNote: "每个月有 24 天显示 Behind，尽管他完全按计划在存。",
-    monthlyNote: "整个月都是 On Track，只有月底没存够才算。",
   },
 };
 
-/** Why status isn't checked daily: one month, two ways of checking. */
+const col = (day) => `${((day - 1) / DAYS) * 100}%`;
+
+/** Why status isn't checked daily: the same month, checked two ways. */
 export default function DailyVsMonthly() {
   const lang = useLang();
   const t = T[lang];
-  const Row = ({ label, note, statusFor }) => (
-    <div className="mm-daily__row">
-      <p className="mm-daily__label">{label}</p>
-      <div className="mm-daily__cells" aria-hidden="true">
-        {Array.from({ length: DAYS }, (_, i) => (
-          <span key={i} className={`mm-daily__cell mm-daily__cell--${statusFor(i + 1)}`} />
-        ))}
-      </div>
-      <p className="mm-daily__note">{note}</p>
-    </div>
-  );
   return (
     <div className="mm-widget mm-daily">
-      <p className="mm-widget__intro">{t.intro}</p>
-      <div className="mm-daily__payday" aria-hidden="true">
-        <span style={{ left: `calc(${((PAYDAY - 0.5) / DAYS) * 100}% )` }}>{t.payday} · 25</span>
+      <div className="mm-daily__head">
+        <p className="mm-daily__setup">{t.setup}</p>
+        <div className="mm-daily__legend" aria-hidden="true">
+          <span><i className="mm-daily__swatch mm-daily__cell--on" />{t.on}</span>
+          <span><i className="mm-daily__swatch mm-daily__cell--behind" />{t.behind}</span>
+        </div>
       </div>
-      <Row label={t.daily} note={t.dailyNote} statusFor={(d) => (d < PAYDAY ? "behind" : "on")} />
-      <Row label={t.monthly} note={t.monthlyNote} statusFor={() => "on"} />
-      <div className="mm-daily__legend" aria-hidden="true">
-        <span><i className="mm-daily__cell mm-daily__cell--on" /> {t.on}</span>
-        <span><i className="mm-daily__cell mm-daily__cell--behind" /> {t.behind}</span>
+
+      <div className="mm-daily__grid" style={{ "--mm-pay": (PAYDAY - 1) / DAYS }}>
+        <span className="mm-daily__payline" aria-hidden="true">
+          <em>{t.payday} · 25</em>
+        </span>
+        {/* Saved-so-far track and day numbers share the cell columns. */}
+        <p className="mm-daily__label mm-daily__label--muted">{t.saved}</p>
+        <div className="mm-daily__track">
+          <span className="mm-daily__savedbar" style={{ left: col(1), width: col(PAYDAY) }}>{t.savedBefore}</span>
+          <span className="mm-daily__savedbar is-full" style={{ left: col(PAYDAY), right: 0 }}>{t.savedAfter}</span>
+        </div>
+
+        {t.rows.map((r) => (
+          <div key={r.id} className="mm-daily__row">
+            <p className="mm-daily__label">{r.label}</p>
+            <div className="mm-daily__cells" aria-hidden="true">
+              {Array.from({ length: DAYS }, (_, i) => (
+                <span key={i} className={`mm-daily__cell mm-daily__cell--${r.status(i + 1)}`} />
+              ))}
+            </div>
+            <p className="mm-daily__note">{r.note}</p>
+          </div>
+        ))}
+
+        <p className="mm-daily__label" aria-hidden="true" />
+        <div className="mm-daily__days" aria-hidden="true">
+          {[1, 10, 20, 25, 30].map((d) => (
+            <span key={d} style={{ left: `calc(${col(d)} + ${100 / DAYS / 2}%)` }}>{d}</span>
+          ))}
+        </div>
       </div>
     </div>
   );

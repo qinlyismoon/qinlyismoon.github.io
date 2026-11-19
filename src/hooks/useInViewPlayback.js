@@ -11,7 +11,7 @@ import { useEffect } from "react";
  */
 export default function useInViewPlayback(
   videoRef,
-  { threshold = 0.4, withSound = false } = {},
+  { threshold = 0.25, withSound = false } = {},
 ) {
   useEffect(() => {
     const video = videoRef.current;
@@ -22,7 +22,10 @@ export default function useInViewPlayback(
     ).matches;
     if (reduceMotion) return undefined;
 
+    let inView = false;
+
     const playInView = () => {
+      if (!inView) return Promise.resolve();
       if (withSound) {
         video.muted = false;
         return video.play().catch(() => {
@@ -34,9 +37,18 @@ export default function useInViewPlayback(
       return video.play().catch(() => {});
     };
 
+    // If IntersectionObserver fires before the file can play, retry
+    // once media is ready — otherwise the poster sticks forever.
+    const onReady = () => {
+      if (inView) playInView();
+    };
+    video.addEventListener("loadeddata", onReady);
+    video.addEventListener("canplay", onReady);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        inView = entry.isIntersecting;
+        if (inView) {
           playInView();
         } else {
           video.pause();
@@ -45,6 +57,10 @@ export default function useInViewPlayback(
       { threshold },
     );
     observer.observe(video);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      video.removeEventListener("loadeddata", onReady);
+      video.removeEventListener("canplay", onReady);
+    };
   }, [videoRef, threshold, withSound]);
 }

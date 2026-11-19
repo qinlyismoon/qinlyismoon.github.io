@@ -7,7 +7,8 @@ import { motion, useReducedMotion } from "framer-motion";
  * stacks it on the tower. Blocks always stack Questions → Possibilities →
  * Making from the ground up (a later, lower block slides in underneath), so
  * the tower is never floating and its bands read red · white · red. The lamp
- * lights only after the last block has finished gliding into place.
+ * lights, a soft sky fills the tile, and clouds drift in — only after the
+ * last block has finished gliding into place.
  */
 const IDS = ["doubt", "possibilities", "making"];
 // One shared, readable glide for every hop (tile → tray, tray → tower, back).
@@ -139,6 +140,41 @@ function FlatLamp() {
   );
 }
 
+/* Same flat toy language as the blocks: cream face + a deeper right edge. */
+/* Cloud in the blocks' own geometry: a flat-bottomed pill (radius = half
+   its height) with two round tops. Light comes from the left, as on the
+   blocks, so only the pill's right end turns to the edge tone — a side
+   face, not a slice through the puffs. Crisp, no blur, no shadow. */
+function FlatCloud({ className }) {
+  const clipId = useId();
+  const face = TONE.white.face;
+  const edge = TONE.white.edge;
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 68 30"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <clipPath id={clipId}>
+        <rect x="4" y="15" width="60" height="13" rx="6.5" />
+      </clipPath>
+      <rect x="4" y="15" width="60" height="13" rx="6.5" fill={edge} />
+      <rect
+        x="4"
+        y="15"
+        width="56.5"
+        height="13"
+        rx="6.5"
+        fill={face}
+        clipPath={`url(#${clipId})`}
+      />
+      <circle cx="25" cy="16" r="10" fill={face} />
+      <circle cx="42.5" cy="17" r="7.5" fill={face} />
+    </svg>
+  );
+}
+
 function Block({ id, label }) {
   return (
     <span className={`toy-block toy-block--${id}`}>
@@ -204,6 +240,14 @@ export function TraitBricks({ language, bricks, onPlace }) {
       className={`bento-tile about-bricks${lit ? " is-complete" : ""}`}
       aria-labelledby="about-bricks-title"
     >
+      {/* Clipped sky layer — overflow stays on the tile so blocks can fly out. */}
+      <span className="about-bricks__sky" aria-hidden="true">
+        {/* Two clouds, only in the sky around the lighthouse — never
+            behind the copy. */}
+        <FlatCloud className="about-bricks__cloud about-bricks__cloud--b" />
+        <FlatCloud className="about-bricks__cloud about-bricks__cloud--c" />
+      </span>
+
       <div className="about-bricks__copy">
         <p className="bento-tile__kicker">{copy.kicker}</p>
         <h2 id="about-bricks-title" className="about-tile__title">

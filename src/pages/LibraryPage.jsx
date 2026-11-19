@@ -3,8 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSettings } from "../context/AppSettingsContext";
 import { useSidebarOverride } from "../context/SidebarOverrideContext";
 import HomeLayout from "../components/layouts/HomeLayout";
-import VibeProjectCard from "../components/caseStudies/VibeProjectCard";
-import SelectedWorkCard from "../components/caseStudies/SelectedWorkCard";
+import ProjectShelf from "../components/caseStudies/ProjectShelf";
 import {
   VIBE_PROJECTS,
   SELECTED_PROJECTS,
@@ -15,10 +14,10 @@ import {
   getProjectById,
 } from "../lib/caseStudies";
 
-/** Vibe coding catalogue — same order as the home folder. */
-const VIBE_SECTION_PROJECTS = HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(
-  Boolean,
-);
+/** Playground catalogue — same order as the home folder. */
+const PLAYGROUND_SECTION_PROJECTS = HOME_VIBE_FOLDER_IDS.map(
+  getProjectById,
+).filter(Boolean);
 import { HOME_PATH, LIBRARY_PATH, projectIdFromPath } from "../lib/routes";
 import PageCopyright from "../components/shared/PageCopyright";
 
@@ -27,22 +26,22 @@ const VibeProjectDetail = lazy(() =>
 );
 
 // Projects with a native case-study detail at /<id>.
-// Order matches the page sections: Selected → 3D → Research → Vibe.
+// Order matches the page sections: Selected → Playground → 3D → Research.
 const DETAIL_PROJECTS = [
   ...SELECTED_PROJECTS.filter(
     (project) =>
-      (project.detail || project.detailSections) &&
+      (project.detail || project.detailSections || project.caseStudy) &&
       project.id !== "emotion-garden",
   ),
+  ...HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(Boolean),
   ...THREE_D_PROJECTS,
   ...RESEARCH_PROJECTS,
-  ...HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(Boolean),
 ];
 
 /** Home Selected Work rail — includes Oscar AR; Projects digital section does not. */
 const HOME_SELECTED_SEQUENCE = HOME_SELECTED_PROJECTS;
 
-const HOME_VIBE_SEQUENCE = HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(
+const HOME_PLAYGROUND_SEQUENCE = HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(
   Boolean,
 );
 
@@ -51,8 +50,8 @@ function detailSequenceFor(from, projectId) {
     if (HOME_SELECTED_SEQUENCE.some((project) => project.id === projectId)) {
       return HOME_SELECTED_SEQUENCE;
     }
-    if (HOME_VIBE_SEQUENCE.some((project) => project.id === projectId)) {
-      return HOME_VIBE_SEQUENCE;
+    if (HOME_PLAYGROUND_SEQUENCE.some((project) => project.id === projectId)) {
+      return HOME_PLAYGROUND_SEQUENCE;
     }
   }
   return DETAIL_PROJECTS;
@@ -73,9 +72,9 @@ function entryFromLocation(location, embedded) {
 // always sized to the longest one (no jump when moving between cards).
 const HOVER_PROJECTS = [
   ...SELECTED_PROJECTS,
+  ...VIBE_PROJECTS,
   ...THREE_D_PROJECTS,
   ...RESEARCH_PROJECTS,
-  ...VIBE_PROJECTS,
 ];
 
 /** The sidebar's timeline text for a project: year · duration, from the
@@ -124,8 +123,8 @@ const LABELS = {
     researchNote: "Co-design with people—workshops that leave a film, a town, a question.",
     threeD: "3D",
     threeDNote: "AR built onto the printed page, and Houdini motion studies.",
-    vibeCoding: "Vibe Coding",
-    vibeCodingNote:
+    playground: "Playground",
+    playgroundNote:
       "Quick experiments with AI coding tools—start curious, end with something you can play with.",
   },
   zh: {
@@ -138,8 +137,8 @@ const LABELS = {
     researchNote: "和人一起共创——工作坊留下的短片、小镇，和一个问题。",
     threeD: "3D",
     threeDNote: "落在纸页上的 AR，以及 Houdini 里的程序化运动。",
-    vibeCoding: "Vibe Coding",
-    vibeCodingNote: "和 AI 编程工具一起快速试——先好奇，再做出能玩的东西。",
+    playground: "Playground",
+    playgroundNote: "和 AI 编程工具一起快速试——先好奇，再做出能玩的东西。",
   },
 };
 
@@ -291,85 +290,41 @@ export default function LibraryPage({ embedded = false }) {
           <p className="projects-page__note">{labels.pageNote}</p>
         </header>
       ) : null}
-      <section
+      {/* The library: one shelf per section, one book per project. */}
+      <ProjectShelf
         id="case-studies"
-        className="case-studies__section"
-        aria-label={labels.caseStudies}
-      >
-        <h2 className="case-studies__section-title">{labels.caseStudies}</h2>
-        {labels.caseStudiesNote ? (
-          <p className="case-studies__section-note">{labels.caseStudiesNote}</p>
-        ) : null}
-        <div className="vibe-grid">
-          {SELECTED_PROJECTS.filter(
-            (project) => project.id !== "emotion-garden",
-          ).map((project) => (
-            <SelectedWorkCard
-              key={project.id}
-              project={project}
-              onOpen={handleCardOpen}
-              onHover={handleCardHover}
-            />
-          ))}
-        </div>
-      </section>
-
-      <section
+        title={labels.caseStudies}
+        note={labels.caseStudiesNote}
+        projects={SELECTED_PROJECTS.filter(
+          (project) => project.id !== "emotion-garden",
+        )}
+        onOpen={handleCardOpen}
+        onHover={handleCardHover}
+      />
+      <ProjectShelf
+        id="playground"
+        title={labels.playground}
+        note={labels.playgroundNote}
+        projects={PLAYGROUND_SECTION_PROJECTS}
+        onOpen={handleCardOpen}
+        onHover={handleCardHover}
+      />
+      <ProjectShelf
         id="three-d"
-        className="case-studies__section"
-        aria-label={labels.threeD}
-      >
-        <h2 className="case-studies__section-title">{labels.threeD}</h2>
-        <p className="case-studies__section-note">{labels.threeDNote}</p>
-        <div className="vibe-grid">
-          {THREE_D_PROJECTS.map((project) => (
-            <SelectedWorkCard
-              key={project.id}
-              project={project}
-              onOpen={handleCardOpen}
-              onHover={handleCardHover}
-            />
-          ))}
-        </div>
-      </section>
-
-      <section
+        title={labels.threeD}
+        note={labels.threeDNote}
+        projects={THREE_D_PROJECTS}
+        onOpen={handleCardOpen}
+        onHover={handleCardHover}
+      />
+      <ProjectShelf
         id="research"
-        className="case-studies__section"
-        aria-label={labels.research}
-      >
-        <h2 className="case-studies__section-title">{labels.research}</h2>
-        <p className="case-studies__section-note">{labels.researchNote}</p>
-        <div className="vibe-grid">
-          {RESEARCH_PROJECTS.map((project) => (
-            <SelectedWorkCard
-              key={project.id}
-              project={project}
-              onOpen={handleCardOpen}
-              onHover={handleCardHover}
-            />
-          ))}
-        </div>
-      </section>
-
-      <section
-        id="vibe-coding"
-        className="case-studies__section"
-        aria-label={labels.vibeCoding}
-      >
-        <h2 className="case-studies__section-title">{labels.vibeCoding}</h2>
-        <p className="case-studies__section-note">{labels.vibeCodingNote}</p>
-        <div className="vibe-grid">
-          {VIBE_SECTION_PROJECTS.map((project) => (
-            <VibeProjectCard
-              key={project.id}
-              project={project}
-              onOpen={handleCardOpen}
-              onHover={handleCardHover}
-            />
-          ))}
-        </div>
-      </section>
+        title={labels.research}
+        note={labels.researchNote}
+        projects={RESEARCH_PROJECTS}
+        onOpen={handleCardOpen}
+        onHover={handleCardHover}
+      />
 
       {!embedded ? <PageCopyright /> : null}
     </div>

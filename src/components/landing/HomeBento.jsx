@@ -57,7 +57,7 @@ export default function HomeBento() {
   const openVibeCatalogue = () => {
     navigateToLibrary({ silent: true });
     window.setTimeout(() => {
-      document.getElementById("vibe-coding")?.scrollIntoView({
+      document.getElementById("playground")?.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
@@ -89,26 +89,29 @@ export default function HomeBento() {
           </div>
         </div>
 
-        {/* No role line: the About tile's first sentence is the positioning.
-            The masthead only identifies — name, then one row: a trait chip
-            leading the contact links. */}
+        {/* Identity chip + contact: two proximity groups on one baseline. */}
         <div className="home-bento__meta">
-        <div className="home-bento__identity">
-          <HomeRotatingLine lines={bento.rotatingLines} />
-        </div>
-
-        <nav
-          className="home-bento__links home-bento__links--masthead"
-          aria-label={language === "zh" ? "联系方式" : "Contact"}
-        >
-          <a href={PORTFOLIO_LINKS.email}>{copy.email}</a>
-          <a href={PORTFOLIO_LINKS.github} target="_blank" rel="noreferrer">
-            GitHub <span className="external-arrow" aria-hidden="true">↗︎</span>
-          </a>
-          <a href={PORTFOLIO_LINKS.linkedin} target="_blank" rel="noreferrer">
-            LinkedIn <span className="external-arrow" aria-hidden="true">↗︎</span>
-          </a>
-        </nav>
+          <div className="home-bento__identity">
+            <HomeRotatingLine lines={bento.rotatingLines} />
+          </div>
+          <nav
+            className="home-bento__links home-bento__links--masthead"
+            aria-label={language === "zh" ? "联系方式" : "Contact"}
+          >
+            <a href={PORTFOLIO_LINKS.email}>{copy.email}</a>
+            <a href={PORTFOLIO_LINKS.github} target="_blank" rel="noreferrer">
+              GitHub
+              <span className="external-arrow" aria-hidden="true">
+                ↗︎
+              </span>
+            </a>
+            <a href={PORTFOLIO_LINKS.linkedin} target="_blank" rel="noreferrer">
+              LinkedIn
+              <span className="external-arrow" aria-hidden="true">
+                ↗︎
+              </span>
+            </a>
+          </nav>
         </div>
       </header>
 
@@ -144,6 +147,8 @@ export default function HomeBento() {
           onOpen={handleOpen}
           bridge={bento.workBridge}
           frameLabel={bento.selectedWorkLabel}
+          allLabel={bento.selectedWorkAll}
+          onOpenAll={() => navigateToLibrary()}
         />
 
         <div className="home-bento__chapter">

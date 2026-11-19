@@ -168,15 +168,19 @@ export const MONEY_MAP_DETAIL_SECTIONS = [
     paragraphs: [
       "Status is checked by the month, because money moves by the month: pay comes in monthly, and rent, card bills and subscriptions go out monthly.",
       "The app compares what you’ve saved with where the plan says you should be after the months that have already ended. A $6,000 goal over 12 months expects $500 after month one, $1,000 after month two, and so on.",
+      "The 5% and 20% cut-offs below are my starting point, not research findings; the usability test checks them.",
     ],
     items: [
       {
         title: "Why 5% and 20%",
         paragraphs: [
-          "The gap is measured against the whole target, so it means the same thing for a $1,000 goal and a $20,000 one. A small gap shouldn’t raise an alarm; a big one should ask for a decision.",
-          "These two numbers are my starting point, not research findings. The usability test checks whether people read the labels the way I intended.",
+          "The gap is how far your savings are behind the plan, as a share of the whole target. For a $6,000 goal:",
         ],
-        interactive: "mm-thresholds",
+        list: [
+          "Up to $300 behind (5%) → On Track. One light month, easy to make up.",
+          "$300 to $1,200 behind (5–20%) → Behind. Worth noticing.",
+          "More than $1,200 behind (over 20%) → At Risk. Save clearly more, or move the date.",
+        ],
       },
       {
         title: "Why not check every day",
@@ -340,15 +344,19 @@ export const MONEY_MAP_DETAIL_SECTIONS_ZH = [
     paragraphs: [
       "状态按月判断，因为钱就是按月进出的：工资按月发，房租、信用卡、订阅也按月付。",
       "App 会把你已经存下的钱，和计划在「已经结束的月份」之后应该存到的金额做比较。比如一个 12 个月存 $6,000 的目标，第一个月结束时应该有 $500，第二个月结束时 $1,000，以此类推。",
+      "下面的 5% 和 20% 是我定的起点，不是研究结论，会在可用性测试里验证。",
     ],
     items: [
       {
         title: "为什么是 5% 和 20%",
         paragraphs: [
-          "差距按整个目标金额来算，这样对 $1,000 和 $20,000 的目标意思一样。差一点不该报警；差很多，就该请用户做决定。",
-          "5% 和 20% 是我定的起点，不是研究得出的结论。可用性测试会验证用户对这些标签的理解是否和我预想的一样。",
+          "差距 = 已存的钱比计划落后多少，按整个目标金额来算。以 $6,000 的目标为例：",
         ],
-        interactive: "mm-thresholds",
+        list: [
+          "落后不超过 $300（5%）→ On Track。某个月少存一点，容易补回来。",
+          "落后 $300–$1,200（5–20%）→ Behind。值得注意。",
+          "落后超过 $1,200（20% 以上）→ At Risk。要明显多存，或推迟日期。",
+        ],
       },
       {
         title: "为什么不按天判断",

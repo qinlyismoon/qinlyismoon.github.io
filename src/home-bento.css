@@ -208,28 +208,39 @@
   color: color-mix(in srgb, var(--color-text-secondary) 72%, transparent);
 }
 
-/* Trait chip + contact links share one row under the name. On a narrow
-   screen the links wrap below the chip as a group. */
+/* Trait chip + contact on one row, grouped by spacing alone (no rule):
+   - within the contact group: even word-to-word steps (↗ hangs in the gap);
+   - between groups: a larger step so chip and links separate by proximity;
+   - the slot reserves the longest trait’s width so Email / GitHub / LinkedIn
+     never shift; the tinted pill itself eases to each line’s width. */
 .home-bento__meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.7rem 1.35rem;
+  gap: 0.65rem 2.2rem;
+  width: 100%;
+  min-width: 0;
 }
 
 .home-bento__meta .home-bento__identity {
   margin-bottom: 0;
 }
 
-/* One identity band: role caption + living trait chip stay on one row.
-   Never wrap the chip onto its own line — that reads as a second block. */
+/* Optical spacing: the ↗ is light and small, so the eye doesn't count it
+   as part of the word. Hang it in the gap (it takes no width), so spacing
+   is even word-to-word: Email ↔ GitHub ↔ LinkedIn all read the same. */
+.home-bento__links--masthead .external-arrow.external-arrow {
+  margin-right: calc(-1.22 * var(--arrow-size));
+}
+
+
 .home-bento__identity {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
   gap: 0.4rem 0.55rem;
   max-width: 100%;
-  margin-bottom: 0.7rem;
+  margin-bottom: 0;
   min-width: 0;
 }
 
@@ -246,12 +257,13 @@
   white-space: nowrap;
 }
 
-/* Reserves the longest trait's width, so the chip either always sits beside
-   the role line or always wraps below it — never one line for a short trait
-   and two for a long one. */
+/* Fixed footprint = longest trait. Pill lives inside and shrinks/grows;
+   contact links stay put because this slot never changes width. */
 .home-bento__tag-slot {
   display: inline-flex;
   flex: 0 0 auto;
+  justify-content: flex-start;
+  align-items: center;
   max-width: 100%;
 }
 
@@ -456,18 +468,37 @@
   text-align: left;
 }
 
-.home-about-tile__photo img {
+.home-about-tile__photo-stack {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.home-about-tile__photo-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 18%;
+  /* Same focal point so the wink reads as expression, not a crop jump. */
+  object-position: center 16%;
   display: block;
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.home-about-tile__photo:hover img,
-.home-about-tile__photo:focus-visible img {
-  transform: scale(1.06);
+.home-about-tile__photo-img--wink {
+  opacity: 0;
+  transition: opacity 280ms ease;
+  /* Tiny nudge if the wink frame sits a hair higher — keep faces locked. */
+  object-position: center 17%;
+}
+
+/* Fine pointer only — sticky phone :hover would leave the wink stuck. */
+@media (hover: hover) and (pointer: fine) {
+  .home-about-tile__photo:hover .home-about-tile__photo-img--wink,
+  .home-about-tile__photo:focus-visible .home-about-tile__photo-img--wink {
+    opacity: 1;
+  }
 }
 
 .home-about-tile__photo:focus-visible {
@@ -662,8 +693,8 @@
 .home-bento__links {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.3rem 1.45rem;
+  align-items: center;
+  gap: 0.25rem 1rem;
   margin: 0;
   padding: 0;
   font-family: var(--font-ui);
@@ -674,6 +705,10 @@
 
 .home-bento__links--masthead {
   margin: 0;
+  /* One contact cluster — one even step between links, word to word. */
+  flex: 0 1 auto;
+  gap: 0.2rem 1.35rem;
+  min-width: 0;
 }
 
 /* Shared quiet underline links (masthead, inline About, Experience). */
@@ -687,8 +722,9 @@
   text-decoration-color: color-mix(in srgb, var(--color-text) 28%, transparent);
   text-underline-offset: 0.22em;
   transform-origin: left center;
+  zoom: 1;
   transition:
-    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    zoom 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     color 0.2s ease,
     text-decoration-color 0.2s ease;
 }
@@ -709,7 +745,7 @@
   color: var(--color-text);
   text-decoration-style: solid;
   text-decoration-color: currentColor;
-  transform: scale(1.05);
+  zoom: 1.05;
 }
 
 .site-text-link .external-arrow,
@@ -718,16 +754,26 @@
   font-size: 0.9em;
 }
 
-.home-about-tile__body .site-text-link {
+.home-about-tile__body .site-text-link:not(.site-org-link) {
   color: inherit;
   text-decoration-color: color-mix(in srgb, var(--color-text) 32%, transparent);
 }
 
+/* Org chip keeps system chrome (strong ink + soft fill), not body gray. */
+.home-about-tile__body a.site-org-link {
+  display: inline-flex;
+  vertical-align: baseline;
+}
+
 /* ——— Status: weather wash + analog clock (atom63 glance) ——— */
 
+/* ——— Two city cards: Columbus · Chongqing ———
+   Same tile as the rest of the board (warm-gray surface, kicker, gray
+   captions). Colour only where it carries meaning: the clock face goes
+   dark at local night; the weather glyph has a soft hue. */
 .home-status {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.9rem;
   width: 100%;
 }
@@ -735,175 +781,242 @@
 .home-status__tile {
   position: relative;
   display: grid;
-  aspect-ratio: 1 / 1.05;
-  min-height: 0;
-  padding: 1rem;
+  grid-template-rows: auto 1fr;
+  gap: 1.1rem;
+  padding: 1.15rem 1.15rem 1.35rem;
   box-sizing: border-box;
-  border-radius: 1.15rem;
-  overflow: hidden;
-}
-
-.home-status__land {
-  position: absolute;
-  top: 0.85rem;
-  right: 0.85rem;
-  width: 2.65rem;
-  height: 2.9rem;
-  color: currentColor;
-  opacity: 0.14;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.home-status__tile--weather .home-status__land {
-  opacity: 0.2;
-  color: #fff;
-}
-
-.home-status__tile--clock .home-status__land {
-  opacity: 0.13;
-}
-
-.home-status__land--chongqing {
-  width: 2.35rem;
-  height: 3.05rem;
-}
-
-.home-status__tile--weather {
-  grid-template-rows: auto 1fr auto;
-  color: #f4f6f8;
-  background: #6f8494;
-}
-
-.home-status__tile--weather.home-status__tile--sunny {
-  background: linear-gradient(160deg, #7f94a4 0%, #5f7688 100%);
-}
-
-.home-status__tile--weather.home-status__tile--cloudy {
-  background: linear-gradient(160deg, #7a8b99 0%, #5c6d7a 100%);
-}
-
-.home-status__tile--weather.home-status__tile--rainy {
-  background: linear-gradient(160deg, #5f7388 0%, #445668 100%);
-}
-
-.home-status__tile--weather.home-status__tile--snowy {
-  background: linear-gradient(160deg, #8a97a4 0%, #6a7886 100%);
-}
-
-.home-status__tile--clock {
-  /* Same band stack as weather: label top, face middle, meta bottom. */
-  grid-template-rows: auto 1fr auto;
-  align-items: stretch;
-  justify-items: stretch;
-  background: var(--color-surface);
   color: var(--color-text);
+}
+
+.home-status__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .home-status__place {
   margin: 0;
-  max-width: calc(100% - 3.4rem);
-  font-family: var(--font-ui);
-  font-size: 0.95rem;
-  line-height: 1.2;
-  opacity: 0.92;
 }
 
-.home-status__clock-face {
+.home-status__land {
+  flex-shrink: 0;
+  width: 1.9rem;
+  height: 2.1rem;
+  color: var(--color-text);
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.home-status__land--chongqing {
+  width: 1.75rem;
+  height: 2.25rem;
+}
+
+/* Clock + time: the card's main read. */
+.home-status__now {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  min-width: 0;
+}
+
+.home-status__clock {
+  flex-shrink: 0;
+  width: 5.6rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-background) 70%, transparent);
+  color: var(--color-text);
+  transition:
+    background 600ms ease,
+    color 600ms ease;
+}
+
+/* Local night: the face darkens — the only large area of colour.
+   Rule in both themes: day face lighter than the tile, night face darker. */
+.home-status__clock.is-night {
+  background: #2f353d;
+  color: #e9edf1;
+}
+
+[data-theme="dark"] .home-status__clock {
+  background: color-mix(in srgb, var(--color-text) 11%, var(--color-surface));
+}
+
+[data-theme="dark"] .home-status__clock.is-night {
+  background: #111315;
+  color: #d9dee3;
+}
+
+.home-status__analog,
+.home-status__analog-face {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.home-status__analog-face > circle {
+  stroke-opacity: 0;
+}
+
+.home-status__analog-face > line {
+  stroke-opacity: 0.4;
+}
+
+.home-status__hour {
+  stroke: currentColor;
+  stroke-opacity: 0.9;
+}
+
+.home-status__minute {
+  stroke: currentColor;
+  stroke-opacity: 0.65;
+}
+
+.home-status__second {
+  stroke: #cd6a5e;
+}
+
+.home-status__hub {
+  fill: currentColor;
+  fill-opacity: 0.8;
+}
+
+.home-status__time-block {
   display: grid;
-  place-items: center;
-  min-height: 0;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.home-status__time {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: clamp(1.5rem, 2.6vw, 1.85rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
 }
 
 .home-status__date {
   margin: 0;
   font-family: var(--font-ui);
-  font-size: 0.82rem;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  opacity: 0.82;
-  color: inherit;
+  font-size: 0.78rem;
+  line-height: 1.3;
+  color: var(--color-text-secondary);
+}
+
+/* Time → date → weather read as one column beside the clock. */
+.home-status__read {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.home-status__weather {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  min-width: 0;
+  margin: 0.55rem 0 0;
 }
 
 .home-status__temp {
-  margin: 0;
-  align-self: end;
   font-family: var(--font-ui);
-  font-size: clamp(2.4rem, 5.5vw, 3.1rem);
+  font-size: 0.95rem;
   font-weight: 500;
-  letter-spacing: -0.05em;
-  line-height: 0.95;
   font-variant-numeric: tabular-nums;
-}
-
-.home-status__weather-foot {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 0.5rem;
+  color: var(--color-text);
 }
 
 .home-status__condition {
-  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-family: var(--font-ui);
-  font-size: 1rem;
-  line-height: 1.2;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
 }
 
-.home-status__range {
-  margin: 0.2rem 0 0;
-  font-family: var(--font-ui);
-  font-size: 0.82rem;
-  opacity: 0.82;
+/* ——— The sky: weather as a soft wash on the warm-gray tile ———
+   Low alpha over --color-surface, so it stays inside the board palette
+   and works in light and dark. Content sits above it. */
+.home-status__tile {
+  isolation: isolate;
+  overflow: hidden;
 }
 
-.home-status__glyph {
-  width: 3.75rem;
-  height: 3.75rem;
-  flex-shrink: 0;
-  opacity: 0.95;
+.home-status__tile > :not(.home-status__sky) {
+  position: relative;
+  z-index: 1;
 }
 
-.home-status__glyph svg {
-  width: 100%;
-  height: 100%;
-  display: block;
+.home-status__sky {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 600ms ease;
 }
 
-.home-status__analog {
-  width: min(100%, 9.5rem);
-  aspect-ratio: 1;
+/* Sunny: warm light from the upper right. */
+.home-status__tile--sunny .home-status__sky {
+  background: radial-gradient(
+    110% 95% at 100% 0%,
+    rgba(236, 196, 96, 0.42) 0%,
+    rgba(236, 196, 96, 0.14) 42%,
+    transparent 72%
+  );
 }
 
-.home-status__analog-face {
-  width: 100%;
-  height: 100%;
-  display: block;
+/* Clear night: the same light, cool and dim — moonlight. */
+.home-status__tile--clear-night .home-status__sky {
+  background:
+    radial-gradient(
+      70% 60% at 100% 0%,
+      rgba(178, 192, 220, 0.36) 0%,
+      rgba(178, 192, 220, 0.1) 45%,
+      transparent 70%
+    ),
+    radial-gradient(circle at 64% 16%, rgba(130, 142, 168, 0.75) 0 1.3px, transparent 1.9px),
+    radial-gradient(circle at 76% 30%, rgba(130, 142, 168, 0.6) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 88% 46%, rgba(130, 142, 168, 0.55) 0 1.2px, transparent 1.8px),
+    radial-gradient(circle at 54% 34%, rgba(130, 142, 168, 0.45) 0 0.9px, transparent 1.5px);
 }
 
-.home-status__analog-face > circle {
-  stroke-opacity: 0.22;
+/* Cloudy: a few soft cloud shadows drifting across the top. */
+.home-status__tile--cloudy .home-status__sky {
+  background:
+    radial-gradient(34% 22% at 78% 18%, rgba(150, 154, 158, 0.26), transparent 70%),
+    radial-gradient(28% 18% at 60% 26%, rgba(150, 154, 158, 0.2), transparent 70%),
+    radial-gradient(30% 20% at 92% 34%, rgba(150, 154, 158, 0.18), transparent 70%);
 }
 
-.home-status__analog-face > line {
-  stroke-opacity: 0.55;
+/* Rainy: a cool top and a few faint slanted streaks. */
+.home-status__tile--rainy .home-status__sky {
+  background:
+    repeating-linear-gradient(
+      110deg,
+      rgba(124, 159, 200, 0.12) 0 1px,
+      transparent 1px 14px
+    ),
+    linear-gradient(180deg, rgba(124, 159, 200, 0.26), rgba(124, 159, 200, 0.08) 60%, transparent 85%);
+  -webkit-mask-image: radial-gradient(90% 90% at 100% 0%, #000 20%, transparent 75%);
+  mask-image: radial-gradient(90% 90% at 100% 0%, #000 20%, transparent 75%);
 }
 
-/* Hands follow ink so they stay readable on light and dark tiles. */
-.home-status__hour {
-  stroke: color-mix(in srgb, var(--color-text) 92%, transparent);
-}
-
-.home-status__minute {
-  stroke: color-mix(in srgb, var(--color-text) 68%, transparent);
-}
-
-.home-status__second {
-  stroke: #c24b45;
-}
-
-.home-status__hub {
-  fill: color-mix(in srgb, var(--color-text) 78%, transparent);
+/* Snowy: pale blue with a light scatter of flakes. */
+.home-status__tile--snowy .home-status__sky {
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.7) 0 1.4px, transparent 2px),
+    radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.7) 0 1.2px, transparent 2px),
+    radial-gradient(circle at 85% 55%, rgba(255, 255, 255, 0.6) 0 1.6px, transparent 2.2px),
+    radial-gradient(circle at 45% 65%, rgba(255, 255, 255, 0.55) 0 1.2px, transparent 2px),
+    linear-gradient(180deg, rgba(147, 181, 218, 0.22), transparent 80%);
 }
 
 /* ——— Grid ——— */
@@ -968,10 +1081,20 @@
   text-transform: lowercase;
 }
 
-/* ——— Squares ——— */
+/* ——— Squares (Furin / Desk) — interactive, same press as teaching ——— */
 
 .bento-tile--square {
   aspect-ratio: 1;
+  border: 1px solid transparent;
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.bento-tile--square:hover,
+.bento-tile--square:focus-within {
+  border-color: color-mix(in srgb, var(--color-text) 10%, transparent);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
 }
 
 .bento-tile__button--square {
@@ -997,6 +1120,7 @@
   filter: grayscale(1) contrast(1.02);
 }
 
+/* Interactive square (Furin / Desk): media responds — status tiles do not. */
 .bento-tile--square:hover .bento-tile__image,
 .bento-tile--square:focus-within .bento-tile__image {
   transform: scale(1.06);
@@ -1263,19 +1387,10 @@
   padding: 0.45rem 0.75rem 0.45rem 0.55rem;
   box-sizing: border-box;
   background: var(--color-surface);
-  border: 1px solid transparent;
+  border: 0;
   border-radius: 0.85rem;
-  transition:
-    border-color 220ms ease,
-    box-shadow 220ms ease,
-    background 220ms ease;
-}
-
-.hobby-strip:hover,
-.hobby-strip:focus-within {
-  border-color: color-mix(in srgb, var(--color-text) 10%, transparent);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
-  background: color-mix(in srgb, var(--color-surface) 88%, #fff);
+  /* Glance-only — no press chrome; sticker still tips on hover. */
+  cursor: default;
 }
 
 .hobby-strip__sticker {
@@ -1337,13 +1452,30 @@
 
 .bento-tile--folder {
   width: 100%;
+  /* Surface chrome lives on .vibe-folder only — otherwise the stretched
+     tile paints a second gray slab under the card. */
+  background: transparent;
+  overflow: visible;
 }
 
 .vibe-folder {
+  /* Default mist paper — overridden by inline swatch vars. */
+  --folder-back-top: #d0d7de;
+  --folder-back-bottom: #b3bec8;
+  --folder-tab-top: #ccd3da;
+  --folder-tab-bottom: #a9b5c0;
+  --folder-front-top: #d5dce3;
+  --folder-front-mid: #b5c0ca;
+  --folder-front-bottom: #9aa7b3;
+  --folder-shade: 28, 34, 42;
+
+  position: relative;
   display: grid;
   grid-template-rows: 1fr auto;
-  min-height: 19.5rem;
-  padding: 1.35rem 1.25rem 1rem;
+  /* Fill the stretched split cell so height matches the hobby column. */
+  height: 100%;
+  min-height: 17.5rem;
+  padding: 1.1rem 1.2rem 0.95rem;
   box-sizing: border-box;
   background: var(--color-surface);
   border: 1px solid transparent;
@@ -1357,43 +1489,99 @@
 .bento-tile--folder:hover .vibe-folder,
 .bento-tile--folder.is-expanded .vibe-folder,
 .bento-tile--folder:focus-within .vibe-folder {
+  /* Same quiet press as hobbies / teaching. */
   border-color: color-mix(in srgb, var(--color-text) 10%, transparent);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
   background: color-mix(in srgb, var(--color-surface) 88%, #fff);
+}
+
+.vibe-folder__swatches {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.9rem;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.38rem;
+}
+
+.vibe-folder__swatch {
+  width: 0.72rem;
+  height: 0.72rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+  border-radius: 50%;
+  background: var(--swatch);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+.vibe-folder__swatch:hover,
+.vibe-folder__swatch:focus-visible {
+  transform: scale(1.12);
+  outline: none;
+  border-color: color-mix(in srgb, var(--color-text) 28%, transparent);
+}
+
+.vibe-folder__swatch.is-selected {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 0 0 1.5px var(--color-surface),
+    0 0 0 2.5px color-mix(in srgb, var(--color-text) 42%, transparent);
 }
 
 .vibe-folder__stage {
   position: relative;
   display: grid;
-  place-items: center;
-  min-height: 14.75rem;
-  padding: 1.6rem 0 0.5rem;
+  /* Sit the folder lower — leave air under the color dots. */
+  place-items: end center;
+  min-height: 0;
+  padding: 2.15rem 0 0.35rem;
   /* Never clip here: the folder's soft shadow has to fade out on its own.
      Clipping it at the stage box is what drew a hard edge around the
      folder. The tile itself still clips at its rounded corners. */
   overflow: visible;
 }
 
+/* Narrower base geometry, then one scale for the whole folder. */
+.vibe-folder__shell {
+  --folder-base-w: 11.6rem;
+  --folder-base-h: 8.1rem;
+  --folder-scale: 1.22;
+  --folder-w: calc(var(--folder-base-w) * var(--folder-scale));
+  --folder-h: calc(var(--folder-base-h) * var(--folder-scale));
+  position: relative;
+  width: var(--folder-w);
+  height: var(--folder-h);
+  flex: 0 0 auto;
+}
+
 .vibe-folder__back {
   position: absolute;
-  width: 16.5rem;
-  height: 10rem;
-  border-radius: 0.75rem;
-  /* Quieter folder paper — less loud yellow. */
-  background: linear-gradient(180deg, #e8d9b0, #d7c08a);
+  inset: 0;
+  border-radius: 0.7rem;
+  background: linear-gradient(
+    180deg,
+    var(--folder-back-top),
+    var(--folder-back-bottom)
+  );
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
-  transform: translateY(0.15rem);
+  transition: background 280ms ease;
 }
 
 .vibe-folder__covers {
-  position: relative;
+  position: absolute;
+  inset: 0;
   /* Rest: under the flap so the folder front covers the tucked papers. */
   z-index: 1;
   margin: 0;
   padding: 0;
   list-style: none;
-  width: 100%;
-  height: 11rem;
   pointer-events: none;
 }
 
@@ -1404,20 +1592,19 @@
 .vibe-folder__cover {
   position: absolute;
   left: 50%;
-  bottom: 1.35rem;
-  /* A bit wider than the old portrait, still tucks into the folder. */
-  width: 8.85rem;
-  height: 8.15rem;
+  bottom: 18%;
+  /* Stay inside the back — only a slim edge peeks above the front. */
+  width: 48%;
+  height: 72%;
   margin: 0;
-  border-radius: 0.45rem;
+  border-radius: 0.4rem;
   overflow: hidden;
   background: #fff;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
   /* Later covers sit in front within the stack (still under the flap at rest). */
   z-index: calc(1 + var(--cover-i));
-  /* Peek more when collapsed — covers used to read too small. */
-  transform: translateX(calc(-50% + (var(--cover-i) - 1) * 1.55rem))
-    translateY(1.35rem) rotate(calc((var(--cover-i) - 1) * 5deg));
+  transform: translateX(calc(-50% + (var(--cover-i) - 1) * 14%))
+    translateY(10%) rotate(calc((var(--cover-i) - 1) * 5deg));
   transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 320ms ease;
 }
@@ -1429,14 +1616,14 @@
 
 .bento-tile--folder.is-expanded .vibe-folder__cover {
   /* Fan out without scale — keeps “vibe coding / all 3” from feeling zoomed. */
-  transform: translateX(calc(-50% + (var(--cover-i) - 1) * 7.85rem))
-    translateY(-1.55rem) rotate(0deg);
+  transform: translateX(calc(-50% + (var(--cover-i) - 1) * 78%))
+    translateY(-18%) rotate(0deg);
   z-index: calc(1 + var(--cover-i));
 }
 
 .bento-tile--folder.is-expanded .vibe-folder__cover.is-active {
-  transform: translateX(calc(-50% + (var(--cover-i) - 1) * 7.85rem))
-    translateY(-1.95rem) rotate(0deg);
+  transform: translateX(calc(-50% + (var(--cover-i) - 1) * 78%))
+    translateY(-24%) rotate(0deg);
   /* Hovered project rises above the rest of the fan. */
   z-index: 6;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.22);
@@ -1488,9 +1675,9 @@
   /* Rest: folder front covers the papers; expands under the fan on hover. */
   z-index: 3;
   left: 50%;
-  bottom: 0.15rem;
-  width: 17.25rem;
-  height: 7rem;
+  bottom: 0;
+  width: 106%;
+  height: 56%;
   margin: 0;
   padding: 0;
   border: 0;
@@ -1505,7 +1692,7 @@
   transform-origin: 50% 100%;
   transform-style: preserve-3d;
   /* Soft ambient lift only — a tight drop-shadow reads as a hard underline. */
-  filter: drop-shadow(0 10px 16px rgba(40, 32, 18, 0.09));
+  filter: drop-shadow(0 10px 16px rgba(var(--folder-shade), 0.09));
   transition:
     transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
     filter 380ms ease;
@@ -1513,25 +1700,35 @@
 
 .vibe-folder__tab {
   position: absolute;
-  left: 1.25rem;
-  top: -0.9rem;
-  width: 3.9rem;
-  height: 1.2rem;
-  border-radius: 0.55rem 0.55rem 0 0;
-  background: linear-gradient(180deg, #e6d4a6, #d4b878);
+  left: 8%;
+  top: -0.72rem;
+  width: 22%;
+  height: 0.95rem;
+  border-radius: 0.48rem 0.48rem 0 0;
+  background: linear-gradient(
+    180deg,
+    var(--folder-tab-top),
+    var(--folder-tab-bottom)
+  );
+  transition: background 280ms ease;
 }
 
 .vibe-folder__front {
   position: absolute;
   inset: 0;
   /* Keep all four corners round — also while the flap rotates out. */
-  border-radius: 0.75rem;
-  background: linear-gradient(180deg, #ead9ae 0%, #d7bf86 55%, #c8ac6e 100%);
+  border-radius: 0.7rem;
+  background: linear-gradient(
+    180deg,
+    var(--folder-front-top) 0%,
+    var(--folder-front-mid) 55%,
+    var(--folder-front-bottom) 100%
+  );
   /* Local edge only — ambient lift lives on the flap filter. */
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.38),
-    inset 0 -14px 22px rgba(90, 70, 30, 0.045);
-  transition: box-shadow 380ms ease;
+    inset 0 -14px 22px rgba(var(--folder-shade), 0.045);
+  transition: background 280ms ease, box-shadow 380ms ease;
 }
 
 /* Soft ground contact under the closed folder — ellipse, not a hard line. */
@@ -1544,18 +1741,18 @@
   height: 0.85rem;
   z-index: -1;
   border-radius: 50%;
-  background: rgba(40, 32, 18, 0.14);
+  background: rgba(var(--folder-shade), 0.14);
   filter: blur(7px);
   opacity: 0.55;
   pointer-events: none;
-  transition: opacity 380ms ease, transform 380ms ease;
+  transition: opacity 380ms ease, transform 380ms ease, background 280ms ease;
 }
 
 /* Open toward the viewer (outward), tab rides with the flap.
    No clip-path — a trapezoid cut squares the bottom corners. */
 .bento-tile--folder.is-expanded .vibe-folder__flap {
   transform: perspective(720px) rotateX(-36deg) translateY(0.15rem);
-  filter: drop-shadow(0 14px 20px rgba(40, 32, 18, 0.12));
+  filter: drop-shadow(0 14px 20px rgba(var(--folder-shade), 0.12));
 }
 
 .bento-tile--folder.is-expanded .vibe-folder__body::after {
@@ -1566,7 +1763,7 @@
 .bento-tile--folder.is-expanded .vibe-folder__front {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    inset 0 -12px 20px rgba(90, 70, 30, 0.05);
+    inset 0 -12px 20px rgba(var(--folder-shade), 0.05);
 }
 
 .vibe-folder__footer {
@@ -1818,7 +2015,8 @@
   height: 100%;
   margin: 0;
   padding: 0;
-  border: 0;
+  /* Transparent 1px so hover edge doesn’t reflow — same as teaching. */
+  border: 1px solid transparent;
   border-radius: 1.05rem;
   overflow: hidden;
   background: color-mix(in srgb, var(--color-text) 8%, #fff);
@@ -1831,6 +2029,15 @@
   transform: translateZ(0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.selected-rail__card-btn:hover,
+.selected-rail__card-btn:focus-visible {
+  border-color: color-mix(in srgb, var(--color-text) 10%, transparent);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
 }
 
 .selected-rail__media {
@@ -2267,13 +2474,6 @@
     grid-template-columns: 1fr;
   }
 
-  .home-status__tile {
-    aspect-ratio: 5 / 3;
-  }
-
-  .home-status__analog {
-    width: min(100%, 8.5rem);
-  }
 }
 
 @media (max-width: 640px) {
@@ -2307,19 +2507,18 @@
     grid-template-columns: 1fr;
   }
 
-  .vibe-folder__cover {
-    width: 7.6rem;
-    height: 7.1rem;
+  .vibe-folder__shell {
+    --folder-scale: 1.08;
   }
 
   .bento-tile--folder.is-expanded .vibe-folder__cover {
-    transform: translateX(calc(-50% + (var(--cover-i) - 1) * 5.2rem))
-      translateY(-0.7rem) rotate(0deg);
+    transform: translateX(calc(-50% + (var(--cover-i) - 1) * 58%))
+      translateY(-12%) rotate(0deg);
   }
 
   .bento-tile--folder.is-expanded .vibe-folder__cover.is-active {
-    transform: translateX(calc(-50% + (var(--cover-i) - 1) * 5.2rem))
-      translateY(-1rem) rotate(0deg);
+    transform: translateX(calc(-50% + (var(--cover-i) - 1) * 58%))
+      translateY(-18%) rotate(0deg);
   }
 
   .home-about-tile__photo {
@@ -2339,7 +2538,8 @@
   .selected-rail__still,
   .selected-rail__video,
   .bento-tile__image,
-  .home-about-tile__photo img,
+  .home-about-tile__photo-img,
+  .home-about-tile__photo-img--wink,
   .hobby-strip__sticker,
   .home-bento__links a,
   .home-about-tile__more,
@@ -2693,3 +2893,476 @@
 }
 
 /* Dock stays visible over project detail — clearer chrome layer. */
+
+/* Dark theme: the same skies, lighter touch — washes stay tints, not mud. */
+[data-theme="dark"] .home-status__tile--sunny .home-status__sky {
+  background: radial-gradient(
+    110% 95% at 100% 0%,
+    rgba(236, 196, 96, 0.2) 0%,
+    rgba(236, 196, 96, 0.06) 42%,
+    transparent 72%
+  );
+}
+
+[data-theme="dark"] .home-status__tile--clear-night .home-status__sky,
+[data-theme="dark"] .home-status__tile--rainy .home-status__sky,
+[data-theme="dark"] .home-status__tile--snowy .home-status__sky {
+  opacity: 0.6;
+}
+
+[data-theme="dark"] .home-status__tile--cloudy .home-status__sky {
+  opacity: 0.45;
+}
+
+/* ——— External-link arrow, one drawn mark site-wide ———
+   The ↗ glyph came from whatever font was active (thin and tall in one,
+   heavy in another, sitting at a different height each time). It is now a
+   drawn arrow: same weight as the text it follows, its foot on the
+   baseline, top near the x-height, a fixed small gap. The glyph stays in
+   the markup (aria-hidden) but is not painted. */
+@property --arrow-size {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 9px;
+}
+
+:where(a, button, p, li, dd, span):has(> .external-arrow) {
+  --arrow-size: 0.6em;
+}
+
+.external-arrow.external-arrow {
+  display: inline-block;
+  width: var(--arrow-size);
+  height: var(--arrow-size);
+  margin-left: calc(0.28 * var(--arrow-size));
+  font-size: 0;
+  /* overflow ≠ visible puts the box's baseline at its bottom edge, so the
+     arrow's foot sits on the text baseline. */
+  overflow: hidden;
+  vertical-align: baseline;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.6 9.4 9.2 2.8M4.2 2.6h5.2v5.2' fill='none' stroke='%23000' stroke-width='1.35' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.6 9.4 9.2 2.8M4.2 2.6h5.2v5.2' fill='none' stroke='%23000' stroke-width='1.35' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.5;
+  transition:
+    opacity 0.2s ease,
+    translate 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ——— One hover for every external link ———
+   Text darkens, the dotted underline goes solid, the arrow wakes up and
+   nudges toward where it leads (same motion as "more about me").
+   Inline links in prose don't scale — scaling a word inside a sentence
+   makes the line jitter; standalone links (masthead) keep their scale. */
+:is(a, button):hover > .external-arrow.external-arrow,
+:is(a, button):focus-visible > .external-arrow.external-arrow {
+  opacity: 1;
+  translate: 0.1em -0.1em;
+}
+
+/* Prose text links stay unscaled — enlarging a word mid-sentence jitters
+   the line. Org chips are a discrete unit, so they keep the scale hover. */
+.home-about-tile__body .site-text-link:not(.site-org-link):hover,
+.home-about-tile__body .site-text-link:not(.site-org-link):focus-visible {
+  transform: none;
+}
+
+a.site-org-link.site-text-link,
+a.site-org-link {
+  display: inline-flex;
+  /* Mark + name + arrow + trailing period stay one unit. */
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+/* Org chips sit in running copy — never zoom (reflows neighbors). */
+a.site-org-link:hover,
+a.site-org-link:focus-visible {
+  zoom: 1;
+}
+
+/* ——— City cards: weather wash only (not interactive) ———
+   Board rule: hover press (edge + lift) is for things you can open —
+   Furin / Desk / selected work / teaching / folder. Status cards only
+   report time + weather, so they stay still under the pointer. */
+.home-status__tile {
+  --wx: transparent;
+  --wx-mix: 22%;
+  border: 0;
+  box-shadow: none;
+  background: color-mix(in srgb, var(--wx) var(--wx-mix), var(--color-surface));
+  transition: background 600ms ease;
+  cursor: default;
+}
+
+.home-status__tile--sunny { --wx: #ecc65f; }
+.home-status__tile--clear-night { --wx: #8e9bbd; }
+.home-status__tile--cloudy { --wx: #a3a6a8; --wx-mix: 26%; }
+.home-status__tile--rainy { --wx: #7d9fc6; }
+.home-status__tile--snowy { --wx: #b8cfe6; --wx-mix: 34%; }
+
+[data-theme="dark"] .home-status__tile { --wx-mix: 12%; }
+[data-theme="dark"] .home-status__tile--cloudy { --wx-mix: 10%; }
+[data-theme="dark"] .home-status__tile--snowy { --wx-mix: 14%; }
+
+.home-status__tile:hover,
+.home-status__tile:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+  background: color-mix(in srgb, var(--wx) var(--wx-mix), var(--color-surface));
+}
+
+/* On a tinted card the system gray drops under 4.5:1 — deepen it here. */
+.home-status__tile :is(.home-status__place, .home-status__date, .home-status__condition) {
+  color: color-mix(in srgb, var(--color-text) 66%, transparent);
+}
+
+/* Yellow over near-black turns olive; keep the dark sun to a whisper. */
+[data-theme="dark"] .home-status__tile--sunny { --wx-mix: 7%; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Hover language — one system, four roles
+   1. Text link (masthead contact, links in prose, small footers)
+      ink deepens · dotted underline → solid · arrow wakes + nudges.
+      Size never changes: zoom reflows neighbours, scale makes words jump.
+   2. Org chip (mark + name in prose)
+      role 1 + its soft fill deepens one step. Shape and size stay.
+   3. Text action ("more about me", "all", "more", tile kickers)
+      ink deepens · its arrow nudges the way it goes (→ right, ↗ up-right).
+      The words stay still; only the arrow moves.
+   4. Tile you can open (Furin, Desk, work, teaching, folder)
+      1px edge · soft lift · lighter panel; imagery inside may zoom.
+      Tiles that only report (city cards, About text tiles) stay still.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Roles 1 + 3: no size change on any text. */
+.site-text-link,
+.home-bento__links a,
+.site-text-link:hover,
+.site-text-link:focus-visible,
+.home-bento__links a:hover,
+.home-bento__links a:focus-visible {
+  zoom: 1;
+  transform: none;
+}
+
+.home-about-tile__more:hover,
+.home-about-tile__more:focus-visible,
+.vibe-folder__all:hover,
+.vibe-folder__all:focus-visible,
+.bento-tile--folder:hover .vibe-folder__footer .bento-tile__kicker,
+.bento-tile--folder:focus-within .vibe-folder__footer .bento-tile__kicker,
+.bento-tile--teaching:hover .teaching-tile__caption .bento-tile__kicker,
+.bento-tile--teaching:focus-within .teaching-tile__caption .bento-tile__kicker,
+.bento-tile--teaching:hover .teaching-tile__more,
+.bento-tile--teaching:focus-within .teaching-tile__more,
+.about-tile:hover .about-tile__kicker,
+.about-tile:focus-within .about-tile__kicker,
+.about-tile__more:hover,
+.about-tile__more:focus-visible,
+.teaching-course:hover .teaching-course__toggle {
+  transform: none;
+}
+
+/* Role 1: the one ink + underline change, everywhere. */
+.home-bento__links a:hover,
+.home-bento__links a:focus-visible {
+  color: var(--color-text);
+  text-decoration-style: solid;
+  text-decoration-color: currentColor;
+}
+
+/* Role 1 + 2: external arrow — same nudge in every context. */
+:is(a, button):is(:hover, :focus-visible) .external-arrow.external-arrow {
+  opacity: 1;
+  translate: 0.1em -0.1em;
+}
+
+/* Role 3: arrows that point somewhere move that way; words stay put. */
+.about-tile__more:is(:hover, :focus-visible) .about-tile__more-arrow {
+  transform: translate(0.12rem, -0.12rem);
+}
+
+.home-about-tile__more:is(:hover, :focus-visible) .home-about-tile__more-arrow,
+.bento-tile--teaching:is(:hover, :focus-within) .teaching-tile__more-arrow {
+  transform: translateX(0.18rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .external-arrow.external-arrow,
+  .home-about-tile__more-arrow,
+  .about-tile__more-arrow,
+  .teaching-tile__more-arrow {
+    transition: none;
+    translate: none !important;
+    transform: none !important;
+  }
+}
+
+/* ——— City cards v3: one graphic + one number ———
+   Clock (left) is the hero graphic and carries day/night; temperature is
+   the one big number; condition and local time/date are captions. */
+.home-status__tile {
+  gap: 0.9rem;
+  padding: 1.15rem 1.25rem 1.3rem;
+}
+
+.home-status__now {
+  gap: clamp(1.25rem, 3vw, 2rem);
+  align-items: center;
+}
+
+.home-status__clock {
+  width: clamp(6.25rem, 12vw, 8rem);
+}
+
+.home-status__read {
+  gap: 0.3rem;
+}
+
+.home-status__read .home-status__temp {
+  margin: 0;
+  font-size: clamp(2.2rem, 4.4vw, 2.9rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.home-status__read .home-status__condition {
+  margin: 0.15rem 0 0;
+  font-size: 0.85rem;
+  white-space: normal;
+}
+
+.home-status__read .home-status__date {
+  margin: 0.45rem 0 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Cloudy is the tint alone — the blurred cloud read as a smudge. */
+.home-status__tile--cloudy .home-status__sky {
+  background: none;
+}
+
+/* Map outline stays, a touch more legible, in the card's own ink. */
+.home-status__land {
+  width: 2.2rem;
+  height: 2.4rem;
+  opacity: 0.16;
+}
+
+.home-status__land--chongqing {
+  width: 2rem;
+  height: 2.6rem;
+}
+
+/* ——— Case study: live prototype is the primary action ———
+   It sat in the toolbar as one more gray pill beside ×, ‹, ›, so it read
+   as chrome. It is the only action that leaves the page and the one we
+   most want taken: filled with the text color (inverts in dark mode),
+   slightly larger type, drawn arrow at full strength. Same hover language:
+   size never changes, the arrow nudges toward where it leads. */
+.vibe-detail__tool.vibe-detail__tool--primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  height: 2.05rem;
+  padding: 0 0.95rem 0 1rem;
+  border-color: transparent;
+  background: var(--color-text);
+  color: var(--color-background);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.vibe-detail__tool.vibe-detail__tool--primary:hover,
+.vibe-detail__tool.vibe-detail__tool--primary:focus-visible {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--color-text) 84%, var(--color-background));
+}
+
+.vibe-detail__tool.vibe-detail__tool--primary:active {
+  transform: none;
+}
+
+/* Size is set on the pill: the arrow itself has font-size 0, so an em
+   value declared on it would resolve to nothing. */
+.vibe-detail__tool.vibe-detail__tool--primary {
+  --arrow-size: 0.72em;
+}
+
+.vibe-detail__tool--primary > .external-arrow.external-arrow {
+  margin-left: calc(0.5 * var(--arrow-size));
+  opacity: 1;
+}
+
+.vibe-detail__toolbar-group--nav > .vibe-detail__tool--primary {
+  margin-right: 0.3rem;
+}
+
+/* ——— Org marks rest quiet, wake on hover ———
+   Full-color brand tiles (OSU red, fAIshion black) were the loudest
+   pixels in a paragraph of gray text. At rest they now sit in grayscale
+   at the weight of the description text; hover/focus brings the brand
+   color back — the same rule as the Onomichi tile (desaturated until
+   touched) and the external arrow (50% until touched). */
+.site-org-link__mark {
+  filter: grayscale(1);
+  opacity: 0.62;
+  transition:
+    filter 0.3s ease,
+    opacity 0.3s ease;
+}
+
+a.site-org-link:hover .site-org-link__mark,
+a.site-org-link:focus-visible .site-org-link__mark {
+  filter: none;
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .site-org-link__mark {
+    filter: grayscale(0.4);
+    opacity: 0.85;
+  }
+}
+
+/* ——— Masthead row on the type scale ———
+   Trait chip, contact links and "more about me" were 0.72 / 0.78 / 0.78rem
+   next to tile labels at 0.75rem — three near-sizes with no hierarchy
+   between them. All small UI labels now share --type-label. The chip
+   stays apart by weight (500) and its tint, not by size. */
+.home-bento__links,
+.home-bento__links--masthead,
+.home-bento__tag,
+.home-bento__tag-text,
+.home-about-tile__more,
+.home-about-tile__title,
+.bento-tile__kicker,
+.home-status__place {
+  font-size: var(--type-label);
+}
+
+/* ——— Selected work: one header ———
+   Section title at the site's section-title size (same as the Projects
+   page sections), a single gray line of contents, and "All projects →"
+   on the right in the "more about me" style — so the way into the work is
+   the clearest signpost on the page, not its faintest label. */
+.selected-rail__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  flex-wrap: wrap;
+  padding: 0 0.05rem;
+}
+
+.selected-rail__heading {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+  flex: 1 1 22rem;
+}
+
+.selected-rail__title {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: var(--color-text);
+}
+
+.selected-rail__note {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: var(--type-caption);
+  line-height: 1.5;
+  color: var(--color-text-description);
+}
+
+.selected-rail__all {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* The header sits closer to its cards than the old bridge did. */
+.selected-rail {
+  gap: 0.95rem;
+}
+
+/* ——— Onomichi + desk on narrow screens ———
+   On desktop these tiles take their height from the About row. Stacked
+   below About there is no row to fill, so they collapsed to 2px strips.
+   Here they get a shape of their own: two small tiles side by side. */
+@media (max-width: 900px) {
+  .home-about-row__side,
+  .home-about-row__side:where(*) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+  }
+
+  /* Landscape, not square: they keep their picture and label but don't
+     push "Selected work" off the first phone screen. */
+  .home-about-row__side .bento-tile--square {
+    height: auto;
+    aspect-ratio: 16 / 10;
+  }
+
+  .home-about-row__side .bento-tile__button--square {
+    height: 100%;
+    min-height: 0;
+  }
+}
+
+/* ——— Folder covers adapt to how many projects there are ———
+   Positions were written for three covers: each was offset from "the
+   second one" (cover-i − 1), so with two projects both sat left of
+   centre. Now each cover is offset from the CENTRE of the group, and the
+   fan's step shrinks as the count grows so the fan keeps the same total
+   width (1 → centred, 2 → a pair either side, 3 → as before, 4+ →
+   tighter). */
+.vibe-folder__cover {
+  --cover-o: calc(var(--cover-i) - (var(--cover-n, 3) - 1) / 2);
+  --fan-step: calc(156% / max(var(--cover-n, 3) - 1, 1));
+  --fan-step: min(78%, calc(156% / max(var(--cover-n, 3) - 1, 1)));
+  transform: translateX(calc(-50% + var(--cover-o) * 14%))
+    translateY(10%) rotate(calc(var(--cover-o) * 5deg));
+}
+
+.bento-tile--folder.is-expanded .vibe-folder__cover {
+  transform: translateX(calc(-50% + var(--cover-o) * var(--fan-step)))
+    translateY(-18%) rotate(0deg);
+}
+
+.bento-tile--folder.is-expanded .vibe-folder__cover.is-active {
+  transform: translateX(calc(-50% + var(--cover-o) * var(--fan-step)))
+    translateY(-24%) rotate(0deg);
+}
+
+@media (max-width: 640px) {
+  .vibe-folder__cover {
+    --fan-step: min(58%, calc(116% / max(var(--cover-n, 3) - 1, 1)));
+  }
+
+  .bento-tile--folder.is-expanded .vibe-folder__cover {
+    transform: translateX(calc(-50% + var(--cover-o) * var(--fan-step)))
+      translateY(-12%) rotate(0deg);
+  }
+
+  .bento-tile--folder.is-expanded .vibe-folder__cover.is-active {
+    transform: translateX(calc(-50% + var(--cover-o) * var(--fan-step)))
+      translateY(-18%) rotate(0deg);
+  }
+}
+
+/* Phones: no Onomichi / desk tiles. Both are experiences built for a
+   larger screen (a wish wall, a desk scene), so on a phone the About tile
+   leads straight into Selected work. */
+@media (max-width: 640px) {
+  .home-about-row__side {
+    display: none;
+  }
+}

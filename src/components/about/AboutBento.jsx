@@ -1,6 +1,6 @@
 import { Fragment, useState } from "react";
 import { LayoutGroup } from "framer-motion";
-import { MakingLoop, PhotoStack } from "./AboutInteractions";
+import { MakingLoop } from "./AboutInteractions";
 import { BrickSource, TraitBricks } from "./TraitBricks";
 import VolunteerGarden from "./VolunteerGarden";
 
@@ -16,12 +16,14 @@ const KICKERS = {
     possibilities: "possibilities",
     making: "making",
     true: "honesty",
+    loop: "my workflow",
   },
   zh: {
     doubt: "提问",
     possibilities: "可能",
     making: "动手",
     true: "诚实",
+    loop: "我的工作流程",
   },
 };
 
@@ -62,9 +64,9 @@ function AboutParagraph({ paragraph }) {
   );
 }
 
-function TraitTile({ section, kicker, processSteps, language, brick }) {
-  const isMaking = section.id === "making";
-  // The loop brings its own caption ("Put together, it becomes a loop:").
+function TraitTile({ section, kicker, brick }) {
+  // The loop has its own tile (LoopTile); its caption ("Put together, it
+  // becomes a loop:") goes with it.
   const paragraphs = section.diagram
     ? section.paragraphs.slice(0, -1)
     : section.paragraphs;
@@ -89,18 +91,22 @@ function TraitTile({ section, kicker, processSteps, language, brick }) {
       aria-labelledby={`about-${section.id}`}
     >
       {brick}
-      {isMaking ? (
-        <div className="about-tile__split">
-          <div className="about-tile__text">{text}</div>
-          <MakingLoop
-            steps={processSteps}
-            language={language}
-            caption={section.paragraphs[section.paragraphs.length - 1]}
-          />
-        </div>
-      ) : (
-        text
-      )}
+      {text}
+    </section>
+  );
+}
+
+/** Making's loop as its own tile, beside Making. Splitting it out lets
+ *  Making carry its block top-right like every other trait tile. */
+function LoopTile({ section, kicker, processSteps, language }) {
+  return (
+    <section className="bento-tile about-tile about-tile--loop" aria-label={kicker}>
+      <p className="bento-tile__kicker about-tile__kicker">{kicker}</p>
+      <MakingLoop
+        steps={processSteps}
+        language={language}
+        caption={section.paragraphs[section.paragraphs.length - 1]}
+      />
     </section>
   );
 }
@@ -207,22 +213,29 @@ export default function AboutBento({ copy, language, experience }) {
         <div className="about-bento__grid">
           {essay.sections.map((section) => (
             <Fragment key={section.id}>
+              {/* Volunteering sits beside "honesty" (the photo stack that
+                  was here is retired). */}
               {section.id === "true" ? (
-                <PhotoStack language={language} />
+                <VolunteerGarden language={language} stacked />
               ) : null}
               <TraitTile
                 section={section}
                 kicker={kickers[section.id] ?? section.id}
-                processSteps={copy.processSteps}
-                language={language}
                 brick={<BrickSource id={section.id} language={language} collected={Boolean(bricks[section.id])} onCollect={collect} />}
               />
               {section.id === "doubt" && (
                 <TraitBricks language={language} bricks={bricks} onPlace={togglePlacement} />
               )}
+              {section.diagram ? (
+                <LoopTile
+                  section={section}
+                  kicker={kickers.loop}
+                  processSteps={copy.processSteps}
+                  language={language}
+                />
+              ) : null}
             </Fragment>
           ))}
-          <VolunteerGarden language={language} />
           {experience.items.length ? <ExperienceStack {...experience} /> : null}
         </div>
       </LayoutGroup>

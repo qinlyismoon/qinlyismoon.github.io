@@ -875,6 +875,9 @@ a.about-experience__org {
 
 /* The assembly tile */
 .bento-tile.about-bricks {
+  /* Soft day sky — cool blue wash, distinct from the lamp’s warm yellow. */
+  --bricks-sky: color-mix(in srgb, #8eb8d8 38%, var(--color-surface));
+  --bricks-sky-deep: color-mix(in srgb, #6a9fc4 28%, var(--color-surface));
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -886,16 +889,140 @@ a.about-experience__org {
   position: relative;
   z-index: 30;
   overflow: visible;
-}
-
-/* Same hover as every other About tile: 1px edge, soft lift, lighter panel. */
-.bento-tile.about-bricks {
   transition:
     border-color 220ms ease,
     box-shadow 220ms ease,
     background 220ms ease;
 }
 
+/* Clipped sky + clouds. Separate from the tile so flying blocks aren’t cut. */
+.about-bricks__sky {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.about-bricks__sky::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      var(--bricks-sky-deep) 0%,
+      var(--bricks-sky) 55%,
+      color-mix(in srgb, #c5d9e8 22%, var(--color-surface)) 100%
+    );
+  transform: scaleY(0);
+  transform-origin: 50% 100%;
+  transition: transform 920ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bento-tile.about-bricks.is-complete .about-bricks__sky::before {
+  transform: scaleY(1);
+}
+
+[data-theme="dark"] .bento-tile.about-bricks {
+  --bricks-sky: color-mix(in srgb, #4a6f92 34%, var(--color-surface));
+  --bricks-sky-deep: color-mix(in srgb, #3a5a7a 40%, var(--color-surface));
+}
+
+/* Flat toy clouds (same face/edge language as the white block).
+   Wait for sky fill (~0.92s), then glide in quickly. */
+.about-bricks__cloud {
+  position: absolute;
+  display: block;
+  overflow: visible;
+  opacity: 0;
+  filter: drop-shadow(0 1px 2px rgba(40, 32, 24, 0.08));
+}
+
+.about-bricks__cloud--a {
+  top: 12%;
+  left: 6%;
+  width: 5.2rem;
+  height: 2.3rem;
+}
+
+.about-bricks__cloud--b {
+  top: 34%;
+  right: 6%;
+  width: 6.4rem;
+  height: 2.85rem;
+}
+
+.about-bricks__cloud--c {
+  bottom: 24%;
+  left: 20%;
+  width: 4.4rem;
+  height: 1.95rem;
+}
+
+.bento-tile.about-bricks.is-complete .about-bricks__cloud--a {
+  animation:
+    about-cloud-in-right 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.95s both,
+    about-cloud-drift 14s ease-in-out 1.55s infinite;
+}
+
+.bento-tile.about-bricks.is-complete .about-bricks__cloud--b {
+  animation:
+    about-cloud-in-left 0.58s cubic-bezier(0.22, 1, 0.36, 1) 1.05s both,
+    about-cloud-drift-alt 16s ease-in-out 1.7s infinite;
+}
+
+.bento-tile.about-bricks.is-complete .about-bricks__cloud--c {
+  animation:
+    about-cloud-in-right 0.52s cubic-bezier(0.22, 1, 0.36, 1) 1.15s both,
+    about-cloud-drift 18s ease-in-out 1.75s infinite;
+}
+
+@keyframes about-cloud-in-right {
+  from {
+    opacity: 0;
+    translate: -4.5rem 0;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes about-cloud-in-left {
+  from {
+    opacity: 0;
+    translate: 4.5rem 0;
+  }
+  to {
+    opacity: 0.95;
+    translate: 0 0;
+  }
+}
+
+@keyframes about-cloud-drift {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0.55rem -0.12rem;
+  }
+}
+
+@keyframes about-cloud-drift-alt {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: -0.6rem 0.1rem;
+  }
+}
+
+/* Same hover as every other About tile: 1px edge, soft lift.
+   Complete state keeps the sky (don’t bleach it back to light gray). */
 .bento-tile.about-bricks:hover,
 .bento-tile.about-bricks:focus-within {
   border-color: color-mix(in srgb, var(--color-text) 10%, transparent);
@@ -903,7 +1030,14 @@ a.about-experience__org {
   background: color-mix(in srgb, var(--color-surface) 88%, #fff);
 }
 
+.bento-tile.about-bricks.is-complete:hover,
+.bento-tile.about-bricks.is-complete:focus-within {
+  background: var(--color-surface);
+}
+
 .about-bricks__copy {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: 0.55rem;
   align-content: center;
@@ -940,6 +1074,8 @@ a.about-experience__org {
    rows, ground. Row height is the block body, so each tab slots into the
    socket of the block above. */
 .about-bricks__stage {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: var(--block-w) var(--block-w);
   grid-template-rows: 2.3rem repeat(3, var(--block-h)) 0.4rem;
@@ -1007,6 +1143,29 @@ a.about-experience__org {
   transition: opacity 400ms ease;
 }
 
+/* Quiet warm bloom from the lit glass — stays cool sky; light is local. */
+.toy-lamp::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  /* Glass center in the 44×30 lamp art (~y 19 / 30). */
+  top: 63%;
+  width: 9.5rem;
+  height: 6.5rem;
+  translate: -50% -50%;
+  background: radial-gradient(
+    ellipse 72% 68% at 50% 50%,
+    rgba(255, 214, 110, 0.18) 0%,
+    rgba(255, 220, 150, 0.09) 28%,
+    rgba(255, 228, 170, 0.035) 52%,
+    transparent 78%
+  );
+  opacity: 0;
+  transition: opacity 720ms ease 0.9s;
+  pointer-events: none;
+  z-index: -1;
+}
+
 .toy-lamp__art {
   position: relative;
   display: block;
@@ -1045,6 +1204,10 @@ a.about-experience__org {
   opacity: 1;
 }
 
+.about-bricks.is-complete .toy-lamp::after {
+  opacity: 1;
+}
+
 .about-bricks.is-complete .toy-lamp__glass {
   fill: #ffdc7a;
   animation: toy-lamp-glow 2.8s ease-in-out 600ms infinite;
@@ -1075,13 +1238,36 @@ a.about-experience__org {
   .toy-block,
   .toy-lamp,
   .toy-lamp__glass,
-  .toy-lamp__beam {
+  .toy-lamp__beam,
+  .about-bricks__sky::before {
     transition: none;
   }
 
+  .about-bricks__sky::before,
+  .toy-lamp::after {
+    opacity: 0;
+    transform: none;
+    transition: none;
+  }
+
+  .bento-tile.about-bricks.is-complete .about-bricks__sky::before,
+  .about-bricks.is-complete .toy-lamp::after {
+    opacity: 1;
+  }
+
   .about-bricks__hint,
-  .about-bricks.is-complete .toy-lamp__glass {
+  .about-bricks.is-complete .toy-lamp__glass,
+  .bento-tile.about-bricks.is-complete .about-bricks__cloud--a,
+  .bento-tile.about-bricks.is-complete .about-bricks__cloud--b,
+  .bento-tile.about-bricks.is-complete .about-bricks__cloud--c {
     animation: none;
+  }
+
+  .bento-tile.about-bricks.is-complete .about-bricks__cloud--a,
+  .bento-tile.about-bricks.is-complete .about-bricks__cloud--b,
+  .bento-tile.about-bricks.is-complete .about-bricks__cloud--c {
+    opacity: 0.85;
+    translate: 0;
   }
 }
 
@@ -1261,4 +1447,557 @@ a.about-experience__org {
   .garden__card {
     animation: none !important;
   }
+}
+
+/* ——— Sill keepsakes that aren't plants ———
+   The antelope and the camera stand on the sill without a pot, so the
+   plant sway would read as a wobble. Each gets its own small, in-character
+   hover: the antelope lifts its head; the camera's flash window lights. */
+.garden-plant--river .garden-plant__leaves,
+.garden-plant--photo .garden-plant__leaves {
+  animation: none !important;
+}
+
+.garden-antelope__head {
+  transform-box: fill-box;
+  transform-origin: 60% 100%;
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.garden-plant:hover .garden-antelope__head,
+.garden-plant:focus-visible .garden-antelope__head,
+.garden-plant.is-active .garden-antelope__head {
+  transform: rotate(4deg) translateY(-0.6px);
+}
+
+.garden-camera__flash {
+  transition: fill 160ms ease;
+}
+
+.garden-plant:hover .garden-camera__flash,
+.garden-plant:focus-visible .garden-camera__flash,
+.garden-plant.is-active .garden-camera__flash {
+  fill: #fff6c9;
+  animation: garden-flash 1.6s ease-in-out infinite;
+}
+
+@keyframes garden-flash {
+  0%, 70%, 100% { opacity: 1; }
+  78% { opacity: 0.35; }
+  86% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .garden-antelope__head,
+  .garden-camera__flash {
+    transition: none;
+    animation: none !important;
+  }
+}
+
+/* ——— Sky, flat like the blocks ———
+   Clouds are crisp shapes in the blocks' geometry (see FlatCloud): no
+   drop shadow. Two of them, both in the sky around the lighthouse — one
+   up and to the right of the lamp, one lower and to the left of the
+   tower — and none behind the copy (the third, which sat under the
+   title, is gone). */
+.about-bricks__cloud {
+  filter: none;
+}
+
+.about-bricks__cloud--a {
+  display: none;
+}
+
+.about-bricks__cloud--b {
+  /* Above the beam's right end, below the copy. */
+  top: 33%;
+  right: 5%;
+  left: auto;
+  bottom: auto;
+  width: 5.6rem;
+  height: 2.5rem;
+}
+
+.about-bricks__cloud--c {
+  top: auto;
+  right: auto;
+  bottom: 27%;
+  left: 27%;
+  width: 4rem;
+  height: 1.8rem;
+}
+
+/* The beam: a flat, hard-edged wedge of lamp light instead of a blurred
+   gradient, and no soft bloom behind the glass — same flat rendering as
+   everything else in the tile. */
+.toy-lamp__beam--left,
+.toy-lamp__beam--right {
+  background: rgba(255, 214, 110, 0.32);
+}
+
+.toy-lamp__beam--left {
+  clip-path: polygon(100% 38%, 100% 62%, 0 92%, 0 8%);
+}
+
+.toy-lamp__beam--right {
+  clip-path: polygon(0 38%, 0 62%, 100% 92%, 100% 8%);
+}
+
+.toy-lamp::after {
+  display: none;
+}
+
+[data-theme="dark"] .toy-lamp__beam--left,
+[data-theme="dark"] .toy-lamp__beam--right {
+  background: rgba(255, 214, 110, 0.22);
+}
+
+/* ——— Volunteering beside "honesty" ———
+   Takes the photo stack's place (span 5 next to honesty's 7). Text on
+   top, then the sill as two shelves of two, newest first: SIGGRAPH pin +
+   camera above, antelope + sprout below. The shelves sit at the foot of
+   the tile so the tile can stretch to honesty's height without a gap
+   opening between them. */
+.about-tile--garden.is-stacked {
+  grid-column: span 5;
+}
+
+.about-tile--garden.is-stacked .garden__split {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.5rem;
+  flex: 1 1 auto;
+}
+
+.garden__shelves {
+  display: grid;
+  gap: 1.9rem;
+}
+
+.about-tile--garden.is-stacked .garden__shelves {
+  margin-top: auto;
+}
+
+.about-tile--garden.is-stacked .garden__sill {
+  justify-content: space-around;
+  justify-self: stretch;
+  gap: 1rem;
+  padding: 0 0.75rem 0.2rem;
+}
+
+.about-tile--garden.is-stacked .garden-plant {
+  width: 5rem;
+}
+
+.about-tile--garden.is-stacked .garden-pin {
+  width: 3.4rem;
+}
+
+/* Hover dimming spans both shelves: one keepsake in focus, the rest of
+   the windowsill steps back. */
+.garden__shelves:has(.is-active) :is(.garden-plant, .garden-pin):not(.is-active) {
+  opacity: 0.5;
+}
+
+/* Garden note: all details share one grid cell (height = the longest);
+   only the active one is visible. Replaces the 2.9rem guess, which was
+   too short once the tile became half width and lines wrapped. */
+.garden__note {
+  display: grid;
+  min-height: 0;
+}
+
+.garden__note > .garden__card {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  animation: none;
+}
+
+.garden__note > .garden__card.is-shown {
+  visibility: visible;
+  animation: about-pop 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* One shelf: the four keepsakes spread along the full sill. */
+.about-tile--garden.is-stacked .garden__shelves.is-one-shelf .garden__sill {
+  justify-content: space-between;
+  padding: 0 0.5rem 0.2rem;
+}
+
+/* One shelf in the half-width tile: each piece gets an equal share of the
+   sill (the pin a smaller one) and scales into it, never past its full
+   size — so all four fit on one line at the tile's real width. */
+.about-tile--garden.is-stacked .garden__shelves.is-one-shelf .garden__sill {
+  gap: 0.5rem;
+}
+
+.about-tile--garden.is-stacked .garden__shelves.is-one-shelf .garden__sill > li {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.about-tile--garden.is-stacked .garden__shelves.is-one-shelf .garden__pin-slot {
+  flex-grow: 0.68;
+}
+
+.about-tile--garden.is-stacked .garden__shelves.is-one-shelf .garden-plant {
+  width: 100%;
+  max-width: 5rem;
+}
+
+.about-tile--garden.is-stacked .garden__shelves.is-one-shelf .garden-pin {
+  width: 100%;
+  max-width: 3.4rem;
+}
+
+/* ——— Scattered keepsakes (volunteering beside "honesty") ———
+   No sill line, no rows: the four pieces lie across the space under the
+   text like things set down on a table — each its own size and a slight
+   tilt, overlapping nothing, filling the tile so it doesn't read empty.
+   Positions are % of the field, so the arrangement holds at any width.
+   The note above keeps its reserved height (longest detail), so hover
+   never moves anything. */
+.about-tile--garden.is-stacked .garden__split {
+  gap: 0.75rem;
+}
+
+.garden__split .garden__sill.garden__scatter {
+  align-self: stretch;
+  justify-self: stretch;
+  width: 100%;
+}
+
+.garden__sill.garden__scatter {
+  position: relative;
+  display: block;
+  flex: 1 1 auto;
+  min-height: 13rem;
+  margin: 0;
+  padding: 0;
+}
+
+.garden__sill.garden__scatter::after {
+  display: none;
+}
+
+.garden__scatter .garden__spot {
+  position: absolute;
+  translate: -50% 0;
+  rotate: var(--spot-tilt, 0deg);
+}
+
+.garden__scatter .garden__spot > .garden-plant {
+  width: var(--spot-w);
+}
+
+.garden__scatter .garden__spot > .garden-pin {
+  width: var(--spot-w);
+}
+
+/* Arrangement: two pieces anchored to the top of the field, two to the
+   bottom, alternating sides — so the gaps between them grow with the
+   tile instead of everything piling at the foot. Measured on the visible
+   art, not the SVG boxes (the camera's box is mostly empty above it). */
+
+/* Camera — newest: top right, its body just under the reserved note. */
+.garden__scatter .garden__spot--photo {
+  --spot-w: 6rem;
+  --spot-tilt: 6deg;
+  left: 70%;
+  top: -4.3rem;
+}
+
+/* SIGGRAPH pin — small, top left, already tilted by its own style. */
+.garden__scatter .garden__spot--pin {
+  --spot-w: 3.8rem;
+  left: 18%;
+  top: 3%;
+  padding: 0;
+}
+
+/* Antelope — standing at the foot, left of centre. */
+.garden__scatter .garden__spot--river {
+  --spot-w: 6rem;
+  left: 38%;
+  bottom: 0;
+}
+
+/* Sprout — at the foot, right. */
+.garden__scatter .garden__spot--teach {
+  --spot-w: 4.8rem;
+  --spot-tilt: -4deg;
+  left: 82%;
+  bottom: 0;
+}
+
+/* ——— Try: honesty wider, volunteering in two rows ———
+   Honesty takes 8 of 12 tracks (its text needs fewer lines, so the row
+   gets shorter); volunteering takes 4 and lays its keepsakes in two rows
+   of two, newest first — pin + camera, then antelope + sprout. No sill
+   line; each piece keeps its own size and tilt. Rows sit at the foot of
+   the tile, under the reserved note. */
+.about-tile--true {
+  grid-column: span 8;
+}
+
+.about-tile--garden.is-stacked {
+  grid-column: span 4;
+}
+
+.garden__sill.garden__scatter {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: end;
+  align-items: end;
+  justify-items: center;
+  row-gap: 1.6rem;
+  column-gap: 0.75rem;
+  min-height: 0;
+}
+
+.garden__scatter .garden__spot {
+  position: static;
+  translate: none;
+}
+
+.garden__scatter .garden__spot--pin {
+  --spot-w: 3.4rem;
+  /* A little off the camera's baseline, like it was set down apart. */
+  margin-bottom: 0.5rem;
+}
+
+.garden__scatter .garden__spot--photo {
+  --spot-w: 5.4rem;
+  /* The camera's art fills only the lower ~45% of its box; drop the
+     empty top so the first row isn't padded with air. */
+  margin-top: calc(var(--spot-w) * -0.72);
+}
+
+.garden__scatter .garden__spot--river {
+  --spot-w: 5.2rem;
+}
+
+.garden__scatter .garden__spot--teach {
+  --spot-w: 4.4rem;
+}
+
+/* Two-row volunteering, sized so the tile stays close to honesty's
+   height (honesty sets the row; the keepsakes shouldn't). */
+.garden__sill.garden__scatter {
+  row-gap: 1rem;
+}
+
+.garden__scatter .garden__spot--pin {
+  --spot-w: 3.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.garden__scatter .garden__spot--photo {
+  --spot-w: 5rem;
+}
+
+.garden__scatter .garden__spot--river {
+  --spot-w: 4.8rem;
+}
+
+.garden__scatter .garden__spot--teach {
+  --spot-w: 4.1rem;
+}
+
+/* ——— Volunteering: two shelves that fit honesty's height ———
+   The row's height comes from honesty's text, not from the keepsakes:
+   the volunteering tile is size-contained (it contributes no height of
+   its own) and stretches to the row. Under the title and the reserved
+   note, two shelves — each with its sill line — split what's left, and
+   every piece scales to its shelf's height (capped at full size). So the
+   tile grows and shrinks with honesty instead of propping the row up. */
+@media (min-width: 721px) {
+  .about-tile--garden.is-stacked {
+    contain: size;
+  }
+}
+
+.garden__shelves--fit {
+  flex: 1 1 0;
+  min-height: 9rem;
+  container-type: size;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  row-gap: 0.9rem;
+}
+
+.about-tile--garden.is-stacked .garden__shelves--fit .garden__sill {
+  /* Shelf height, minus the sill line and a little air above. */
+  --row-h: calc((100cqh - 0.9rem) / 2 - 0.5rem);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 0.5rem;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0 0.5rem 0.25rem;
+}
+
+.garden__shelves--fit .garden__spot {
+  position: static;
+  translate: none;
+  margin: 0;
+}
+
+.garden__shelves--fit .garden__spot > .garden-plant,
+.garden__shelves--fit .garden__spot > .garden-pin {
+  width: var(--spot-w);
+}
+
+.garden__shelves--fit .garden__spot--pin {
+  --spot-w: min(calc(var(--row-h) * 0.62), 3.6rem);
+  padding-bottom: 0.35rem;
+}
+
+/* The camera's art is only the lower ~40% of its box: a wider box keeps
+   its body readable; the empty top may rise above the shelf. */
+.garden__shelves--fit .garden__spot--photo {
+  --spot-w: min(calc(var(--row-h) * 1.15), 5.8rem);
+}
+
+.garden__shelves--fit .garden__spot--river {
+  --spot-w: min(calc(var(--row-h) * 0.74), 5.4rem);
+}
+
+.garden__shelves--fit .garden__spot--teach {
+  --spot-w: min(calc(var(--row-h) * 0.66), 4.6rem);
+}
+
+/* Give the shelves every spare pixel: tighter gaps around them. */
+.about-tile--garden.is-stacked .garden__split {
+  gap: 0.5rem;
+}
+
+.garden__shelves--fit {
+  row-gap: 0.55rem;
+}
+
+.about-tile--garden.is-stacked .garden__shelves--fit .garden__sill {
+  --row-h: calc((100cqh - 0.55rem) / 2 - 0.3rem);
+}
+
+/* ——— Making + its loop, side by side ———
+   The loop has its own tile, so Making is a plain trait tile again: text
+   only, its block top-right like Questions and Possibilities (the
+   bottom-right resting place and the padding band it needed are gone).
+   Making 8 · loop 4 mirrors the row below (volunteering 4 · honesty 8). */
+.about-tile--making {
+  grid-column: span 8;
+}
+
+.about-tile--loop {
+  grid-column: span 4;
+}
+
+.about-tile--making .toy-block-source {
+  top: 1.3rem;
+  bottom: auto;
+}
+
+.bento-tile.about-tile--making {
+  padding-bottom: 1.2rem;
+}
+
+.about-tile--making .about-tile__kicker {
+  min-height: 2.3rem;
+}
+
+/* The loop sits in the middle of its tile, under its kicker. */
+.about-tile--loop {
+  gap: 0.55rem;
+}
+
+.about-tile--loop .making-loop {
+  margin: auto 0;
+  align-self: center;
+}
+
+/* ——— Volunteering, refined ———
+   No reserved note under the title any more: the shelves take all the
+   space below it, so the pieces can be bigger. Spacing follows the board:
+   shelves are 0.9rem apart (the bento gap), the last sill sits on the
+   tile's own bottom padding, the sill line is the one used everywhere.
+   Hover details float over the other shelf (see .garden__float). */
+.about-tile--garden.is-stacked .garden__note[hidden] {
+  display: none;
+}
+
+.about-tile--garden.is-stacked .garden__split {
+  gap: 0.9rem;
+  min-height: 0;
+}
+
+.garden__shelves--fit {
+  row-gap: 0.9rem;
+  min-height: 0;
+}
+
+.about-tile--garden.is-stacked .garden__shelves--fit .garden__sill {
+  --row-h: calc((100cqh - 0.9rem) / 2 - 0.45rem);
+  grid-column: 1;
+  padding: 0 0.35rem 0.3rem;
+}
+
+.garden__shelves--fit .garden__spot--pin {
+  --spot-w: min(calc(var(--row-h) * 0.6), 4rem);
+}
+
+.garden__shelves--fit .garden__spot--photo {
+  --spot-w: min(calc(var(--row-h) * 1.2), 6.6rem);
+}
+
+.garden__shelves--fit .garden__spot--river {
+  --spot-w: min(calc(var(--row-h) * 0.75), 6.2rem);
+}
+
+.garden__shelves--fit .garden__spot--teach {
+  --spot-w: min(calc(var(--row-h) * 0.68), 5.4rem);
+}
+
+/* Details over the other shelf: same voice as the old note; that shelf's
+   pieces step far back so the words read cleanly. */
+.garden__float {
+  grid-column: 1;
+  z-index: 2;
+  align-self: center;
+  display: grid;
+  gap: 0.15rem;
+  padding: 0 0.35rem;
+  pointer-events: none;
+  animation: about-pop 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.garden__float p {
+  margin: 0;
+}
+
+.garden__shelves--fit[data-caption-row="0"] .garden__sill:nth-of-type(1) .garden__spot,
+.garden__shelves--fit[data-caption-row="1"] .garden__sill:nth-of-type(2) .garden__spot {
+  opacity: 0.12;
+  transition: opacity 200ms ease;
+}
+
+/* Phones: volunteering is full width with no neighbour to take its height
+   from, so the shelves get their own (two shelves, pieces at full size). */
+@media (max-width: 720px) {
+  .garden__shelves--fit {
+    flex: 0 0 auto;
+    height: 15rem;
+  }
+}
+
+/* Camera in proportion with the other keepsakes (it read as the largest
+   thing on the shelves). */
+.garden__shelves--fit .garden__spot--photo {
+  --spot-w: min(calc(var(--row-h) * 0.92), 5rem);
 }

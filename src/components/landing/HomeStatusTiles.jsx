@@ -1,8 +1,13 @@
 /**
- * Glance widgets — Columbus weather + two analog clocks
- * (Columbus / hometown Chongqing) in one quiet row.
- * Corner land marks: Ohio for Columbus, Chongqing for home.
+ * Two city cards — Columbus (where I am) and Chongqing (where I'm from).
+ * Each stands on its own: local time, local date, local weather. No offset
+ * relative to the other city.
+ *
+ * Board language: the same warm-gray tile as every other block; colour only
+ * where it means something — the clock face darkens at local night, and the
+ * weather glyph carries a soft hue.
  */
+import { useEffect, useState } from "react";
 import useDeskEnvironment from "../../hooks/useDeskEnvironment";
 import {
   CHONGQING_TZ,
@@ -11,12 +16,60 @@ import {
 } from "../../hooks/useEasternTime";
 import {
   SITE_LOCATION,
+  fetchCurrentWeather,
   formatTempC,
   weatherConditionLabel,
 } from "../../lib/weather";
 import { CHONGQING_LAND, OHIO_LAND } from "../../lib/landMarks";
 
 const COLUMBUS_TZ = "America/New_York";
+const CHONGQING_COORDS = { latitude: 29.563, longitude: 106.5516 };
+const WEATHER_REFRESH_MS = 15 * 60_000;
+
+/** Weather for one city (Columbus reuses the desk's shared reading). */
+function useCityWeather(coords, skip) {
+  const [weather, setWeather] = useState(null);
+  useEffect(() => {
+    if (skip) return undefined;
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const next = await fetchCurrentWeather(coords);
+        if (!cancelled) setWeather(next);
+      } catch {
+        // Keep the last reading; the card shows time without weather.
+      }
+    };
+    load();
+    const id = window.setInterval(load, WEATHER_REFRESH_MS);
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+    };
+  }, [coords, skip]);
+  return weather;
+}
+
+/** "12:19 PM" / "12:19" — no seconds; the second hand already moves. */
+function useShortTime(language, timeZone) {
+  const format = () =>
+    new Intl.DateTimeFormat(language === "zh" ? "zh-CN" : "en-US", {
+      timeZone,
+      // 24-hour in Chinese gets two digits, so 01:21 never reads as 1 PM.
+      hour: language === "zh" ? "2-digit" : "numeric",
+      minute: "2-digit",
+      hour12: language !== "zh",
+    }).format(new Date());
+  const [time, setTime] = useState(format);
+  useEffect(() => {
+    const tick = () => setTime(format());
+    tick();
+    const id = window.setInterval(tick, 15_000);
+    return () => window.clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language, timeZone]);
+  return time;
+}
 
 function LandMark({ place }) {
   const mark = place === "chongqing" ? CHONGQING_LAND : OHIO_LAND;
@@ -29,65 +82,6 @@ function LandMark({ place }) {
       aria-hidden="true"
     >
       <path fill="currentColor" d={mark.path} />
-    </svg>
-  );
-}
-
-function WeatherGlyph({ kind }) {
-  if (kind === "rainy") {
-    return (
-      <svg viewBox="0 0 48 48" aria-hidden="true">
-        <path
-          d="M14 22c0-5.5 4.5-10 10-10 4.2 0 7.8 2.6 9.2 6.3A7 7 0 0 1 40 25a7 7 0 0 1-7 7H16a6 6 0 0 1-2-11.7Z"
-          fill="currentColor"
-          opacity="0.85"
-        />
-        <path
-          d="M18 36l-2 5M24 35l-2 5M30 36l-2 5"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          fill="none"
-          opacity="0.85"
-        />
-      </svg>
-    );
-  }
-  if (kind === "snowy") {
-    return (
-      <svg viewBox="0 0 48 48" aria-hidden="true">
-        <path
-          d="M24 10v28M14 15l20 18M34 15 14 33M12 24h24"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          fill="none"
-          opacity="0.85"
-        />
-      </svg>
-    );
-  }
-  if (kind === "cloudy") {
-    return (
-      <svg viewBox="0 0 48 48" aria-hidden="true">
-        <path
-          d="M14 28c0-5.5 4.5-10 10-10 4.2 0 7.8 2.6 9.2 6.3A7 7 0 0 1 40 31a7 7 0 0 1-7 7H16a6 6 0 0 1-2-11.7Z"
-          fill="currentColor"
-          opacity="0.85"
-        />
-      </svg>
-    );
-  }
-  return (
-    <svg viewBox="0 0 48 48" aria-hidden="true">
-      <circle cx="24" cy="24" r="8" fill="currentColor" opacity="0.9" />
-      <path
-        d="M24 8v4M24 36v4M8 24h4M36 24h4M12.5 12.5l2.8 2.8M32.7 32.7l2.8 2.8M12.5 35.5l2.8-2.8M32.7 15.3l2.8-2.8"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        opacity="0.55"
-      />
     </svg>
   );
 }
@@ -160,68 +154,95 @@ function AnalogClock({ timeZone }) {
   );
 }
 
-function ClockTile({ timeZone, place, land, language }) {
-  const { time, date } = useZonedLiveClock(language, timeZone);
+const CLEAR_NIGHT = { en: "Clear", zh: "晴" };
+
+function CityCard({ place, land, timeZone, weather, language, copy }) {
+  const { date, phase, phaseLabel } = useZonedLiveClock(language, timeZone);
+  const time = useShortTime(language, timeZone);
+  const night = phase === "night";
+  const hasWeather = weather && Number.isFinite(weather.temperatureC);
+  const kind = hasWeather ? weather.kind : "none";
+  // A clear sky at night is "clear", lit by the moon — not "sunny".
+  const clearNight = night && kind === "sunny";
+  const condition = hasWeather
+    ? clearNight
+      ? CLEAR_NIGHT[language] ?? CLEAR_NIGHT.en
+      : weatherConditionLabel(language, kind)
+    : null;
+  const hasRange =
+    hasWeather && Number.isFinite(weather.highC) && Number.isFinite(weather.lowC);
+  const range = hasRange
+    ? `${copy.highShort} ${Math.round(weather.highC)}° · ${copy.lowShort} ${Math.round(weather.lowC)}°`
+    : null;
+
   return (
-    <article className="home-status__tile home-status__tile--clock">
-      <LandMark place={land} />
-      <p className="home-status__place">{place}</p>
-      <div className="home-status__clock-face">
-        <AnalogClock timeZone={timeZone} />
+    <article
+      className={`bento-tile home-status__tile home-status__tile--${
+        clearNight ? "clear-night" : kind
+      }${night ? " is-night" : ""}`}
+    >
+      {/* The tile's wash is the weather; the clock face is day or night. */}
+      <span className="home-status__sky" aria-hidden="true" />
+
+      <div className="home-status__head">
+        <p className="bento-tile__kicker home-status__place">{place}</p>
+        <LandMark place={land} />
       </div>
-      <p className="home-status__date">{date}</p>
-      <span className="visually-hidden">{time}</span>
+
+      <div className="home-status__now">
+        <div className={`home-status__clock${night ? " is-night" : ""}`}>
+          <AnalogClock timeZone={timeZone} />
+        </div>
+        {/* One hero per card: the clock is the graphic, the temperature is
+            the number. Time drops to a caption — the hands already say it. */}
+        <div className="home-status__read">
+          {hasWeather ? (
+            <>
+              <p className="home-status__temp">
+                {formatTempC(weather.temperatureC)}
+              </p>
+              <p className="home-status__condition">
+                {condition}
+                {range ? ` · ${range}` : ""}
+              </p>
+            </>
+          ) : null}
+          <p className="home-status__date">
+            {time} · {date}
+          </p>
+        </div>
+      </div>
+
+      <span className="visually-hidden">{`${place}: ${time}, ${date}, ${phaseLabel}${
+        hasWeather ? `, ${formatTempC(weather.temperatureC)} ${condition}` : ""
+      }`}</span>
     </article>
   );
 }
 
 export default function HomeStatusTiles({ language, copy }) {
-  const environment = useDeskEnvironment(language);
-  const weather = environment.weather;
+  const columbus = useDeskEnvironment(language).weather;
+  const chongqing = useCityWeather(CHONGQING_COORDS, false);
   const columbusLabel =
     language === "zh" ? SITE_LOCATION.labelZh : SITE_LOCATION.labelEn;
-  const chongqingLabel = copy.chongqingLabel;
-  const temp = formatTempC(weather.temperatureC);
-  const condition = weatherConditionLabel(language, weather.kind);
-  const hasRange =
-    Number.isFinite(weather.highC) && Number.isFinite(weather.lowC);
-  const highShort = hasRange ? `${Math.round(weather.highC)}°` : null;
-  const lowShort = hasRange ? `${Math.round(weather.lowC)}°` : null;
 
   return (
     <section className="home-status" aria-label={copy.statusLabel}>
-      <article
-        className={`home-status__tile home-status__tile--weather home-status__tile--${weather.kind}`}
-      >
-        <LandMark place="ohio" />
-        <p className="home-status__place">{columbusLabel}</p>
-        <p className="home-status__temp">{temp}</p>
-        <div className="home-status__weather-foot">
-          <div>
-            <p className="home-status__condition">{condition}</p>
-            {hasRange ? (
-              <p className="home-status__range">
-                {copy.highShort}:{highShort} {copy.lowShort}:{lowShort}
-              </p>
-            ) : null}
-          </div>
-          <div className="home-status__glyph" aria-hidden="true">
-            <WeatherGlyph kind={weather.kind} />
-          </div>
-        </div>
-      </article>
-
-      <ClockTile
-        timeZone={COLUMBUS_TZ}
+      <CityCard
         place={columbusLabel}
         land="ohio"
+        timeZone={COLUMBUS_TZ}
+        weather={columbus}
         language={language}
+        copy={copy}
       />
-      <ClockTile
-        timeZone={CHONGQING_TZ}
-        place={chongqingLabel}
+      <CityCard
+        place={copy.chongqingLabel}
         land="chongqing"
+        timeZone={CHONGQING_TZ}
+        weather={chongqing}
         language={language}
+        copy={copy}
       />
     </section>
   );

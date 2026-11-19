@@ -1,10 +1,10 @@
 /**
  * Leaf Note native case-study body (EN + ZH).
- * Research → reframed HMW → screen walkthrough + live handoff try-it →
+ * Research → reframed HMW → screen walkthrough + two-phone handoff film →
  * managing plants + design system → evaluation.
  *
- * The design flows use screen rails (not videos). Try the handoff embeds the
- * live prototype with Owner / Caregiver perspective switching.
+ * The design flows use screen rails. The handoff film shows both phones side
+ * by side, with a link out to the live prototype.
  */
 
 const S = "/work/leaf-note/screens/";
@@ -171,7 +171,7 @@ export const LEAF_NOTE_DETAIL_CHAPTERS = [
       "handoff",
       "caregiver",
       "following",
-      "try-handoff",
+      "handoff-film",
       "managing",
       "system",
     ],
@@ -344,12 +344,12 @@ export const LEAF_NOTE_DETAIL_SECTIONS = [
     ],
   },
   {
-    id: "try-handoff",
-    label: "Try the handoff",
+    id: "handoff-film",
+    label: "One handoff, both sides",
     paragraphs: [
-      "The prototype has two people: Maya (owner) and Jordan (caregiver). Switch sides below and walk the same loop — send a handoff, accept it, run a check.",
+      "The same handoff from start to finish, with Maya on the left and Jordan on the right: the request, the reminder, the check, and the photo coming back.",
     ],
-    interactive: "ln-handoff",
+    interactive: "ln-handoff-film",
   },
   {
     id: "managing",
@@ -548,12 +548,12 @@ export const LEAF_NOTE_DETAIL_SECTIONS_ZH = [
     ],
   },
   {
-    id: "try-handoff",
-    label: "试一试交接",
+    id: "handoff-film",
+    label: "一次交接，两边视角",
     paragraphs: [
-      "原型里有两个人：Maya（主人）和 Jordan（照料者）。在下面切换视角，走同一条回路——发出交接、接受、做一次检查。",
+      "从头到尾的一次交接，左边是 Maya，右边是 Jordan：发出请求、提醒、检查，再到照片回到 Maya 手里。",
     ],
-    interactive: "ln-handoff",
+    interactive: "ln-handoff-film",
   },
   {
     id: "managing",

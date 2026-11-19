@@ -40,211 +40,6 @@ import {
 
 export const VIBE_PROJECTS = [
   {
-    id: "swim-balance",
-    title: "Swim Balance",
-    subtitle: "iOS App · Personal Informatics",
-    role: "Product Designer & Engineer",
-    roleZh: "产品设计师 & 工程实现",
-    timeline: "2026",
-    // The build time is this project's headline fact; the detail
-    // footer calls it out after the year.
-    duration: "Built in ~3 hours",
-    durationZh: "约 3 小时建成",
-    tagline:
-      "Plan the next swim from your goals, the time you have, and how the last workout went.",
-    taglineZh: "按目标、今天有多少时间、上次游得怎样，排下一次该怎么游。",
-    description:
-      "A personal swim planner I built in about three hours with AI — it uses goals, available time, and workout feedback to shape the next session, as a working SwiftUI app.",
-    descriptionZh:
-      "用 AI 大约三小时做成的个人游泳规划：看目标、可用时间和训练反馈，排出下一次课表。能跑的 SwiftUI 应用。",
-    tags: ["SwiftUI", "Personal Informatics", "Vibe Coded"],
-    // The detail's one way out: a video introduction on YouTube —
-    // a click-out link (unlike Oscar's embedded player), offered as
-    // the header's primary action.
-    liveUrl: "https://www.youtube.com/watch?v=OFN8XVHJ8wQ",
-    liveLabel: "Watch the video introduction",
-    liveLabelZh: "观看视频介绍",
-    thumbnail: "/swim-balance/cover.png",
-    // Contents-bar crop: only the cover's sky, so no phone ever leaks
-    // into the bar. Sized by height (not width) so the slice stays in
-    // the top sky band at any bar width, phones included in the cover
-    // start below it.
-    navArtPosition: "100% 0%",
-    navArtSize: "auto 44rem",
-    // Footer scene: scaled much taller so the visible slice stays in
-    // the sky band — the phones never enter the footer.
-    footerArtSize: "auto 90rem",
-    // Full case-study detail (mirrors the Notion page): longer narrative
-    // sections with images and screen recordings, on the pale blue of the
-    // artwork so the media blends into the page.
-    caseStudy: {
-      background: "#eef5f8",
-      skills: ["SwiftUI", "ChatGPT", "Claude", "Muse", "GitHub"],
-      problem: {
-        heading: "The problem",
-        lead: "Why I built it.",
-        paragraphs: [
-          "I swim regularly, and I've recently been working on improving my freestyle. But I often struggle to balance practicing a newer stroke with getting enough exercise overall. My available time also changes from day to day.",
-          "I wanted something that could help me plan more intentionally, rather than just track how far I'd swum.",
-          "I spent about three hours building Swim Balance with AI.",
-        ],
-        quote:
-          "How might I plan swims that fit the week I actually have — and the stroke I’m still learning?",
-      },
-      experience: {
-        heading: "The experience",
-        lead: "What it does.",
-        loop: "Plan → Swim → Reflect & Adjust",
-        // PDF exports at 2× — sharper than the compressed screen recordings.
-        images: [
-          {
-            src: "/swim-balance/plan.png",
-            alt: "Plan: set strokes, goals, time, and days for the week",
-            caption: "Plan",
-          },
-          {
-            src: "/swim-balance/follow.png",
-            alt: "Follow: swim the session with the plan on screen",
-            caption: "Follow and swim",
-          },
-          {
-            src: "/swim-balance/reflect.png",
-            alt: "Reflect: review the swim and choose a next action",
-            caption: "Reflect and Action",
-          },
-        ],
-      },
-      process: {
-        heading: "The process",
-        lead: "How I built it with AI.",
-        image: {
-          src: "/swim-balance/process.png",
-          alt: "Three-hour timeline: frame the problem (20 minutes with ChatGPT), build the foundation (15 minutes in Cursor), then refine through iteration (2.5 hours across Claude Code and ChatGPT)",
-          caption:
-            "From personal friction to a working iOS app in about three hours — framing, foundation, then iteration.",
-        },
-      },
-      decisions: {
-        heading: "Design decisions",
-        items: [
-          {
-            title: "1. Actionable feedback",
-            lead: "From data to one thing I can do differently next time.",
-            paragraphs: [
-              "At first, the workout summary only showed which goals I met and how far I swam. What I actually wanted to know was what to do differently next time.",
-              "So each past swim now opens with a short takeaway and one specific suggestion. Two quick questions — how tiring it felt, and why I stopped early — shape that suggestion. If I ran out of time, the app suggests a shorter session. If my form fell apart, it holds off on adding distance.",
-            ],
-            image: {
-              src: "/swim-balance/decision-1.png",
-              alt: "Before, after, and with feedback: a workout summary that listed goals met becomes a one-line takeaway with one concrete next step, then a feedback step that shapes the next recommendation",
-            },
-          },
-          {
-            title: "2. Fair comparisons",
-            lead: "Comparing like with like, so progress isn’t quietly misleading.",
-            paragraphs: [
-              "While reviewing the History page, I noticed some comparisons were quietly misleading. On a Tuesday, the app compared my week so far with the whole of last week, so I always looked like I was falling behind. Weeks cut at the edges of a month could be just one or two days long.",
-              "Now the current week is compared with the same days of last week, weeks always run Sunday to Sunday, and each bar shows its target as an outline, so it’s clear what “enough” looks like.",
-            ],
-            image: {
-              src: "/swim-balance/decision-2.png",
-              alt: "Before and after: a barely-started week compared against a whole week becomes full weeks shown against their own target outlines",
-            },
-          },
-          {
-            title: "3. What I learned",
-            paragraphs: [
-              "Building with AI took me from an idea to a working iOS app in about three hours. The speed didn’t make design less important; it made judgment the main job.",
-              "A lot of what came out looked fine but wasn’t quite right. The stage bar first looked like a row of buttons. Colors on the bar didn’t match the legend beneath it. One suggestion sounded encouraging but had nothing in the data behind it. None of these were obvious until I used the app in the simulator. Most of my time went into noticing them, deciding what to cut or simplify, and trying again.",
-            ],
-          },
-        ],
-      },
-    },
-    caseStudyZh: {
-      background: "#eef5f8",
-      skills: ["SwiftUI", "ChatGPT", "Claude", "Muse", "GitHub"],
-      problem: {
-        heading: "问题",
-        lead: "我为什么做它。",
-        paragraphs: [
-          "我经常游泳，最近在练自由泳。但我常在两件事之间拉扯：练新学的泳姿，和保证足够的总体运动量。每天能用的时间也不一样。",
-          "我想要的是能帮我排好训练的东西；游了多远，只是记录的一部分。",
-          "我用 AI 做了大约三小时，做出 Swim Balance。",
-        ],
-        quote:
-          "How might I：怎样按我这周真正有的时间来排游泳——还要顾上正在练的泳姿？",
-      },
-      experience: {
-        heading: "体验",
-        lead: "它能做什么。",
-        loop: "计划 → 游泳 → 反思与调整",
-        images: [
-          {
-            src: "/swim-balance/plan.png",
-            alt: "计划：设定泳姿、目标、时间和训练日",
-            caption: "计划",
-          },
-          {
-            src: "/swim-balance/follow.png",
-            alt: "跟着游：按计划完成这一次训练",
-            caption: "跟着游",
-          },
-          {
-            src: "/swim-balance/reflect.png",
-            alt: "反思：回看这次游泳并选择下一步",
-            caption: "反思与行动",
-          },
-        ],
-      },
-      process: {
-        heading: "过程",
-        lead: "我如何与 AI 一起做。",
-        image: {
-          src: "/swim-balance/process.png",
-          alt: "三小时时间线：用 ChatGPT 用 20 分钟框定问题，在 Cursor 里用 15 分钟搭好基础，再用 Claude Code 与 ChatGPT 迭代打磨两个半小时",
-          caption: "从个人的小摩擦到能用的 iOS 应用，大约三小时——框定、搭基础、迭代。",
-        },
-      },
-      decisions: {
-        heading: "设计决定",
-        items: [
-          {
-            title: "1. 可执行的反馈",
-            lead: "从数据，到下次可以照着做的一件事。",
-            paragraphs: [
-              "一开始，训练总结只显示我达成了哪些目标、游了多远。但我真正想知道的是：下一次该怎么做得不一样。",
-              "所以现在每一次过去的游泳打开，先是一句简短的小结和一条具体的建议。两个快速问题——感觉有多累、为什么提前停——会塑造这条建议。如果是没时间了，建议下次缩短；如果动作散了，就先不加距离。",
-            ],
-            image: {
-              src: "/swim-balance/decision-1.png",
-              alt: "改动前、改动后与加入反馈后：训练总结从罗列达成目标，变成一句小结加一条具体下一步，再由反馈塑造下一次建议",
-            },
-          },
-          {
-            title: "2. 公平的对比",
-            lead: "同类相比，进步才不会被悄悄误读。",
-            paragraphs: [
-              "看 History 页面时，我发现有些对比在悄悄误导。周二时，应用拿我本周到目前为止和上周整周比，我看起来总像在落后。月份边缘被切开的周，可能只有一两天长。",
-              "现在，本周和上周相同的那几天比，周从周日到周日，每根柱子把目标画成轮廓，「够了」长什么样一眼就清楚。",
-            ],
-            image: {
-              src: "/swim-balance/decision-2.png",
-              alt: "改动前后：刚开始的一周和整周对比，变成完整周对照各自的目标轮廓",
-            },
-          },
-          {
-            title: "3. 我学到了什么",
-            paragraphs: [
-              "和 AI 一起做，让我用大约三小时从想法走到能用的 iOS 应用。速度没有让设计变得不重要，它让判断成了主要的工作。",
-              "很多产出看起来不错，却总差一点。阶段条一开始像一排按钮，条上的颜色和下面的图例对不上，有一条建议听上去鼓励人，背后却没有数据。这些在模拟器里真正用起来之前都不明显。我大部分时间花在发现它们、决定砍掉或简化什么，再试一次。",
-            ],
-          },
-        ],
-      },
-    },
-  },
-  {
     id: "onomichi-furin",
     title: "Onomichi Furin Wish Wall",
     subtitle: "尾道 · 風鈴",
@@ -584,12 +379,13 @@ export const SELECTED_PROJECTS = [
     id: "color-analysis",
     title: "Color Analysis",
     subtitle: "fAIshion · AI Fashion · Product Design Internship",
-    tagline: "An expert color analysis, digitized into an 8–10 minute flow inside fAIshion’s AI stylist app.",
-    taglineZh: "在 fAIshion 实习：把线下专家色彩测试数字化，做成 AI 造型师应用里 8–10 分钟的流程。",
+    tagline:
+      "An expert color analysis, digitized into an 8–10 minute flow inside an AI stylist app.",
+    taglineZh: "把线下专家色彩测试数字化，做成 AI 造型师应用里 8–10 分钟的流程。",
     description:
-      "Internship at fAIshion: an in-app color analysis for an AI fashion stylist — a long in-person session turned into an 8–10 minute flow, where AI makes the first read and the user confirms it through a drape test.",
+      "Internship project: an in-app color analysis for an AI fashion stylist — a long in-person session turned into an 8–10 minute flow, where AI makes the first read and the user confirms it through a drape test.",
     descriptionZh:
-      "fAIshion 实习作品：AI 时尚造型师应用里的色彩测试——把线下漫长的专家测试变成 8–10 分钟的流程，AI 先做初判，用户通过色布对比来确认。",
+      "实习作品：AI 时尚造型师应用里的色彩测试——把线下漫长的专家测试变成 8–10 分钟的流程，AI 先做初判，用户通过色布对比来确认。",
     tags: ["Product Design", "AI Interaction", "0 → 1"],
     // Same light warm gray as the cover ground.
     panelBackground: "#f3f1ee",
@@ -740,7 +536,213 @@ export const SELECTED_PROJECTS = [
     detailChapters: MONEY_MAP_DETAIL_CHAPTERS,
     detailSections: MONEY_MAP_DETAIL_SECTIONS,
     detailSectionsZh: MONEY_MAP_DETAIL_SECTIONS_ZH,
-  }
+  },
+  {
+    id: "swim-balance",
+    title: "Swim Balance",
+    subtitle: "iOS App · Personal Informatics",
+    role: "Product Designer & Engineer",
+    roleZh: "产品设计师 & 工程实现",
+    timeline: "2026",
+    // The build time is this project's headline fact; the detail
+    // footer calls it out after the year.
+    duration: "3hrs to build",
+    durationZh: "3 小时建成",
+    tagline:
+      "Plan the next swim from your goals, the time you have, and how the last workout went.",
+    taglineZh: "按目标、今天有多少时间、上次游得怎样，排下一次该怎么游。",
+    description:
+      "A personal swim planner I built in about three hours with AI — it uses goals, available time, and workout feedback to shape the next session, as a working SwiftUI app.",
+    descriptionZh:
+      "用 AI 大约三小时做成的个人游泳规划：看目标、可用时间和训练反馈，排出下一次课表。能跑的 SwiftUI 应用。",
+    tags: ["SwiftUI", "Personal Informatics", "Vibe Coded"],
+    // The detail's one way out: a video introduction on YouTube —
+    // a click-out link (unlike Oscar's embedded player), offered as
+    // the header's primary action.
+    liveUrl: "https://www.youtube.com/watch?v=OFN8XVHJ8wQ",
+    liveLabel: "Watch the video introduction",
+    liveLabelZh: "观看视频介绍",
+    thumbnail: "/swim-balance/cover.png",
+    // Contents-bar crop: only the cover's sky, so no phone ever leaks
+    // into the bar. Sized by height (not width) so the slice stays in
+    // the top sky band at any bar width, phones included in the cover
+    // start below it.
+    navArtPosition: "100% 0%",
+    navArtSize: "auto 44rem",
+    // Footer scene: scaled much taller so the visible slice stays in
+    // the sky band — the phones never enter the footer.
+    footerArtSize: "auto 90rem",
+    // Full case-study detail (mirrors the Notion page): longer narrative
+    // sections with images and screen recordings, on the pale blue of the
+    // artwork so the media blends into the page.
+    caseStudy: {
+      background: "#eef5f8",
+      skills: ["SwiftUI", "ChatGPT", "Claude", "Muse", "GitHub"],
+      problem: {
+        heading: "The problem",
+        lead: "Why I built it.",
+        paragraphs: [
+          "I swim regularly, and I've recently been working on improving my freestyle. But I often struggle to balance practicing a newer stroke with getting enough exercise overall. My available time also changes from day to day.",
+          "I wanted something that could help me plan more intentionally, rather than just track how far I'd swum.",
+          "I spent about three hours building Swim Balance with AI.",
+        ],
+        quote:
+          "How might I plan swims that fit the week I actually have — and the stroke I’m still learning?",
+      },
+      experience: {
+        heading: "The experience",
+        lead: "What it does.",
+        loop: "Plan → Swim → Reflect & Adjust",
+        // PDF exports at 2× — sharper than the compressed screen recordings.
+        images: [
+          {
+            src: "/swim-balance/plan.png",
+            alt: "Plan: set strokes, goals, time, and days for the week",
+            caption: "Plan",
+          },
+          {
+            src: "/swim-balance/follow.png",
+            alt: "Follow: swim the session with the plan on screen",
+            caption: "Follow and swim",
+          },
+          {
+            src: "/swim-balance/reflect.png",
+            alt: "Reflect: review the swim and choose a next action",
+            caption: "Reflect and Action",
+          },
+        ],
+      },
+      process: {
+        heading: "The process",
+        lead: "How I built it with AI.",
+        image: {
+          src: "/swim-balance/process.png",
+          alt: "Three-hour timeline: frame the problem (20 minutes with ChatGPT), build the foundation (15 minutes in Cursor), then refine through iteration (2.5 hours across Claude Code and ChatGPT)",
+          caption:
+            "From personal friction to a working iOS app in about three hours — framing, foundation, then iteration.",
+        },
+      },
+      decisions: {
+        heading: "Design decisions",
+        items: [
+          {
+            title: "1. Actionable feedback",
+            lead: "From data to one thing I can do differently next time.",
+            paragraphs: [
+              "At first, the workout summary only showed which goals I met and how far I swam. What I actually wanted to know was what to do differently next time.",
+              "So each past swim now opens with a short takeaway and one specific suggestion. Two quick questions — how tiring it felt, and why I stopped early — shape that suggestion. If I ran out of time, the app suggests a shorter session. If my form fell apart, it holds off on adding distance.",
+            ],
+            image: {
+              src: "/swim-balance/decision-1.png",
+              alt: "Before, after, and with feedback: a workout summary that listed goals met becomes a one-line takeaway with one concrete next step, then a feedback step that shapes the next recommendation",
+            },
+          },
+          {
+            title: "2. Fair comparisons",
+            lead: "Comparing like with like, so progress isn’t quietly misleading.",
+            paragraphs: [
+              "While reviewing the History page, I noticed some comparisons were quietly misleading. On a Tuesday, the app compared my week so far with the whole of last week, so I always looked like I was falling behind. Weeks cut at the edges of a month could be just one or two days long.",
+              "Now the current week is compared with the same days of last week, weeks always run Sunday to Sunday, and each bar shows its target as an outline, so it’s clear what “enough” looks like.",
+            ],
+            image: {
+              src: "/swim-balance/decision-2.png",
+              alt: "Before and after: a barely-started week compared against a whole week becomes full weeks shown against their own target outlines",
+            },
+          },
+          {
+            title: "3. What I learned",
+            paragraphs: [
+              "Building with AI took me from an idea to a working iOS app in about three hours. The speed didn’t make design less important; it made judgment the main job.",
+              "A lot of what came out looked fine but wasn’t quite right. The stage bar first looked like a row of buttons. Colors on the bar didn’t match the legend beneath it. One suggestion sounded encouraging but had nothing in the data behind it. None of these were obvious until I used the app in the simulator. Most of my time went into noticing them, deciding what to cut or simplify, and trying again.",
+            ],
+          },
+        ],
+      },
+    },
+    caseStudyZh: {
+      background: "#eef5f8",
+      skills: ["SwiftUI", "ChatGPT", "Claude", "Muse", "GitHub"],
+      problem: {
+        heading: "问题",
+        lead: "我为什么做它。",
+        paragraphs: [
+          "我经常游泳，最近在练自由泳。但我常在两件事之间拉扯：练新学的泳姿，和保证足够的总体运动量。每天能用的时间也不一样。",
+          "我想要的是能帮我排好训练的东西；游了多远，只是记录的一部分。",
+          "我用 AI 做了大约三小时，做出 Swim Balance。",
+        ],
+        quote:
+          "How might I：怎样按我这周真正有的时间来排游泳——还要顾上正在练的泳姿？",
+      },
+      experience: {
+        heading: "体验",
+        lead: "它能做什么。",
+        loop: "计划 → 游泳 → 反思与调整",
+        images: [
+          {
+            src: "/swim-balance/plan.png",
+            alt: "计划：设定泳姿、目标、时间和训练日",
+            caption: "计划",
+          },
+          {
+            src: "/swim-balance/follow.png",
+            alt: "跟着游：按计划完成这一次训练",
+            caption: "跟着游",
+          },
+          {
+            src: "/swim-balance/reflect.png",
+            alt: "反思：回看这次游泳并选择下一步",
+            caption: "反思与行动",
+          },
+        ],
+      },
+      process: {
+        heading: "过程",
+        lead: "我如何与 AI 一起做。",
+        image: {
+          src: "/swim-balance/process.png",
+          alt: "三小时时间线：用 ChatGPT 用 20 分钟框定问题，在 Cursor 里用 15 分钟搭好基础，再用 Claude Code 与 ChatGPT 迭代打磨两个半小时",
+          caption: "从个人的小摩擦到能用的 iOS 应用，大约三小时——框定、搭基础、迭代。",
+        },
+      },
+      decisions: {
+        heading: "设计决定",
+        items: [
+          {
+            title: "1. 可执行的反馈",
+            lead: "从数据，到下次可以照着做的一件事。",
+            paragraphs: [
+              "一开始，训练总结只显示我达成了哪些目标、游了多远。但我真正想知道的是：下一次该怎么做得不一样。",
+              "所以现在每一次过去的游泳打开，先是一句简短的小结和一条具体的建议。两个快速问题——感觉有多累、为什么提前停——会塑造这条建议。如果是没时间了，建议下次缩短；如果动作散了，就先不加距离。",
+            ],
+            image: {
+              src: "/swim-balance/decision-1.png",
+              alt: "改动前、改动后与加入反馈后：训练总结从罗列达成目标，变成一句小结加一条具体下一步，再由反馈塑造下一次建议",
+            },
+          },
+          {
+            title: "2. 公平的对比",
+            lead: "同类相比，进步才不会被悄悄误读。",
+            paragraphs: [
+              "看 History 页面时，我发现有些对比在悄悄误导。周二时，应用拿我本周到目前为止和上周整周比，我看起来总像在落后。月份边缘被切开的周，可能只有一两天长。",
+              "现在，本周和上周相同的那几天比，周从周日到周日，每根柱子把目标画成轮廓，「够了」长什么样一眼就清楚。",
+            ],
+            image: {
+              src: "/swim-balance/decision-2.png",
+              alt: "改动前后：刚开始的一周和整周对比，变成完整周对照各自的目标轮廓",
+            },
+          },
+          {
+            title: "3. 我学到了什么",
+            paragraphs: [
+              "和 AI 一起做，让我用大约三小时从想法走到能用的 iOS 应用。速度没有让设计变得不重要，它让判断成了主要的工作。",
+              "很多产出看起来不错，却总差一点。阶段条一开始像一排按钮，条上的颜色和下面的图例对不上，有一条建议听上去鼓励人，背后却没有数据。这些在模拟器里真正用起来之前都不明显。我大部分时间花在发现它们、决定砍掉或简化什么，再试一次。",
+            ],
+          },
+        ],
+      },
+    },
+  },
+
 ];
 
 // Research — co-design / workshops, separate from 3D craft.
@@ -1247,18 +1249,35 @@ export const RESEARCH_CRAFT_PROJECTS = [
  * Home “Selected work” rail — digital products plus Oscar AR.
  * On the Projects page, AR only appears under 3D (not Digital product design).
  */
-export const HOME_SELECTED_PROJECTS = [
-  ...SELECTED_PROJECTS.filter((project) => project.id !== "emotion-garden"),
-  ...THREE_D_PROJECTS.filter((project) => project.id === "oscar-ar"),
+/**
+ * Home "Selected work" rail — its own hand-picked list, in this order.
+ * It does NOT follow what the Projects page sections contain: adding a
+ * project to a Projects section never puts it on Home. To change Home,
+ * edit these ids.
+ */
+export const HOME_SELECTED_IDS = [
+  "color-analysis",
+  "leaf-note-case",
+  "money-map",
+  "oscar-ar",
 ];
 
-/** Flat list: Selected → 3D → Research → Vibe. */
-export function getAllProjects() {
-  return [
+export const HOME_SELECTED_PROJECTS = HOME_SELECTED_IDS.map((id) =>
+  [
     ...SELECTED_PROJECTS,
     ...THREE_D_PROJECTS,
     ...RESEARCH_PROJECTS,
     ...VIBE_PROJECTS,
+  ].find((project) => project.id === id),
+).filter(Boolean);
+
+/** Flat list: Selected → Playground → 3D → Research. */
+export function getAllProjects() {
+  return [
+    ...SELECTED_PROJECTS,
+    ...VIBE_PROJECTS,
+    ...THREE_D_PROJECTS,
+    ...RESEARCH_PROJECTS,
   ];
 }
 
@@ -1267,11 +1286,10 @@ export function getProjectById(id) {
 }
 
 /**
- * Home vibe-coding folder — Emotion Garden, Furin, Swim Balance.
+ * Home playground folder — Emotion Garden, Furin.
  * Covers live inside the folder; catalogue section is on Projects.
  */
 export const HOME_VIBE_FOLDER_IDS = [
   "emotion-garden",
   "onomichi-furin",
-  "swim-balance",
 ];

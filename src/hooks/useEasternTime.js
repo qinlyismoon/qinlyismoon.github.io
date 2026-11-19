@@ -9,6 +9,46 @@ function getZonedDate(timeZone = EASTERN_TZ) {
   );
 }
 
+/** Local wall-clock hour 0–23 in that timezone. */
+export function getZonedHour(timeZone = EASTERN_TZ) {
+  return getZonedDate(timeZone).getHours();
+}
+
+/**
+ * Four quiet day-parts from local hour — used by home clock tiles.
+ * morning 05–10 · day 11–16 · evening 17–19 · night otherwise
+ */
+export function dayPhaseFromHour(hour) {
+  const h = Number(hour);
+  if (!Number.isFinite(h)) return "day";
+  if (h >= 5 && h < 11) return "morning";
+  if (h >= 11 && h < 17) return "day";
+  if (h >= 17 && h < 20) return "evening";
+  return "night";
+}
+
+export function dayPhaseLabel(language = "en", phase = "day") {
+  const labels =
+    language === "zh"
+      ? {
+          morning: "清晨",
+          day: "白天",
+          evening: "傍晚",
+          night: "夜晚",
+        }
+      : {
+          morning: "Morning",
+          day: "Day",
+          evening: "Evening",
+          night: "Night",
+        };
+  return labels[phase] ?? labels.day;
+}
+
+export function getZonedDayPhase(timeZone = EASTERN_TZ) {
+  return dayPhaseFromHour(getZonedHour(timeZone));
+}
+
 function getEasternDate() {
   return getZonedDate(EASTERN_TZ);
 }
@@ -254,16 +294,18 @@ export function useZonedLiveClock(language = "en", timeZone = EASTERN_TZ) {
   const [date, setDate] = useState(() =>
     formatZonedDateLabel(language, timeZone),
   );
+  const [phase, setPhase] = useState(() => getZonedDayPhase(timeZone));
 
   useEffect(() => {
     const tick = () => {
       setTime(formatZonedLiveClock(language, timeZone));
       setDate(formatZonedDateLabel(language, timeZone));
+      setPhase(getZonedDayPhase(timeZone));
     };
     tick();
     const intervalId = window.setInterval(tick, 1000);
     return () => window.clearInterval(intervalId);
   }, [language, timeZone]);
 
-  return { time, date };
+  return { time, date, phase, phaseLabel: dayPhaseLabel(language, phase) };
 }

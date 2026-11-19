@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useAppSettings } from "../../context/AppSettingsContext";
 import useWindowChromeSide from "../../hooks/useWindowChromeSide";
-import { PORTFOLIO_LINKS } from "../../lib/links";
+import SiteOrgLink from "../shared/SiteOrgLink";
 import CaseStudyVideo from "./CaseStudyVideo";
 import FlowMediaRail from "./FlowMediaRail";
 import { LEAF_NOTE_WIDGETS } from "./leafnote";
@@ -14,24 +14,14 @@ import { MONEY_MAP_WIDGETS } from "./moneymap";
 // Interactive blocks a case-study section can embed by name.
 const CASE_STUDY_WIDGETS = { ...MONEY_MAP_WIDGETS, ...LEAF_NOTE_WIDGETS };
 
-/** Same quiet fAIshion link as the home About block. */
+/** Same org-mark fAIshion link as the home About block (system pattern). */
 function withFaishionLink(text) {
   if (typeof text !== "string" || !text.includes("fAIshion")) return text;
   return text.split(/(fAIshion)/g).map((part, index) =>
     part === "fAIshion" ? (
-      <a
-        key={`faishion-${index}`}
-        className="site-text-link"
-        href={PORTFOLIO_LINKS.faishion}
-        target="_blank"
-        rel="noreferrer"
-      >
+      <SiteOrgLink key={`faishion-${index}`} org="faishion">
         fAIshion
-        <span className="external-arrow" aria-hidden="true">
-          {" "}
-          ↗︎
-        </span>
-      </a>
+      </SiteOrgLink>
     ) : (
       part
     ),
@@ -182,9 +172,10 @@ function DetailToolbar({
           href={prototypeUrl}
           target="_blank"
           rel="noreferrer"
-          className="vibe-detail__tool vibe-detail__tool--label vibe-detail__tool--link"
+          className="vibe-detail__tool vibe-detail__tool--label vibe-detail__tool--link vibe-detail__tool--primary"
         >
-          {prototypeLabel || labels.visitLive} ↗
+          {prototypeLabel || labels.visitLive}
+          <span className="external-arrow" aria-hidden="true">↗</span>
         </a>
       ) : null}
       <button
@@ -814,6 +805,7 @@ function DetailSection({ section, index }) {
             >
               <CaseStudyVideo
                 src={video.src}
+                poster={video.poster}
                 withSound={Boolean(video.withSound)}
               />
               {video.caption ? (
@@ -890,12 +882,19 @@ function DetailSection({ section, index }) {
                     ? " case-study__embed--portrait"
                     : ""
                 }`}
+                style={
+                  item.video.ratio
+                    ? { aspectRatio: item.video.ratio }
+                    : undefined
+                }
               >
                 {/\.(mp4|webm|ogg)(\?|$)/i.test(item.video.src) ? (
                   <CaseStudyVideo
                     src={item.video.src}
+                    poster={item.video.poster}
                     title={item.video.title ?? item.title}
                     withSound={Boolean(item.video.withSound)}
+                    controls={item.video.controls !== false}
                   />
                 ) : (
                   <iframe
@@ -912,6 +911,30 @@ function DetailSection({ section, index }) {
                 <figcaption>{item.video.caption}</figcaption>
               ) : null}
             </figure>
+          ) : null}
+          {item.screens?.length ? (
+            <dd>
+              <FlowMediaRail
+                className="flow-media-rail--screens"
+                label={isZh ? "滑动查看相关截图" : "Scroll through related screens"}
+              >
+                {item.screens.map((screen) => (
+                  <figure
+                    key={screen.src}
+                    className="case-study__figure case-study__figure--screen flow-media-rail__card"
+                  >
+                    <img
+                      src={screen.src}
+                      alt={screen.alt ?? ""}
+                      loading="lazy"
+                    />
+                    {screen.caption ? (
+                      <figcaption>{screen.caption}</figcaption>
+                    ) : null}
+                  </figure>
+                ))}
+              </FlowMediaRail>
+            </dd>
           ) : null}
           {/* Item tables (e.g. Money Map status / edit rules) run the
               full measure under the split copy and clip. */}
@@ -1171,10 +1194,19 @@ function ProjectDetailPanel({
               {tagline ? (
                 <p className="vibe-detail__tagline">{withFaishionLink(tagline)}</p>
               ) : null}
-              {(project.timeline || role) && (
+              {(project.timeline || project.duration || role) && (
                 <div className="vibe-detail__intro-meta">
-                  {project.timeline ? (
-                    <p className="vibe-detail__date">{project.timeline}</p>
+                  {project.timeline || project.duration ? (
+                    <p className="vibe-detail__date">
+                      {[
+                        project.timeline,
+                        isZh && project.durationZh
+                          ? project.durationZh
+                          : project.duration,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
                   ) : null}
                   {role ? (
                     <p className="vibe-detail__meta-role">

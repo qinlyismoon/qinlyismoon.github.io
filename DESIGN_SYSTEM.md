@@ -1182,6 +1182,14 @@ Media rules:
 - Spacing: media sits one `--space-6` beat away from copy on both sides
   — copy or list → media, media → media, and media → a list that follows
   it. Never set ad-hoc margins on case-study media; use the space tokens.
+- Phone screen recordings (full-height, ~0.46 aspect) go in a split
+  item (`split: true`, `video.aspect: "portrait"`): copy on the left,
+  the whole recording on the right, next to the paragraph it shows.
+  Never put them in `section.videos` — that stage is fixed at 3:4 with
+  `object-fit: cover` (made for Swim Balance) and crops a phone screen.
+  Use a real screen recording trimmed to one moment (not stitched
+  screenshots), cropped to the phone frame; if its ratio differs from
+  590/1280, pass `video.ratio` (e.g. "600 / 1152") so nothing is cropped.
 - One topic, one section: keep related steps (e.g. how the drape
   works and why results come per attribute) in one section so its
   screens form one continuous set; split only when each part has its

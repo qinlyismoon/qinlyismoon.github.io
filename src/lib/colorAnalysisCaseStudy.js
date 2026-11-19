@@ -20,7 +20,7 @@ const S = "/work/color-analysis/screens/";
 const scr = (file, caption, alt) => ({ src: `${S}${file}.jpg`, caption, alt: alt ?? caption });
 
 export const COLOR_ANALYSIS_FACTS = [
-  { label: "Role", lines: ["Product Designer (Intern) at fAIshion", "Feature lead, 0 → 1"] },
+  { label: "Role", lines: ["Product Designer (Intern)", "Feature lead, 0 → 1"] },
   {
     label: "Worked with",
     lines: ["2 product managers", "1 full-stack engineer", "1 color analysis expert"],
@@ -30,19 +30,19 @@ export const COLOR_ANALYSIS_FACTS = [
 ];
 
 export const COLOR_ANALYSIS_FACTS_ZH = [
-  { label: "角色", lines: ["fAIshion 产品设计师（实习）", "功能负责人，0 → 1"] },
+  { label: "角色", lines: ["产品设计师（实习）", "功能负责人，0 → 1"] },
   { label: "合作", lines: ["2 位产品经理", "1 位全栈工程师", "1 位色彩测试专家"] },
   { label: "时间", lines: ["2026 年 8 – 9 月"] },
   { label: "状态", lines: ["已完成整体框架搭建", "因公司战略调整暂停"] },
 ];
 
 export const COLOR_ANALYSIS_SUMMARY = [
-  "During my product design internship at fAIshion, an AI fashion stylist startup, I led the design of an in-app color analysis. It finds which of the 12 season types a person is. Users get the clothes, makeup, and hair colors that suit them; for the product, the result gives the app’s AI stylist and its recommendation feed a clearer picture of each user.",
+  "During the internship I led the design of an in-app color analysis for an AI fashion stylist. It finds which of the 12 season types a person is. Users get the clothes, makeup, and hair colors that suit them; for the product, the result gives the AI stylist and its recommendation feed a clearer picture of each user.",
   "I took it from the first framework to working builds: the overall flow, how the AI and the user share each decision, the drape test, and how the test fits into the agent chat.",
 ];
 
 export const COLOR_ANALYSIS_SUMMARY_ZH = [
-  "在 fAIshion（AI 时尚造型师）的产品设计实习里，我主导设计了应用内的色彩测试，找出用户属于 12 季型中的哪一型。用户通过测试得到真正适合自己的衣服、妆容和发色；从产品角度，测试结果让应用的 AI 造型师和推荐流更了解每一位用户。",
+  "实习期间我主导设计了 AI 时尚造型师应用里的色彩测试，找出用户属于 12 季型中的哪一型。用户通过测试得到真正适合自己的衣服、妆容和发色；从产品角度，测试结果让 AI 造型师和推荐流更了解每一位用户。",
   "我从最初的框架一直做到可运行的版本：整体流程、AI 和用户在每个判断上的分工、色布测试，以及测试如何放进 agent 对话里。",
 ];
 
@@ -109,6 +109,25 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS = [
       scr("15-hub", "Progress through the four attributes"),
       scr("34-chat-done", "The chat hands off to the report"),
       scr("35-profile-writeback", "The result is saved to the profile"),
+    ],
+    items: [
+      {
+        title: "Keeping each card in view",
+        split: true,
+        paragraphs: [
+          "Throughout the flow, whenever a new task card arrives, the chat moves it up once so it rests just above the input bar. The next step stays in view, so the user never has to scroll to find it.",
+          "That matters most on natural features: hair, eye, skin, and density cards are different heights — a dense swatch grid versus a shorter choice — and the same docking still parks each one above the input.",
+        ],
+        video: {
+          src: "/work/color-analysis/chat-docking.mp4?v=6",
+          poster: "/work/color-analysis/chat-docking-poster.jpg?v=6",
+          ratio: "600 / 1130",
+          aspect: "portrait",
+          controls: false,
+          caption:
+            "Natural features: each card docks above the input, even when the height changes.",
+        },
+      },
     ],
   },
   {
@@ -287,6 +306,24 @@ export const COLOR_ANALYSIS_DETAIL_SECTIONS_ZH = [
       scr("15-hub", "四个属性的进度"),
       scr("34-chat-done", "对话把用户交给报告"),
       scr("35-profile-writeback", "结果保存到个人主页"),
+    ],
+    items: [
+      {
+        title: "让每张卡片停在视线里",
+        split: true,
+        paragraphs: [
+          "在整个流程中，每当新的任务卡片出现，对话都会把它向上推一次，正好停在输入框上方。下一步始终在视线里，用户不需要滑动去找。",
+          "这一点在填写原生特征时最明显：发色、瞳色、肤色、发量每张卡片高度不同——密集色板和更短的选项卡不一样——同一套停靠规则仍能把它们停在输入框上方。",
+        ],
+        video: {
+          src: "/work/color-analysis/chat-docking.mp4?v=6",
+          poster: "/work/color-analysis/chat-docking-poster.jpg?v=6",
+          ratio: "600 / 1130",
+          aspect: "portrait",
+          controls: false,
+          caption: "原生特征：每张卡片都会停在输入框上方，高度不同也一样。",
+        },
+      },
     ],
   },
   {

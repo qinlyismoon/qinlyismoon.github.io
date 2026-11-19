@@ -98,9 +98,9 @@ const PAGE_CONTEXT = {
           label: "Project Collection",
           links: [
             { label: "Digital product design", target: "case-studies" },
+            { label: "Playground", target: "playground" },
             { label: "3D", target: "three-d" },
             { label: "Research", target: "research" },
-            { label: "Vibe Coding", target: "vibe-coding" },
           ],
         },
         {
@@ -200,9 +200,9 @@ const PAGE_CONTEXT = {
           label: "作品集",
           links: [
             { label: "数字产品设计", target: "case-studies" },
+            { label: "Playground", target: "playground" },
             { label: "3D", target: "three-d" },
             { label: "研究", target: "research" },
-            { label: "Vibe Coding", target: "vibe-coding" },
           ],
         },
         {
