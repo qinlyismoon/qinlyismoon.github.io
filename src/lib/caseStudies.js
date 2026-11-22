@@ -12,6 +12,15 @@ import {
   COLOR_ANALYSIS_SUMMARY_ZH,
 } from "./colorAnalysisCaseStudy";
 import {
+  EMOTION_GARDEN_DETAIL_CHAPTERS,
+  EMOTION_GARDEN_DETAIL_SECTIONS,
+  EMOTION_GARDEN_DETAIL_SECTIONS_ZH,
+  EMOTION_GARDEN_FACTS,
+  EMOTION_GARDEN_FACTS_ZH,
+  EMOTION_GARDEN_SUMMARY,
+  EMOTION_GARDEN_SUMMARY_ZH,
+} from "./emotionGardenCaseStudy";
+import {
   LEAF_NOTE_DETAIL_CHAPTERS,
   LEAF_NOTE_DETAIL_SECTIONS,
   LEAF_NOTE_DETAIL_SECTIONS_ZH,
@@ -32,6 +41,24 @@ import {
   PROCEDURAL_ANIMATION_DETAIL_SECTIONS,
   PROCEDURAL_ANIMATION_DETAIL_SECTIONS_ZH,
 } from "./proceduralAnimationCaseStudy";
+import {
+  RBC_DETAIL_CHAPTERS,
+  RBC_DETAIL_SECTIONS,
+  RBC_DETAIL_SECTIONS_ZH,
+  RBC_FACTS,
+  RBC_FACTS_ZH,
+  RBC_SUMMARY,
+  RBC_SUMMARY_ZH,
+} from "./rbcVrCaseStudy";
+import {
+  SLEEP_DETAIL_CHAPTERS,
+  SLEEP_DETAIL_SECTIONS,
+  SLEEP_DETAIL_SECTIONS_ZH,
+  SLEEP_FACTS,
+  SLEEP_FACTS_ZH,
+  SLEEP_SUMMARY,
+  SLEEP_SUMMARY_ZH,
+} from "./sleepDashboardCaseStudy";
 import {
   WHOSE_DREAMS_DETAIL_CHAPTERS,
   WHOSE_DREAMS_DETAIL_SECTIONS,
@@ -476,7 +503,8 @@ export const SELECTED_PROJECTS = [
     liveUrl: "https://emotion-garden-sooty.vercel.app/",
     // Screen recording of the live sample garden: ambient motion plus
     // hovering flowers to reveal each moment's feeling, time and duration.
-    thumbnail: "/emotion-garden-thumb.jpg",
+    // The animated GIF is both the detail hero and the card cover.
+    thumbnail: "/emotion-garden-thumb.gif",
     // Contents-bar crop: the flower rows — the project's subject.
     // Mid-height, right end: flower heads over their stems, above the
     // busy timeline text at the bottom. The sun was rejected: it is
@@ -485,20 +513,22 @@ export const SELECTED_PROJECTS = [
     role: "Data Visualization Designer & Engineer",
     roleZh: "数据可视化设计 & 工程实现",
     timeline: "2026",
-    detail: {
-      overview:
-        "Emotion Garden sits inside my thesis on emotional personal informatics. I wanted personal feeling-data to look like a place you could return to — not a chart you decode once.",
-      question: "What would it take for an emotional record to feel readable — and worth coming back to?",
-      visual:
-        "Each moment is a flower. Color, shape, and size hold the feeling, the context, and how long it lasted. Work, relationships, time alone, body and health sit along the garden so the week reads as a landscape.",
-    },
-    detailZh: {
-      overview:
-        "Emotion Garden 是我论文里做情绪个人信息化的其中一个项目。我想让自己的情绪数据看起来像一个可以回去的地方——不是解一次就扔的图表。",
-      question: "怎样让一份情绪记录读得懂，也值得再回来看？",
-      visual:
-        "每一个时刻是一朵花。颜色、形态、大小带着感受、情境和持续多久。工作学习、人际关系、自己的时间、身体与健康排在花园里，一个星期读起来像一片景。",
-    },
+    tagline:
+      "Feelings over time, grown as a garden — designed and built with AI over 135+ versions.",
+    taglineZh: "把一段时间的情绪种成一座花园——和 AI 一起设计、搭建，迭代了 135 个以上的版本。",
+    duration: "135+ versions",
+    durationZh: "135+ 个版本",
+    // Fixed header slot: summary + facts before chapter 01.
+    summary: EMOTION_GARDEN_SUMMARY,
+    summaryZh: EMOTION_GARDEN_SUMMARY_ZH,
+    facts: EMOTION_GARDEN_FACTS,
+    factsZh: EMOTION_GARDEN_FACTS_ZH,
+    // How it works (usage guide + live flower lab) → why so many versions
+    // (AI loop + version log) → what it solved → reflection.
+    // See emotionGardenCaseStudy.js and components/caseStudies/emotiongarden.
+    detailChapters: EMOTION_GARDEN_DETAIL_CHAPTERS,
+    detailSections: EMOTION_GARDEN_DETAIL_SECTIONS,
+    detailSectionsZh: EMOTION_GARDEN_DETAIL_SECTIONS_ZH,
   },
   {
     id: "money-map",
@@ -770,7 +800,38 @@ export const RESEARCH_PROJECTS = [
     detailChapters: WHOSE_DREAMS_DETAIL_CHAPTERS,
     detailSections: WHOSE_DREAMS_DETAIL_SECTIONS,
     detailSectionsZh: WHOSE_DREAMS_DETAIL_SECTIONS_ZH,
-  }
+  },
+  {
+    // Cut around the A/B concept test, not the whole RtD project —
+    // see sleepDashboardCaseStudy.js.
+    id: "sleep-dashboard",
+    title: "Beyond Metrics",
+    subtitle: "Sleep Dashboards · A/B Test",
+    tagline: "An A/B test of two sleep-dashboard designs.",
+    taglineZh: "两个睡眠看板方案的 A/B 测试。",
+    description:
+      "An A/B test of two sleep-dashboard designs — one period in full vs. two adjacent periods compared — and how the result shaped the next version.",
+    descriptionZh:
+      "两个睡眠看板方案的 A/B 测试——一个时段的完整展示 vs. 相邻两段时间的对比——以及结果怎样影响了下一版设计。",
+    tags: ["A/B Testing", "Research Through Design", "Data Visualization"],
+    thumbnail: "/research-craft/sleep-dashboard/cover.png",
+    navArtPosition: "50% 40%",
+    navArtSize: "auto 36rem",
+    footerArtPosition: "50% 45%",
+    footerArtSize: "auto 60rem",
+    role: "Designer & Researcher",
+    roleZh: "设计与研究",
+    timeline: "2025",
+    duration: "Aug – Dec",
+    durationZh: "8 – 12 月",
+    summary: SLEEP_SUMMARY,
+    summaryZh: SLEEP_SUMMARY_ZH,
+    facts: SLEEP_FACTS,
+    factsZh: SLEEP_FACTS_ZH,
+    detailChapters: SLEEP_DETAIL_CHAPTERS,
+    detailSections: SLEEP_DETAIL_SECTIONS,
+    detailSectionsZh: SLEEP_DETAIL_SECTIONS_ZH,
+  },
 ];
 
 // 3D — AR spatial work first, then Houdini procedural motion.
@@ -1236,7 +1297,38 @@ export const THREE_D_PROJECTS = [
     detailChapters: PROCEDURAL_ANIMATION_DETAIL_CHAPTERS,
     detailSections: PROCEDURAL_ANIMATION_DETAIL_SECTIONS,
     detailSectionsZh: PROCEDURAL_ANIMATION_DETAIL_SECTIONS_ZH,
-  }
+  },
+  {
+    // Last on the 3D shelf. Positioned as spatial UX: science → flow,
+    // and a 2D flow rebuilt in 3D — see rbcVrCaseStudy.js.
+    id: "rbc-505",
+    title: "RBC No.505",
+    subtitle: "VR Learning · Spatial UX",
+    tagline: "Become a red blood cell, and make the gas exchange yourself.",
+    taglineZh: "变成一个红细胞，亲手完成一次气体交换。",
+    description:
+      "A VR learning prototype about red blood cell gas exchange — cardiovascular science turned into a first-person flow, then prototyped inside a headset with ShapesXR to get the spatial details right.",
+    descriptionZh:
+      "关于红细胞气体交换的 VR 学习原型——把心血管知识变成第一人称的流程，再用 ShapesXR 在头显里做原型，把空间上的细节做准。",
+    tags: ["VR", "Spatial UX", "Learning Design"],
+    thumbnail: "/research-craft/rbc-505/cover.png",
+    navArtPosition: "50% 45%",
+    navArtSize: "auto 32rem",
+    footerArtPosition: "50% 50%",
+    footerArtSize: "auto 60rem",
+    role: "UX & Prototyping",
+    roleZh: "UX 与原型",
+    timeline: "2025",
+    duration: "Feb – Apr",
+    durationZh: "2 – 4 月",
+    summary: RBC_SUMMARY,
+    summaryZh: RBC_SUMMARY_ZH,
+    facts: RBC_FACTS,
+    factsZh: RBC_FACTS_ZH,
+    detailChapters: RBC_DETAIL_CHAPTERS,
+    detailSections: RBC_DETAIL_SECTIONS,
+    detailSectionsZh: RBC_DETAIL_SECTIONS_ZH,
+  },
 ];
 
 /** @deprecated Prefer RESEARCH_PROJECTS + THREE_D_PROJECTS. */

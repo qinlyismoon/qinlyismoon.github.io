@@ -100,7 +100,7 @@ const PAGE_CONTEXT = {
             { label: "Digital product design", target: "case-studies" },
             { label: "Playground", target: "playground" },
             { label: "3D", target: "three-d" },
-            { label: "Research", target: "research" },
+            { label: "Design research", target: "research" },
           ],
         },
         {
@@ -202,7 +202,7 @@ const PAGE_CONTEXT = {
             { label: "数字产品设计", target: "case-studies" },
             { label: "Playground", target: "playground" },
             { label: "3D", target: "three-d" },
-            { label: "研究", target: "research" },
+            { label: "设计研究", target: "research" },
           ],
         },
         {

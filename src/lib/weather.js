@@ -76,7 +76,7 @@ export async function fetchCurrentWeather(
   const url = new URL("https://api.open-meteo.com/v1/forecast");
   url.searchParams.set("latitude", String(latitude));
   url.searchParams.set("longitude", String(longitude));
-  url.searchParams.set("current", "temperature_2m,weather_code");
+  url.searchParams.set("current", "temperature_2m,weather_code,is_day");
   url.searchParams.set("daily", "temperature_2m_max,temperature_2m_min");
   url.searchParams.set("forecast_days", "1");
   url.searchParams.set("temperature_unit", "celsius");
@@ -97,5 +97,13 @@ export async function fetchCurrentWeather(
     lowC: readDailyBound(data?.daily?.temperature_2m_min),
     weatherCode,
     kind,
+    // The sun at that place right now (1/0), so "night" follows real
+    // sunrise and sunset rather than a fixed hour.
+    isDay:
+      data?.current?.is_day === 1
+        ? true
+        : data?.current?.is_day === 0
+          ? false
+          : null,
   };
 }

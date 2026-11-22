@@ -10,9 +10,14 @@ import CaseStudyVideo from "./CaseStudyVideo";
 import FlowMediaRail from "./FlowMediaRail";
 import { LEAF_NOTE_WIDGETS } from "./leafnote";
 import { MONEY_MAP_WIDGETS } from "./moneymap";
+import { EMOTION_GARDEN_WIDGETS } from "./emotiongarden";
 
 // Interactive blocks a case-study section can embed by name.
-const CASE_STUDY_WIDGETS = { ...MONEY_MAP_WIDGETS, ...LEAF_NOTE_WIDGETS };
+const CASE_STUDY_WIDGETS = {
+  ...MONEY_MAP_WIDGETS,
+  ...LEAF_NOTE_WIDGETS,
+  ...EMOTION_GARDEN_WIDGETS,
+};
 
 /** Same org-mark fAIshion link as the home About block (system pattern). */
 function withFaishionLink(text) {
@@ -752,7 +757,9 @@ function DetailSection({ section, index }) {
       {section.screens?.length ? (
         <dd className="case-study__screens-wrap">
           <FlowMediaRail
-            className="flow-media-rail--screens"
+            className={`flow-media-rail--screens${
+              section.screensLayout === "wide" ? " flow-media-rail--wide" : ""
+            }`}
             fit={section.screensLayout === "fit"}
             label={
               section.screensLayout === "fit"

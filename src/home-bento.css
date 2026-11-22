@@ -3366,3 +3366,10 @@ a.site-org-link:focus-visible .site-org-link__mark {
     display: none;
   }
 }
+
+/* Time standing in for the temperature (weather not loaded): same slot,
+   a touch smaller since "4:46 PM" is wider than "18°C". */
+.home-status__read .home-status__temp--time {
+  font-size: clamp(1.7rem, 3.4vw, 2.2rem);
+  font-variant-numeric: tabular-nums;
+}

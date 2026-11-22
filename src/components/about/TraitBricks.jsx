@@ -18,7 +18,7 @@ const COPY = {
   en: {
     labels: ["Questions", "Possibilities", "Making"],
     kicker: "put together",
-    title: "What kind of designer am I?",
+    title: "What kind of builder am I?",
     collect: "Pick up",
     place: "Place",
     lift: "Lift",
@@ -30,7 +30,7 @@ const COPY = {
   zh: {
     labels: ["提问", "可能性", "动手做"],
     kicker: "合在一起",
-    title: "我是怎样的设计师？",
+    title: "我是怎样的创造者？",
     collect: "拿起",
     place: "放上",
     lift: "取下",

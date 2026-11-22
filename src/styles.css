@@ -9200,6 +9200,16 @@ a.site-org-link:focus-visible {
   width: min(28rem, 78cqi);
 }
 
+/* Landscape screens (VR / desktop frames): wider cards, softer corners. */
+.flow-media-rail--wide.flow-media-rail--screens .flow-media-rail__card {
+  flex: 0 0 min(30rem, 82cqi);
+  width: min(30rem, 82cqi);
+}
+
+.flow-media-rail--wide .case-study__screen img {
+  border-radius: 0.75rem;
+}
+
 /* Short sets that fit in one view — no peek, no edge fade, no scroll. */
 .flow-media-rail--fit .flow-media-rail__scroller {
   overflow-x: hidden;

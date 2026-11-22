@@ -25,6 +25,8 @@ import { CHONGQING_LAND, OHIO_LAND } from "../../lib/landMarks";
 const COLUMBUS_TZ = "America/New_York";
 const CHONGQING_COORDS = { latitude: 29.563, longitude: 106.5516 };
 const WEATHER_REFRESH_MS = 15 * 60_000;
+/** After a failed request, try again soon instead of waiting 15 minutes. */
+const WEATHER_RETRY_MS = 30_000;
 
 /** Weather for one city (Columbus reuses the desk's shared reading). */
 function useCityWeather(coords, skip) {
@@ -32,12 +34,16 @@ function useCityWeather(coords, skip) {
   useEffect(() => {
     if (skip) return undefined;
     let cancelled = false;
+    let retry = null;
     const load = async () => {
+      window.clearTimeout(retry);
       try {
         const next = await fetchCurrentWeather(coords);
         if (!cancelled) setWeather(next);
       } catch {
-        // Keep the last reading; the card shows time without weather.
+        // Keep the last reading (the card shows time as its number
+        // meanwhile) and try again shortly.
+        if (!cancelled) retry = window.setTimeout(load, WEATHER_RETRY_MS);
       }
     };
     load();
@@ -45,6 +51,7 @@ function useCityWeather(coords, skip) {
     return () => {
       cancelled = true;
       window.clearInterval(id);
+      window.clearTimeout(retry);
     };
   }, [coords, skip]);
   return weather;
@@ -156,11 +163,26 @@ function AnalogClock({ timeZone }) {
 
 const CLEAR_NIGHT = { en: "Clear", zh: "晴" };
 
+function localHour(timeZone) {
+  const hour = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    hour: "numeric",
+    hourCycle: "h23",
+  }).format(new Date());
+  return Number(hour);
+}
+
 function CityCard({ place, land, timeZone, weather, language, copy }) {
   const { date, phase, phaseLabel } = useZonedLiveClock(language, timeZone);
   const time = useShortTime(language, timeZone);
-  const night = phase === "night";
   const hasWeather = weather && Number.isFinite(weather.temperatureC);
+  // Night = the sun is down there, from the weather service. Without a
+  // reading, fall back to the clock: night until 7, since a 5 a.m.
+  // "morning" is still dark for much of the year.
+  const night =
+    hasWeather && typeof weather.isDay === "boolean"
+      ? !weather.isDay
+      : phase === "night" || localHour(timeZone) < 7;
   const kind = hasWeather ? weather.kind : "none";
   // A clear sky at night is "clear", lit by the moon — not "sunny".
   const clearNight = night && kind === "sunny";
@@ -205,11 +227,18 @@ function CityCard({ place, land, timeZone, weather, language, copy }) {
                 {condition}
                 {range ? ` · ${range}` : ""}
               </p>
+              <p className="home-status__date">
+                {time} · {date}
+              </p>
             </>
-          ) : null}
-          <p className="home-status__date">
-            {time} · {date}
-          </p>
+          ) : (
+            // No weather yet: the time takes the number's place, so the
+            // card keeps its shape instead of a lone caption.
+            <>
+              <p className="home-status__temp home-status__temp--time">{time}</p>
+              <p className="home-status__condition">{date}</p>
+            </>
+          )}
         </div>
       </div>
 

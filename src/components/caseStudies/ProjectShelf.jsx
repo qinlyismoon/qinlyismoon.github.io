@@ -31,6 +31,40 @@ const VIDEO_AFTER_MS = 720;
 const HOLD_MIN_MS = 560;
 const HOLD_MAX_MS = 1600;
 
+/**
+ * Where to look in each cover. A closed book shows a tall, narrow strip
+ * of its cover; an open book a near-square cover. Centre-cropping both
+ * cut phones in half or landed on empty background, so each project
+ * names its subject: [x y] for the spine strip, [x y] for the open cover.
+ * The crop glides from one to the other as the book is pulled.
+ */
+const SHELF_FOCUS = {
+  "color-analysis": { spine: ["21%", "50%"], open: ["40%", "50%"] }, // face phone
+  "leaf-note-case": { spine: ["47%", "50%"], open: ["45%", "50%"] }, // handoff cards
+  "money-map": { spine: ["50%", "50%"], open: ["50%", "50%"] }, // the phone
+  "swim-balance": { spine: ["72%", "50%"], open: ["70%", "50%"] }, // "Today" phone
+  "oscar-ar": { spine: ["38%", "50%"], open: ["60%", "50%"] }, // book, then book + AR
+  "procedural-animation": { spine: ["52%", "50%"], open: ["52%", "50%"] }, // hot pot
+  "whose-dreams": { spine: ["38%", "50%"], open: ["45%", "50%"] }, // sticky notes
+  "emotion-garden": { spine: ["68%", "50%"], open: ["65%", "50%"] }, // flowers
+  "onomichi-furin": { spine: ["45%", "50%"], open: ["50%", "50%"] }, // bells
+};
+
+function focusStyle(project) {
+  const focus = SHELF_FOCUS[project.id];
+  if (!focus) {
+    return project.cardObjectPosition
+      ? { objectPosition: project.cardObjectPosition }
+      : undefined;
+  }
+  return {
+    "--spine-x": focus.spine[0],
+    "--spine-y": focus.spine[1],
+    "--open-x": focus.open[0],
+    "--open-y": focus.open[1],
+  };
+}
+
 function BookCover({ project, open }) {
   const [failed, setFailed] = useState(false);
   const videoRef = useRef(null);
@@ -56,9 +90,7 @@ function BookCover({ project, open }) {
     else video.pause();
   }, [playVideo]);
 
-  const style = project.cardObjectPosition
-    ? { objectPosition: project.cardObjectPosition }
-    : undefined;
+  const style = focusStyle(project);
 
   return (
     <div className="shelf-book__cover" aria-hidden="true">

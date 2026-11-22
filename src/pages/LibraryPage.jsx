@@ -119,7 +119,7 @@ const LABELS = {
     caseStudies: "Digital product design",
     caseStudiesNote:
       "Internship and 0→1 product work—flows you can poke at.",
-    research: "Research",
+    research: "Design research",
     researchNote: "Co-design with people—workshops that leave a film, a town, a question.",
     threeD: "3D",
     threeDNote: "AR built onto the printed page, and Houdini motion studies.",
@@ -133,7 +133,7 @@ const LABELS = {
       "有些是在真实的产品团队里做出来的，有些是我一个人从草图做到能跑的代码，还有一些，是我拿起一种新媒介，试试它能走多远。每张卡片点开，都是我一路怎么想过来的——每一次思考，都有成长。",
     caseStudies: "数字产品设计",
     caseStudiesNote: "实习与 0→1 产品：能上手戳的流程。",
-    research: "研究",
+    research: "设计研究",
     researchNote: "和人一起共创——工作坊留下的短片、小镇，和一个问题。",
     threeD: "3D",
     threeDNote: "落在纸页上的 AR，以及 Houdini 里的程序化运动。",

@@ -1,0 +1,681 @@
+/* ------------------------------------------------------------------
+   Emotion Garden interactive blocks (case-study `interactive` sections).
+
+   Built from the site's own primitives, not a second kit:
+   - choices are the shared InlineChoice (`.ds-choice`): words · dots ·
+     a 1px accent rule that slides — no pills, no segmented controls;
+   - type voices: UI sans for labels, the reading face for explanation,
+     mono (`--font-mono`) for data such as version numbers and counts;
+   - radius from the set 0 / 4 / 8 / 16 / 50%; accent is the only UI hue;
+   - wrap stability: swapped content stacks in one grid cell
+     (`.eg-stack`), so changing a choice never moves the page.
+   Colour inside the artwork stays the garden's own (feelings, outcomes).
+   ------------------------------------------------------------------ */
+.vibe-detail__main .eg-widget {
+  --eg-ease: cubic-bezier(0.2, 0.9, 0.1, 1);
+  --eg-hair: var(--color-divider);
+  font-family: var(--font-ui);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border-radius: 16px;
+  padding: var(--space-5, 2.5rem);
+}
+
+/* voices */
+.vibe-detail__main .eg-kicker {
+  margin: 0 0 var(--space-1);
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .eg-mono {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+  color: var(--color-text);
+}
+
+.vibe-detail__main .eg-title {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-reading);
+  font-size: var(--type-body);
+  font-weight: var(--weight-reading-title, 600);
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.vibe-detail__main .eg-title--lg {
+  margin-bottom: var(--space-1);
+  font-size: 1.375rem;
+  line-height: 1.3;
+}
+
+.vibe-detail__main .eg-example {
+  margin-top: var(--space-3);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--eg-hair);
+}
+
+.vibe-detail__main .eg-example__label {
+  margin: 0 0 var(--space-1);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .eg-example__text {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .eg-text,
+.vibe-detail__main .eg-question {
+  margin: 0;
+  font-family: var(--font-reading);
+  font-size: var(--type-body);
+  line-height: 1.6;
+  color: var(--color-reading, var(--color-text));
+}
+
+.vibe-detail__main .eg-question {
+  color: var(--color-text);
+}
+
+.vibe-detail__main .eg-note {
+  margin: var(--space-2) 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .eg-note.is-flag {
+  padding-left: var(--space-2);
+  border-left: 2px solid var(--color-accent);
+  color: var(--color-text);
+}
+
+/* one cell, many states — the tallest sets the height */
+.vibe-detail__main .eg-stack {
+  display: grid;
+}
+
+.vibe-detail__main .eg-stack__item {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.vibe-detail__main .eg-stack__item.is-on {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.3s ease 0.05s, visibility 0s;
+}
+
+/* a labelled InlineChoice row: field name, and under it the part of
+   the plant it draws — the mapping is the point of the lab. */
+.vibe-detail__main .eg-field {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  column-gap: var(--space-3);
+  align-items: baseline;
+  padding: var(--space-2) 0;
+}
+
+.vibe-detail__main .eg-field.is-flat {
+  padding-top: 0;
+}
+
+.vibe-detail__main .eg-field__label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: color 0.3s ease;
+}
+
+.vibe-detail__main .eg-field__part {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  opacity: 0.8;
+}
+
+.vibe-detail__main .eg-field.is-open .eg-field__label {
+  color: var(--color-text);
+}
+
+.vibe-detail__main .eg-field.is-open .eg-field__part {
+  color: var(--color-accent);
+  opacity: 1;
+}
+
+.vibe-detail__main .eg-choice {
+  row-gap: 0.35rem;
+}
+
+/* These rows wrap onto several lines, and the shared sliding indicator
+   only travels horizontally. Same voice — the chosen word over a 1px
+   accent rule — drawn on the word itself instead of sliding. */
+.vibe-detail__main .eg-choice .ds-choice__indicator {
+  display: none;
+}
+
+.vibe-detail__main .eg-choice .ds-choice__option[aria-checked="true"] {
+  border-bottom-color: var(--color-accent);
+}
+
+.vibe-detail__main .eg-choice .ds-choice__swatch {
+  width: 8px;
+  height: 8px;
+}
+
+.vibe-detail__main .eg-choice--mono {
+  font-family: var(--font-mono);
+}
+
+/* The explanation opens right under the field being changed: grid rows
+   0fr → 1fr, like the garden's own disclosure; one open at a time.
+   Height never jumps: every note reserves the same height (ghosts of all
+   notes stacked in one cell), and closing and opening run on the same
+   curve with no delay, so the two always add up to one note's height. */
+.vibe-detail__main .eg-field__note {
+  grid-column: 2;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s var(--eg-ease);
+}
+
+.vibe-detail__main .eg-field.is-open .eg-field__note {
+  grid-template-rows: 1fr;
+}
+
+.vibe-detail__main .eg-field__note-clip {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.vibe-detail__main .eg-field__note-body {
+  display: grid;
+  align-items: start;
+  margin-top: var(--space-2);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.vibe-detail__main .eg-field.is-open .eg-field__note-body {
+  opacity: 1;
+  transition: opacity 0.3s ease 0.15s;
+}
+
+/* the accent rule runs only alongside the visible text */
+.vibe-detail__main .eg-field__note-body > p {
+  grid-area: 1 / 1;
+  margin: 0;
+  padding-left: var(--space-2);
+  border-left: 2px solid var(--color-accent);
+  font-family: var(--font-reading);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-reading, var(--color-text));
+}
+
+.vibe-detail__main .eg-field__note-body > .eg-field__ghost {
+  visibility: hidden;
+}
+
+/* ── Flower lab ───────────────────────────────────────────── */
+.vibe-detail__main .eg-lab {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: var(--space-5, 2.5rem);
+  align-items: stretch;
+}
+
+/* The paper runs the full height of the fields beside it, with the plant
+   centred, so the two columns always line up. */
+.vibe-detail__main .eg-lab__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #f6f5f1; /* the garden's paper */
+  padding: var(--space-3) var(--space-2);
+}
+
+.vibe-detail__main .eg-plant {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  overflow: visible;
+}
+
+.vibe-detail__main .eg-plant__ground {
+  stroke: rgba(43, 43, 43, 0.3);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.vibe-detail__main .eg-plant__part {
+  transition: opacity 0.4s ease;
+}
+
+.vibe-detail__main .eg-plant__part.is-dim {
+  opacity: 0.22;
+}
+
+.vibe-detail__main .eg-plant__organ {
+  stroke: #2b2b2b;
+  stroke-opacity: 0.25;
+  stroke-width: 0.8;
+  transition: fill 0.4s ease;
+}
+
+.vibe-detail__main .eg-plant__vein {
+  stroke: #fff;
+  stroke-opacity: 0.55;
+  stroke-width: 0.9;
+}
+
+.vibe-detail__main .eg-plant__spot {
+  fill: #2b2b2b;
+  fill-opacity: 0.22;
+}
+
+.vibe-detail__main .eg-plant__core {
+  fill: #f6f5f1;
+  stroke: #2b2b2b;
+  stroke-opacity: 0.5;
+}
+
+.vibe-detail__main .eg-plant__stitch {
+  fill: none;
+  stroke: #2b2b2b;
+  stroke-width: 0.9;
+}
+
+.vibe-detail__main .eg-plant__knot {
+  fill: #2b2b2b;
+}
+
+.vibe-detail__main .eg-plant__sway {
+  animation: eg-sway var(--eg-speed, 5s) ease-in-out infinite alternate;
+}
+
+@keyframes eg-sway {
+  from {
+    transform: rotate(calc(var(--eg-sway, 1deg) * -1));
+  }
+  to {
+    transform: rotate(var(--eg-sway, 1deg));
+  }
+}
+
+/* ── Iteration loop ──────────────────────────────────────── */
+.vibe-detail__main .eg-loop {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.vibe-detail__main .eg-loop__ring {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .eg-loop__arcs path {
+  fill: none;
+  stroke: var(--eg-hair);
+  stroke-width: 1;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .eg-loop__runner {
+  fill: var(--color-accent);
+}
+
+.vibe-detail__main .eg-loop__center {
+  text-anchor: middle;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  fill: var(--color-text);
+}
+
+.vibe-detail__main .eg-loop__center--sub {
+  font-size: 12px;
+  fill: var(--color-text-secondary);
+}
+
+.vibe-detail__main .eg-loop__node {
+  cursor: pointer;
+  outline: none;
+}
+
+.vibe-detail__main .eg-loop__hit {
+  fill: transparent;
+}
+
+.vibe-detail__main .eg-loop__dot {
+  fill: var(--color-surface);
+  stroke: var(--color-text-secondary);
+  stroke-width: 1;
+  transition: fill 0.3s ease, stroke 0.3s ease;
+}
+
+.vibe-detail__main .eg-loop__node:hover .eg-loop__dot,
+.vibe-detail__main .eg-loop__node:focus-visible .eg-loop__dot {
+  stroke: var(--color-accent);
+}
+
+.vibe-detail__main .eg-loop__node.is-on .eg-loop__dot {
+  fill: var(--color-accent);
+  stroke: var(--color-accent);
+}
+
+.vibe-detail__main .eg-loop__node:focus-visible .eg-loop__hit {
+  stroke: var(--color-accent);
+  stroke-width: 1.5;
+}
+
+.vibe-detail__main .eg-loop__name {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  fill: var(--color-text-secondary);
+  transition: fill 0.3s ease;
+}
+
+.vibe-detail__main .eg-loop__node.is-on .eg-loop__name {
+  fill: var(--color-text);
+}
+
+.vibe-detail__main .eg-loop__who {
+  font-weight: 400;
+  font-size: 11px;
+  fill: var(--color-text-secondary);
+}
+
+/* ── Rail (version log) ──────────────────────────────────── */
+.vibe-detail__main .eg-rail {
+  position: relative;
+  margin-bottom: var(--space-3);
+}
+
+.vibe-detail__main .eg-rail__line,
+.vibe-detail__main .eg-rail__progress {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  height: 1px;
+  background: var(--eg-hair);
+}
+
+.vibe-detail__main .eg-rail__progress {
+  right: auto;
+  width: calc((100% - 12px) * var(--eg-progress, 0));
+  background: var(--color-accent);
+  transition: width 0.45s var(--eg-ease);
+}
+
+.vibe-detail__main .eg-rail__nodes {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+}
+
+.vibe-detail__main .eg-rail__node {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.vibe-detail__main .eg-rail__node:first-child {
+  align-items: flex-start;
+}
+
+.vibe-detail__main .eg-rail__node:last-child {
+  align-items: flex-end;
+}
+
+.vibe-detail__main .eg-rail__dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 1px solid var(--color-text-secondary);
+  background: var(--color-surface);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.vibe-detail__main .eg-rail__node.is-past .eg-rail__dot {
+  border-color: var(--color-accent);
+}
+
+.vibe-detail__main .eg-rail__node.is-on .eg-rail__dot {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+}
+
+.vibe-detail__main .eg-rail__node:hover .eg-rail__dot {
+  border-color: var(--color-accent);
+}
+
+.vibe-detail__main .eg-rail__node:focus-visible {
+  outline: none;
+}
+
+.vibe-detail__main .eg-rail__node:focus-visible .eg-rail__dot {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.vibe-detail__main .eg-rail__mark {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .eg-rail__node.is-on .eg-rail__mark {
+  color: var(--color-text);
+}
+
+.vibe-detail__main .eg-versions__entries {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--eg-hair);
+}
+
+.vibe-detail__main .eg-versions .eg-title {
+  font-size: 1.125rem;
+  margin-bottom: var(--space-3);
+}
+
+/* What I saw | What changed: two short columns, label above each,
+   so every line stays a comfortable length. */
+.vibe-detail__main .eg-pairs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.vibe-detail__main .eg-pairs__label {
+  margin: 0 0 var(--space-1);
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .eg-pairs__text {
+  margin: 0;
+  font-family: var(--font-reading);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--color-reading, var(--color-text));
+}
+
+/* ── Checking AI (before / after) ────────────────────────── */
+.vibe-detail__main .eg-tries {
+  display: flex;
+  gap: var(--space-2);
+  margin: var(--space-1) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vibe-detail__main .eg-tries li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.vibe-detail__main .eg-tries__dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--color-text-secondary);
+}
+
+.vibe-detail__main .eg-tries li.is-ok .eg-tries__dot {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+}
+
+.vibe-detail__main .eg-tries__label {
+  font-size: 0.6875rem;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .eg-check__cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.vibe-detail__main .eg-check__col {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3);
+  border-radius: 8px;
+  background: var(--color-background);
+}
+
+.vibe-detail__main .eg-check__col.is-wrong {
+  background: transparent;
+  border: 1px dashed var(--eg-hair);
+}
+
+.vibe-detail__main .eg-check__head {
+  margin: 0 0 var(--space-1);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.vibe-detail__main .eg-check__col.is-wrong .eg-check__head {
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .eg-check__why {
+  flex: 1;
+  margin: 0 0 var(--space-3);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .eg-check__says-label {
+  margin: 0 0 4px;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .eg-check__says {
+  margin: 0;
+  font-family: var(--font-reading);
+  font-size: 1.125rem;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.vibe-detail__main .eg-check__col.is-wrong .eg-check__says {
+  color: var(--color-text-secondary);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.vibe-detail__main .eg-check__col.is-right {
+  box-shadow: inset 2px 0 0 var(--color-accent);
+}
+
+.vibe-detail__main .eg-check .eg-note {
+  margin-top: var(--space-3);
+}
+
+/* motion off */
+@media (prefers-reduced-motion: reduce) {
+  .vibe-detail__main .eg-plant__sway {
+    animation: none;
+  }
+
+}
+
+/* narrow */
+@media (max-width: 720px) {
+  .vibe-detail__main .eg-widget {
+    padding: var(--space-3);
+  }
+
+  .vibe-detail__main .eg-lab,
+  .vibe-detail__main .eg-loop,
+  .vibe-detail__main .eg-check__cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .vibe-detail__main .eg-lab__stage {
+    padding: var(--space-2);
+  }
+
+  .vibe-detail__main .eg-plant {
+    max-width: 260px;
+  }
+
+  .vibe-detail__main .eg-field {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-1);
+  }
+
+  .vibe-detail__main .eg-field__label {
+    flex-direction: row;
+    gap: var(--space-1);
+  }
+
+  .vibe-detail__main .eg-field__note {
+    grid-column: 1;
+  }
+
+  .vibe-detail__main .eg-rail__mark {
+    font-size: 0.5625rem;
+  }
+
+  .vibe-detail__main .eg-pairs {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+}
