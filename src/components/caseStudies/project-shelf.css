@@ -497,3 +497,26 @@
 .shelf-book:focus-within .shelf-book__spine-title {
   color: var(--color-text);
 }
+
+/* Touch: "Open" looks the same as on desktop (text + arrow), with a
+   finger-sized target. The earlier filled pill also inherited the sticky
+   :hover ink after a tap — dark text on a dark pill, words gone. */
+@media (hover: none) {
+  .shelf-book__cue,
+  .shelf-book.is-open .shelf-book__button:hover .shelf-book__cue,
+  .shelf-book.is-open .shelf-book__button:focus-visible .shelf-book__cue {
+    align-self: flex-start;
+    min-height: 2.75rem;
+    margin-left: -0.5rem;
+    padding: 0 0.5rem;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-weight: 400;
+  }
+
+  .shelf-book.is-open .shelf-book__cue:active {
+    background: color-mix(in srgb, var(--color-text) 6%, transparent);
+    color: var(--color-text);
+  }
+}

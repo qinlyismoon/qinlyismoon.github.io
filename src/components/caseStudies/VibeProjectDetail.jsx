@@ -1187,8 +1187,11 @@ function ProjectDetailPanel({
                     controls={false}
                   />
                 ) : (
+                  // An animated cover (e.g. the wish wall's GIF) plays here
+                  // too — the detail opens on the same moving picture the
+                  // card showed.
                   <img
-                    src={project.thumbnail}
+                    src={project.animatedCover || project.thumbnail}
                     alt=""
                     className="vibe-detail__image"
                     onError={() => setImageFailed(true)}

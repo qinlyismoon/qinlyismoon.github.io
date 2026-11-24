@@ -12021,3 +12021,100 @@ body:not([data-page="home"]) .editorial-thread {
 .vibe-detail__main .ln-film__try:hover {
   background: color-mix(in srgb, var(--color-text) 6%, transparent);
 }
+
+/* Edge-case result card — one typeface, three clear levels:
+   title → where the money goes (tags) → risk / what the app does. */
+.vibe-detail__main .mm-moves__result .mm-moves__detail,
+.vibe-detail__main .mm-moves__result .mm-moves__detail * {
+  font-family: var(--font-ui);
+  letter-spacing: 0;
+}
+
+.vibe-detail__main .mm-moves__result .mm-moves__detail {
+  padding: 1.25rem 1.25rem 1.35rem;
+  border-radius: 16px;
+}
+
+.vibe-detail__main .mm-moves__result .mm-moves__title {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1.3;
+  color: var(--color-text);
+}
+
+.vibe-detail__main .mm-moves__route {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.vibe-detail__main .mm-moves__tag {
+  padding: 0.2rem 0.6rem;
+  border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+  border-radius: 999px;
+  background: var(--color-surface);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .mm-moves__tag--to {
+  border-color: transparent;
+  background: var(--mm-lime);
+  color: var(--mm-ink);
+}
+
+.vibe-detail__main .mm-moves__tag--note {
+  border-radius: 10px;
+  color: var(--color-text);
+}
+
+.vibe-detail__main .mm-moves__arrow {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .mm-moves__result .mm-moves__detail dl {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.vibe-detail__main .mm-moves__result .mm-moves__detail dl > div {
+  display: block;
+  padding: 0.8rem 0 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-text) 9%, transparent);
+}
+
+.vibe-detail__main .mm-moves__result .mm-moves__detail dl > div + div {
+  margin-top: 0.8rem;
+}
+
+.vibe-detail__main .mm-moves__result .mm-moves__detail dt {
+  margin: 0 0 0.25rem;
+  padding: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: none;
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .mm-moves__result .mm-moves__detail dd {
+  margin: 0;
+  min-height: 0;
+  font-size: 0.88rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.vibe-detail__main .mm-moves__result .mm-moves__risk dd {
+  color: var(--color-text-secondary);
+}
+
+.vibe-detail__main .mm-moves__result .mm-moves__does dd {
+  color: var(--color-text);
+}

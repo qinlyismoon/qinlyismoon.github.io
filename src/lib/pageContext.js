@@ -98,8 +98,8 @@ const PAGE_CONTEXT = {
           label: "Project Collection",
           links: [
             { label: "Digital product design", target: "case-studies" },
+            { label: "3D & spatial", target: "three-d" },
             { label: "Playground", target: "playground" },
-            { label: "3D", target: "three-d" },
             { label: "Design research", target: "research" },
           ],
         },
@@ -200,8 +200,8 @@ const PAGE_CONTEXT = {
           label: "作品集",
           links: [
             { label: "数字产品设计", target: "case-studies" },
+            { label: "3D 与空间", target: "three-d" },
             { label: "Playground", target: "playground" },
-            { label: "3D", target: "three-d" },
             { label: "设计研究", target: "research" },
           ],
         },

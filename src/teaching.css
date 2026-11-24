@@ -895,3 +895,153 @@
 .teaching-reflection .teaching-label {
   margin-bottom: 0.3rem;
 }
+
+/* ——— Card-file switch without a blank card ———
+   Before: the old card's words faded out, the new card's faded in after a
+   delay, so for a moment the front card was empty (the white flash).
+   Now every card keeps its words (the back ones are hidden behind the
+   front card anyway — only their bottom edges peek). Switching pulls the
+   front card off: it stays on top, lifts a little and fades, while the
+   next card comes forward underneath with its words already there. */
+.teaching-file__content,
+.teaching-file__card.is-active .teaching-file__content {
+  opacity: 1;
+  transition: none;
+}
+
+.teaching-file__card.is-leaving {
+  z-index: 11;
+  pointer-events: none;
+  animation: teaching-file-leave 380ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes teaching-file-leave {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-0.7rem) scale(0.985);
+    opacity: 0;
+  }
+}
+
+/* The card coming forward rises from its place in the stack. */
+.teaching-file__card.is-active {
+  transition:
+    transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 260ms ease,
+    box-shadow 220ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .teaching-file__card.is-leaving {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* ——— Switch in sequence: one set of words at a time ———
+   Keeping the words on every card stopped the blank flash, but the old
+   card fading over the new one showed two texts at once. Now:
+     0–130ms   the old card's words fade (the card itself stays in front)
+     80–380ms  the now-empty old card lifts and fades away
+     150–410ms the new card's words rise in
+   So the front surface is never blank, and words never overlap. */
+.teaching-file__card.is-leaving {
+  animation: teaching-file-leave 300ms cubic-bezier(0.4, 0, 0.2, 1) 80ms both;
+}
+
+.teaching-file__card.is-leaving .teaching-file__content {
+  animation: teaching-file-text-out 130ms ease both;
+}
+
+.teaching-file:has(.teaching-file__card.is-leaving)
+  .teaching-file__card.is-active
+  .teaching-file__content {
+  animation: teaching-file-text-in 260ms cubic-bezier(0.22, 1, 0.36, 1) 150ms both;
+}
+
+@keyframes teaching-file-text-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes teaching-file-text-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.3rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .teaching-file__card.is-leaving .teaching-file__content,
+  .teaching-file:has(.teaching-file__card.is-leaving)
+    .teaching-file__card.is-active
+    .teaching-file__content {
+    animation: none;
+  }
+}
+
+/* ——— The stack's edges belong to the file, not to the cards ———
+   The peeking layers used to be the back cards themselves, shifted down
+   by depth. On a switch the card being pulled off was away (lifting and
+   fading) and only dropped into the back at the end, so the bottom edges
+   lost a layer and then snapped it back in. Now the two edges are fixed
+   layers of the file (drawn under the cards), every card sits in the same
+   place, and a switch only changes the front card — the edges never move. */
+.teaching-file__card {
+  transform: none;
+}
+
+.teaching-file__stack::before,
+.teaching-file__stack::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 0 0 var(--file-radius) var(--file-radius);
+  pointer-events: none;
+}
+
+.teaching-file__stack::before {
+  z-index: 0;
+  transform: translateY(calc(var(--file-peek) * 2));
+  background: color-mix(in srgb, var(--color-text) 18%, var(--color-surface));
+}
+
+.teaching-file__stack::after {
+  z-index: 0;
+  transform: translateY(var(--file-peek));
+  background: color-mix(in srgb, var(--color-text) 13%, var(--color-surface));
+}
+
+/* Cards behind the front one are fully covered now; keep them on the
+   face colour so nothing darker shows through as the front card fades. */
+.teaching-file__card:not(.is-active) {
+  background: var(--file-face);
+}
+
+/* ——— No jump on click ———
+   The tab row's height came from its tallest tab. On a switch one tab
+   shrinks while another grows, and the active tab's -2px seam overlap
+   flipped instantly, so the row's height wobbled (+2px, −2.6px, back) and
+   the whole card below jumped with it. The row is now a fixed height:
+   tabs grow and shrink inside it without moving anything, and the active
+   tab hides the seam with a 2px paint below it instead of a negative
+   margin. */
+.teaching-file__tabs {
+  height: var(--file-tab-h);
+  align-items: flex-end;
+}
+
+.teaching-file__tab.is-active {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  box-shadow: 0 2px 0 0 var(--file-face);
+}
+
+.teaching-file:has(.teaching-file__card.is-active:hover) .teaching-file__tab.is-active,
+.teaching-file:has(.teaching-file__card.is-active:focus-within) .teaching-file__tab.is-active {
+  box-shadow: 0 2px 0 0 var(--tile-hover-bg);
+}

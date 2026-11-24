@@ -3,7 +3,7 @@
  * lifted cards). Principles read as one interactive surface; each links to
  * the course where it shows up. Courses expand downward in place.
  */
-import { useCallback, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import PageCopyright from "../shared/PageCopyright";
 
 function Meta({ items }) {
@@ -265,14 +265,29 @@ function CourseCard({ course, labels, open, onToggle, moreLabel, lessLabel }) {
  * arrow keys, or "next" to flip. All cards share one grid cell, so the file
  * keeps the height of the longest principle.
  */
+/** Length of the "pull the front card off" motion (matches the CSS). */
+const CARD_LEAVE_MS = 420;
+
 function Approach({ principles, evidenceLabel, nextLabel, onEvidence }) {
   const [active, setActive] = useState(0);
+  // The card being pulled off the front: it stays on top for one short
+  // motion (lifts and fades) while the next card, already showing its
+  // words, comes forward underneath — so there is never a blank card.
+  const [leaving, setLeaving] = useState(null);
+  const leaveTimer = useRef(null);
   const baseId = useId();
   const tabRefs = useRef([]);
   const count = principles.length;
 
+  useEffect(() => () => window.clearTimeout(leaveTimer.current), []);
+
   const select = (index, focus = false) => {
     const next = (index + count) % count;
+    if (next !== active) {
+      setLeaving(active);
+      window.clearTimeout(leaveTimer.current);
+      leaveTimer.current = window.setTimeout(() => setLeaving(null), CARD_LEAVE_MS);
+    }
     setActive(next);
     if (focus) tabRefs.current[next]?.focus();
   };
@@ -329,7 +344,9 @@ function Approach({ principles, evidenceLabel, nextLabel, onEvidence }) {
               aria-labelledby={`${baseId}-tab-${index}`}
               aria-hidden={selected ? undefined : true}
               inert={selected ? undefined : ""}
-              className={`teaching-file__card${selected ? " is-active" : ""}`}
+              className={`teaching-file__card${selected ? " is-active" : ""}${
+                index === leaving ? " is-leaving" : ""
+              }`}
               style={{ "--depth": depth }}
             >
               <div className="teaching-file__content">

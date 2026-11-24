@@ -38,7 +38,7 @@ const HOLD_MAX_MS = 1600;
  * names its subject: [x y] for the spine strip, [x y] for the open cover.
  * The crop glides from one to the other as the book is pulled.
  */
-const SHELF_FOCUS = {
+export const SHELF_FOCUS = {
   "color-analysis": { spine: ["21%", "50%"], open: ["40%", "50%"] }, // face phone
   "leaf-note-case": { spine: ["47%", "50%"], open: ["45%", "50%"] }, // handoff cards
   "money-map": { spine: ["50%", "50%"], open: ["50%", "50%"] }, // the phone
@@ -72,15 +72,18 @@ function BookCover({ project, open }) {
   // The video mounts only after the pull has finished: decoding its
   // first frame mid-animation dropped frames exactly while the book was
   // moving. Until then the poster stands in (same frame).
+  // Same for an animated cover (GIF): it plays only on the open book —
+  // closed books stay still and quiet — and arrives after the pull.
+  const moving = project.heroVideo || project.animatedCover;
   const [settled, setSettled] = useState(false);
   useEffect(() => {
-    if (!open || !project.heroVideo) {
+    if (!open || !moving) {
       setSettled(false);
       return undefined;
     }
     const timer = window.setTimeout(() => setSettled(true), VIDEO_AFTER_MS);
     return () => window.clearTimeout(timer);
-  }, [open, project.heroVideo]);
+  }, [open, moving]);
   const playVideo = settled;
 
   useEffect(() => {
@@ -103,6 +106,15 @@ function BookCover({ project, open }) {
           loading="lazy"
           decoding="async"
           onError={() => setFailed(true)}
+        />
+      ) : null}
+      {!project.heroVideo && project.animatedCover && settled ? (
+        <img
+          src={project.animatedCover}
+          alt=""
+          className="shelf-book__image shelf-book__video"
+          style={style}
+          decoding="async"
         />
       ) : null}
       {project.heroVideo && settled ? (
@@ -221,6 +233,25 @@ function holdInPlace(el) {
   if (!row || getComputedStyle(row).flexDirection !== "column") return;
   const scroller = scrollParentOf(el);
   const startTop = el.getBoundingClientRect().top;
+
+  // Where the tapped book should end up: if, once open, it would run under
+  // the bottom of the screen (or the floating dock), bring it up just
+  // enough to show all of it — never past the top margin.
+  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+  const openH =
+    (parseFloat(getComputedStyle(row).getPropertyValue("--open-h")) || 24) * rem;
+  const dock = document.querySelector(".site-dock__bar-shell, .site-dock");
+  const dockTop = dock ? dock.getBoundingClientRect().top : window.innerHeight;
+  const bottomLimit = Math.min(window.innerHeight, dockTop) - 12;
+  const topLimit =
+    (scroller === document.scrollingElement || scroller === document.documentElement
+      ? 0
+      : Math.max(0, scroller.getBoundingClientRect().top)) + 16;
+  const endTop =
+    startTop + openH > bottomLimit
+      ? Math.max(topLimit, bottomLimit - openH)
+      : startTop;
+
   const begun = performance.now();
   let still = 0;
   let stopped = false;
@@ -234,14 +265,20 @@ function holdInPlace(el) {
   window.addEventListener("wheel", stop, { capture: true, passive: true });
   const step = () => {
     if (stopped) return;
-    const drift = el.getBoundingClientRect().top - startTop;
+    const elapsed = performance.now() - begun;
+    // The book's top travels from where it was tapped to where it should
+    // end, on the pull's own curve and duration — so the page scroll and
+    // the book opening read as one motion. Each frame also cancels any
+    // shift from the book closing above.
+    const t = Math.min(1, elapsed / GUIDE_MS);
+    const target = startTop + (endTop - startTop) * easeInOut(t);
+    const drift = el.getBoundingClientRect().top - target;
     if (Math.abs(drift) > 0.5) {
       scroller.scrollTop += drift;
       still = 0;
     } else {
       still += 1;
     }
-    const elapsed = performance.now() - begun;
     // Hold through the pull, then until the layout has been still for a
     // few frames (the pull can run long on a busy device); never longer
     // than the cap.
@@ -253,6 +290,14 @@ function holdInPlace(el) {
   };
   requestAnimationFrame(step);
 }
+
+/** Same feel as the pull's cubic-bezier(0.4, 0, 0.2, 1). */
+function easeInOut(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+}
+
+/** Matches the stacked shelf's --pull-dur (0.5s). */
+const GUIDE_MS = 500;
 
 export default function ProjectShelf({
   id,

@@ -232,18 +232,23 @@ export default function MoneyStatesDemo() {
                   aria-hidden={x.id !== c.id}
                 >
                   <p className="mm-moves__title">{x.label}</p>
+                  <div className="mm-moves__route">
+                    {x.route || !e ? (
+                      <span className="mm-moves__tag mm-moves__tag--note">{x.route || t.stays}</span>
+                    ) : (
+                      <>
+                        <span className="mm-moves__tag">{places[e.from]}</span>
+                        <span className="mm-moves__arrow" aria-hidden="true">→</span>
+                        <span className="mm-moves__tag mm-moves__tag--to">{places[e.to]}</span>
+                      </>
+                    )}
+                  </div>
                   <dl>
-                    <div>
-                      <dt>{t.route}</dt>
-                      <dd className="mm-moves__route">
-                        {x.route || (e ? `${places[e.from]} → ${places[e.to]}` : t.stays)}
-                      </dd>
-                    </div>
-                    <div>
+                    <div className="mm-moves__risk">
                       <dt>{t.risk}</dt>
                       <dd>{x.risk}</dd>
                     </div>
-                    <div>
+                    <div className="mm-moves__does">
                       <dt>{t.does}</dt>
                       <dd>{x.does}</dd>
                     </div>

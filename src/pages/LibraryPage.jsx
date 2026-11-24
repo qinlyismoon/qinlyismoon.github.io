@@ -4,6 +4,7 @@ import { useAppSettings } from "../context/AppSettingsContext";
 import { useSidebarOverride } from "../context/SidebarOverrideContext";
 import HomeLayout from "../components/layouts/HomeLayout";
 import ProjectShelf from "../components/caseStudies/ProjectShelf";
+import ProjectRing from "../components/caseStudies/ProjectRing";
 import {
   VIBE_PROJECTS,
   SELECTED_PROJECTS,
@@ -33,8 +34,8 @@ const DETAIL_PROJECTS = [
       (project.detail || project.detailSections || project.caseStudy) &&
       project.id !== "emotion-garden",
   ),
-  ...HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(Boolean),
   ...THREE_D_PROJECTS,
+  ...HOME_VIBE_FOLDER_IDS.map(getProjectById).filter(Boolean),
   ...RESEARCH_PROJECTS,
 ];
 
@@ -111,9 +112,18 @@ function projectSidebarItems(project, isZh) {
   return items;
 }
 
+const VIEW_STORAGE_KEY = "projects-view";
+/** How long the outgoing view takes to fade before the next comes in. */
+const VIEW_OUT_MS = 220;
+/** Ring view needs room to wrap: tablets and up. */
+const RING_MEDIA = "(min-width: 768px)";
+
 const LABELS = {
   en: {
     pageTitle: "Projects",
+    viewLabel: "View",
+    viewShelf: "Shelf",
+    viewRing: "Ring",
     pageNote:
       "Some of this was built inside a real product team, some I carried from first sketch to working code on my own, and some is me picking up a new medium to see how far it goes. Each card opens into how I got there—and each time I thought it through, I grew.",
     caseStudies: "Digital product design",
@@ -121,22 +131,26 @@ const LABELS = {
       "Internship and 0→1 product work—flows you can poke at.",
     research: "Design research",
     researchNote: "Co-design with people—workshops that leave a film, a town, a question.",
-    threeD: "3D",
-    threeDNote: "AR built onto the printed page, and Houdini motion studies.",
+    threeD: "3D & spatial",
+    threeDNote:
+      "Spatial work: AR that opens on a printed page, a VR lesson from inside the body, and motion built from rules in Houdini.",
     playground: "Playground",
     playgroundNote:
       "Quick experiments with AI coding tools—start curious, end with something you can play with.",
   },
   zh: {
     pageTitle: "作品",
+    viewLabel: "查看方式",
+    viewShelf: "书架",
+    viewRing: "环绕",
     pageNote:
       "有些是在真实的产品团队里做出来的，有些是我一个人从草图做到能跑的代码，还有一些，是我拿起一种新媒介，试试它能走多远。每张卡片点开，都是我一路怎么想过来的——每一次思考，都有成长。",
     caseStudies: "数字产品设计",
     caseStudiesNote: "实习与 0→1 产品：能上手戳的流程。",
     research: "设计研究",
     researchNote: "和人一起共创——工作坊留下的短片、小镇，和一个问题。",
-    threeD: "3D",
-    threeDNote: "落在纸页上的 AR，以及 Houdini 里的程序化运动。",
+    threeD: "3D 与空间",
+    threeDNote: "空间与 3D：在纸页上展开的 AR、从身体内部学习的 VR，以及在 Houdini 里用规则做出来的运动。",
     playground: "Playground",
     playgroundNote: "和 AI 编程工具一起快速试——先好奇，再做出能玩的东西。",
   },
@@ -282,49 +296,142 @@ export default function LibraryPage({ embedded = false }) {
         ]
       : null;
 
+  // Ring view: computers and tablets only (it needs the width to wrap).
+  // The choice is remembered on this device.
+  const [ringAvailable, setRingAvailable] = useState(false);
+  const [preferredView, setPreferredView] = useState(() => {
+    try {
+      return window.localStorage.getItem(VIEW_STORAGE_KEY) === "ring"
+        ? "ring"
+        : "shelf";
+    } catch {
+      return "shelf";
+    }
+  });
+  useEffect(() => {
+    const query = window.matchMedia(RING_MEDIA);
+    const sync = () => setRingAvailable(query.matches);
+    sync();
+    query.addEventListener?.("change", sync);
+    return () => query.removeEventListener?.("change", sync);
+  }, []);
+  const view = ringAvailable && !embedded ? preferredView : "shelf";
+  // Switching views is a motion, not a cut: the current view sinks and
+  // fades, then the other one comes in (shelves rise row by row; ring
+  // walls swing in along the arc).
+  const [switching, setSwitching] = useState(false);
+  const switchTimer = useRef(null);
+  useEffect(() => () => window.clearTimeout(switchTimer.current), []);
+  const chooseView = (value) => {
+    if (value === view || switching) return;
+    setSwitching(true);
+    window.clearTimeout(switchTimer.current);
+    switchTimer.current = window.setTimeout(() => {
+      setPreferredView(value);
+      try {
+        window.localStorage.setItem(VIEW_STORAGE_KEY, value);
+      } catch {
+        /* private mode: the choice just isn't remembered */
+      }
+      setSwitching(false);
+      // Each view starts at its top: the ring fills the screen from the
+      // first frame instead of opening below the page intro.
+      const scroller = getScroller();
+      if (scroller) scroller.scrollTop = 0;
+    }, VIEW_OUT_MS);
+  };
+
+  const sections = [
+    {
+      id: "case-studies",
+      title: labels.caseStudies,
+      note: labels.caseStudiesNote,
+      projects: SELECTED_PROJECTS.filter(
+        (project) => project.id !== "emotion-garden",
+      ),
+    },
+    {
+      id: "three-d",
+      title: labels.threeD,
+      note: labels.threeDNote,
+      projects: THREE_D_PROJECTS,
+    },
+    {
+      id: "playground",
+      title: labels.playground,
+      note: labels.playgroundNote,
+      projects: PLAYGROUND_SECTION_PROJECTS,
+    },
+    {
+      id: "research",
+      title: labels.research,
+      note: labels.researchNote,
+      projects: RESEARCH_PROJECTS,
+    },
+  ];
+
   const content = (
-    <div ref={contentRef} className={embedded ? "home-work" : "projects-page"}>
+    <div
+      ref={contentRef}
+      className={
+        embedded
+          ? "home-work"
+          : `projects-page${view === "ring" ? " is-ring" : ""}${
+              switching ? " is-switching" : ""
+            }`
+      }
+    >
       {!embedded ? (
         <header className="projects-page__header">
           <h1 className="projects-page__title">{labels.pageTitle}</h1>
           <p className="projects-page__note">{labels.pageNote}</p>
+          {ringAvailable ? (
+            <div
+              className="projects-view"
+              data-view={view}
+              role="radiogroup"
+              aria-label={labels.viewLabel}
+            >
+              {[
+                ["shelf", labels.viewShelf],
+                ["ring", labels.viewRing],
+              ].map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  role="radio"
+                  aria-checked={view === value}
+                  className={`projects-view__option${
+                    view === value ? " is-active" : ""
+                  }`}
+                  onClick={() => chooseView(value)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          ) : null}
         </header>
       ) : null}
-      {/* The library: one shelf per section, one book per project. */}
-      <ProjectShelf
-        id="case-studies"
-        title={labels.caseStudies}
-        note={labels.caseStudiesNote}
-        projects={SELECTED_PROJECTS.filter(
-          (project) => project.id !== "emotion-garden",
-        )}
-        onOpen={handleCardOpen}
-        onHover={handleCardHover}
-      />
-      <ProjectShelf
-        id="playground"
-        title={labels.playground}
-        note={labels.playgroundNote}
-        projects={PLAYGROUND_SECTION_PROJECTS}
-        onOpen={handleCardOpen}
-        onHover={handleCardHover}
-      />
-      <ProjectShelf
-        id="three-d"
-        title={labels.threeD}
-        note={labels.threeDNote}
-        projects={THREE_D_PROJECTS}
-        onOpen={handleCardOpen}
-        onHover={handleCardHover}
-      />
-      <ProjectShelf
-        id="research"
-        title={labels.research}
-        note={labels.researchNote}
-        projects={RESEARCH_PROJECTS}
-        onOpen={handleCardOpen}
-        onHover={handleCardHover}
-      />
+      {/* The library: one shelf per section, or every project on one ring
+          (categories stand together; the front card's category is named). */}
+      {view === "ring" ? (
+        <ProjectRing
+          label={labels.pageTitle}
+          groups={sections}
+          onOpen={handleCardOpen}
+          onHover={handleCardHover}
+        />
+      ) : (
+        sections.map((section) => (
+          <ProjectShelf
+            key={section.id}
+            {...section}
+            onOpen={handleCardOpen}
+            onHover={handleCardHover}
+          />
+        ))
+      )}
 
       {!embedded ? <PageCopyright /> : null}
     </div>

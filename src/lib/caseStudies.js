@@ -83,6 +83,8 @@ export const VIBE_PROJECTS = [
     tags: ["Interactive Web", "Vibe Coded"],
     liveUrl: "https://qinlyismoon.github.io/onomichi-furin/",
     thumbnail: "/onomichi-furin-thumb.jpg",
+    // Plays on the open book in the Projects shelf (still when closed).
+    animatedCover: "/onomichi-furin-thumb.gif",
     // Contents-bar crop: just below the top — chime tops and strings
     // against the gold sky. Calm, no UI, no strip text, still
     // unmistakably the furin wall.
@@ -541,6 +543,10 @@ export const SELECTED_PROJECTS = [
     descriptionZh:
       "一个储蓄目标的改版，重点在计划变了之后：取钱、暂停、调低目标、结束目标，每种情况下钱都去了哪。",
     tags: ["Product Design", "Usability Testing"],
+    // Live prototype — the case study's "Visit live site" button opens it.
+    liveUrl: "https://moneymap-destinations.vercel.app/home",
+    liveLabel: "Try the prototype",
+    liveLabelZh: "试用原型",
     // Soft gray wash from the cover so hero and boards share one ground.
     panelBackground: "#eef0f2",
     // Native detail (personas → HMW → three priorities → prototype clips
@@ -841,9 +847,9 @@ export const THREE_D_PROJECTS = [
     title: "Oscar et la Dame Rose",
     subtitle: "AR Reading · Unity for iOS",
     description:
-      "AR for Oscar et la Dame Rose: a few story moments open on the printed page, so the book stays the main thing. Built in Unity for iOS.",
+      "A few moments of the novel open on its printed page in AR — reading stays the main thing, and the 3D only deepens it.",
     descriptionZh:
-      "为《Oscar et la Dame Rose》做的 AR：几个故事时刻在纸页上展开，书仍是主线。Unity 做的，跑在 iOS 上。",
+      "小说里的几个时刻，用 AR 在纸页上展开——阅读仍是主线，3D 只是让它更深一点。",
     tagline: "Read the book. Step into a few of its moments.",
     taglineZh: "还是在读书。只是有几个时刻，可以走进去。",
     tags: ["AR", "Interaction Design"],
@@ -1280,9 +1286,9 @@ export const THREE_D_PROJECTS = [
     tagline: "Four Houdini studies built as node graphs.",
     taglineZh: "四个用节点图搭起来的 Houdini 习作。",
     description:
-      "Shrine, train, hotpot, snowman—parameters, signals, and simulation in Houdini.",
+      "Four motion studies — a shrine, a train, a hotpot, a snowman — where the movement comes from rules and parameters, not keyframes.",
     descriptionZh:
-      "神社、火车、火锅、雪人——在 Houdini 里用参数、信号和模拟做成。",
+      "四个运动习作——神社、火车、火锅、雪人——动起来靠的是规则和参数，而不是关键帧。",
     tags: ["Procedural Animation", "Houdini", "Motion Design"],
     thumbnail: "/research-craft/procedural/cover.jpg",
     // Card + hero: hotpot effect reel — clean render, no Houdini chrome.
@@ -1307,9 +1313,9 @@ export const THREE_D_PROJECTS = [
     tagline: "Become a red blood cell, and make the gas exchange yourself.",
     taglineZh: "变成一个红细胞，亲手完成一次气体交换。",
     description:
-      "A VR learning prototype about red blood cell gas exchange — cardiovascular science turned into a first-person flow, then prototyped inside a headset with ShapesXR to get the spatial details right.",
+      "A VR lesson where you become a red blood cell and carry out gas exchange yourself — prototyped inside the headset to get the spatial details right.",
     descriptionZh:
-      "关于红细胞气体交换的 VR 学习原型——把心血管知识变成第一人称的流程，再用 ShapesXR 在头显里做原型，把空间上的细节做准。",
+      "一个 VR 学习原型：你变成红细胞，亲手完成一次气体交换——直接在头显里做原型，把空间细节做准。",
     tags: ["VR", "Spatial UX", "Learning Design"],
     thumbnail: "/research-craft/rbc-505/cover.png",
     navArtPosition: "50% 45%",
